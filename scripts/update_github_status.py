@@ -362,6 +362,108 @@ class BranchHandler:
         self.write_to_s3(commits)
 
 
+class PRHandler(BranchHandler):
+    def __init__(
+        self,
+        gql: Any,
+        user: str,
+        repo: str,
+        history_size: int,
+        fetch_size: int,
+    ):
+        super().__init__(gql, user, repo, "prs", history_size, None, fetch_size)
+    
+    def query(self, offset: int) -> str:
+        return f"""
+        {{
+            repository(name: "{self.repo}", owner: "{self.user}") {{
+                pullRequests(last:50) {{
+                    nodes {{
+                        number
+                        title
+                        commits(last:100) {{
+                            nodes {{
+                                commit {{
+                                    oid
+                                    messageBody
+                                    messageHeadline
+                                    author {{
+                                        name
+                                        user {{
+                                            login
+                                        }}
+                                    }}
+                                    authoredDate
+                                    checkSuites(first:5) {{
+                                        edges {{
+                                        node {{
+                                            checkRuns(first:5) {{
+                                                nodes {{
+                                                    name
+                                                    status
+                                                    conclusion
+                                                    detailsUrl
+                                                }}
+                                            }}
+                                            workflowRun {{
+                                                workflow {{
+                                                    name
+                                                }}
+                                            }}
+                                        }}
+                                        }}
+                                    }}
+                                    status {{
+                                        contexts {{
+                                        context
+                                        state
+                                        targetUrl
+                                        }}
+                                    }}
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+        }}
+        """
+
+    async def run(self) -> None:
+        query = self.query(offset=0)
+
+        async def fetch(i: int):
+            try:
+                return await self.gql.query(query)
+            except Exception as e:
+                print(
+                    f"Error: {e}\nFailed to fetch {self.user}/{self.repo} PRs"
+                )
+                return None
+        
+        results = [await fetch(0)]
+        # print(results)
+        commits_to_prs = {}
+        commits = []
+        for result in results:
+            prs = result["data"]["repository"]["pullRequests"]["nodes"]
+            for pr in prs:
+                for commit in pr["commits"]["nodes"]:
+                    commit = commit["commit"]
+                    commits_to_prs[commit["oid"]] = pr
+                    commits.append(commit)
+        
+        data = extract_jobs(commits)
+        for item in data:
+            pr = commits_to_prs[item["sha"]]
+            item["pr"] = pr["number"]
+            item["pr_title"] = pr["title"]
+    
+        data = list(reversed(sorted(data, key=lambda x: x["date"])))
+    
+        self.write_to_s3(data)
+
+
 class GraphQL:
     def __init__(self, session: aiohttp.ClientSession) -> None:
         self.session = session
@@ -411,7 +513,7 @@ class GraphQL:
 
 
 async def main(
-    user: str, repo: str, branches: List[str], history_size: int, fetch_size: int
+    user: str, repo: str, branches: List[str], history_size: int, fetch_size: int, prs: bool,
 ) -> None:
     """
     Grab a list of all the head commits for each branch, then fetch all the jobs
@@ -426,16 +528,19 @@ async def main(
         headers=headers
     ) as aiosession:
         gql = GraphQL(aiosession)
-        print(f"Querying branches: {branches}")
-        heads = await gql.query(head_commit_query(user, repo, branches))
         handlers = []
+        if prs:
+            handlers.append(PRHandler(gql, user, repo, history_size, fetch_size))
+        else:
+            print(f"Querying branches: {branches}")
+            heads = await gql.query(head_commit_query(user, repo, branches))
 
-        for head in heads["data"].values():
-            sha = head["ref"]["target"]["oid"]
-            branch = head["ref"]["name"]
-            handlers.append(
-                BranchHandler(gql, user, repo, branch, sha, history_size, fetch_size)
-            )
+            for head in heads["data"].values():
+                sha = head["ref"]["target"]["oid"]
+                branch = head["ref"]["name"]
+                handlers.append(
+                    BranchHandler(gql, user, repo, branch, sha, history_size, fetch_size)
+                )
 
         await asyncio.gather(*[h.run() for h in handlers])
 
@@ -451,6 +556,7 @@ def lambda_handler(event: Any, context: Any) -> None:
         "repo": None,
         "history_size": None,
         "fetch_size": None,
+        "prs": False,
     }
 
     for key in data.keys():
@@ -458,6 +564,9 @@ def lambda_handler(event: Any, context: Any) -> None:
             data[key] = os.environ[key]
         else:
             data[key] = event[key]
+    
+    if event["prs"]:
+        data["branches"] = "do not use"
 
     if any(x is None for x in data.values()):
         raise RuntimeError(
@@ -468,6 +577,7 @@ def lambda_handler(event: Any, context: Any) -> None:
     data["history_size"] = int(data["history_size"])
     data["fetch_size"] = int(data["fetch_size"])
     data["branches"] = data["branches"].split(",")
+    data["prs"] = data["prs"]
 
     # return
     asyncio.run(main(**data))
@@ -486,7 +596,8 @@ def lambda_handler(event: Any, context: Any) -> None:
 #         None,
 #     )
 parser = argparse.ArgumentParser(description="Update JSON in S3 for a branch")
-parser.add_argument("--branch", required=True)
+parser.add_argument("--branch")
+parser.add_argument("--prs", action="store_true")
 parser.add_argument("--repo", required=True)
 parser.add_argument("--user", required=True)
 parser.add_argument("--fetch_size", default=10)
@@ -494,12 +605,16 @@ parser.add_argument("--history_size", default=100)
 
 args = parser.parse_args()
 
+if not args.prs and args.branch is None:
+    raise RuntimeError("--prs or --branch <branch> must be used!")
+
 
 lambda_handler(
     {
         "branches": args.branch,
         "user": args.user,
         "repo": args.repo,
+        "prs": args.prs,
         "history_size": int(args.history_size),
         "fetch_size": int(args.fetch_size),
     },

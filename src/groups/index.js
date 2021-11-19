@@ -1,15 +1,7 @@
-import { groups as pytorch } from "./pytorch.js";
-import { groups as vision } from "./vision.js";
-import { groups as audio } from "./audio.js";
-import { groups as text } from "./text.js";
-import { groups as lightning } from "./pytorch-lightning.js";
+import { groups as tvm } from "./tvm.js";
 
 const map = {
-  pytorch: pytorch,
-  vision: vision,
-  audio: audio,
-  text: text,
-  "pytorch-lightning": lightning,
+  tvm: tvm,
 };
 
 export default function getGroups(repo) {

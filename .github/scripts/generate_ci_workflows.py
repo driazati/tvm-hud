@@ -24,11 +24,18 @@ class Branch:
     fetch_size: int = 4
     history_size: int = 100
 
+@dataclass
+class PR:
+    cron: str = CRONS["1 hour"]
+    fetch_size: int = 4
+    history_size: int = 100
+
 
 HUD_JOBS = {
     "apache": {
         "tvm": [
             Branch(branch="main"),
+            PR(),
             Branch(branch="v0.5", cron=CRONS["1 day at 8 AM"]),
             Branch(branch="v0.6", cron=CRONS["1 day at 8 AM"]),
             Branch(branch="v0.7", cron=CRONS["1 day at 8 AM"]),
@@ -64,17 +71,25 @@ WORKFLOWS = []
 for user_name, repos in HUD_JOBS.items():
     for repo_name, branches in repos.items():
         for branch in branches:
+            data = {
+                    "template": "update_github_status.yml.j2",
+                    "repo": repo_name,
+                    "user": user_name,
+                    "cron": branch.cron,
+                    "fetch_size": branch.fetch_size,
+                    "history_size": branch.history_size,
+                    "is_pr": isinstance(branch, PR),
+            }
+            if isinstance(branch, PR):
+                data["workflow_name"] = f"{user_name}/{repo_name}/PRs"
+                data["name"] = "update-github-stats-PRs"
+            else:
+                data["branch"] = branch.branch
+                data["workflow_name"] = f"{user_name}/{repo_name}/{branch.branch.replace('/', '_')}"
+                data["name"] = f"update-github-status-{user_name}-{repo_name}-{branch.branch.replace('/', '_')}"
+
             WORKFLOWS.append(
-                CIWorkflow(
-                    template="update_github_status.yml.j2",
-                    repo=repo_name,
-                    user=user_name,
-                    branch=branch.branch,
-                    name=f"update-github-status-{user_name}-{repo_name}-{branch.branch.replace('/', '_')}",
-                    cron=branch.cron,
-                    fetch_size=branch.fetch_size,
-                    history_size=branch.history_size,
-                )
+                CIWorkflow(**data)
             )
 
 

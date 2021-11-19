@@ -1,6 +1,6 @@
 # @generated DO NOT EDIT MANUALLY
 # Generated from .github/templates/deploy_lambda.yml.j2
-name: !{{ repo }}/!{{ user }}/!{{ branch }}
+name: !{{ workflow_name }}
 
 on:
   schedule:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: !{{ repo }}/!{{ user }}/!{{ branch }}
+  group: !{{ workflow_name }}
   cancel-in-progress: true
 
 jobs:
@@ -26,7 +26,11 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          {% if is_pr -%}
+          python scripts/update_github_status.py --repo '!{{ repo }}' --user '!{{ user }}' --prs --fetch_size !{{ fetch_size }} --history_size !{{ history_size }}
+          {% else -%}
           python scripts/update_github_status.py --repo '!{{ repo }}' --user '!{{ user }}' --branch '!{{ branch }}' --fetch_size !{{ fetch_size }} --history_size !{{ history_size }}
+          {%- endif %}
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Upload data

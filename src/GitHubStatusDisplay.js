@@ -119,7 +119,7 @@ class NameFilterForm extends Component {
     super(props);
     this.state = {
       jobNameFilter: props.defaultValue || "",
-      onSubmit: props.onSubmit || ((_) => {}),
+      onSubmit: props.onSubmit || ((_) => { }),
     };
   }
   render() {
@@ -255,7 +255,7 @@ export default class BuildHistoryDisplay extends Component {
           if (
             subBuild.build &&
             subBuild.build._class ===
-              "com.tikal.jenkins.plugins.multijob.MultiJobBuild"
+            "com.tikal.jenkins.plugins.multijob.MultiJobBuild"
           ) {
             subBuild.build.subBuilds.forEach(go);
           } else {
@@ -279,12 +279,7 @@ export default class BuildHistoryDisplay extends Component {
     const branch = this.props.branch;
     const user = this.props.user;
     const repo = this.props.repo;
-    let base = window.location.origin;
-    if (true || !base.includes("localhost")) {
-      base += "/tvm-hud";
-    }
-    const jsonUrl =
-      base + `/statuses/${user}/${repo}/${branch.replace("/", "_")}.json`;
+    const jsonUrl = window.location.origin + `/tvm-hud/statuses/${user}/${repo}/${branch.replace("/", "_")}.json`;
     let commits = null;
     try {
       commits = await axios.get(jsonUrl);
@@ -315,6 +310,8 @@ export default class BuildHistoryDisplay extends Component {
           username: commit.author,
         },
         message: commit.headline + "\n" + commit.body,
+        pr_number: commit.pr,
+        pr_title: commit.pr_title,
         sb_map: build_map,
         id: commit.sha,
         timestamp: commit.date,
@@ -617,7 +614,7 @@ export default class BuildHistoryDisplay extends Component {
           <div
             className={
               consecutive_failure_count &&
-              consecutive_failure_count.has(jobName)
+                consecutive_failure_count.has(jobName)
                 ? "failing-header"
                 : ""
             }
@@ -709,10 +706,10 @@ export default class BuildHistoryDisplay extends Component {
       // Add check_suite_focus=true to GHA checkruns
       const ghaRegex = new RegExp(
         "^https://github.com/" +
-          this.props.user +
-          "/" +
-          this.props.repo +
-          "/runs/\\d+$"
+        this.props.user +
+        "/" +
+        this.props.repo +
+        "/runs/\\d+$"
       );
       if (url.match(ghaRegex)) {
         return url + "?check_suite_focus=true";
@@ -806,7 +803,8 @@ export default class BuildHistoryDisplay extends Component {
           return (
             <Fragment>
               <a
-                href={`https://github.com/${this.props.user}/${this.props.repo}/pull/${m[1]}`}
+                href={`/tvm-hud/pr/${this.props.user}/${this.props.repo}/${m[1]}`}
+                // href={`https://github.com/${this.props.user}/${this.props.repo}/pull/${m[1]}`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -822,7 +820,8 @@ export default class BuildHistoryDisplay extends Component {
           return (
             <Fragment>
               <a
-                href={`https://github.com/${this.props.user}/${this.props.repo}/pull/${m[1]}`}
+                href={`/tvm-hud/pr/${this.props.user}/${this.props.repo}/${m[1]}`}
+                // href={`https://github.com/${this.props.user}/${this.props.repo}/pull/${m[1]}`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -840,7 +839,7 @@ export default class BuildHistoryDisplay extends Component {
         <div key={build.id}>
           <a
             style={{ color: "#003d7f" }}
-            href={`/commit/${this.props.user}/${this.props.repo}/${build.id}`}
+            href={`/tvm-hud/commit/${this.props.user}/${this.props.repo}/${build.id}`}
           >
             {drop_pr_number(build.message).split("\n")[0]}{" "}
           </a>
@@ -867,6 +866,15 @@ export default class BuildHistoryDisplay extends Component {
       // if (!found) {
       //  return <Fragment key={build.id} />;
       // }
+      let pr_number = null;
+      let pr_title = null;
+
+      if (build.pr_number) {
+        pr_number = <td><a href={`https://github.com/${this.props.user}/${this.props.repo}/pull/${build.pr_number}`}>{build.pr_number}</a></td>;
+      }
+      if (build.pr_title) {
+        pr_title = <td><a href={`/tvm-hud/pr/${this.props.user}/${this.props.repo}/${build.pr_number}`}>{build.pr_title}</a></td>;
+      }
 
       return (
         <tr key={build.id} className={stale ? "stale" : ""}>
@@ -877,19 +885,21 @@ export default class BuildHistoryDisplay extends Component {
           <td
             className="right-cell"
             style={{
-              maxWidth: "6em",
+              maxWidth: "9em",
               textOverflow: "ellipsis",
               overflow: "hidden",
             }}
           >
             {author}
           </td>
-          <th
+          {pr_number}
+          {pr_title}
+          {pr_title ? null : <th
             className="right-cell"
             style={{ paddingLeft: "0", paddingRight: "5px" }}
           >
             {renderPullRequestNumber(build.message)}
-          </th>
+          </th>}
           <td>{desc}</td>
         </tr>
       );
@@ -916,10 +926,21 @@ export default class BuildHistoryDisplay extends Component {
       );
     }
 
+
+    let pr_number = null;
+    let pr_title = null;
+
+    // if (rows.)
+    if (builds.length > 0 && builds[0].pr_title) {
+      pr_number = <th className="right-cell">PR #</th>
+      pr_title = <th className="right-cell">PR Title</th>
+    }
+
     let lastUpdate = null;
     if (this.state.lastUpdateDate) {
       lastUpdate = (
-        <p style={{ fontSize: "0.8em" }}>
+        <div style={{ fontSize: "0.8em" }}>
+        <p>
           Last updated {this.state.lastUpdateDate.toLocaleString()}{" "}
           {/* <UpdateButton
             repo={this.props.repo}
@@ -927,8 +948,11 @@ export default class BuildHistoryDisplay extends Component {
             branch={this.props.branch}
           /> */}
         </p>
+        <p>{pr_title ? <span>This data is pull from GitHub and may not be 100% complete due to pagination and laziness</span> : null}</p>
+        </div>
       );
     }
+
 
     return (
       <div>
@@ -943,7 +967,7 @@ export default class BuildHistoryDisplay extends Component {
         {lastUpdate}
         <div>
           <ul className="menu">
-            {isMobile() ? null : (
+            {/* {isMobile() ? null : (
               <li>
                 <input
                   type="checkbox"
@@ -956,8 +980,8 @@ export default class BuildHistoryDisplay extends Component {
                 <label htmlFor="show-notifications">
                   Show notifications on master failure
                   {this.state.showNotifications &&
-                  window.Notification &&
-                  window.Notification.permission === "denied" ? (
+                    window.Notification &&
+                    window.Notification.permission === "denied" ? (
                     <Fragment>
                       {" "}
                       <strong>
@@ -970,7 +994,7 @@ export default class BuildHistoryDisplay extends Component {
                 </label>
               </li>
             )}
-            {isMobile() ? null : <br />}
+            {isMobile() ? null : <br />} */}
             <li>
               <input
                 type="checkbox"
@@ -997,8 +1021,10 @@ export default class BuildHistoryDisplay extends Component {
                 <th className="left-cell">Date</th>
                 {visibleJobsHeaders}
                 <th className="right-cell">User</th>
-                <th className="right-cell">PR#</th>
-                <th className="right-cell">Description</th>
+                {pr_number}
+                {pr_title}
+                {pr_title ? null : <th className="right-cell">PR#</th>}
+                {pr_title ? <th className="right-cell">PR Commit Message</th> : <th className="right-cell">Description</th>}
               </tr>
             </thead>
             <tbody>{rows}</tbody>
