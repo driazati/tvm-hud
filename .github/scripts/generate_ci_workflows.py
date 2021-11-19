@@ -12,8 +12,8 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 GITHUB_DIR = REPO_ROOT / ".github"
 
 CRONS = {
-    "5 minutes": "*/5 * * * *",
     "1 hour": "0 * * * *",
+    "1 day at 8 AM": "0 8 * * *",
 }
 
 
@@ -26,21 +26,15 @@ class Branch:
 
 
 HUD_JOBS = {
-    "pytorch": {
-        "pytorch": [
-            Branch(branch="master", fetch_size=2, cron=CRONS["5 minutes"]),
-            Branch(branch="nightly", fetch_size=2),
-            Branch(branch="release/1.10", fetch_size=2),
-            Branch(branch="viable/strict", fetch_size=2),
+    "apache": {
+        "tvm": [
+            Branch(branch="main"),
+            Branch(branch="v0.5", cron=CRONS["1 day at 8 AM"]),
+            Branch(branch="v0.6", cron=CRONS["1 day at 8 AM"]),
+            Branch(branch="v0.7", cron=CRONS["1 day at 8 AM"]),
+            Branch(branch="v0.8", cron=CRONS["1 day at 8 AM"]),
         ],
-        "vision": [Branch(branch="main"), Branch(branch="release/0.11")],
-        "audio": [Branch(branch="main"), Branch(branch="release/0.10")],
-        "text": [Branch(branch="main"), Branch(branch="release/0.11")],
-        "examples": [Branch(branch="master")],
-        "tutorials": [Branch(branch="master")],
-        "torchx": [Branch(branch="main")],
     },
-    "PyTorchLightning": {"pytorch-lightning": [Branch(branch="master")]},
 }
 
 

@@ -280,7 +280,7 @@ export default class BuildHistoryDisplay extends Component {
     const user = this.props.user;
     const repo = this.props.repo;
     let base = window.location.origin;
-    if (!base.includes("localhost")) {
+    if (true || !base.includes("localhost")) {
       base += "/tvm-hud";
     }
     const jsonUrl =
