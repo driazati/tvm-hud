@@ -279,9 +279,13 @@ export default class BuildHistoryDisplay extends Component {
     const branch = this.props.branch;
     const user = this.props.user;
     const repo = this.props.repo;
-    const jsonUrl =
-      window.location.origin +
-      `/tvm-hud/statuses/${user}/${repo}/${branch.replace("/", "_")}.json`;
+    // const jsonUrl =
+    //   window.location.origin +
+    //   `/tvm-hud/statuses/${user}/${repo}/${branch.replace("/", "_")}.json`;
+    const jsonUrl = `https://raw.githubusercontent.com/driazati/tvm-hud/data/public/statuses/${user}/${repo}/${branch.replace(
+      "/",
+      "_"
+    )}.json`;
     let commits = null;
     try {
       commits = await axios.get(jsonUrl);
@@ -931,9 +935,9 @@ export default class BuildHistoryDisplay extends Component {
         <p>
           Error fetching commits, either the branch does not exist or is not
           tracked by the{" "}
-          <a href="https://github.com/pytorch/test-infra/tree/main/aws/lambda/github-status-sync">
-            status syncing job
-          </a>
+          {/* <a href="https://github.com/pytorch/test-infra/tree/main/aws/lambda/github-status-sync"> */}
+          status syncing job
+          {/* </a> */}
         </p>
       );
     } else if (this.state.fetchedBuilds && rows.length === 0) {
