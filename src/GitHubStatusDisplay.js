@@ -9,7 +9,7 @@ import { summarize_job, summarize_date } from "./Summarize.js";
 import getGroups from "./groups/index.js";
 import Tooltip from "rc-tooltip";
 import axios from "axios";
-import UpdateButton from "./status/UpdateButton.js";
+// import UpdateButton from "./status/UpdateButton.js";
 import { BsFillCaretRightFill, BsFillCaretDownFill } from "react-icons/bs";
 import { ImSpinner2 } from "react-icons/im";
 import { FcCancel } from "react-icons/fc";

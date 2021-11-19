@@ -209,10 +209,4 @@ const Build1Route = ({ match }) => (
   </Fragment>
 );
 
-const TorchBenchRoute = ({ match }) => (
-  <Fragment>
-    <Route exact path={match.url} component={PerfHistoryDisplay} />
-  </Fragment>
-);
-
 export default App;
