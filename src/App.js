@@ -91,9 +91,7 @@ const App = () => (
             path="/pr/:number"
             render={(props) => {
               return (
-                <Redirect
-                  to={`/pr/apache/tvm/${props.match.params.number}`}
-                />
+                <Redirect to={`/pr/apache/tvm/${props.match.params.number}`} />
               );
             }}
           />
