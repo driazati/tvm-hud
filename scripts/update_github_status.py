@@ -422,7 +422,6 @@ async def main(
         # "Authorization": "token {}".format(user_token(user)),
         # "Accept": "application/vnd.github.machine-man-preview+json",
     }
-    print(headers)
     async with aiohttp.ClientSession(
         headers=headers
     ) as aiosession:
