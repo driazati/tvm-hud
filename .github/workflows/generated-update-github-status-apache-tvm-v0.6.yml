@@ -29,18 +29,18 @@ jobs:
           GH_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python scripts/update_github_status.py --repo 'tvm' --user 'apache' --branch 'v0.6' --fetch_size 4 --history_size 100
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-      # - name: Upload data
-      #   run: |
-      #     echo testing >> public/statuses/apache/tvm/v0.8.json
-      #     if git stash | grep -q 'No local changes'; then
-      #       echo no changes made
-      #       exit 0
-      #     fi
-      #     git fetch origin/data
-      #     git checkout data
-      #     git stash apply
-      #     git add .
-      #     git commit -m"Update commit status data"
-      #     git push
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      - name: Upload data
+        run: |
+          echo testing >> public/statuses/apache/tvm/v0.8.json
+          if git stash | grep -q 'No local changes'; then
+            echo no changes made
+            exit 0
+          fi
+          git fetch origin
+          git checkout data
+          git stash apply
+          git add .
+          git commit -m"Update commit status data"
+          git push
