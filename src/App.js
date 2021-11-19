@@ -10,7 +10,6 @@ import ComputerDisplay from "./ComputerDisplay.js";
 import QueueDisplay from "./QueueDisplay.js";
 import BuildHistoryDisplay from "./BuildHistoryDisplay.js";
 import GitHubStatusDisplay from "./GitHubStatusDisplay.js";
-import PerfHistoryDisplay from "./PerfHistoryDisplay.js";
 import PrDisplay from "./PrDisplay.js";
 import JobCorrelationHeatmap from "./JobCorrelationHeatmap.js";
 import GitHubActionsDisplay from "./GitHubActionsDisplay.js";
