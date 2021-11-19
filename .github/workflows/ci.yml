@@ -16,7 +16,6 @@ jobs:
         run: yarn prettier --check src
   test:
     runs-on: ubuntu-20.04
-    needs: [lint]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,18 +25,17 @@ jobs:
         run: yarn test
   build:
     runs-on: ubuntu-20.04
-    needs: [lint]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install
+        run: yarn install --frozen-lockfile
+      - name: Lint
+        run: yarn prettier --check src
       - name: Build
         run: yarn build
-  deploy:
-    if: github.ref == 'refs/heads/main'
-    needs: [lint, build, test]
-    runs-on: ubuntu-20.04
-    steps:
       - name: Deploy
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
