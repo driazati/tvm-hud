@@ -25,7 +25,7 @@ import {
 } from "react-router-dom";
 
 const App = () => (
-  <Router>
+  <Router basename="/tvm-hud">
     <div className="App">
       <Links />
       <div style={{ margin: "0" }} className="container">

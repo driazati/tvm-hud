@@ -279,9 +279,12 @@ export default class BuildHistoryDisplay extends Component {
     const branch = this.props.branch;
     const user = this.props.user;
     const repo = this.props.repo;
+    let base = window.location.origin;
+    if (!base.includes("localhost")) {
+      base += "/tvm-hud";
+    }
     const jsonUrl =
-      window.location.origin +
-      `/statuses/${user}/${repo}/${branch.replace("/", "_")}.json`;
+      base + `/statuses/${user}/${repo}/${branch.replace("/", "_")}.json`;
     let commits = null;
     try {
       commits = await axios.get(jsonUrl);
