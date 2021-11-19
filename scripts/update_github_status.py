@@ -4,28 +4,36 @@ import math
 import os
 import datetime
 import re
-import boto3  # type: ignore
+# import boto3  # type: ignore
 import json
 import io
 import argparse
 import gzip
+from pathlib import Path
 import os
-from cryptography.hazmat.backends import default_backend
-import jwt
-import requests
+# from cryptography.hazmat.backends import default_backend
+# import jwt
+# import requests
 import time
+import requests
 from typing import *
 
 
-BUCKET = os.getenv("bucket", "ossci-job-status")
-APP_ID = int(os.environ["app_id"])
+# BUCKET = os.getenv("bucket", "ossci-job-status")
+# APP_ID = int(os.environ["app_id"])
 
-# The private key needs to maintain its newlines, get it via
-# $ cat key.pem | tr '\n' '|' | pbcopy
-PRIVATE_KEY = os.environ["private_key"].replace("|", "\n")
+# # The private key needs to maintain its newlines, get it via
+# # $ cat key.pem | tr '\n' '|' | pbcopy
+# PRIVATE_KEY = os.environ["private_key"].replace("|", "\n")
+GH_PAT = os.environ["GH_PAT"]
 
 
 def app_headers() -> Dict[str, str]:
+    headers = {
+        "Authorization": f"Bearer {GH_PAT}",
+        "Accept": "application/vnd.github.machine-man-preview+json",
+    }
+    return headers
     cert_bytes = PRIVATE_KEY.encode()
     private_key = default_backend().load_pem_private_key(cert_bytes, None)  # type: ignore
 
@@ -81,16 +89,16 @@ def user_token(user: str) -> str:
     return token
 
 
-if "AWS_KEY_ID" in os.environ and "AWS_SECRET_KEY" in os.environ:
-    # Use keys for local development
-    session = boto3.Session(
-        aws_access_key_id=os.environ.get("AWS_KEY_ID"),
-        aws_secret_access_key=os.environ.get("AWS_SECRET_KEY"),
-    )
-else:
-    # In the Lambda, use permissions on the Lambda's role
-    session = boto3.Session()
-s3 = session.resource("s3")
+# if "AWS_KEY_ID" in os.environ and "AWS_SECRET_KEY" in os.environ:
+#     # Use keys for local development
+#     session = boto3.Session(
+#         aws_access_key_id=os.environ.get("AWS_KEY_ID"),
+#         aws_secret_access_key=os.environ.get("AWS_SECRET_KEY"),
+#     )
+# else:
+#     # In the Lambda, use permissions on the Lambda's role
+#     session = boto3.Session()
+# s3 = session.resource("s3")
 
 
 def compress_query(query: str) -> str:
@@ -213,21 +221,29 @@ class BranchHandler:
         self.history_size = history_size
 
     def write_to_s3(self, data: Any) -> None:
-        content = json.dumps(data, default=str)
-        buf = io.BytesIO()
-        gzipfile = gzip.GzipFile(fileobj=buf, mode="w")
-        gzipfile.write(content.encode())
-        gzipfile.close()
-        bucket = s3.Bucket(BUCKET)
-        prefix = f"v6/{self.user}/{self.repo}/{self.name.replace('/', '_')}.json"
-        bucket.put_object(
-            Key=prefix,
-            Body=buf.getvalue(),
-            ContentType="application/json",
-            ContentEncoding="gzip",
-            Expires="0",
-        )
-        print(f"Wrote {len(data)} commits from {self.name} to {prefix}")
+        dir = Path(__file__).resolve().parent.parent / "public" / "statuses"
+        file = dir / self.user / self.repo / f"{self.name.replace('/', '_')}.json"
+        if not file.parent.exists():
+            print("Not exists!")
+            file.parent.mkdir(parents=True, exist_ok=True)
+            print("Making")
+        with open(file, "w") as f:
+            f.write(json.dumps(data, indent=2))
+        # content = json.dumps(data, default=str)
+        # buf = io.BytesIO()
+        # gzipfile = gzip.GzipFile(fileobj=buf, mode="w")
+        # gzipfile.write(content.encode())
+        # gzipfile.close()
+        # bucket = s3.Bucket(BUCKET)
+        # prefix = f"v6/{self.user}/{self.repo}/{self.name.replace('/', '_')}.json"
+        # bucket.put_object(
+        #     Key=prefix,
+        #     Body=buf.getvalue(),
+        #     ContentType="application/json",
+        #     ContentEncoding="gzip",
+        #     Expires="0",
+        # )
+        print(f"Wrote {len(data)} commits from {self.name} to {file}")
 
     def query(self, offset: int) -> str:
         after = ""
@@ -367,7 +383,7 @@ class GraphQL:
         self,
         query: str,
         verify: Optional[Callable[[Any], None]] = None,
-        retries: int = 5,
+        retries: int = 1,
     ) -> Any:
         """
         Run an authenticated GraphQL query
@@ -401,11 +417,14 @@ async def main(
     Grab a list of all the head commits for each branch, then fetch all the jobs
     for the last 'history_size' commits on that branch
     """
+    headers = {
+        "Authorization": f"token {GH_PAT}",
+        # "Authorization": "token {}".format(user_token(user)),
+        # "Accept": "application/vnd.github.machine-man-preview+json",
+    }
+    print(headers)
     async with aiohttp.ClientSession(
-        headers={
-            "Authorization": "token {}".format(user_token(user)),
-            "Accept": "application/vnd.github.machine-man-preview+json",
-        }
+        headers=headers
     ) as aiosession:
         gql = GraphQL(aiosession)
         print(f"Querying branches: {branches}")

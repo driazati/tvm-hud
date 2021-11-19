@@ -19,97 +19,22 @@ export default class Links extends Component {
   render() {
     let more = null;
     if (this.state.showMore) {
-      more = (
-        <div>
-          <ul className="menu">
-            <li>Libraries:</li>
-            <li>
-              <Link to="/ci/pytorch/audio/main">audio</Link>
-            </li>
-            <li>
-              <Link to="/ci/pytorch/vision/main">vision</Link>
-            </li>
-            <li>
-              <Link to="/ci/pytorch/text/main">text</Link>
-            </li>
-            <li>
-              <Link to="/torchbench-v0-nightly">torchbench</Link>
-            </li>
-            <li>
-              <Link to="/ci/PyTorchLightning/pytorch-lightning/master">
-                pytorch-lightning
-              </Link>
-            </li>
-          </ul>
-          <ul className="deprecated-menu">
-            <li>Old-style:</li>
-            {[
-              "pytorch",
-              // "tensorcomp",
-              // "translate",
-              "rocm-pytorch",
-            ].map((e) => (
-              <Fragment key={e}>
-                {["master", "pull-request"].map((trigger) => (
-                  <li key={e + "-" + trigger}>
-                    <Link to={"/build1/" + e + "-" + trigger}>
-                      {e}-{trigger}
-                    </Link>
-                    &nbsp; (
-                    <Link to={"/build1/" + e + "-" + trigger + "?mode=perf"}>
-                      perf
-                    </Link>
-                    /
-                    <Link to={"/build1/" + e + "-" + trigger + "?mode=cost"}>
-                      cost
-                    </Link>
-                    {e === "pytorch" && trigger === "master" ? (
-                      <Fragment>
-                        /
-                        <Link
-                          to={"/build1/" + e + "-" + trigger + "?mode=binary"}
-                        >
-                          binary
-                        </Link>
-                      </Fragment>
-                    ) : (
-                      <Fragment />
-                    )}
-                    )
-                  </li>
-                ))}
-              </Fragment>
-            ))}
-            <Fragment key="nightlies-uploaded">
-              <li>
-                <Link to={"/build1/nightlies-uploaded"}>
-                  nightlies-uploaded
-                </Link>
-              </li>
-            </Fragment>
-          </ul>
-          <ul className="menu">
-            <li>
-              <Link to="/status">status</Link>
-            </li>
-          </ul>
-        </div>
-      );
+      more = null;
     }
     return (
       <div className="links-container">
         <div className="Links">
           <div style={{ display: "inline" }}>
             <a style={{ fontWeight: "bold" }} href="https://hud.pytorch.org">
-              PyTorch CI HUD
+              TVM CI HUD
             </a>
             <ul style={{ display: "inline" }} className="menu">
               {["pytorch"].map((e) => (
                 <Fragment key={e}>
-                  {["master", "viable/strict", "nightly", "release/1.10"].map(
+                  {["main", "v0.5", "v0.6", "v0.7", "v0.8"].map(
                     (branch) => (
                       <li key={`${branch}`}>
-                        <Link to={`/ci/pytorch/pytorch/${branch}`}>
+                        <Link to={`/ci/apache/tvm/${branch}`}>
                           {branch}
                         </Link>
                       </li>
@@ -117,13 +42,10 @@ export default class Links extends Component {
                   )}
                 </Fragment>
               ))}
-              <li>
-                <a href="https://metrics.pytorch.org">metrics</a>
-              </li>
-              <li>
+              {/* <li>
                 <a href="/overview">overview</a>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <a
                   href="more"
                   onClick={(e) => {
@@ -135,7 +57,7 @@ export default class Links extends Component {
                 >
                   {this.state.showMore ? "less" : "more"}
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div

@@ -279,7 +279,7 @@ export default class BuildHistoryDisplay extends Component {
     const branch = this.props.branch;
     const user = this.props.user;
     const repo = this.props.repo;
-    const jsonUrl = `https://s3.amazonaws.com/ossci-job-status/v6/${user}/${repo}/${branch.replace(
+    const jsonUrl = window.location.origin + `/statuses/${user}/${repo}/${branch.replace(
       "/",
       "_"
     )}.json`;
@@ -919,11 +919,11 @@ export default class BuildHistoryDisplay extends Component {
       lastUpdate = (
         <p style={{ fontSize: "0.8em" }}>
           Last updated {this.state.lastUpdateDate.toLocaleString()}{" "}
-          <UpdateButton
+          {/* <UpdateButton
             repo={this.props.repo}
             user={this.props.user}
             branch={this.props.branch}
-          />
+          /> */}
         </p>
       );
     }

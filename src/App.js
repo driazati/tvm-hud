@@ -35,19 +35,19 @@ const App = () => (
           <Route path="/build" component={BuildRoute} />
           <Route path="/build1" component={Build1Route} />
           <Route
-            path="/pytorch/pytorch/pull/:segment"
+            path="/apache/tvm/pull/:segment"
             render={(props) => {
               return <Redirect to={`/pr/${props.match.params.segment}`} />;
             }}
           ></Route>
           <Route
-            path="/pytorch/pytorch/pull/*/commits/:segment"
+            path="/apache/tvm/pull/*/commits/:segment"
             render={(props) => {
               return <Redirect to={`/commit/${props.match.params.segment}`} />;
             }}
           ></Route>
           <Route
-            path="/pytorch/pytorch/commit/:segment"
+            path="/apache/tvm/commit/:segment"
             render={(props) => {
               return <Redirect to={`/commit/${props.match.params.segment}`} />;
             }}
@@ -92,7 +92,7 @@ const App = () => (
             render={(props) => {
               return (
                 <Redirect
-                  to={`/pr/pytorch/pytorch/${props.match.params.number}`}
+                  to={`/pr/apache/tvm/${props.match.params.number}`}
                 />
               );
             }}
@@ -115,31 +115,16 @@ const App = () => (
             render={(props) => {
               return (
                 <Redirect
-                  to={`/commit/pytorch/pytorch/${props.match.params.commit}`}
+                  to={`/commit/apache/tvm/${props.match.params.commit}`}
                 />
               );
             }}
           />
-          <Route
-            path="/build2/:segment"
-            render={(props) => {
-              const branch = props.match.params.segment.replace("pytorch-", "");
-              return <Redirect to={`/ci/pytorch/pytorch/${branch}`} />;
-            }}
-          />
-          <Route
-            path="/build3/:segment"
-            render={(props) => {
-              const branch = props.match.params.segment.replace("pytorch-", "");
-              return <Redirect to={`/ci/pytorch/pytorch/${branch}`} />;
-            }}
-          />
-          <Route path="/torchbench-v0-nightly" component={TorchBenchRoute} />
           <Route path="/github_logout" component={LogoutGitHub} />
           <Route path="/authorize_github" component={AuthorizeGithubRoute} />
           <Route path="/status" component={Status} />
           <Route exact path="/">
-            <Redirect to="/build2/pytorch-master" />
+            <Redirect to="/ci/apache/tvm/main" />
           </Route>
           <Route path="*" exact={true} component={RouteNotFound} />
         </Switch>
