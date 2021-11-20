@@ -222,6 +222,7 @@ class BranchHandler:
 
     def write_to_s3(self, data: Any) -> None:
         dir = Path(__file__).resolve().parent.parent / "public" / "statuses"
+        data["updated_at"] = datetime.datetime.now().timestamp()
         file = dir / self.user / self.repo / f"{self.name.replace('/', '_')}.json"
         if not file.parent.exists():
             print("Not exists!")
