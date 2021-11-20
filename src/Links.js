@@ -34,7 +34,9 @@ export default class Links extends Component {
                   {["main", "PRs", "v0.5", "v0.6", "v0.7", "v0.8"].map(
                     (branch) => (
                       <li key={`${branch}`}>
-                        <Link to={`/ci/apache/tvm/${branch}`}>{branch}</Link>
+                        <Link to={`/ci/apache/tvm/${branch.toLowerCase()}`}>
+                          {branch}
+                        </Link>
                       </li>
                     )
                   )}
