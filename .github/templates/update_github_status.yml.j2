@@ -26,6 +26,7 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -eux
           {% if is_pr -%}
           python scripts/update_github_status.py --repo '!{{ repo }}' --user '!{{ user }}' --prs --fetch_size !{{ fetch_size }} --history_size !{{ history_size }}
           {% else -%}
@@ -35,6 +36,7 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       - name: Upload data
         run: |
+          set -eux
           if git stash | grep -q 'No local changes'; then
             echo no changes made
             exit 0
