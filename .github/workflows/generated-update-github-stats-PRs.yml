@@ -36,13 +36,18 @@ jobs:
       - name: Upload data
         run: |
           set -eux
-          if git stash | grep -q 'No local changes'; then
+          if git status | grep -q 'working tree clean'; then
             echo no changes made
             exit 0
           fi
+          rm -rf /tmp/statuses
+          cp -r public/statuses /tmp/statuses
+          git checkout -- .
           git fetch origin
           git checkout data
-          git stash apply
+          # git stash apply
+          rm -rf public/statuses
+          mv /tmp/statuses public
           git add .
           git config user.email "email@example.com"
           git config user.name "robot"

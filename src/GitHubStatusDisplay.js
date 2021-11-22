@@ -8,7 +8,6 @@ import jenkins from "./Jenkins.js";
 import { summarize_job, summarize_date } from "./Summarize.js";
 import getGroups from "./groups/index.js";
 import Tooltip from "rc-tooltip";
-import axios from "axios";
 // import UpdateButton from "./status/UpdateButton.js";
 import { BsFillCaretRightFill, BsFillCaretDownFill } from "react-icons/bs";
 import { ImSpinner2 } from "react-icons/im";
@@ -119,7 +118,7 @@ class NameFilterForm extends Component {
     super(props);
     this.state = {
       jobNameFilter: props.defaultValue || "",
-      onSubmit: props.onSubmit || ((_) => {}),
+      onSubmit: props.onSubmit || ((_) => { }),
     };
   }
   render() {
@@ -255,7 +254,7 @@ export default class BuildHistoryDisplay extends Component {
           if (
             subBuild.build &&
             subBuild.build._class ===
-              "com.tikal.jenkins.plugins.multijob.MultiJobBuild"
+            "com.tikal.jenkins.plugins.multijob.MultiJobBuild"
           ) {
             subBuild.build.subBuilds.forEach(go);
           } else {
@@ -288,7 +287,9 @@ export default class BuildHistoryDisplay extends Component {
     )}.json`;
     let commits = null;
     try {
-      commits = await axios.get(jsonUrl);
+      const response = await fetch(jsonUrl, { cache: "no-cache" });
+      commits = await response.json();
+      console.log(commits)
     } catch {
       this.setState({ fetchError: true });
       return;
@@ -296,7 +297,7 @@ export default class BuildHistoryDisplay extends Component {
 
     // Marshal new build format into the old build format
     const builds = [];
-    for (const commit of commits.data) {
+    for (const commit of commits) {
       const build_map = new Map();
       for (const job of commit.jobs) {
         let status = job.status;
@@ -332,7 +333,12 @@ export default class BuildHistoryDisplay extends Component {
     const data = {};
 
     data.updateTime = new Date();
-    data.lastUpdateDate = new Date(commits.headers["last-modified"]);
+    // for (const c of commits) {
+    //   if (c.updated_at) {
+    //     console.log(c)
+    //   }
+    // }
+    data.lastUpdateDate = new Date(null);
     data.fetchedBuilds = true;
     data.connectedIn = data.updateTime - currentTime;
 
@@ -620,7 +626,7 @@ export default class BuildHistoryDisplay extends Component {
           <div
             className={
               consecutive_failure_count &&
-              consecutive_failure_count.has(jobName)
+                consecutive_failure_count.has(jobName)
                 ? "failing-header"
                 : ""
             }
@@ -712,10 +718,10 @@ export default class BuildHistoryDisplay extends Component {
       // Add check_suite_focus=true to GHA checkruns
       const ghaRegex = new RegExp(
         "^https://github.com/" +
-          this.props.user +
-          "/" +
-          this.props.repo +
-          "/runs/\\d+$"
+        this.props.user +
+        "/" +
+        this.props.repo +
+        "/runs/\\d+$"
       );
       if (url.match(ghaRegex)) {
         return url + "?check_suite_focus=true";
