@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: data
       - name: Install dependencies
         run: |
           pip install \
@@ -28,8 +30,12 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          curl -LO https://raw.githubusercontent.com/driazati/tvm-hud/main/scripts/update_github_status.py
+          mkdir temp
+          mv update_github_status.py temp
           set -eux
-          python scripts/update_github_status.py --repo 'tvm' --user 'apache' --branch 'v0.6' --fetch_size 4 --history_size 100
+          python temp/update_github_status.py --repo 'tvm' --user 'apache' --branch 'v0.6' --fetch_size 4 --history_size 100
+          rm -rf temp
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       - name: Upload data
@@ -39,14 +45,8 @@ jobs:
             echo no changes made
             exit 0
           fi
-          rm -rf /tmp/statuses
-          cp -r public/statuses /tmp/statuses
-          git checkout -- .
-          git fetch origin
-          git checkout data
-          # git stash apply
-          rm -rf public/statuses
-          mv /tmp/statuses public
+
+          # Upload new changes
           git add .
           git config user.email "email@example.com"
           git config user.name "robot"

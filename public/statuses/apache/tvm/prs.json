@@ -1,5 +1,609 @@
 [
   {
+    "sha": "7d47a03c537deb6cd55ace922b731ebed6e6e81b",
+    "headline": "Prepare for switching VM to LowerTEPass.",
+    "body": "This is a grab bag of fallout changes from switching the VM to use LoweTEPass\nwhich can be ealy split out of the main #9483 PR.\n\n- AnnotateSpans can be used from C++ (though, unfortunately, it didn't help\n  me with debugging since spans are universally dropped in most passes).\n- Can get a human readable dump of the VM's PackedFunc names and indexes for\n  debugging.\n- If TVM_LOG_DEBUG defined then include types and ids of GlobalVars. I had\n  a lot of difficulty tracking down where duplicate GlobalVars for the same\n  name_hint were getting created and propagated.\n- GetCallLoweredProps follows same API as GetDeviceCopy and GetOnDevice\n  where will return 'null' properties if call/expr is not of call_lowered\n  form. Mildly more convenient, though switching all the above to ICHECK\n  and push 'if (op == the relevant op)' into all use sites would also be just\n  fine.\n- Misc VLOG improvements made while tracking down issues in #9483.",
+    "author": "mbs-octoml",
+    "date": "2021-11-22T22:23:43Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9550/1/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4293026218?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4293026248?check_suite_focus=true"
+      }
+    ],
+    "pr": 9550,
+    "pr_title": "[Relay] Prepare for switching VM to LowerTEPass.",
+    "updated_at": 1637625470.671754
+  },
+  {
+    "sha": "16c23424fc6bb99d2bd7d2d9b902ce326beeb639",
+    "headline": "[checkpoint] Get unit tests going.",
+    "body": "A few tests assume DCE eliminates dead reference writes. The previous implementation certainly eliminated dead writes, but by eliminating all writes.\n\nFiled CORE-118 to extend DCE to soundly elim dead writes (a very simple-minded analysis would probably do just fine and we don't need to get hung up on alias analysis). In the meantime, added a\n'ignore_impurity' flag (default False)\nand set to true just in the few unit tests\nwhich rely on the unsound impl.",
+    "author": "mbs-octoml",
+    "date": "2021-11-22T21:09:01Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9542/2/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4292110808?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4292110842?check_suite_focus=true"
+      }
+    ],
+    "pr": 9542,
+    "pr_title": "[Relay] Prepare DeadCodeElimination for running post LowerTEPass/ManifestAlloc."
+  },
+  {
+    "sha": "2b25ef40726cf8d9d20da2b7f01b700312d4f1a3",
+    "headline": "Fix Jenkins skip for CPU/GPU",
+    "body": "Each step should be checking the docs-only build and marking itself as skipped if necessary, these two were skipping the i386 step instead.",
+    "author": "driazati",
+    "date": "2021-11-22T20:59:06Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9549/2/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4293096056?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4293096160?check_suite_focus=true"
+      }
+    ],
+    "pr": 9549,
+    "pr_title": "Fix Jenkins skip for CPU/GPU"
+  },
+  {
+    "sha": "638e813625a8947d78070e00e19afeb8e5d211d4",
+    "headline": "Apply clang-format.",
+    "body": "",
+    "author": "csullivan",
+    "date": "2021-11-22T18:56:58Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9526/7/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4292823117?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/runs/4292823156?check_suite_focus=true"
+      }
+    ],
+    "pr": 9526,
+    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
+  },
+  {
+    "sha": "2b20b7f4ed47a9dfd80b28048905b70fe70f0171",
+    "headline": "Revert \"[CI.Lint.Black] Use \"en_US.UTF-8\" for Red Hat 6&7 Compatibili\u2026",
+    "body": "\u2026ty (#9537)\"\n\nThis reverts commit ecd8a9ce33991262f4184cb857f1088d9d8e1bb1.",
+    "author": "tqchen",
+    "date": "2021-11-22T18:51:01Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/revert-9537-lint_black/1/display/redirect"
+      },
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9548/1/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4290784186?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4290784241?check_suite_focus=true"
+      }
+    ],
+    "pr": 9548,
+    "pr_title": "Revert \"[CI.Lint.Black] Use \"en_US.UTF-8\" for Red Hat 6&7 Compatibility\""
+  },
+  {
+    "sha": "98dad1ae746f1be08d58eb0287d60a6313534d3c",
+    "headline": "flaky?",
+    "body": "",
+    "author": "electriclilies",
+    "date": "2021-11-22T18:29:45Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9533/16/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4290576986?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4290577037?check_suite_focus=true"
+      }
+    ],
+    "pr": 9533,
+    "pr_title": "WithFields for Tuples"
+  },
+  {
+    "sha": "5c195e8abf9cf23de6d83497912fcfb57853a6c8",
+    "headline": "fix loop extent",
+    "body": "",
+    "author": "electriclilies",
+    "date": "2021-11-22T18:19:49Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9533/15/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4290472049?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4290472097?check_suite_focus=true"
+      }
+    ],
+    "pr": 9533,
+    "pr_title": "WithFields for Tuples"
+  },
+  {
+    "sha": "6f1a2c608b4ded1166648475459b9b6af343e09c",
+    "headline": "only prevent indexing into handles with multiple indexes",
+    "body": "",
+    "author": "tkonolige",
+    "date": "2021-11-22T17:59:24Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9543/2/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4290241666?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4290241720?check_suite_focus=true"
+      }
+    ],
+    "pr": 9543,
+    "pr_title": "[TVMSCRIPT] Misc error message improvements"
+  },
+  {
+    "sha": "b5fbd96c198dea716858e821c495cad6e0ba5a98",
+    "headline": "add include back",
+    "body": "",
+    "author": "electriclilies",
+    "date": "2021-11-22T17:52:27Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9533/14/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/runs/4290173368?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/4290173425?check_suite_focus=true"
+      }
+    ],
+    "pr": 9533,
+    "pr_title": "WithFields for Tuples"
+  },
+  {
+    "sha": "a4f28371d2739b432ad214358a164bcc525331d6",
+    "headline": "Fix compilation for matmul tutorial + some random formatting fixes",
+    "body": "",
+    "author": "driazati",
+    "date": "2021-11-22T17:40:29Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9539/4/display/redirect"
+      }
+    ],
+    "pr": 9539,
+    "pr_title": "Introduction tutorial formatting fixes"
+  },
+  {
+    "sha": "415826e42e1273cec34dbdeea2b1f60a82c5ff40",
+    "headline": "Responding to the review comments",
+    "body": "Change-Id: Ic963f1237bdbb493006fbb7e02dc1e5949c7ba46",
+    "author": "ekalda",
+    "date": "2021-11-22T14:27:25Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9530/2/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4289020965?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4289021037?check_suite_focus=true"
+      }
+    ],
+    "pr": 9530,
+    "pr_title": "[microNPU] Add unary elementwise operator infrastructure with ABS"
+  },
+  {
+    "sha": "d429881de8c106ba210ecdee2f59b6da96acd917",
+    "headline": "[microNPU] Change weights and command stream section",
+    "body": "- Move microNPU weights and command stream to .rodata.tvm\n- Add unit test test_ethosu_section_name()\n\nChange-Id: Ib367dc387e19dd03dd1776918d6a135fee852db1",
+    "author": "grant-arm",
+    "date": "2021-11-22T12:18:55Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9523/4/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4289602423?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4289602472?check_suite_focus=true"
+      }
+    ],
+    "pr": 9523,
+    "pr_title": "[microNPU] Change weights and command stream section"
+  },
+  {
+    "sha": "1839fb1403dad1623f393185001bafca375f230e",
+    "headline": "Remove superfluous variable",
+    "body": "",
+    "author": "Mousius",
+    "date": "2021-11-22T10:58:52Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9501/10/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4285510462?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4285510515?check_suite_focus=true"
+      }
+    ],
+    "pr": 9501,
+    "pr_title": "[3/3][AOT][DeviceAPI] Wire up cpacked Device API context"
+  },
+  {
+    "sha": "8e4a1522a445dd4043e72954648d724b9c9b58ad",
+    "headline": "address comments",
+    "body": "Change-Id: I6167cf73b2722902212717c5243cd19edc3489b7",
+    "author": "lhutton1",
+    "date": "2021-11-21T21:33:11Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9521/4/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4284543953?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4284543987?check_suite_focus=true"
+      }
+    ],
+    "pr": 9521,
+    "pr_title": "[microNPU] Support binary elementwise with non-4D inputs"
+  },
+  {
+    "sha": "ce543f94092d57f43d812927342023b43a11b26c",
+    "headline": "lint",
+    "body": "",
+    "author": "comaniac",
+    "date": "2021-11-21T00:50:53Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9545/2/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4275946828?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4275946847?check_suite_focus=true"
+      }
+    ],
+    "pr": 9545,
+    "pr_title": "[Relay][Frontend] Prune redundant logging"
+  },
+  {
+    "sha": "356595474c49b9fd731a907e318d191c6c7f6377",
+    "headline": "[Relay][Frontend] Prune redundant logging",
+    "body": "",
+    "author": "comaniac",
+    "date": "2021-11-21T00:45:24Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9545/1/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4275933710?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4275933733?check_suite_focus=true"
+      }
+    ],
+    "pr": 9545,
+    "pr_title": "[Relay][Frontend] Prune redundant logging"
+  },
+  {
+    "sha": "03e27719a7ca91728ffe61a777323a0727bee25d",
+    "headline": "[Format] fix format error in CI",
+    "body": "Signed-off-by: ZQPei <ziqiangpei@foxmail.com>",
+    "author": "ZQPei",
+    "date": "2021-11-20T11:20:27Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9544/6/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4274025440?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4274025455?check_suite_focus=true"
+      }
+    ],
+    "pr": 9544,
+    "pr_title": "[Target] decouple set_cuda_target_arch with autotvm"
+  },
+  {
+    "sha": "5c66d570dac387263730775114607662d60c7966",
+    "headline": "remove include",
+    "body": "",
+    "author": "electriclilies",
+    "date": "2021-11-20T07:56:34Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9533/13/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/runs/4272380593?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4272380603?check_suite_focus=true"
+      }
+    ],
+    "pr": 9533,
+    "pr_title": "WithFields for Tuples"
+  },
+  {
+    "sha": "1c39541a35e848ecfb417e1d085d4ab5805b3029",
+    "headline": "flaky test?",
+    "body": "",
+    "author": "electriclilies",
+    "date": "2021-11-20T04:45:09Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9533/12/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/runs/4271712886?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/4271712897?check_suite_focus=true"
+      }
+    ],
+    "pr": 9533,
+    "pr_title": "WithFields for Tuples"
+  },
+  {
+    "sha": "f3505653c8916f5a3efefc3343793be749825686",
+    "headline": "[Target] add cuda target scope to decouple set_cuda_target_arch with \u2026",
+    "body": "\u2026autotvm\n\nSigned-off-by: ZQPei <ziqiangpei@foxmail.com>",
+    "author": "ZQPei",
+    "date": "2021-11-20T04:17:15Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9544/1/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4273029380?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4273029599?check_suite_focus=true"
+      }
+    ],
+    "pr": 9544,
+    "pr_title": "[Target] decouple set_cuda_target_arch with autotvm"
+  },
+  {
+    "sha": "cf42cdd74d10d9207dee4f9c50b9daf299df597a",
+    "headline": "Prepare DeadCodeElimination for running post LowerTEPass/ManifestAlloc.",
+    "body": "As part of #9483 we need to prepare some critical Relay passes for running after\nlowering and conversion to DPS. For DCE we need to make sure we never remove\nside-effecting let-bound expressions, such as for allocation or evaluation of\nan external function with unknown effectfulness.\n\nIntroduce a new purity pre-pass. It makes a half-hearted attempt at accounting\nfor functions by tracking both 'eval' and 'call' purity, but must fallback to\nassuming call-impurity in more difficult cases (eg calling a function passed as\na parameter, calling a function projected from a tuple, etc). However it seems\nplenty good enough.\n\nPurity must also be accounted for when determining the usage count of let-bound\nvariables, so reworked that. Collapsed the let-bound value accumulation pass into\nthe usage counting pass to make up for inserting the new purity analysis pass.",
+    "author": "mbs-octoml",
+    "date": "2021-11-20T00:25:24Z",
+    "jobs": [],
+    "pr": 9542,
+    "pr_title": "[Relay] Prepare DeadCodeElimination for running post LowerTEPass/ManifestAlloc."
+  },
+  {
+    "sha": "40ef8d77a61304a3dbf907aeb1ba7612a44939e1",
+    "headline": "Convert the rest of the tutorial `.. note::` directives",
+    "body": "This script auto-converts notes with a title to admonitions\n\n```bash\ncd gallery/tutorial\nfind . -type f | xargs sed -i 's/\\.\\. note:: \\([A-Z]\\)/.. admonition:: \\1/g'\n```",
+    "author": "driazati",
+    "date": "2021-11-20T00:21:15Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9539/3/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4270627356?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4270627389?check_suite_focus=true"
+      }
+    ],
+    "pr": 9539,
+    "pr_title": "Introduction tutorial formatting fixes"
+  },
+  {
+    "sha": "ebbc1f9763f88d238ea89274851d3633c1d65f22",
+    "headline": "jostle",
+    "body": "",
+    "author": "AndrewZhaoLuo",
+    "date": "2021-11-19T23:24:04Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9541/1/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/runs/4270237353?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/4270237378?check_suite_focus=true"
+      }
+    ],
+    "pr": 9541,
+    "pr_title": "Update gen_requirements.py with new onnx things "
+  },
+  {
+    "sha": "66d87d45f341cc35456cde5b5536a52a5d7c75de",
+    "headline": "fix things",
+    "body": "",
+    "author": "AndrewZhaoLuo",
+    "date": "2021-11-19T23:19:15Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9540/1/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4270212088?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4270212116?check_suite_focus=true"
+      }
+    ],
+    "pr": 9540,
+    "pr_title": "[Relay] Fix CUDA batchmatmul strategy to allow mixed precision"
+  },
+  {
     "sha": "2d300f78191a7e83b1359d9a61910d2e01088b82",
     "headline": "comment abt partial evaluator",
     "body": "",
@@ -8,7 +612,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9533/11/display/redirect"
       },
       {
@@ -52,32 +656,6 @@
     "pr_title": "WithFields for Tuples"
   },
   {
-    "sha": "61db96edeaac18a3e1a7de9f5b9d8469de23a368",
-    "headline": "cmake changes for HexagonBuffer unit test",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-19T20:50:37Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/15/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/4269710933?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/4269710970?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
     "sha": "79270d146e6a50a208949668619fc19535b2cf76",
     "headline": "nit",
     "body": "",
@@ -88,32 +666,6 @@
     "pr_title": "WithFields for Tuples"
   },
   {
-    "sha": "ce85c0a8eab27673609cea563fd7e0e7a430c1b2",
-    "headline": "fix win build error",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-19T19:54:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/13/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4268613269?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/4268613312?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
     "sha": "d8a3445a3ab3da15600ae51b44185e8a5e36f53f",
     "headline": "Introduction tutorial formatting fixes",
     "body": "This fixes some rST issues I noticed while going through the getting started tutorial. Some of these shouldn't be too controversial like using ` instead of `` and consistency fixes. I noticed lots of the `.. note:`s have titles even though they don't really render as anything special in Sphinx, but the base `.. admonition:` does render the title in the top line. This looks nicer IMO and wastes less space but it could go either way, I didn't change it in all places yet either.",
@@ -122,48 +674,22 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9539/2/display/redirect"
       },
       {
         "name": "WinMacBuild / Build (windows-2016)",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/4269692888?check_suite_focus=true"
       },
       {
         "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/4269692933?check_suite_focus=true"
       }
     ],
     "pr": 9539,
     "pr_title": "Introduction tutorial formatting fixes"
-  },
-  {
-    "sha": "d306edd63905805da375a061bd8457f4c4c38cad",
-    "headline": "add hexagon include dir to fix gtest \"no such file\" error",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-19T17:20:21Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/12/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4267474755?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/4267474784?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
   },
   {
     "sha": "239f2233fed9350db104b5e111dc10327ca744d5",
@@ -244,32 +770,6 @@
     "pr_title": "add conv2dtranspose, rnn, fill_batch_size_like"
   },
   {
-    "sha": "ba8498bbb213490aac5803487a325b5420116d22",
-    "headline": "fix a typo",
-    "body": "",
-    "author": "shingjan",
-    "date": "2021-11-19T01:16:08Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9492/4/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4259124499?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4259124521?check_suite_focus=true"
-      }
-    ],
-    "pr": 9492,
-    "pr_title": "[WIP][TVMScript] Add syntax sugar for T.handle and T.match_buffer"
-  },
-  {
     "sha": "5a8b0fff0bcbdbf015dd72fadc132e6566651d45",
     "headline": "add dtype to unary ops",
     "body": "",
@@ -346,32 +846,6 @@
     ],
     "pr": 9533,
     "pr_title": "WithFields for Tuples"
-  },
-  {
-    "sha": "dabfdef1715bc91e2d2f231b68d9d7aee61b4468",
-    "headline": "hexagon_rpc -> hexagon_proxy_rpc",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-19T00:45:36Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9526/5/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4267483364?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4267483401?check_suite_focus=true"
-      }
-    ],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
   },
   {
     "sha": "faac56b2889a0224ac938cc99a4cfae49da4daee",
@@ -608,32 +1082,6 @@
     "pr_title": "WithFields for Tuples"
   },
   {
-    "sha": "f34ee1a827e87421f69f902247a4017224869356",
-    "headline": "fix bug in unit test",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-18T20:05:55Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/11/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4256410414?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/4256410479?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
     "sha": "d5a83e3240070ed8a4d2d51f0038994c4838049a",
     "headline": "Update doc building instructions and pin dependencies",
     "body": "This pins the dependencies for the docs and adds `pytest` as a\ndependency which was missing when I built. Tested out the\nrequirements.txt with a fresh `ubuntu:focal` Docker image to verify that\nthe required depedencies work.",
@@ -696,32 +1144,6 @@
     "pr_title": "WithFields for Tuples"
   },
   {
-    "sha": "e01dc93e2096b5063944163d276dd0d4baeda573",
-    "headline": "vtcm inherits from ddr allocation on cpu; add more test cases",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-18T18:23:50Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/10/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4255470844?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/4255470886?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
     "sha": "5d342cd60457b33b35aacfaa589403277d92ba25",
     "headline": "Add Chris",
     "body": "",
@@ -758,28 +1180,12 @@
     "pr_title": "[7/10] Code generation for Pooling via CMSIS-NN"
   },
   {
-    "sha": "1291cea5dfabef5f4b30fbf9edd050e0611c4419",
+    "sha": "2f89ed43535649e0eb8f6475b018c1254b765010",
     "headline": "fix type hint",
     "body": "Change-Id: I5bae1bd11fa0c82e3ffd882fddfcb925dff259cb",
     "author": "lhutton1",
     "date": "2021-11-18T09:22:51Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9521/3/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4249315060?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4249315108?check_suite_focus=true"
-      }
-    ],
+    "jobs": [],
     "pr": 9521,
     "pr_title": "[microNPU] Support binary elementwise with non-4D inputs"
   },
@@ -862,32 +1268,6 @@
     "pr_title": "[TVMScript][Fix] Add type hints for more uncovered cases"
   },
   {
-    "sha": "00a04b898bc7646f779c36451314090ec5a0350a",
-    "headline": "fix lint errors",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-18T01:27:17Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/8/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4246055346?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/4246055367?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
     "sha": "96740bcd41210eb6c37936f4c06a89b4490ddb2a",
     "headline": "add exp test and mypy ignore",
     "body": "",
@@ -912,148 +1292,6 @@
     ],
     "pr": 9505,
     "pr_title": "[TVMScript][Fix] Add type hints for more uncovered cases"
-  },
-  {
-    "sha": "32369ad9c041599122e6fa5447d83a0d6a8e0b9a",
-    "headline": "Remove debug print",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-18T01:06:43Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "bb4a1ccb2a2e3400644b8e13c4f22ac81efa1834",
-    "headline": "Release packed functions at destruction of hexagon rpc module node.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-18T01:04:40Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "874f92ca9361bebaac5039678cfaed8db8c485b9",
-    "headline": "Remove FARF from device code.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-18T00:42:57Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "13b63dd9b5bd994c4ea2f22603c71c9212c9bef1",
-    "headline": "Add HVX support.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-18T00:41:29Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "d4d1645f49207579e2ca5680f976119bf258395b",
-    "headline": "Remove rpc/ndarray.cc",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-18T00:33:20Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "3632a62888881f1293128abb3a8693f81af5d972",
-    "headline": "Remove launcher keyword.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-18T00:31:55Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "762aac64f310be1de4c542422529cef426fa4572",
-    "headline": "fix hardcoded size",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-18T00:26:31Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/5/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4245570032?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/4245570055?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
-    "sha": "c891a468370c4864360182ac58ee663aa1825c9a",
-    "headline": "Revert android_utils.h header change.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-18T00:22:23Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "a4c48dc191726e6eccbe1187e2cdb5dd8428d866",
-    "headline": "Remove more unnecessary files, rename files.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-18T00:17:46Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "61443e4cca8fc172c24a94252cbcf1cabf304cb4",
-    "headline": "aligned alloc",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-17T22:29:54Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/3/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4244599007?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/4244599064?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
-    "sha": "55f40cf9d4bd3d0791ac0e1f1ce6006bc56fff93",
-    "headline": "Add missing unimplemented statement in rpc device_api.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-17T22:05:41Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
   },
   {
     "sha": "91a6cb88df1bfe1b054ac34587385cc57d867f4d",
@@ -1082,62 +1320,6 @@
     "pr_title": "[Docker][Onnx] Upgrade ONNX to latest version"
   },
   {
-    "sha": "acc78e5ae66942a36e05c9e2e1980054cf593979",
-    "headline": "code format",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-17T21:48:49Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/2/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4244220343?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4244220384?check_suite_focus=true"
-      }
-    ],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
-    "sha": "ef41cb099cb5f9499de0a805f2940d1f993f4c2a",
-    "headline": "cleanup",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-17T21:03:30Z",
-    "jobs": [],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
-    "sha": "29c3d37054b605dc57f294164e72ad23632d63be",
-    "headline": "Cleanup (remove old hexagon rpc functions)",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-17T20:24:45Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "9c5c3f016169337970209ebd882049ec75e2e745",
-    "headline": "Disable check on ndim < 1 in hexagon buffer.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-17T19:55:21Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
     "sha": "14610441c7ec3d07695c6223c5a8aa297519e55e",
     "headline": "Section names for static const arrays.",
     "body": "- Place TVM generated static const arrays in .rodata.tvm\n\nChange-Id: Ifa3e966cf8c05e8210e7a9ee739edc5d9f250051",
@@ -1162,36 +1344,6 @@
     ],
     "pr": 9524,
     "pr_title": "Section names for TVM generated constants"
-  },
-  {
-    "sha": "f6ae1ba224e6c4456153bee572f5ee99a1388d0b",
-    "headline": "Bug fix to rpc_write. Finish invocation.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-17T18:57:05Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "78c3e20862a1e009e91679422651b447bd98d41f",
-    "headline": "hex launcher compiles",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-17T18:09:48Z",
-    "jobs": [],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
-    "sha": "bb30d03bcc9be38f60c8a53d2a0e248b1fd8457c",
-    "headline": "delete extra code; CopyTo; DeviceAPI CopyFromTo impl",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-17T18:00:39Z",
-    "jobs": [],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
   },
   {
     "sha": "63da0f854c1b9ae73acdb2afc080b5dee418cb5f",
@@ -1220,33 +1372,17 @@
     "pr_title": "Expose workspace size in tvmgen_default.h"
   },
   {
-    "sha": "9bcbf27bdefcb11755d85302221a43382e5822a9",
+    "sha": "b01c5c7f7ed1aab0d1164d0b0227765b553f11ac",
     "headline": "Document calling conventions",
     "body": "",
     "author": "Mousius",
     "date": "2021-11-17T14:16:37Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9501/9/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4249545042?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4249545085?check_suite_focus=true"
-      }
-    ],
+    "jobs": [],
     "pr": 9501,
     "pr_title": "[3/3][AOT][DeviceAPI] Wire up cpacked Device API context"
   },
   {
-    "sha": "737eb4a0e661e2357811ba8ba1fb3e8153a41a2d",
+    "sha": "f45890dc42db9f40a0bac0b5abe83b9ee0a97b3f",
     "headline": "[TVMC] Split common tvmc file into more specific files",
     "body": "This follows from #9206 and splits common.py into multiple smaller and more focussed files.",
     "author": "Mousius",
@@ -1254,42 +1390,22 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9529/2/display/redirect"
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9529/3/display/redirect"
       },
       {
         "name": "WinMacBuild / Build (windows-2016)",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4250092831?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/4288935970?check_suite_focus=true"
       },
       {
         "name": "WinMacBuild / Build (macOS-latest)",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4250092903?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/4288936052?check_suite_focus=true"
       }
     ],
     "pr": 9529,
     "pr_title": "[TVMC] Split common tvmc file into more specific files"
-  },
-  {
-    "sha": "4dd76e6c3607be721bbc4f5d44a42487982ccecb",
-    "headline": "nd ctor and copy from",
-    "body": "",
-    "author": "adstraw",
-    "date": "2021-11-17T02:24:54Z",
-    "jobs": [],
-    "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
-    "sha": "5ba32393d111be9f0e336ffe9d5ac246baed67a0",
-    "headline": "Support hexagon read/write/release",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-17T00:25:39Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
   },
   {
     "sha": "1d5ab94d3d9b7a62bdf1915ce0535e9a499936dc",
@@ -1430,16 +1546,6 @@
     ],
     "pr": 9514,
     "pr_title": "[microNPU] Adding rounding mode attribute to operators"
-  },
-  {
-    "sha": "cfbf22559d8c2e78eabb528c03d603fade3d9071",
-    "headline": "WIP add Mirrored buffer implementation. Allocate works, need Read/Wri\u2026",
-    "body": "\u2026te/Release impl.",
-    "author": "csullivan",
-    "date": "2021-11-16T07:37:28Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
   },
   {
     "sha": "3c1d56059c538f35e5cfcfb1c8a9686501716d52",
@@ -1764,34 +1870,30 @@
     "pr_title": "[BugFix][TVMScript] Fix printer for dependent loops"
   },
   {
-    "sha": "54a18c4fa1fe98adb33627434645052c46a22195",
-    "headline": "HexagonBuffer test and basic cases operational",
+    "sha": "7122d2bc8d04587ca9e37418c960d6eb84669a0b",
+    "headline": "Add Hexagon VTCM and discontiguous allocation support",
     "body": "",
     "author": "adstraw",
     "date": "2021-11-14T22:19:16Z",
-    "jobs": [],
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9525/17/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4270200828?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4270200875?check_suite_focus=true"
+      }
+    ],
     "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
-  },
-  {
-    "sha": "f01991f879ef692769bddb75a6a309a62b8f976f",
-    "headline": "WIP demo moving np array from host to hexagon. Meta info transfered. \u2026",
-    "body": "\u2026Next need data transfer then allocated and return reference.",
-    "author": "csullivan",
-    "date": "2021-11-14T07:32:36Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "61516b6a10d555394e3cb9104ba1f7adca1ca95f",
-    "headline": "Add hexagon nd array func",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-14T00:42:08Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
+    "pr_title": "Add Hexagon VTCM and discontiguous allocation support"
   },
   {
     "sha": "585060c4188f7375a7dc97a4708acc159b6ccc15",
@@ -1820,16 +1922,6 @@
     "pr_title": "[Runtime] Pipeline Executor Add Set and Get Input/Output interfaces."
   },
   {
-    "sha": "f1a7f0b4e7c99246b4b659d882d154c9c72c3698",
-    "headline": "Add HexagonRPCDeviceAPI shim.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-12T23:20:32Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
     "sha": "5a2d54fe7c1cccd0908ebade2d9294604d309a53",
     "headline": "remove PrimExpr import",
     "body": "",
@@ -1848,42 +1940,6 @@
     "jobs": [],
     "pr": 9505,
     "pr_title": "[TVMScript][Fix] Add type hints for more uncovered cases"
-  },
-  {
-    "sha": "d4a063c2775e03f449264fbdeb406190b7e69204",
-    "headline": "If building for Android and the Hexagon SDK is provided,",
-    "body": "link against the cdsprpc SDK libs.",
-    "author": "csullivan",
-    "date": "2021-11-12T23:00:58Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "2b8170b6dc5f5ab6477b704439d504c4167a2822",
-    "headline": "remove unneeded moves",
-    "body": "",
-    "author": "electriclilies",
-    "date": "2021-11-12T20:20:48Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9491/3/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4194159046?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4194159093?check_suite_focus=true"
-      }
-    ],
-    "pr": 9491,
-    "pr_title": "Followup from #9312 (Introduce call_lowered op)"
   },
   {
     "sha": "fe1e13c5a65f1313b667b3d452e0dbcd2d44d457",
@@ -2000,60 +2056,30 @@
     "pr_title": "[Runtime] Pipeline Executor Add Set and Get Input/Output interfaces."
   },
   {
-    "sha": "74103a7caf5f4f8e556f098df2bb183929b1371d",
-    "headline": "make it more elegant",
+    "sha": "3fa384c66fa55b3345bfee8ae07eaa8ce5d58936",
+    "headline": "[TVMSCRIPT] Misc error message improvements",
     "body": "",
-    "author": "syang-ng",
-    "date": "2021-11-12T02:31:24Z",
+    "author": "tkonolige",
+    "date": "2021-11-12T05:20:56Z",
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9485/4/display/redirect"
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9543/1/display/redirect"
       },
       {
         "name": "WinMacBuild / Build (windows-2016)",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4185411348?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/4270847182?check_suite_focus=true"
       },
       {
         "name": "WinMacBuild / Build (macOS-latest)",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4185411410?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/4270847221?check_suite_focus=true"
       }
     ],
-    "pr": 9485,
-    "pr_title": "[BugFix] Fix divide by zero error in TIR pass lower_warp_memory"
-  },
-  {
-    "sha": "677fc46f6c548e6572c49cc67b954c386e9ec637",
-    "headline": "Add hexagon/rpc/ndarray shim layer.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-12T00:18:23Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "e10b0945577a9bc9ee1acb68f6a1a3c2095c3262",
-    "headline": "Add a common HexagonHostModuleNode for use by both",
-    "body": "x86 and Android hosts.",
-    "author": "csullivan",
-    "date": "2021-11-12T00:02:47Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "d7bf332150be16ef81d06c50e4b458496780ee5f",
-    "headline": "Add unload, update get_function, being adding invoke.",
-    "body": "",
-    "author": "csullivan",
-    "date": "2021-11-11T23:53:39Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
+    "pr": 9543,
+    "pr_title": "[TVMSCRIPT] Misc error message improvements"
   },
   {
     "sha": "97dd294660e821bd80348533a9482bce6629164f",
@@ -2134,261 +2160,7 @@
     "pr_title": "[TARGET] Cleanup the target_host usage to new target style."
   },
   {
-    "sha": "437c0d1d2e57694c90fa85248e0a8831a05d8ffd",
-    "headline": "fix type",
-    "body": "",
-    "author": "syang-ng",
-    "date": "2021-11-11T07:35:36Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9485/3/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4175275854?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4175275890?check_suite_focus=true"
-      }
-    ],
-    "pr": 9485,
-    "pr_title": "[BugFix] Fix divide by zero error in TIR pass lower_warp_memory"
-  },
-  {
-    "sha": "d7054012cb8185bad40ae4565a2e2e5d32a9608b",
-    "headline": "addr cmts",
-    "body": "",
-    "author": "shingjan",
-    "date": "2021-11-11T07:28:22Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9492/3/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4246857345?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4246857365?check_suite_focus=true"
-      }
-    ],
-    "pr": 9492,
-    "pr_title": "[WIP][TVMScript] Add syntax sugar for T.handle and T.match_buffer"
-  },
-  {
-    "sha": "4660c4c9f688a91e019608101025820060c8f371",
-    "headline": "add a test case in test_tir_transform_lower_warp_memory.py",
-    "body": "",
-    "author": "syang-ng",
-    "date": "2021-11-11T05:35:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9485/2/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4174509797?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4174509843?check_suite_focus=true"
-      }
-    ],
-    "pr": 9485,
-    "pr_title": "[BugFix] Fix divide by zero error in TIR pass lower_warp_memory"
-  },
-  {
-    "sha": "214f22269b99464892993deb286cfc48f098a15b",
-    "headline": "[Frontend][ONNX] Support RandomNormal operator",
-    "body": "",
-    "author": "shengxinhu",
-    "date": "2021-11-11T02:30:22Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9493/1/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4173477604?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4173477634?check_suite_focus=true"
-      }
-    ],
-    "pr": 9493,
-    "pr_title": "[Frontend][ONNX] Support RandomNormal operator"
-  },
-  {
-    "sha": "ed9ba7381c4ba59c962166906030f35d7af371d9",
-    "headline": "add test case and concrete type for buffer",
-    "body": "",
-    "author": "shingjan",
-    "date": "2021-11-11T00:09:29Z",
-    "jobs": [],
-    "pr": 9492,
-    "pr_title": "[WIP][TVMScript] Add syntax sugar for T.handle and T.match_buffer"
-  },
-  {
-    "sha": "8e2e7fd05a50dae7bb499bb96f6b131c51818431",
-    "headline": "followups from #9312",
-    "body": "",
-    "author": "electriclilies",
-    "date": "2021-11-10T23:36:47Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9491/2/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4193876056?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4193876081?check_suite_focus=true"
-      }
-    ],
-    "pr": 9491,
-    "pr_title": "Followup from #9312 (Introduce call_lowered op)"
-  },
-  {
-    "sha": "3139108c72efb2888ea4c95f144b3fad0cc5bc20",
-    "headline": "[ONNX] Unique op should always return int64 indices",
-    "body": "",
-    "author": "mbrookhart",
-    "date": "2021-11-10T23:31:14Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9490/2/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4192231127?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4192231201?check_suite_focus=true"
-      }
-    ],
-    "pr": 9490,
-    "pr_title": "[ONNX] Unique op should always return int64 indices"
-  },
-  {
-    "sha": "589a048ad918ae9d88fa4ba260124c61bec91f4e",
-    "headline": "add default split test case",
-    "body": "",
-    "author": "anwang2009",
-    "date": "2021-11-10T22:22:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9489/2/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4171598599?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4171598637?check_suite_focus=true"
-      }
-    ],
-    "pr": 9489,
-    "pr_title": "Add default for split op"
-  },
-  {
-    "sha": "dff03b41148193e2e5fe5c95e202466b65222e3a",
-    "headline": "split fix",
-    "body": "",
-    "author": "anwang2009",
-    "date": "2021-11-10T19:23:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9489/1/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4169968283?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4169968326?check_suite_focus=true"
-      }
-    ],
-    "pr": 9489,
-    "pr_title": "Add default for split op"
-  },
-  {
-    "sha": "70d063a96995fb0e455655249490b26e3ba52dbd",
-    "headline": "add wuwei's pgp as well",
-    "body": "",
-    "author": "junrushao1994",
-    "date": "2021-11-10T18:43:34Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9488/3/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4169473880?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4169473934?check_suite_focus=true"
-      }
-    ],
-    "pr": 9488,
-    "pr_title": "[COMMUNITY] Junru's and Wuwei's PGP key for ASF release"
-  },
-  {
-    "sha": "592860293ce1016d5d6544c0db47a5c288880fc4",
-    "headline": "add PGP into KEYS",
-    "body": "",
-    "author": "junrushao1994",
-    "date": "2021-11-10T17:15:46Z",
-    "jobs": [],
-    "pr": 9488,
-    "pr_title": "[COMMUNITY] Junru's and Wuwei's PGP key for ASF release"
-  },
-  {
-    "sha": "f429c6c6748171a1e89c99d26a1e07117be25e05",
+    "sha": "006dd3c92eaa32c6be1837de65870a904e383dd4",
     "headline": "[AOT][DeviceAPI] Wire up cpacked Device API context",
     "body": "Adding the same functionality for the Device API to the cpacked calling convention. The MakePackedAPI pass now implicitly uses any variable named `kDeviceContextVar` as the `resource_handle` and this is then used in the `cpacked` calling convention which always expects some form of resource_handle to be passed.",
     "author": "Mousius",
@@ -2398,106 +2170,12 @@
     "pr_title": "[3/3][AOT][DeviceAPI] Wire up cpacked Device API context"
   },
   {
-    "sha": "d36811bd035b964683dfbdb1a945a723c0695134",
-    "headline": "[HOTFIX][TARGET] Change LOG in compilation config to DLOG",
-    "body": "CompilationConfig was merged in on the basis that it is an internal experimental\nstructure that helps to group the target. Constructing the config should not\nemit messages for most cases. Change LOG(INFO) to DLOG(INFO)\nso users won't be overwhelmed by messages.\n\nThere are a few warning cases that also changes to DLOG. Given CompilationConfig\nis still experimental, it would be better to respect the current default convention\nand not trigger warnings that indicate an non-experimental suggestion.\nWarnings can be updated according with the convention.",
-    "author": "tqchen",
-    "date": "2021-11-10T13:30:14Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9486/3/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4165826831?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4165826892?check_suite_focus=true"
-      }
-    ],
-    "pr": 9486,
-    "pr_title": "[HOTFIX][TARGET] Change LOG in compilation config to DLOG"
-  },
-  {
-    "sha": "fad66f569c1bde9e450d55098f890e9fdc0075ab",
-    "headline": "fix factor divide by zero",
-    "body": "",
-    "author": "syang-ng",
-    "date": "2021-11-10T07:20:03Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9485/1/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4162283303?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4162283342?check_suite_focus=true"
-      }
-    ],
-    "pr": 9485,
-    "pr_title": "[BugFix] Fix divide by zero error in TIR pass lower_warp_memory"
-  },
-  {
-    "sha": "3e8bc5492e0146af613029b5ecae52873e06925a",
-    "headline": "Update required cmake version in docs.",
-    "body": " * The version used in CI is the minimum version.\n * docker/bash.sh ci_gpu cmake --version prints\n       cmake version 3.10.2\n * Found in #9239",
-    "author": "areusch",
-    "date": "2021-11-10T03:38:55Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9484/1/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4160855295?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4160855338?check_suite_focus=true"
-      }
-    ],
-    "pr": 9484,
-    "pr_title": "Update required cmake version in docs"
-  },
-  {
-    "sha": "3692a29ccf847475835d73891f53577fda01137b",
+    "sha": "b41016eec5275282ca8cb240657f6dc126fce9fa",
     "headline": "[ETHOSU] Change weights and command stream section",
     "body": "Move microNPU weights and command stream to .rodata.tvm\n\nChange-Id: I06bc7839d41ba7d4c63339845ae9c0c90e149f7a",
     "author": "grant-arm",
     "date": "2021-11-09T18:23:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9523/1/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4241988295?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4241988475?check_suite_focus=true"
-      }
-    ],
+    "jobs": [],
     "pr": 9523,
     "pr_title": "[microNPU] Change weights and command stream section"
   },
@@ -2554,29 +2232,9 @@
     "pr_title": "[2/3][AOT][DeviceAPI] Add Hooks for Activate/Deactivate/Open/Close"
   },
   {
-    "sha": "ef0d6cdb7c7870f8b3d8791b45b43d3ebd6accde",
-    "headline": "Demonstrate passing module handle through fastrpc API.",
-    "body": "Implement rpc_load and rpc_get_function.",
-    "author": "csullivan",
-    "date": "2021-11-09T06:08:50Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "63fe8d225a6045b21bdef73ec6f3b3f4d1ae1ba2",
-    "headline": "Add FastRPCChannel to rpc_env.cc in preparation for",
-    "body": "RPCEnv to house a FastRPC connection to hexagon.",
-    "author": "csullivan",
-    "date": "2021-11-06T00:12:27Z",
-    "jobs": [],
-    "pr": 9526,
-    "pr_title": "[WIP] Add minimal RPC server for host driven python execution on Hexagon"
-  },
-  {
-    "sha": "4002d28880eeb666b7054b86f18f10cdd16ddcab",
-    "headline": "Initial commit for minimal hexagon android tvm rpc server.",
-    "body": "",
+    "sha": "afebab4389e6277a02a2eed9936d4616ef567bc2",
+    "headline": "Minimal proxy RPC server for hexagon. Functions by routing from",
+    "body": "Android to Hexagon via QTI FastRPC calls. Interim solution until\nHexagon on-device RPC server is ready.",
     "author": "csullivan",
     "date": "2021-11-05T18:55:50Z",
     "jobs": [],
@@ -2657,7 +2315,7 @@
     "date": "2021-10-27T16:31:02Z",
     "jobs": [],
     "pr": 9525,
-    "pr_title": "Add Hexagon VTCM support and discontiguous allocation"
+    "pr_title": "Add Hexagon VTCM and discontiguous allocation support"
   },
   {
     "sha": "8ff996495d22848c58a3cf624cb00bd8aeb1f722",
@@ -2684,32 +2342,6 @@
     ],
     "pr": 9531,
     "pr_title": "[7/10] Code generation for Pooling via CMSIS-NN"
-  },
-  {
-    "sha": "47cae68b10b50928c4f5834175233bb1ed61bbfc",
-    "headline": "** Use LowerTEPass in VM **",
-    "body": "We replace use of the TECompiler::{Lower,LowerShapeFunc} methods from the VM's\ncompiler.cc with LowerTEPass. This clears the way for performing post-lowering\nIRModule->IRModule transformations which combine Relay and TIR analysis. In particular,\nit will allow us to use the PlanDevices pass to propagate memory scope constraints\nacross PrimFuncs.\n\nWe run LowerTEPass fairly early in the pipeline, which required quite a few passes\nto become 'post-lowering friendly'. In particular, ManifestAlloc is now run after\nrather than before lowering, and so must now work in a mixed Function/PrimFunc world.\n\nThe \"vm.shape_func\" operator has been removed since a) lowering has already generated\nthe necessary dynamic shape function, and b) the call to that function can be\nrepresented by an 'ordinary' vm.invoke_tvm_op call.\n\nWe worked our way through the following glitches:\n - Lowering was choosing definitional GlobalVars which were not pointer-equal to the\n   referential GlobalVars left behind in the rewritten Calls. We fixed that in\n   te_compiler.cc, though better would be to push GlobalVars deeper into the\n   lowering machinery.\n - device_copy was rewritten to a call to @__copy without any definition. We retain\n   it as if it were an 'external'.\n - Calls to already-compiled BYOC functions were indistinguishable from calls\n   to (non-primitive) Relay functions. We move them into the call_lowered calling\n   convention, and leave behind a Function tagged with \"ExternalSymbol\". Better would\n   be a first-class representatn for externals in the IRModule but one step at a time.\n - Functions with dynamic shapes tagged for BYOC compilation were not tracking their\n   connection to their dynamic shape function. We now use exactly the same attributes\n   as for non-BYOC primitives.",
-    "author": "mbs-octoml",
-    "date": "2021-10-22T00:29:17Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9483/5/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4267978451?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/4267978512?check_suite_focus=true"
-      }
-    ],
-    "pr": 9483,
-    "pr_title": "[DRAFT] Scratch pad for switching VM to use the LowerTE pass."
   },
   {
     "sha": "5f813680d1cccbd6003d375377c3b79a37d26710",
@@ -2800,6 +2432,32 @@
     "pr_title": "[Runtime] Pipeline Executor Add Set and Get Input/Output interfaces."
   },
   {
+    "sha": "56b9d84ed50946ab87d43788f2afcab6c851efff",
+    "headline": "[microNPU] Add the infrastructure for lookup table and TANH",
+    "body": "Some activation functions like TANH and SIGMOID are implemented\nby calculating the values based on the QNN parameters and\nrecording the values into a lookup table (LUT).\n\nThis patch adds the LUT functionality alongside with the TANH\nactivation function and the tests.",
+    "author": "ekalda",
+    "date": "2021-10-11T15:03:48Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9547/1/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4289419631?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4289419680?check_suite_focus=true"
+      }
+    ],
+    "pr": 9547,
+    "pr_title": "[microNPU] Add the infrastructure for lookup table and TANH"
+  },
+  {
     "sha": "0dbfe5bd7fc1da8b04877f0754f3770279633423",
     "headline": "Code generation for Conv2D via CMSIS-NN",
     "body": "Change-Id: I0a2279965a0b505f809ffcf8b955f64db8f4aff0",
@@ -2846,54 +2504,22 @@
     "pr_title": "[microNPU] Allow constants to be given as input to an operator"
   },
   {
-    "sha": "3ee2dfc8143ebdfd4d37dd294d45090f8e56bc3a",
+    "sha": "226cd6900ff36026f1ea63b7d0c5760034d99373",
     "headline": "[microNPU] Support binary elementwise with non-4D inputs",
     "body": "Reshapes non-4D inputs to become 4D, then reshapes the output back to\nthe non-4D input shape.\n\nChange-Id: I680ac06841aa1323435bcd09b6996fc57117cd84",
     "author": "lhutton1",
     "date": "2021-09-21T20:06:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9521/2/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4238154576?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4238154609?check_suite_focus=true"
-      }
-    ],
+    "jobs": [],
     "pr": 9521,
     "pr_title": "[microNPU] Support binary elementwise with non-4D inputs"
   },
   {
-    "sha": "bfdf1f45be4e43d7c300db07c61be571cc61aa0f",
+    "sha": "b99525b9196d8427d8c3d53d58a64992484e6f0c",
     "headline": "[microNPU] Add unary elementwise operator infrastructure with ABS",
     "body": "* Added unary elementwise ABS legalization support and tests\n* Added unary_elementwise Relay to TIR lowering and tests\n* Added TIR to Vela translation and tests\n* Added codegen tests\n\nCo-authored-by: Rishabh Jain <rishabh.jain2@arm.com>",
     "author": "jainris",
     "date": "2021-09-08T09:13:41Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9530/1/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4250562057?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4250562116?check_suite_focus=true"
-      }
-    ],
+    "jobs": [],
     "pr": 9530,
     "pr_title": "[microNPU] Add unary elementwise operator infrastructure with ABS"
   }

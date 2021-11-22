@@ -118,7 +118,7 @@ class NameFilterForm extends Component {
     super(props);
     this.state = {
       jobNameFilter: props.defaultValue || "",
-      onSubmit: props.onSubmit || ((_) => { }),
+      onSubmit: props.onSubmit || ((_) => {}),
     };
   }
   render() {
@@ -254,7 +254,7 @@ export default class BuildHistoryDisplay extends Component {
           if (
             subBuild.build &&
             subBuild.build._class ===
-            "com.tikal.jenkins.plugins.multijob.MultiJobBuild"
+              "com.tikal.jenkins.plugins.multijob.MultiJobBuild"
           ) {
             subBuild.build.subBuilds.forEach(go);
           } else {
@@ -289,7 +289,7 @@ export default class BuildHistoryDisplay extends Component {
     try {
       const response = await fetch(jsonUrl, { cache: "no-cache" });
       commits = await response.json();
-      console.log(commits)
+      console.log(commits);
     } catch {
       this.setState({ fetchError: true });
       return;
@@ -626,7 +626,7 @@ export default class BuildHistoryDisplay extends Component {
           <div
             className={
               consecutive_failure_count &&
-                consecutive_failure_count.has(jobName)
+              consecutive_failure_count.has(jobName)
                 ? "failing-header"
                 : ""
             }
@@ -718,10 +718,10 @@ export default class BuildHistoryDisplay extends Component {
       // Add check_suite_focus=true to GHA checkruns
       const ghaRegex = new RegExp(
         "^https://github.com/" +
-        this.props.user +
-        "/" +
-        this.props.repo +
-        "/runs/\\d+$"
+          this.props.user +
+          "/" +
+          this.props.repo +
+          "/runs/\\d+$"
       );
       if (url.match(ghaRegex)) {
         return url + "?check_suite_focus=true";
