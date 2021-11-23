@@ -1,5 +1,30 @@
 [
   {
+    "sha": "4a6b8c008c84455a6364ad9c25ae6d93412929b2",
+    "headline": "Fix Jenkins skip for CPU/GPU (#9549)",
+    "body": "Each step should be checking the docs-only build and marking itself as skipped if necessary, these two were skipping the i386 step instead.\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
+    "author": "driazati",
+    "date": "2021-11-23T23:05:04Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2121/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4305733662?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4305733716?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1637708919.700392
+  },
+  {
     "sha": "18730c45be21bc5846c1171bcf308f3f86c05239",
     "headline": "[TIR][USMP] Added buffer info extraction pass (#8468)",
     "body": "* [TIR][USMP] Added buffer info extraction pass\r\n\r\nThis commit adds a pass that takes the main (call graph of operators)\r\nTIR PrimFunc and each operators also as TIR PrimFunc. The pass will\r\ntraverse through all TIR PrimFunc starting the from main. Thereafter,\r\nit will extract information from tir.allocates. Among the information,\r\nthe liveness conflicts are reported.\r\n\r\n* Added test for a linear model\r\n* Added test for parallel/serial mixed for loops\r\n* Added test for a substructure of inception-style model.\r\n* Exposed buffer_info creation to python\r\n* Added member functions to update pool info\r\n* Unit tests to cover functionality of buffer_info\r\n\r\nChange-Id: I5e163ac3e83c830629a5d34ed4407c9962701c60\r\n\r\n* [TIR][USMP] Added buffer info extraction pass\r\n\r\nSwap key-value pairs of returned values of the buffer_info\r\nextraction pass.\r\n\r\nChange-Id: Ia4f7289592bc776ef6189a41a7891038751bf31f\r\n\r\n* [TIR][USMP] Added buffer info extraction pass\r\n\r\nUpdating the USMP utility tests to include tests\r\nthat test creation of PoolInfo and PoolAllocation\r\nObjects.\r\n\r\nChange-Id: I5d349d0ffcac6b0160072d832dd9d5418699228e\r\n\r\n* [TIR][USMP] Added buffer info extraction pass\r\n\r\n* Removing the unnecessary header : include/tvm/tir/usmp/analysis.h\r\n* Some nits and cleanup\r\n\r\nChange-Id: Iac3ddd9428c56cd8ef49cf643e797bf6fdf4e97a\r\n\r\n* [TIR][USMP] Added buffer info extraction pass\r\n\r\n* Change the class data members to have a trailing underscore\r\n\r\nChange-Id: I71809b3c73b0bc0cd133fad1392ae8c17c895ee4\r\n\r\n* [TIR][USMP] Added buffer info extraction pass\r\n\r\nAdding more documentation for data structures\r\nand the approach\r\n\r\nChange-Id: Ide2bfffaeff9add86853b6992017264e5d796299\r\n\r\n* [TIR][USMP] Added buffer info extraction pass\r\n\r\n* Added more documentation\r\n* Added functionality to handle multiple calls\r\n  for the same PrimFunc with a test.\r\n\r\nChange-Id: Ib7c27b3cf17f415067a224f1e57d8b928f4c7c6f\r\n\r\n* [TIR][USMP] Added buffer info extraction pass\r\n\r\n* Attaching targets to PrimFuncs in the util test case\r\n\r\nChange-Id: I82960512659a346f6242b2b5789ec1120f8ea2cf",
@@ -21,8 +46,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4302816231?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1637705320.690037
+    ]
   },
   {
     "sha": "34ea31994cc1f12a15d4cf877cac7a039157a304",
@@ -33,7 +57,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2119/display/redirect"
       },
       {
@@ -2373,30 +2397,6 @@
         "name": "WinMacBuild / Build (macOS-latest)",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4085735465?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "aeff3ea711807ebd031ebd469641c45bdbd02360",
-    "headline": "BUG: alloc_tensor offset and reshape shape should be on the CPU (#9421)",
-    "body": "* BUG: alloc_tensor offset and reshape shape should be on the CPU\r\n\r\nThe VM ManifestAlloc pass was allocating constants in a few places I\r\nforgot to tag with on_device for the host/cpu. As a result the runtime\r\nwould (silently) do the x-device copy, which destroys perf.\r\n\r\nTo make this easier to spot in the future added a 'constants' property\r\nto the VM Executable to dump the shape & device for all VM constants.\r\n\r\nThis is CORE-102 in OctoML JIRA.\r\n\r\n* [checkpoint] Older compilers can't handle << overload\r\n\r\n* [checkpoint] Woops, forgot requires_cuda",
-    "author": "mbs-octoml",
-    "date": "2021-11-02T21:22:32Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2021/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4085729297?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4085729387?check_suite_focus=true"
       }
     ]
   }
