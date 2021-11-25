@@ -1,5 +1,54 @@
 [
   {
+    "sha": "d6fe9a3adb071e9d900ac73613ac80eaa8a0faff",
+    "headline": "Update NEWS to include v0.8 change log (#9580)",
+    "body": "Co-authored-by: Junru Shao <junrushao1994@gmail.com>\r\n\r\nCo-authored-by: Junru Shao <junrushao1994@gmail.com>",
+    "author": "vinx13",
+    "date": "2021-11-25T03:39:15Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2134/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4319665960?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4319665974?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1637813475.410861
+  },
+  {
+    "sha": "a63daab6eef3e198551f020ccdbce77b27a94ad2",
+    "headline": "Update license file to note libbacktrace (#9579)",
+    "body": "Co-authored-by: Tianqi Chen <tqchen@users.noreply.github.com>",
+    "author": "vinx13",
+    "date": "2021-11-25T03:38:59Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2133/display/redirect"
+      },
+      {
+        "name": "WinMacBuild / Build (windows-2016)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4319664578?check_suite_focus=true"
+      },
+      {
+        "name": "WinMacBuild / Build (macOS-latest)",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4319664646?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "93c2f2d3f067565734929547c9b4e8f10128e893",
     "headline": "[FIX,PROFILING] Only check if ops duration is nonzero (#9568)",
     "body": "We have seen intermittent failures in the profiling tests when some of\r\nthe durations are not nonzero. This should fix it.",
@@ -21,8 +70,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4318828820?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1637809751.552919
+    ]
   },
   {
     "sha": "1466e27c45895119354b313aff7bff66616ce80a",
@@ -2349,54 +2397,6 @@
         "name": "WinMacBuild / Build (macOS-latest)",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4096918178?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "c99f55f0a5ceeda51893d3181ca480737fc9afe3",
-    "headline": "[TVMScript] Use // and % for FloorDiv/FloorMod (#9437)",
-    "body": "",
-    "author": "Hzfengsy",
-    "date": "2021-11-03T17:12:09Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2034/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4095776544?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4095776598?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "a6c948ac642534ade6f3625201bd30d6a8da71e4",
-    "headline": "Adds SEScope (Storage/Execution Scope) for use as new unit of plannin\u2026",
-    "body": "\u2026g in 'device' planning. (#9313)\n\n[Target] Adds SEScope (Storage/Execution Scope) for use as new unit of planning in 'device' planning\r\n\r\nThis is the first step in https://github.com/apache/tvm-rfcs/pull/38 to bring devices\r\nand targets together when doing device planning. I've gone ahead and also included a\r\nmemory scope in this object since we will also need to propagate memory scopes across\r\nRelay expressions once this basic preparation is in place. In the meantime that field will be\r\nleft as \"\".\r\n\r\nOnce device planning works in units of SEScopes it will be possible to directly read off\r\nthe device and target for any Relay sub-expression without the need for TargetMaps ort\r\nthe construction of default Targets.\r\n\r\nSEScopes also support 'Join' and 'Default' operations needed when constraint solving in\r\nthe device planner. You can see those in use in my scratchpad branch:\r\n  https://github.com/mbs-octoml/mbs-tvm/tree/mbs-scopes\r\n\r\nThis PR also brings some duplicated and the ad-hoc 'default target' handling logic\r\ntogether into a CompilationConfig class. (Again, see the scratchpad branch for how that\r\nwill end up being used). I've placed that next to SEScope since it's main purpose is to\r\n  a) establish the default SEScope for primitive ops\r\n  b) establish the SEScope for the 'host'\r\n  c) feed a definitive vector of Targets into device planning so it can resolve all\r\n     \"on_device\" and \"device_copy\" device references to their full SEScope form.\r\n\r\n* Reworked to avoid global SEScopeCache.\r\n\r\nRealized while working through unit tests in the sequel that it's reasonable\r\nfor folks to call build multiple times with distinct Target objects, in which\r\ncase the global cache would grow without bound.\r\n\r\nSo instead placed the cache in the CompilationConfig class. Since that class\r\nnow has everything the device planner needs to do its job, promoted it to\r\nbe an FFI-able Object, which is now in compilation_config.{h,cc}.\r\n\r\nI think we can do much better with CompilationConfig, but for now keeping it\r\nto the minimum I needed to prepare for device planning from all the executor\r\ncompilation codepaths.",
-    "author": "mbs-octoml",
-    "date": "2021-11-03T16:37:28Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2033/display/redirect"
-      },
-      {
-        "name": "WinMacBuild / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4095379427?check_suite_focus=true"
-      },
-      {
-        "name": "WinMacBuild / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4095379492?check_suite_focus=true"
       }
     ]
   }
