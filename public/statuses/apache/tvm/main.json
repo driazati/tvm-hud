@@ -1,5 +1,30 @@
 [
   {
+    "sha": "22753590e3f60a9b5e743950a4ccca3eb0d7fbbf",
+    "headline": "[microNPU][1] Add affine analysis structures for the cascader (#9458)",
+    "body": "* [ETHOSU][1] Add affine analysis structures for the cascader\r\n\r\nThe cascader relies heavily on being able to determine\r\ndata dependencies between operators. This is so that it\r\ncan calculate how stripes should be propagated through a\r\ncascade.\r\n\r\nTo do this, two data structures are defined: StripeConfig\r\nand Propagator. StripeConfig stores information for how a\r\ntensor should be broken up into stripes and executed.\r\nPropagator transforms a StripeConfig using an affine\r\ntransform matrix, allowing an input StripeConfig for an\r\noperator to be determined by 'propagating' the output\r\nStripeConfig.\r\n\r\nBy chaining together Propagators, we can analyse how\r\ndata dependencies vary throughout a cascade and therefore\r\ncalculate the memory requirements (and approximate the\r\nperformance).\r\n\r\nChange-Id: If7176fea961c631be4a6c195303da536030d957b\r\n\r\n* Add test guards\r\n\r\nChange-Id: I1d7633e20daab33642fa5c4a12e474a4def4d8b8\r\n\r\n* Address review comments\r\n\r\nChange-Id: Iff5f1effa08e0628de91f5577487d0cecebec824\r\n\r\n* Improve docs\r\n\r\nChange-Id: I508809d8c1a08d231e3a9b0fd9b3f2639cc2f0e3",
+    "author": "mbaret",
+    "date": "2021-12-01T13:00:34Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2163/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4381574453?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4381574551?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1638364644.05325
+  },
+  {
     "sha": "9ada371d2d3ef9efbb61aa83b2569803f232fbf8",
     "headline": "[microNPU] Add the infrastructure for lookup table and TANH (#9547)",
     "body": "Some activation functions like TANH and SIGMOID are implemented\r\nby calculating the values based on the QNN parameters and\r\nrecording the values into a lookup table (LUT).\r\n\r\nThis patch adds the LUT functionality alongside with the TANH\r\nactivation function and the tests.",
@@ -21,8 +46,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4378184153?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1638360861.997697
+    ]
   },
   {
     "sha": "3047709f2ad24f781d21fdad77a457feb80876c9",
@@ -2373,30 +2397,6 @@
         "name": "CI / Build (macOS-latest)",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4156665844?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "675f348522a7e480296afd733dda390237f18aa8",
-    "headline": "Better host handling in CompilationConfig & debug printing (#9460)",
-    "body": "(This is a bit of a grab bag in preparation for #9326\r\nwhich I'm trying to minimize)\r\n\r\nWhile switching the device planner to use SEScopes I had a lot\r\nof trouble with Target's not matching up.\r\n- If no explicit host target is given but the given\r\n  TargetMap has targets with hosts, try to use those\r\n  to establish the host_target.\r\n- Make sure both the 'legacy' TargetMap representation\r\n  and the newer representation agree to pointer equality on\r\n  their targets.\r\n- Make sure the Interpreter uses the target from CompilationConfig\r\n  since it's been normalized.\r\n\r\nTo debug the above:\r\n- When in pretty printing with show_meta_data_ false give as much\r\n  detail on SEScopes, Targets and call attributes as possible.\r\n  That needed some rework in the relay_text_printer.cc.\r\n- Ditto for critical 'target' attribute on PrimFuncs.\r\n- Also added a Target::ToDebugString so I could see the\r\n  host fields along with everything else since a lot of problems\r\n  were caused by a mismatch of 'the same' Target with and without\r\n  a host. (Tried using that for the ReprPrinter but broken unit\r\n  tests.)\r\n\r\nNote that the codebase assumes Targets are compared by ObjectPtrEquality,\r\nyet CheckAndUpdateHostConsistency (I count 65 call sites) changes the targets.\r\nUltimately CompilationConfig or it's ultimate replacement should ensure we munge\r\ntargets only once at the 'main' entry points.",
-    "author": "mbs-octoml",
-    "date": "2021-11-09T16:44:21Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2063/display/redirect"
-      },
-      {
-        "name": "CI / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4155073840?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4155073899?check_suite_focus=true"
       }
     ]
   }
