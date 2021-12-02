@@ -1,0 +1,56 @@
+# @generated DO NOT EDIT MANUALLY
+# Generated from .github/templates/deploy_lambda.yml.j2
+name: !{{ workflow_name }}
+
+on:
+  schedule:
+    - cron: '!{{ cron }}'
+  workflow_dispatch:
+
+concurrency:
+  group: !{{ workflow_name }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: data
+      - name: Install dependencies
+        run: |
+          pip install \
+            aiohttp==3.7.4 \
+            requests==2.24.0
+      - name: Update
+        env:
+          GH_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -LO https://raw.githubusercontent.com/driazati/tvm-hud/main/scripts/update_github_status.py
+          mkdir temp
+          mv update_github_status.py temp
+          set -eux
+          {% if is_pr -%}
+          python temp/update_github_status.py --repo '!{{ repo }}' --user '!{{ user }}' --prs --fetch_size !{{ fetch_size }} --history_size !{{ history_size }}
+          {% else -%}
+          python temp/update_github_status.py --repo '!{{ repo }}' --user '!{{ user }}' --branch '!{{ branch }}' --fetch_size !{{ fetch_size }} --history_size !{{ history_size }}
+          {%- endif %}
+          rm -rf temp
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      - name: Upload data
+        run: |
+          set -eux
+          if git status | grep -q 'working tree clean'; then
+            echo no changes made
+            exit 0
+          fi
+
+          # Upload new changes
+          git add .
+          git config user.email "email@example.com"
+          git config user.name "robot"
+          git commit -m"Update commit status data"
+          git push
