@@ -1,5 +1,30 @@
 [
   {
+    "sha": "dea654e1d73fe7817177605b7c9bab3605109184",
+    "headline": "[EZ][Autoscheduler] Log exceptions in topi lowering (#9615)",
+    "body": "* fix things\r\n\r\n* linting\r\n\r\n* remove format string messing things up\r\n\r\n* Update python/tvm/auto_scheduler/relay_integration.py\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\n* move to tvm error\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>",
+    "author": "AndrewZhaoLuo",
+    "date": "2021-12-07T18:17:14Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2205/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4447853090?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4447853224?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1638904055.541424
+  },
+  {
     "sha": "224f8dac7c27e81933ad8815c1a5ab61d4853403",
     "headline": "[microNPU] Support different constant datatypes (#9626)",
     "body": "Currently only uint8 datatype is supported for constants, as this is\r\nall that was necessary until now. This PR allows different datatypes\r\nto be used for constants, including different datatypes within the\r\nsame graph.\r\n\r\nA workaround was previously added for Mean legalization, this has\r\nalso been removed and replaced with the expected datatype of the\r\nconstant.",
@@ -8,7 +33,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2204/display/redirect"
       },
       {
@@ -21,8 +46,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4443389572?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1638900638.526742
+    ]
   },
   {
     "sha": "805518403e6d172150032ede549010064ba60113",
@@ -2368,30 +2392,6 @@
         "name": "CI / Build (macOS-latest)",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4267945134?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "53cb5eadfb15e7bbeb482109c5d02ed2c8d23174",
-    "headline": "[TVMC][microTVM] Add new micro context (#9229)",
-    "body": "* [microTVM] zephyr: Make platform options comply with RFC-0020\r\n\r\nMake Zephyr platform options comply with RFC-0020 specification.\r\n\r\nProject options now need to specify the required metadata for every\r\noption, i.e. 'required', 'optional', and 'type'.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [microTVM] arduino: Make platform options comply with RFC-0020\r\n\r\nMake Arduino platform options comply with RFC-0020 specification.\r\n\r\nProject options now need to specify the required metadata for every\r\noption, i.e. 'required', 'optional', and 'type'.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [microTVM] crt: Make crt options comply with RFC-0020\r\n\r\nMake crt project options comply with RFC-0020 specification.\r\n\r\nProject options now need to specify the required metadata for every\r\noption, i.e. 'required', 'optional', and 'type'.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [microTVM][Unittest] Adapt test to RFC-0020\r\n\r\nAdapt test to new metadata fields accordingly to RFC-0020 specification.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [microTVM] Add info() method to GeneratedProject class\r\n\r\nAdd info() method to GeneratedProject class so one can use the Project\r\nAPI to query options for project dirs instead of only for template\r\nprojects.\r\n\r\nThis commit also adds for the sake of convenience a setter and a getter\r\nfor 'options' in case it's necessary to set or get 'options' after a\r\nGeneratedProject class is instantiated without initializing 'options'.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [microTVM] Fix typo in python/tvm/micro/session.py\r\n\r\nFix typo in comment.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* Allow multiple runs on micro targets\r\n\r\nCurrently there is a limitation on microTVM / TVM which doesn't allow\r\nrunning a model multiple times in sequence without previously flashing\r\nthe model to the device.\r\n\r\nRoot cause is that RPCModuleNode class destructor is called once a run\r\nfinishes. The destructor sends a RPCCode::kFreeHandle packet with\r\ntype_code = kTVMModuleHandle to the device which wipes entries in\r\ncrt/src/runtime/crt/common/crt_runtime_api.c:147:static const TVMModule*\r\nregistered_modules[TVM_CRT_MAX_REGISTERED_MODULES] when TVMFreeMod() is\r\ncalled when the target receives a kFreeHandle packet.\r\n\r\nHence when one tries to re-run a model registered_modules[0] == NULL\r\ncauses a backtrace on the host side. Probably never before a model on\r\nmicroTVM was run without being flashed just before the run, so tvmc run\r\nimplementation for micro targets exposed the issue.\r\n\r\nThis commit fixes it by not calling TVMFreeMod() for system_lib_handle\r\non the target side when a session terminates so the pointer to the\r\nsystem_lib_handle is not flushed from 'registered_modules', allowing\r\nmultiple runs on micro targets.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [TVMC] Pass main parser when calling add_*_parser functions\r\n\r\nCurrently when a add_*_parser functions are called in main.py to build\r\nand add the various subparsers to the main parser only a subparser is\r\npassed to the functions. However if one of these functions need to build\r\na dynamic parser it needs also to call the main parser at least once to\r\nparse once the command line and get the arguments necessary to finally\r\nbuild the complete parser.\r\n\r\nThis commit fixes that limitation by passing also the main parser when\r\ncalling the subparser builders so it can be used to build the dynamic\r\nsubparses.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [TVMC] micro: Add new micro context\r\n\r\nThis commit introduces support for micro targets (targets supported by\r\nmicroTVM). It creates a new micro context under the new TVMC command\r\n'tvmc micro'. Moreover, three new subcommands are made available in the\r\nnew context under 'tvmc micro': 'create-project', 'build', and 'flash'.\r\n\r\nThe new support relies on the Project API to query all the options\r\navailable for a selected platform (like Zephyr and Arduino) and also\r\nfrom any adhoc platform template directory which provides a custom\r\nProject API server.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [TVMC] run: Add support for micro devices\r\n\r\nAdd support for micro devices using the Project API to query all options\r\navailable for a given platform and open a session with an specified\r\nmicro device. Use of 'tvmc run' with micro device is enabled via the\r\n'--device micro' option in addition to the project directory.\r\n\r\nOnce the project directory is specified 'tvmc run' will make all options\r\nspecific to the platform found in the project dir available as options\r\nin 'tvmc run'. They can be listed by '--list-options' and passed via\r\n'--options'.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>",
-    "author": "gromero",
-    "date": "2021-11-19T18:14:04Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2106/display/redirect"
-      },
-      {
-        "name": "CI / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4267683564?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4267683622?check_suite_focus=true"
       }
     ]
   }
