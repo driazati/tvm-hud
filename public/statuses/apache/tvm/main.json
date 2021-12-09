@@ -1,5 +1,54 @@
 [
   {
+    "sha": "b7ad4e5206796bbc9d44940a140ab62a911cd73d",
+    "headline": "Tutorial for running TVM on Arm(R) Cortex(R)-M55 CPU and Ethos(TM)-U5\u2026",
+    "body": "\u20265 NPU (#9307)\n\n* Tutorial for running TVM on Arm(R) Cortex(R)-M55 CPU and Ethos(TM)-U55 NPU\r\n\r\nChange-Id: If1e1134b56639021036862e8ea65a8e9d33dceb7\r\n\r\n* Tutorial for running TVM on Arm(R) Cortex(R)-M55 CPU and Ethos(TM)-U55 NPU\r\n\r\n- Moved tutorials/micro/cortex_m_ethosu.py to gallery/how_to/work_with_microtvm/micro_ethosu.py\r\n\r\nChange-Id: Ib554df6649b7313d4414187d5334ec5b03f35f33\r\n\r\n* [micronpu] Update and cleanup tutorials.\r\n\r\n- Moved tutorials/micro/cortex_m_ethosu.py to gallery/how_to/work_with_microtvm/micro_ethosu.py\r\n- Replaced full linker script document with a link to the linker script on github\r\n\r\nChange-Id: Ic77648a4fc3dd76161d689774d21a3347a577b90\r\n\r\n* [micronpu] Update and cleanup tutorial\r\n\r\n- Replace Makefile code with a link to Makefile on github\r\n- Replace header files with a link to header files on github\r\n- Update demo.c with changes introduced by Device API\r\n- Update tvmc command line arguments\r\n\r\nChange-Id: If6a254b368550c0f3effb8d1cb15f062279964e2",
+    "author": "grant-arm",
+    "date": "2021-12-09T13:47:24Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2218/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4471244950?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4471245005?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1639058914.862085
+  },
+  {
+    "sha": "1566fb161446cd80552a29b100896175f8272ac0",
+    "headline": "[microNPU] Update Conv2D Tests to Use TF API to Gen Test Cases (#9508)",
+    "body": "* Current conv2d tests compare the conv2d operator against tvm's execution of the default schedule of conv2d as defined in TOPI and that is not bitexact with tflite runtime's implemention. Therefore a tolerance of \"1\" in quantized 8-bit domain is used.\r\n\r\n* Converts the current conv2d tests to use TensorFlow APIs to create a test cases for conv2D and compare against TFLite runtime.",
+    "author": "dchauhan-arm",
+    "date": "2021-12-09T13:28:26Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2217/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4471034876?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4471034980?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "ee629b149962213f8651e4f9db4e1cc218e02068",
     "headline": "[Frontend][ONNX] Support ONNX Scan operator (#9438)",
     "body": "* [Frontend][ONNX] Support ONNX Scan operator\r\n\r\n* fix lint\r\n\r\n* remove test_scan_sum in unsupported_onnx_tests\r\n\r\n* support scan opset 8\r\n\r\n* fix lint\r\n\r\n* fix negative axes bug\r\n\r\n* fix lint\r\n\r\nCo-authored-by: Matthew Brookhart <mbrookhart@octoml.ai>",
@@ -21,8 +70,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4468099706?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1639055866.034472
+    ]
   },
   {
     "sha": "0e0adf514c41dcab27ef60df60e84ce28a6effaf",
@@ -2344,54 +2392,6 @@
         "name": "CI / Build (macOS-latest)",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4302816231?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "34ea31994cc1f12a15d4cf877cac7a039157a304",
-    "headline": "[Relay] Prepare DeadCodeElimination for running post LowerTEPass/Mani\u2026",
-    "body": "\u2026festAlloc. (#9542)\n\n* Prepare DeadCodeElimination for running post LowerTEPass/ManifestAlloc.\r\n\r\nAs part of #9483 we need to prepare some critical Relay passes for running after\r\nlowering and conversion to DPS. For DCE we need to make sure we never remove\r\nside-effecting let-bound expressions, such as for allocation or evaluation of\r\nan external function with unknown effectfulness.\r\n\r\nIntroduce a new purity pre-pass. It makes a half-hearted attempt at accounting\r\nfor functions by tracking both 'eval' and 'call' purity, but must fallback to\r\nassuming call-impurity in more difficult cases (eg calling a function passed as\r\na parameter, calling a function projected from a tuple, etc). However it seems\r\nplenty good enough.\r\n\r\nPurity must also be accounted for when determining the usage count of let-bound\r\nvariables, so reworked that. Collapsed the let-bound value accumulation pass into\r\nthe usage counting pass to make up for inserting the new purity analysis pass.\r\n\r\nA few tests assume DCE eliminates dead reference writes. The previous\r\nimplementation certainly did that, but by eliminating *all* writes.\r\n\r\nFiled CORE-118 to extend DCE to soundly elim dead writes (a very simple-minded\r\nanalysis would probably do just fine and we don't need to get hung up on alias\r\nanalysis). In the meantime, added an 'ignore_impurity' flag (default False)\r\nand set to true just in the few unit tests which rely on the unsound impl.\r\n\r\n* [checkpoint] Merge Lily's suggestions.",
-    "author": "mbs-octoml",
-    "date": "2021-11-23T16:26:10Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2119/display/redirect"
-      },
-      {
-        "name": "CI / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4301931520?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4301931585?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "45af5c73a9ce07bcd50d36150680259b719dc8c7",
-    "headline": "[Frontend][ONNX] Support RandomNormal operator (#9493)",
-    "body": "",
-    "author": "shengxinhu",
-    "date": "2021-11-23T08:00:23Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2118/display/redirect"
-      },
-      {
-        "name": "CI / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4296462495?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4296462535?check_suite_focus=true"
       }
     ]
   }
