@@ -1,5 +1,30 @@
 [
   {
+    "sha": "5de8f7c4f1b07575ae03856fa770716e21570635",
+    "headline": "[Hexagon] Detect link-params via IRModule instead of target attribute\u2026",
+    "body": "\u2026 (#9695)\n\nAdditionally, restore the construction of target attributes in the\r\nHexagon target. This was erroneously removed in PR#9352.\r\nThat PR deprecated target attributes, but also added transferring\r\nthese attributes to the new mechanism. Removing the attributes\r\nfrom tvm.target.hexagon eliminated them completely. Restoring the\r\ntarget attributes allow time to transition TVM clients to the new\r\nmechanisms.",
+    "author": "kparzysz-quic",
+    "date": "2021-12-11T04:38:19Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2233/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4491145190?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4491145212?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1639199281.982403
+  },
+  {
     "sha": "e3379a6becd413270f59942d82ec326c4caaa3cf",
     "headline": "[Relay] PlanDevices supports 'free' on_device annotations (#9693)",
     "body": "* [Relay] PlanDevices supports 'free' on_device annotations\r\n\r\nThis is in support of #9613, which allows PlanDevices to be run\r\nafter lowering so as to flow memory constraints in and\r\nout of PrimFuncs. That requires a way to insert device_copies\r\nwhen the memory scopes chosen during separate lowering of fused\r\nprimitive functions clashes, but otherwise avoid device_copies when\r\nscopes can be chosen so as to avoid them.\r\n\r\nWe support that by generalizing the \"on_device\" annotation to\r\nallow the device constraint to be independently controlled for\r\nits 'body' and 'result'.\r\n\r\n# Standard user annotation: body is constrained to S\r\non_device(body, S)\r\n\r\n# Used by PlanDevices to 'fix' expression to S\r\n# (was is_fixed=True)\r\non_device(body, S, constrain_result=True)\r\n\r\n# Used by PlanDevices to indicate a device_copy can be\r\n# inserted if necessary.\r\non_device(body, S, constrain_body=False)\r\n\r\n# Supported, but currently has no use.\r\non_device(body, S, constrain_result=True, constrain_body=False)\r\n\r\nA few extra odd's 'n ends collected along the way:\r\n - Some CallLowered cleanup which I found useful.\r\n - The usual extra debugging output needed as I debugged.\r\n   In return I removed some particularly verbose logging I'd\r\n   added while tracking down unexpected object copies.\r\n - Cleanup warnings from clang-12 as I touch files.\r\n\r\n* [checkpoint] unused var",
@@ -8,7 +33,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2232/display/redirect"
       },
       {
@@ -21,8 +46,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4489736407?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1639195863.343547
+    ]
   },
   {
     "sha": "01599d13777b0a8723c6a2c940afa95fd863d5ee",
@@ -2363,30 +2387,6 @@
         "name": "CI / Build (macOS-latest)",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4320242322?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "0754c86d67e409af2b457dfe19e1f445a9199077",
-    "headline": "[FIX][TIR] Remove unused code and fix typo in storage_align (#9583)",
-    "body": "",
-    "author": "vinx13",
-    "date": "2021-11-25T05:29:13Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2135/display/redirect"
-      },
-      {
-        "name": "CI / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4320241248?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4320241272?check_suite_focus=true"
       }
     ]
   }
