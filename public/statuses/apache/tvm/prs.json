@@ -1,5 +1,32 @@
 [
   {
+    "sha": "44c723be29241af1b5b997cbe54c3fd87e3f5c0c",
+    "headline": "trigger CI",
+    "body": "",
+    "author": "masahi",
+    "date": "2021-12-13T00:48:27Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9698/10/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4500681213?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4500681274?check_suite_focus=true"
+      }
+    ],
+    "pr": 9698,
+    "pr_title": "[CUTLASS] More robust support for pattern matching and alignment",
+    "updated_at": 1639360206.839017
+  },
+  {
     "sha": "da703c8038a872c64257aa306416f8dde33d06ff",
     "headline": "Fix GLOBAL_SCOPE Shallow copy bug",
     "body": "In the process of using autotvm to tune dense_pack (python/tvm/topi/x86/dense.py:242) did not enter in_tuning, that is, autotvm.GLOBALSCOPE.in_tuning = False, but in the tuner.tune function (python/ tvm/autotvm/tuner/tuner.py:123) has been set to True.\n\nLog in some key positions and get:\n\n1. The main process (python/tvm/autotvm/tuner/tuner.py)\nFunction tune GLOBAL_SCOPE = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f3dc62da0b8>\n\nFunction tune GLOBAL_SCOPE.in_tuning = True\n\n2. Child process reset(python/tvm/autotvm/env.py)\n\nFunction reset_global_scope old GLOBAL_SCOPE = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f8e361c2128>\n\nFunction reset_global_scope old GLOBAL_SCOPE.in_tuning = False\n\nFunction reset_global_scope new GLOBAL_SCOPE = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f8d488ff9b0>\n\nFunction reset_global_scope new GLOBAL_SCOPE.in_tuning = True\n3.  Child process dense_pack(python/tvm/topi/x86/dense.py)\nFunction dense_pack autotvm.GLOBAL_SCOPE = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f8e361c2128>\n\nFunction dense_pack autotvm.GLOBAL_SCOPE.in_tuning = False\n\nFunction dense_pack autotvm.GLOBAL_SCOPE.current = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f8d488ff9b0>\n\nFunction dense_pack autotvm.GLOBAL_SCOPE.current.in_tuning = True\n\nThe main process passes the current value of GLOBAL_SCOPE to the child process, and the child process resets its own GLOBAL_SCOPE and changes current at the same time.\nHowever, the address of autotvm.GLOBALSCOPE in dense_pack has not changed, and it is still the old GLOBALSCOPE. At this time, current is changed.\n\nI think the reason for this bug is that the reset_global_scope function is a shallow copy of GLOBAL_SCOPE, and the problem is solved after replacing it with a deep copy.",
@@ -13,8 +40,43 @@
       }
     ],
     "pr": 9718,
-    "pr_title": "Fix GLOBAL_SCOPE Shallow copy bug",
-    "updated_at": 1639354593.24442
+    "pr_title": "Fix GLOBAL_SCOPE Shallow copy bug"
+  },
+  {
+    "sha": "7edaf07ad2f6df7b374fab3fc54620bf7dcde4f1",
+    "headline": "fix ci",
+    "body": "",
+    "author": "hzfan",
+    "date": "2021-12-12T10:11:09Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9528/6/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/runs/4500554696?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4500554720?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4500645846?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4500645915?check_suite_focus=true"
+      }
+    ],
+    "pr": 9720,
+    "pr_title": "[Relay] Non-recursive dependency graph"
   },
   {
     "sha": "dcf0a1d7f496f7f0c1a80e07f7d1736c8427a1c7",
@@ -61,32 +123,6 @@
     "jobs": [],
     "pr": 9717,
     "pr_title": "[Bugfix][Op] Fix shape inference of adv_index"
-  },
-  {
-    "sha": "525f58029b36b922583edf77e7a22bb056e53ebc",
-    "headline": "lint",
-    "body": "",
-    "author": "masahi",
-    "date": "2021-12-11T23:07:58Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9698/9/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4495084426?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4495084438?check_suite_focus=true"
-      }
-    ],
-    "pr": 9698,
-    "pr_title": "[CUTLASS] More robust support for pattern matching and alignment"
   },
   {
     "sha": "49e2c8918a1a2632f60c700675f12f9d83adef24",
@@ -425,6 +461,32 @@
     ],
     "pr": 9699,
     "pr_title": "[TIR] Affine utility support freevars, iter lowerbound and diagnostics"
+  },
+  {
+    "sha": "8f2752380f1819bbe5ee621cf6160bf62b55d0e6",
+    "headline": "fix recur",
+    "body": "",
+    "author": "hzfan",
+    "date": "2021-12-10T09:17:27Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9528/2/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4481573950?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4481574050?check_suite_focus=true"
+      }
+    ],
+    "pr": 9720,
+    "pr_title": "[Relay] Non-recursive dependency graph"
   },
   {
     "sha": "1778c0a8fc6f234673b71608b3c7cc46e988ba17",
@@ -2656,32 +2718,6 @@
     ],
     "pr": 9663,
     "pr_title": "[TVMC][MicroTVM] Fix tvmc micro `project_dir` arg relative path"
-  },
-  {
-    "sha": "f08b34f6d8d6b670c7f9db42d2f2186c2f568e58",
-    "headline": "[microNPU] Refactor section name test to remove relay_ir_builder",
-    "body": "Change-Id: Ice1e9fc745633279e6e61fa955c892d9453dfe42",
-    "author": "grant-arm",
-    "date": "2021-12-06T14:34:36Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9658/1/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4431882100?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4431882275?check_suite_focus=true"
-      }
-    ],
-    "pr": 9658,
-    "pr_title": "[microNPU] Refactor section name test to remove relay_ir_builder"
   },
   {
     "sha": "2c529bc96e4b7411770e89a7909cb6529f5c262f",
