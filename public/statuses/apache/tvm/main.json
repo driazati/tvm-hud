@@ -1,5 +1,30 @@
 [
   {
+    "sha": "6efade638b246a6c2aeb5dc2e0a17c641e522708",
+    "headline": "[TVMC] run: Don't use static path to find model.tar (#9712)",
+    "body": "* [TVMC] run: Don't use static path to find model.tar\r\n\r\nCurrently 'tvmc run' when '--device micro' is specified looks for the\r\nmodel in the project directory at <project_dir>/model.tar. That works\r\nfor Zephyr but fails on Arduino because model.tar is actually located at\r\n<project_dir>/src/model/model.tar. As a consequence 'tvmc run' when used\r\nto run a model on Arduino exists because model.tar is never found.\r\n\r\nThis commit fixes it by using the MLF path returned by the Project API\r\ninstead of using a static path.\r\n\r\nThis commit also adds a project_dir attribute to TVMCPackage that can be\r\nset when a MLF archive is loaded/imported so the project dir can be\r\nconveniently found (similarly to package_path attribute).\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* [TVMC] test: Add test for importing a MLF with project_dir\r\n\r\nAdd test for TVMCPackage when importing a MLF archive and setting a\r\nproject directory too. Setting a project dir is only supported when a\r\nMLF model is imported, so it must fail on Classic format.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>",
+    "author": "gromero",
+    "date": "2021-12-13T09:40:56Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2237/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4504217561?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4504217620?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1639390196.251351
+  },
+  {
     "sha": "2b35cfd6ddb73afecd3f550f33881e1fdc7c3267",
     "headline": "Add Hexagon VTCM and discontiguous allocation support (#9525)",
     "body": "* WIP Allocation abstraction for VTCM and DDR.\r\n\r\n* Add Hexagon VTCM and discontiguous allocation support\r\n\r\n* differentiate between dimensions and allocations\r\n\r\n* remove change to llvm codegen\r\n\r\n* add integration test_add_vtcm to demo vtcm alloc\r\n\r\n* remove cmake change\r\n\r\n* forcing contiguous allocation in device API, for now\r\n\r\nCo-authored-by: Chris Sullivan <csullivan@octoml.ai>",
@@ -21,8 +46,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4493735923?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1639386763.892616
+    ]
   },
   {
     "sha": "a28a8bfa0e5e89165647c3710430e82d45f110cf",
@@ -2363,30 +2387,6 @@
         "name": "CI / Build (macOS-latest)",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4321794076?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "0a4cc89faf85c474df15bf3ba82ccac89e785fdc",
-    "headline": "[microNPU] Support binary elementwise with non-4D inputs (#9521)",
-    "body": "Reshapes non-4D inputs to become 4D, then reshapes the output back to\r\nthe non-4D input shape.",
-    "author": "lhutton1",
-    "date": "2021-11-25T08:07:40Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2139/display/redirect"
-      },
-      {
-        "name": "CI / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4321250274?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4321250330?check_suite_focus=true"
       }
     ]
   }
