@@ -1,5 +1,30 @@
 [
   {
+    "sha": "fb99383c4382d4d38d9f672c73d0c6a565642283",
+    "headline": "[Relay] Re-run PlanDevices after LowerTE to flow new memory scope con\u2026",
+    "body": "\u2026straints. (#9613)\n\n* [Relay] Re-run PlanDevices after LowerTE to flow new memory scope constraints.\r\n\r\nThis PR:\r\n 1) Makes PlanDevices consider lowered calls when solving device domain constraints.\r\n 2) Connects the storage scopes on PrimFunc parameters (encoded in their Buffer data\r\n    Var type annotation PointerTypes storage_scope fields) to the memory_scope\r\n    fields of the SEScopes which PlanDevices unifies over.\r\n 3) Allows new device_copies to be inserted on the arguments and results of lowered\r\n    calls so as to acount for any memory scope mismatches which are now apparent.\r\n\r\n[device_planner.cc has main changes, rest is secondary.]\r\n\r\nIn the short term we'd like to use this machinery to flow memory scope choices made\r\nduring lowering back out into the overall Relay program. In the longer term we'd\r\nalso like to be able to use memory scopes to influence the lowering of\r\nyet-to-be-lowered functions (or lowered functions which have yet to been scheduled,\r\na distinction now possible with TensorIR).\r\n\r\n - Memory scope constraints can flow both out of and in to PrimFuncs\r\n   introduced by LowerTE. In TIR memory scopes are represented by\r\n   'storage scopes' on the PointerType type annotations on TIR Buffer data\r\n   variables.\r\n    - It is straightforward to extract memory scopes from PrimFuncs by\r\n      looking at the PrimFunc's buffer_map. We do this is 'phase 1' of\r\n      PlanDevices, which collects all the device constraints implied by\r\n    - However, pushing memory constraints in to PrimFuncs is more challenging\r\n      due to buffer aliasing. This aspect is still experimental.\r\n\r\n - Allow device_copies to be inserted for both arguments and\r\n   results of PrimFunc calls, on the assumption PlanDevices has\r\n   already established a consistent device assignment prior to\r\n   lowering and any new mismatch is required to match up memory scopes.\r\n   We use the new 'free' on_device annotations to implement this.\r\n\r\nComing along for the ride:\r\n\r\n - To make unit tests of mixed Relay/TIR functions possible needed\r\n   to be able to supply a checked_type to GlobalVar since that's currently\r\n   the only way to give a Relay type to PrimFuncs.\r\n\r\n - Use GenSym to get unique var names in ANF & partial eval so easier\r\n   to diff debug output between passes and connect program fragments\r\n   back into the overall program. Relying on pretty-printing to\r\n   automagically unique-ify var names is certainly cute but until we\r\n   have better span support is very hard to work with.\r\n\r\n - Realized both dead_code.cc and fold_constant.cc would\r\n   happily move values into a different lexical virtual\r\n   device context since device_planner.cc was being\r\n   'clever' and eliding on_devices for let-bound values\r\n   when there's no change. Fixed so that every let-bound\r\n   value has an on_device. Will be much better after\r\n   https://github.com/apache/tvm-rfcs/pull/45 is implemented.\r\n\r\n - Make build -Werror clean for clang-12 (mostly move fixups).\r\n\r\n - Address post-submit comments from #9693.\r\n\r\n* [checkpoint] thread safe GenSym",
+    "author": "mbs-octoml",
+    "date": "2021-12-14T18:16:26Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2253/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4524317727?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4524317832?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1639508851.329606
+  },
+  {
     "sha": "ceec0fcb509e80ddb609a0402315a34ae2c7bc61",
     "headline": "[microNPU] Update Arm(R) Ethos(TM)-U55 NPU demo README (#9725)",
     "body": "- Update README.md to show config.cmake options when building from source\r\n\r\nChange-Id: Iecc36d8bc889541b8b890de37d58052a46928a83",
@@ -13,16 +38,15 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/4523473419?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/4523473569?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1639505423.438473
+    ]
   },
   {
     "sha": "af869bc79cecdc18371862524ea241803dc78c7a",
@@ -2363,30 +2387,6 @@
         "name": "CI / Build (macOS-latest)",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4360282996?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "9ca27b7440cf1c4f9916c8e348a35a5a886e12d3",
-    "headline": "[community] @areusch -> PMC (#9604)",
-    "body": "",
-    "author": "zhiics",
-    "date": "2021-11-29T19:51:02Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2154/display/redirect"
-      },
-      {
-        "name": "CI / Build (windows-2016)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4358570488?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Build (macOS-latest)",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4358570516?check_suite_focus=true"
       }
     ]
   }
