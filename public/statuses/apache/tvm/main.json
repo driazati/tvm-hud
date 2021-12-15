@@ -1,5 +1,30 @@
 [
   {
+    "sha": "094a73d4e43a25651555bab9b1fd6373262208c3",
+    "headline": "Fix typo (#9740)",
+    "body": "",
+    "author": "vinx13",
+    "date": "2021-12-15T11:10:13Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2260/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/4533116765?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4533116894?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1639570455.010196
+  },
+  {
     "sha": "e7b5d2dde89acaad523a081047f7f26e957faefe",
     "headline": "[Relay] Support large constants saved/loaded outside of VM executable\u2026",
     "body": "\u2026 (#9734)\n\n* [Relay] Support large constants.\r\n\r\nThis allows constant tensors at or above a given byte limit to be marked as\r\n'late bound' and saved/reloaded to a file independently of the overall\r\nexecutable. Since the executable is often embedded in the data segment of\r\ngenerated runtime Modules this avoids problems with external tools which can't\r\nhandle multi-gigabyte data segments.\r\n\r\n[ACE-466 in OctoML JIRA]\r\n\r\n* [checkpoint] fix latent bytecode/code bug",
@@ -21,8 +46,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4530539986?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1639566464.456595
+    ]
   },
   {
     "sha": "ecc2e563df1a0b1d7e9d712bce90ee94948c3848",
@@ -57,7 +81,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2257/display/redirect"
       },
       {
@@ -81,7 +105,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2256/display/redirect"
       },
       {
@@ -2363,30 +2387,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4378184153?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "3047709f2ad24f781d21fdad77a457feb80876c9",
-    "headline": "[Relay] Use LowerTEPass in VM (#9483)",
-    "body": "We replace use of the TECompiler::{Lower,LowerShapeFunc} methods from the VM's\r\ncompiler.cc with LowerTEPass. This clears the way for performing post-lowering\r\nIRModule->IRModule transformations which combine Relay and TIR analysis. In particular,\r\nit will allow us to use the PlanDevices pass to propagate memory scope constraints\r\nacross PrimFuncs.\r\n\r\nWe run LowerTEPass fairly early in the pipeline, which required quite a few passes\r\nto become 'post-lowering friendly'. In particular, ManifestAlloc is now run after\r\nrather than before lowering, and so must now work in a mixed Function/PrimFunc world.\r\n\r\nThe \"vm.shape_func\" operator has been removed since a) lowering has already generated\r\nthe necessary dynamic shape function, and b) the call to that function can be\r\nrepresented by an 'ordinary' vm.invoke_tvm_op call.\r\n\r\nWe worked our way through the following glitches:\r\n - Dynamic shape functions are now given their true type (rather than the type of\r\n   the primitive function they are paired with).\r\n - Lowering was choosing definitional GlobalVars which were not pointer-equal to the\r\n   referential GlobalVars left behind in the rewritten Calls. We fixed that in\r\n   te_compiler.cc, though better would be to push GlobalVars deeper into the\r\n   lowering machinery.\r\n - device_copy was rewritten to a call to @__copy without any definition. Though we\r\n   tried adding it as a global this (obviously in retrospect...) won't typecheck if\r\n   there are multiple device_copies in the program. Instead leave device_copy unchanged\r\n   during lowering and update each executor codegen to look for them specially.\r\n - Calls to already-compiled BYOC functions were indistinguishable from calls\r\n   to (non-primitive) Relay functions. We move them into the call_lowered calling\r\n   convention, and leave behind a Function tagged with \"ExternalSymbol\". Better would\r\n   be a first-class representatn for externals in the IRModule but one step at a time.\r\n - Functions with dynamic shapes tagged for BYOC compilation were not tracking their\r\n   connection to their dynamic shape function. We now use exactly the same attributes\r\n   as for non-BYOC primitives.\r\n - VerilatorRuntime can legitimately be deleted before initialized.\r\n - IRModule attributes must be preserved. In particular, since LowerTEPass can\r\n   be invoked more than once we need to be careful to preserve any existing external\r\n   modules and other attributes gatherd from an earlier LowerTEPass.\r\n - GetUniqueName accounts for existing definitions in the module, but is not used\r\n   for external functions since their intended names are communicated to the codegen\r\n   toolchain via the already fixed \"global_symbol\" attribute.",
-    "author": "mbs-octoml",
-    "date": "2021-12-01T07:15:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2161/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4378055247?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4378055300?check_suite_focus=true"
       }
     ]
   }
