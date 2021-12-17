@@ -1,5 +1,32 @@
 [
   {
+    "sha": "8738ba6a1270e72dad47f1013a8fd5c93188b419",
+    "headline": "fix embed constant",
+    "body": "",
+    "author": "shengxinhu",
+    "date": "2021-12-17T10:04:17Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9767/2/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4558891848?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4558891935?check_suite_focus=true"
+      }
+    ],
+    "pr": 9767,
+    "pr_title": "[PartitionPattern] Modify  Pattern Partitioner to only check expr in current group",
+    "updated_at": 1639738914.068348
+  },
+  {
     "sha": "b8ea8f43c5da6a4b5641ba245ce11b820678c50c",
     "headline": "[Relay] Optimize dataflow partition to only check expr in current group",
     "body": "",
@@ -23,8 +50,7 @@
       }
     ],
     "pr": 9767,
-    "pr_title": "[PartitionPattern] Modify  Pattern Partitioner to only check expr in current group",
-    "updated_at": 1639735332.652071
+    "pr_title": "[PartitionPattern] Modify  Pattern Partitioner to only check expr in current group"
   },
   {
     "sha": "f052eeaab5b26e715eaa299e52e84344a410e3fa",
@@ -3026,6 +3052,32 @@
     "pr_title": "[Relay, BYOC] Make constant binding in PartitionGraph optional"
   },
   {
+    "sha": "787f8a6985673aae1f1a6c3515d8d3c779fbecca",
+    "headline": "[Target] Fix device mask issue and typos",
+    "body": "",
+    "author": "leeexyz",
+    "date": "2021-12-12T19:47:08Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9768/1/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4559048669?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4559048736?check_suite_focus=true"
+      }
+    ],
+    "pr": 9768,
+    "pr_title": "[Target] Fix device mask issue and typos"
+  },
+  {
     "sha": "da703c8038a872c64257aa306416f8dde33d06ff",
     "headline": "Fix GLOBAL_SCOPE Shallow copy bug",
     "body": "In the process of using autotvm to tune dense_pack (python/tvm/topi/x86/dense.py:242) did not enter in_tuning, that is, autotvm.GLOBALSCOPE.in_tuning = False, but in the tuner.tune function (python/ tvm/autotvm/tuner/tuner.py:123) has been set to True.\n\nLog in some key positions and get:\n\n1. The main process (python/tvm/autotvm/tuner/tuner.py)\nFunction tune GLOBAL_SCOPE = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f3dc62da0b8>\n\nFunction tune GLOBAL_SCOPE.in_tuning = True\n\n2. Child process reset(python/tvm/autotvm/env.py)\n\nFunction reset_global_scope old GLOBAL_SCOPE = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f8e361c2128>\n\nFunction reset_global_scope old GLOBAL_SCOPE.in_tuning = False\n\nFunction reset_global_scope new GLOBAL_SCOPE = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f8d488ff9b0>\n\nFunction reset_global_scope new GLOBAL_SCOPE.in_tuning = True\n3.  Child process dense_pack(python/tvm/topi/x86/dense.py)\nFunction dense_pack autotvm.GLOBAL_SCOPE = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f8e361c2128>\n\nFunction dense_pack autotvm.GLOBAL_SCOPE.in_tuning = False\n\nFunction dense_pack autotvm.GLOBAL_SCOPE.current = <tvm.autotvm.env.AutotvmGlobalScope object at 0x7f8d488ff9b0>\n\nFunction dense_pack autotvm.GLOBAL_SCOPE.current.in_tuning = True\n\nThe main process passes the current value of GLOBAL_SCOPE to the child process, and the child process resets its own GLOBAL_SCOPE and changes current at the same time.\nHowever, the address of autotvm.GLOBALSCOPE in dense_pack has not changed, and it is still the old GLOBALSCOPE. At this time, current is changed.\n\nI think the reason for this bug is that the reset_global_scope function is a shallow copy of GLOBAL_SCOPE, and the problem is solved after replacing it with a deep copy.",
@@ -3256,32 +3308,6 @@
     "jobs": [],
     "pr": 9727,
     "pr_title": "[TE][TIR] Implement layout transformations, non-flat memory buffers"
-  },
-  {
-    "sha": "21e02a739591999f92be7ca8884bff40a247dc51",
-    "headline": "Fix LLVM version for Hexagon",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2021-12-10T20:19:54Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9711/1/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4488233562?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4488233631?check_suite_focus=true"
-      }
-    ],
-    "pr": 9711,
-    "pr_title": "[LLVM][Hexagon] Fix LLVM version"
   },
   {
     "sha": "8f2752380f1819bbe5ee621cf6160bf62b55d0e6",
