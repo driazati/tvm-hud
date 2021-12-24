@@ -24,7 +24,7 @@
     ],
     "pr": 9796,
     "pr_title": "[TE] Support varargs in te.compute",
-    "updated_at": 1640305012.253185
+    "updated_at": 1640310717.925291
   },
   {
     "sha": "6bb1c3bb36b7ec098e97accb7b5d518dc575e484",
@@ -1301,6 +1301,32 @@
     "pr_title": "[Docker] Update to Torch 1.10.1 "
   },
   {
+    "sha": "ffb1fe0dbf408ce0769124f9a30c7b5c0bb11882",
+    "headline": "[Runtime][ThreadPool]Supporting parallel execution of multiple backen\u2026",
+    "body": "\u2026d runtime by specifying a cpu affinity list for each runtime.\n\nIssue:\nCurrent logic of tvm [Runtime][ThreadPool] assume all of the cpu resources are available for\na single backend runtime to do the data flow computation. But such assumption may not\ntrue when user running multiple task on the system and not want tvm task\nexhaust all of the cpu resource, or when user going to run multiple backend\nruntime of tvm on the system, each backend runtime of tvm should use different cpu\naffinity settings to achieve best performance.\n\nSolution:\nIn this solution, we introduce a new \"CPU AffinityMode type\" named \"kSpecify\", by using\n\"kSpecify\" and the function named \"tvm::runtime::threading ::Configure\" user can specify\nthe cpu list for the cpu affinity of a backend runtime.\n\nThis solution reused the existing per thread thread pool logic of [Runtime][Threadpool] that\ncreated a worker thread pool for current thread which can running a particular runtime. for a multiple\nruntime use case, user can first launch multiple threads, then call \"tvm::runtime::threading ::Configure\"\nwith cpu list to create tvm data flow worker thread pool, after doing this the execution of the multiple\nruntime on the multiple threads will use different cpu resource list.",
+    "author": "huajsj",
+    "date": "2021-12-18T01:34:03Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9802/1/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4623393775?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4623393810?check_suite_focus=true"
+      }
+    ],
+    "pr": 9802,
+    "pr_title": "[Runtime][ThreadPool]Supporting parallel execution of multiple backend runtime by specifying a cpu affinity list for each runtime."
+  },
+  {
     "sha": "c4860b4ae744068b259509834f8e28a622fdc433",
     "headline": "fix lint in cxx",
     "body": "",
@@ -2229,32 +2255,6 @@
     ],
     "pr": 9748,
     "pr_title": " Overload get() function for `Optional` type."
-  },
-  {
-    "sha": "db523c53d589efeb8ba6893f4e0298a3395eeab8",
-    "headline": "fix compact_dataflow",
-    "body": "Co-authored-by: Bohan Hou <32121147+spectrometerHBH@users.noreply.github.com>\nCo-authored-by: Hongyi Jin <3231950289@qq.com>\nCo-authored-by: Ruihang Lai <lairuihangdongdong@qq.com>\nCo-authored-by: Junru Shao <junrushao1994@gmail.com>\nCo-authored-by: Wuwei Lin <wuwei@apache.org>\nCo-authored-by: Xiyou Zhou <xiyou@octoml.ai>",
-    "author": "Hzfengsy",
-    "date": "2021-12-15T07:46:36Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9747/1/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4531054189?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4531054227?check_suite_focus=true"
-      }
-    ],
-    "pr": 9747,
-    "pr_title": "[TensorIR] fix compact_dataflow"
   },
   {
     "sha": "e0fb117c1ca75f765d44ef05b98fae6635509632",
