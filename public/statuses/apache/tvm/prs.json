@@ -24,7 +24,7 @@
     ],
     "pr": 9807,
     "pr_title": "[Target][BugFix] Convert dict and str to TVM object",
-    "updated_at": 1640656346.173749
+    "updated_at": 1640658353.467991
   },
   {
     "sha": "0cb7b59fc0abbb1163685cf145604e503edb00eb",
@@ -37,6 +37,16 @@
         "name": "tvm-ci/pr-merge",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9788/6/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4646647917?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4646647933?check_suite_focus=true"
       }
     ],
     "pr": 9788,
@@ -155,32 +165,6 @@
     "jobs": [],
     "pr": 9805,
     "pr_title": "[BugFix][TensorIR] Non-positive constant input factors for `split`"
-  },
-  {
-    "sha": "2da18e5c29a5385e6a4fd84401977116b3e8a086",
-    "headline": "fix ci build issue, compatible with glibc 2.24 used by ci docker image.",
-    "body": "",
-    "author": "hua jiang",
-    "date": "2021-12-26T08:50:10Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9802/4/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4635456815?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4635456849?check_suite_focus=true"
-      }
-    ],
-    "pr": 9802,
-    "pr_title": "[Runtime][ThreadPool]Supporting parallel execution of multiple backend runtime by specifying a cpu affinity list for each runtime."
   },
   {
     "sha": "f5568db16b38470aff7323860ec2b191058144ad",
@@ -1504,30 +1488,30 @@
     "pr_title": "[Docker] Update to Torch 1.10.1 "
   },
   {
-    "sha": "a69aa58bab259105e5e3650dbc772712908bda6e",
-    "headline": "[Runtime][ThreadPool]Supporting parallel execution of multiple backen\u2026",
-    "body": "\u2026d runtime by specifying a cpu affinity list for each runtime.\n\nIssue:\nCurrent logic of tvm [Runtime][ThreadPool] assume all of the cpu resources are available for\na single backend runtime to do the data flow computation. But such assumption may not\ntrue when user running multiple task on the system and not want tvm task\nexhaust all of the cpu resource, or when user going to run multiple backend\nruntime of tvm on the system, each backend runtime of tvm should use different cpu\naffinity settings to achieve best performance.\n\nSolution:\nIn this solution, we introduce a new \"CPU AffinityMode type\" named \"kSpecify\", by using\n\"kSpecify\" and the function named \"tvm::runtime::threading ::Configure\" user can specify\nthe cpu list for the cpu affinity of a backend runtime.\n\nThis solution reused the existing per thread thread pool logic of [Runtime][Threadpool] that\ncreated a worker thread pool for current thread which can running a particular runtime. for a multiple\nruntime use case, user can first launch multiple threads, then call \"tvm::runtime::threading ::Configure\"\nwith cpu list to create tvm data flow worker thread pool, after doing this the execution of the multiple\nruntime on the multiple threads will use different cpu resource list.",
+    "sha": "52ba194377b6471cada04f7412c5fa22a10cb445",
+    "headline": "[Runtime][ThreadPool] Refactor affinity function and support CPU affi\u2026",
+    "body": "\u2026nity list setting.\n\nIssue:\n1. There are multiple affinity function using \"LINUX\" and \"ANDROID\" macro\ncheck and the multiple check make the logic maintain and change become\ncomplex.\n\n2. Current logic of tvm [Runtime][ThreadPool] assume all of the cpu resources are available for\na single backend runtime to do the data flow computation. But such assumption may not\ntrue when user running multiple task on the system and not want tvm task\nexhaust all of the cpu resource, or when user going to run multiple backend\nruntime of tvm on the system, each backend runtime of tvm should use different cpu\naffinity settings to achieve best performance.\n\nSolution:\n1.Refactor the affinity functions to move the \"LINUX\" and \"ANDROID\" check\ninto one function.\n\n2.In this solution, we introduce a new \"CPU AffinityMode type\" named \"kSpecify\", by using\n\"kSpecify\" and the function named \"tvm::runtime::threading ::Configure\" user can specify\nthe cpu list for the cpu affinity of a backend runtime.\n\nThis solution reused the existing per thread thread pool logic of [Runtime][Threadpool] that\ncreated a worker thread pool for current thread which can running a particular runtime. for a multiple\nruntime use case, user can first launch multiple threads, then call \"tvm::runtime::threading ::Configure\"\nwith cpu list to create tvm data flow worker thread pool, after doing this the execution of the multiple\nruntime on the multiple threads will use different cpu resource list.",
     "author": "huajsj",
     "date": "2021-12-18T01:34:03Z",
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9802/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-9802/5/display/redirect"
       },
       {
         "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4625522672?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4646699543?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/4625522730?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4646699589?check_suite_focus=true"
       }
     ],
     "pr": 9802,
-    "pr_title": "[Runtime][ThreadPool]Supporting parallel execution of multiple backend runtime by specifying a cpu affinity list for each runtime."
+    "pr_title": "[Runtime][ThreadPool]Refactor affinity function and support CPU affinity list setting."
   },
   {
     "sha": "c4860b4ae744068b259509834f8e28a622fdc433",
