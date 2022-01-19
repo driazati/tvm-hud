@@ -1,5 +1,102 @@
 [
   {
+    "sha": "928be03673f455e96563cd43b7100482732bb556",
+    "headline": "[Hexagon] Add missing #include <iterator> (#9968)",
+    "body": "This fixes compilation error with libstdc++.",
+    "author": "kparzysz-quic",
+    "date": "2022-01-19T05:53:43Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2428/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4863619205?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4863619236?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1642572625.568798
+  },
+  {
+    "sha": "da3b63ec58f86bb72206f5b60870d0a479f62781",
+    "headline": "[Hexagon] Return pathlib.Path from get_hexagon_rpc_path() (#9969)",
+    "body": "Type annotations don't do anything, the type conversion needs to be\r\nexplicit.",
+    "author": "kparzysz-quic",
+    "date": "2022-01-19T05:53:25Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2427/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4863617464?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4863617497?check_suite_focus=true"
+      }
+    ]
+  },
+  {
+    "sha": "19717aa6570c9e3aadf22d535ac229b1f7647935",
+    "headline": "[TOPI,x86] Improve performance on int8 conv2d on x86 (#9966)",
+    "body": "Appended fused operations in cov2d for int8 were computed in a separate\r\nloop from the main conv2d computation:\r\n```\r\nfor i in ... parallel\r\n  for j in ...\r\n    accumulator = 0\r\n    for k in ..\r\n      vectorized_multiply_add(accumulator, data, kernel)\r\n    out = accumulator\r\n  for k in ..\r\n    out = out + fused subsequent ops\r\n```\r\nThis patch moves the fused ops one more loop nesting inwards to get\r\n```\r\nfor i in ... parallel\r\n  for j in ...\r\n    accumulator = 0\r\n    for k in ..\r\n      vectorized_multiply_add(accumulator, data, kernel)\r\n    out = accumulator + fused subsequent ops\r\n```\r\nOn quantized mobilenetv2, this results in approximately a 30% speedup.",
+    "author": "tkonolige",
+    "date": "2022-01-19T05:52:53Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2426/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4863614210?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4863614238?check_suite_focus=true"
+      }
+    ]
+  },
+  {
+    "sha": "904b4ae10ca1455b0960f2e99abd57e690f9c2f4",
+    "headline": "[CI] Upgrade ONNX (#9965)",
+    "body": "* jenkinsfile and one test\r\n\r\n* formatting\r\n\r\n* swtich to proper repo for docker\r\n\r\n* fix missing - with _\r\n\r\n* jostle\r\n\r\n* upgrade to latest images\r\n\r\n* jenkinsfile and one test\r\n\r\n* formatting\r\n\r\n* swtich to proper repo for docker\r\n\r\n* fix missing - with _\r\n\r\n* upgrade to latest images\r\n\r\n* jostle ci\r\n\r\n* update with official images\r\n\r\n* jostle ci",
+    "author": "AndrewZhaoLuo",
+    "date": "2022-01-19T05:52:41Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2425/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4863612729?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4863612764?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "b1bd18ea8a2d2c709b07c11a666018f14a22ebdf",
     "headline": "[Runtime][Pipeline executor] Global parameters group name and runtime\u2026",
     "body": "\u2026 modules parameters map. (#9846)\n\n* [Runtime][Pipeline executor] Global parameters group name and runtime\r\nmodules parameters map.\r\n\r\nSolution:\r\nTo support on the fly parameters setting for each runtime module\r\nin pipeline executor, we create a feature that use global parameters\r\ngroup name to map the runtime module parameter, after such map\r\nrelation get created user can do the on the fly parameters setting\r\nby using the parameters group name.\r\n\r\ntrigger build.\r\n\r\nfix ut issue.\r\n\r\npolish comments.\r\n\r\nUpdate python/tvm/contrib/pipeline_executor.py\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\nUpdate python/tvm/contrib/pipeline_executor.py\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\nUpdate python/tvm/contrib/pipeline_executor.py\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\nUpdate python/tvm/contrib/pipeline_executor.py\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\nUpdate src/runtime/pipeline/pipeline_executor.h\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\nUpdate src/runtime/pipeline/pipeline_struct.h\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\nUpdate python/tvm/contrib/pipeline_executor.py\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\naddress review comments.\r\n\r\n* Update python/tvm/contrib/pipeline_executor.py\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>\r\n\r\n* fix plint issue.\r\n\r\nCo-authored-by: Cody Yu <comaniac0422@gmail.com>",
@@ -21,8 +118,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4859749555?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1642568873.94479
+    ]
   },
   {
     "sha": "4f29562dcc89a3c37d311cc8db02c767d1d997c4",
@@ -2276,102 +2372,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4716885484?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "92eeef6ddde9b113fd8263f1fc20f08c1c3fea0d",
-    "headline": "Calculate CMSIS-NN buffer size with respect to architecture extension\u2026",
-    "body": "\u2026s (#9338)\n\nThis correctly calculates the buffer sizes for a variety of targets\r\nbased on the `-mcpu` and `-mattr` flags passed to the `cmsis-nn` code\r\ngenerator.\r\n\r\nAdded for Conv2d, Depthwise Conv2d and Average Pool.",
-    "author": "Mousius",
-    "date": "2022-01-05T10:14:55Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/ci-docker-staging/190/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4713224129?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4713224262?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "b3314dec3309ecefeb96a65b6f9cbf5a2e4a015a",
-    "headline": "[Community] Bohan -> Committer (#9833)",
-    "body": "* [Community] Bohan -> Committer\r\n\r\n* Update CONTRIBUTORS.md\r\n\r\nCo-authored-by: Junru Shao <junrushao1994@gmail.com>\r\n\r\nCo-authored-by: Junru Shao <junrushao1994@gmail.com>",
-    "author": "merrymercy",
-    "date": "2022-01-05T10:12:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2326/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4713195142?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4713195294?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "9e20da86bcb0698e6d4498c1472e66e5e7c902d2",
-    "headline": "[BugFix] shapeOfAttrs should be registered before \"vm.shape_of\" used \u2026",
-    "body": "\u2026(#9669)\n\n* [BugFix] shapeOfAttrs should be registered before \"vm.shape_of\" used\r\n\r\n[BugFix] DialectRewriter should not tranform scaler to let expr\r\n\r\n* retry tests\r\n\r\n* retry tests again\r\n\r\n* optimzie and add unit test\r\n\r\n* retriger test\r\n\r\n* add comment\r\n\r\n* fix lint",
-    "author": "shengxinhu",
-    "date": "2022-01-05T09:15:57Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2325/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4712610191?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4712610267?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "689f2632dbf34c52efd4ec2414baaf66d42e07d2",
-    "headline": "Update required cmake version in docs. (#9484)",
-    "body": "* The version used in CI is the minimum version.\r\n * docker/bash.sh ci_gpu cmake --version prints\r\n       cmake version 3.10.2\r\n * Found in #9239",
-    "author": "areusch",
-    "date": "2022-01-04T17:35:19Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2324/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4705306980?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4705307060?check_suite_focus=true"
       }
     ]
   }
