@@ -1,5 +1,25 @@
 [
   {
+    "sha": "73bbfbb47819bb9f2f5015193533b4e01900fa4b",
+    "headline": "[Hexagon] Do not auto-build apps when building TVM (#9970)",
+    "body": "* [Hexagon] Do not auto-build apps when building TVM\r\n\r\nThe Hexagon cmakes have recently become unwieldy due to a complex\r\nnetwork of dependencies between various automatically built components.\r\nThis was in large part because of trying to automatically build some\r\napps, which then tried to build TVM runtimes again, but with their\r\nown configurations.\r\n\r\nThis patch removes the ability to automatically build any Hexagon-\r\n-related apps from the main TVM build. The following cmake options\r\nare now deprecated:\r\n  - `USE_HEXAGON_LAUNCHER`\r\n  - `USE_HEXAGON_PROXY_RPC`\r\n\r\nIn order to build the binaries needed for HexagonLauncher from\r\ntvm.contrib.hexagon:\r\n  - Build TVM+runtime for x86, with codegen for Hexagon enabled.\r\n    This can be done via `USE_HEXAGON_DEVICE=sim` or `target`.\r\n  - Build Android runtime and tvm_rpc with `-DUSE_RPC=ON`,\r\n    `-DUSE_CPP_RPC=ON`, and `-DUSE_HEXAGON_RPC=ON`.\r\n  - Build Hexagon runtime with `-DUSE_HEXAGON_RPC=ON`, and\r\n    `-DBUILD_STATIC_RUNTIME=ON`.\r\n\r\n* Add README.md\r\n\r\n* Restart CI\r\n\r\n* Add optional variable to set output directory",
+    "author": "kparzysz-quic",
+    "date": "2022-01-24T19:08:51Z",
+    "jobs": [
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4926915378?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/4926915491?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1643054944.346509
+  },
+  {
     "sha": "6f2b35feb59826b010b131722c5b7d47079df8a9",
     "headline": "[QNN] Add qnn.rsqrt op (#9982)",
     "body": "* Add qnn.rsqrt op\r\n\r\n* Add comment",
@@ -13,11 +33,10 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/4926801556?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1643051247.3513
+    ]
   },
   {
     "sha": "65b4b09381c52745e7bdfb2d05c91e962a4eb3ff",
@@ -33,7 +52,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/4926611938?check_suite_focus=true"
       }
     ]
@@ -2328,30 +2347,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4773622457?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "31c22c54b5ecf4dc59eaff466ad974a63724a62c",
-    "headline": "Combine unit and integration test steps into one stage (#9733)",
-    "body": "This removes the barrier wait between test and integration tests in CI. This will increase capacity requirements and usage but, assuming we can meet that with autoscaler, should reduce CI times by an hour or two since we're doing all the testing in parallel.\r\n\r\nThe slow path is CPU unit test -> GPU frontend tests, so kicking off the GPU frontend tests faster should help decrease CI runtime.\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
-    "author": "driazati",
-    "date": "2022-01-11T09:31:38Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2370/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4773237876?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4773237980?check_suite_focus=true"
       }
     ]
   }
