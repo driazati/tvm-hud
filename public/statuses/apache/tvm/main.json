@@ -1,5 +1,59 @@
 [
   {
+    "sha": "a8741e2d0f66437349738fdbb7c3da80704c6eab",
+    "headline": "[microNPU] Fix layout assignment in layout optimizer pass (#10143)",
+    "body": "Fixes the layout optimizer incorrectly assigning layouts for graphs with\r\nmore complex topologies than previously considered. Specifically, this\r\ncommit now ensures that intermediate layouts match (e.g. parent output =\r\nchild input) and that all consumers are taken into account when altering\r\nthe output layout - something not done previously due to an incorrect\r\ntraversal order.\r\n\r\nPreviously, the input layout was always altered if the producer was an\r\nNPU operation without regard to the output layout of that operation.\r\nAdditionally, is was possible for the output layout to be incorrectly\r\nset due to a depth-first post-order of traversal of the graph, meaning\r\nit was possible for not all consumers to be taken into account when\r\naltering the layout.\r\n\r\nNow the `AnalyzeConsumers` pass is run before `LayoutOptimization` which\r\ndetermines a mapping from NPU operation to list of boolean values that\r\nrepresent whether or not each consumer is an NPU operation. Since this\r\nis completed before `LayoutOptimization`, all consumers are guaranteed\r\nto be taken into account when altering the output layout. In turn, the\r\ninput layouts can correctly be determined by checking whether the output\r\nof the producer will be altered.\r\n\r\nChange-Id: I04e9605da65fa9f12801109dd50c5e3f08cbc73c",
+    "author": "lhutton1",
+    "date": "2022-02-03T22:59:27Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2453/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5059530399?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5059530435?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5059550784?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1643929644.61212
+  },
+  {
+    "sha": "87365934d4b1bd36c4f4aa3f7ea99b371fd8df4a",
+    "headline": "[CI] Update ci_arm and ci_lint (#10146)",
+    "body": "This includes sccache, and these are the less troublesome images.\r\n\r\nAlso see #10120 for update issue.",
+    "author": "Mousius",
+    "date": "2022-02-03T22:58:51Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2452/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5059525160?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5059525212?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "455c02a833b56bf5c91908ce1bb64a835d797df1",
     "headline": "[TVMScript] Support T.buffer_decl using data pointer from Let/Allocat\u2026",
     "body": "\u2026e (#10099)\n\n* [TVMScript] Added unit tests demonstrating desired functionality\r\n\r\n* [TVMScript] Implemented parsing of T.Ptr[...]\r\n\r\nThese can be generated when exporting to TVMscript, but were not\r\nparsable after being generated.\r\n\r\n* [TVMScript] Updated buffer_var printing\r\n\r\nLetStmt and AllocateNode can both be used to generate handles that are\r\nused in Buffer objects.  In these cases, the Buffer declarations must\r\ngo after the handle declaration, not in the function header.\r\n\r\n* Moved printing of var and buffer_decl into separate statements.\r\n\r\n* Updated following @shingjan's review comments.",
@@ -60,9 +114,23 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5058929383?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5059138617?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5059259290?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5059408417?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1643926104.297932
+    ]
   },
   {
     "sha": "f2b7e82adf961019eeb4b1cdedc54041647f3092",
@@ -2829,54 +2897,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4902356863?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "751f83b56576b04cc4c3957311f693ef2c2119f2",
-    "headline": "Auto-discover C/C++ compiler instead of hardcoding g++ (#10007)",
-    "body": "Some platforms (e.g. FreeBSD) use clang as the default OS compiler,\r\nand there is no g++.",
-    "author": "kparzysz-quic",
-    "date": "2022-01-21T21:25:08Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2454/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4902238913?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4902238984?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "25c8f4cea54b1e17280e89542c3f3f4fdbfade65",
-    "headline": "[frontend][keras] Add support for TimeDistributed (#7006)",
-    "body": "* First pass on modifying Keras importer to handle TimeDistributed\r\n\r\n* Use squeeze inside TimeDistributed, add tests\r\n\r\n* linter fixes\r\n\r\n* More linting\r\n\r\n* Even more linting\r\n\r\n* Fix unused argument annotations\r\n\r\n* Forgot one pylint annotation\r\n\r\n* Forgot to set up data layout in _convert_activation\r\n\r\n* Decouple data_layout from etab\r\n\r\n* Linting fix\r\n\r\n* Forgot to set data_layout argument\r\n\r\n* Missed an etab.data_format, also test_conv1d was not in the test file's main\r\n\r\n* Rebase fixes\r\n\r\n* Linting fix\r\n\r\n* _convert_lambda needs a data layout argument too\r\n\r\n* linting fix too\r\n\r\n* Lint the test file too\r\n\r\n* Redundant variables\r\n\r\n* Simplify further\r\n\r\n* Another simplification\r\n\r\nCo-authored-by: Steven Lyubomirsky <slyubomirsky@octoml.ai>",
-    "author": "slyubomirsky",
-    "date": "2022-01-21T18:05:19Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2453/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4900217858?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4900217964?check_suite_focus=true"
       }
     ]
   }
