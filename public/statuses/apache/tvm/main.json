@@ -1,5 +1,50 @@
 [
   {
+    "sha": "7c22f3fb945a8a3b629562b32c77d3e0a174c5d4",
+    "headline": "[Conda] Fix a compatibility bug in conda scripts (#10201)",
+    "body": "Remove `max_pin` requirements for `cudnn` library to be compatible with `cudatoolkit>=11`",
+    "author": "LyricZhao",
+    "date": "2022-02-10T14:11:42Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2499/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5142055245?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5142055418?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5142166162?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5142336026?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5142555211?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5142784715?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1644505744.669822
+  },
+  {
     "sha": "09f7be28a1ed7e629ddc0c9fcf19d4feace05dd4",
     "headline": "Implementation of Common Subexpression Elimination for TIR (#9482)",
     "body": "* Initial implementation of Common Subexpression Elimination for TIR (#703)\r\n\r\nThe goal of this PR is to implement a Common Subexpression Elimination (CSE) pass for TIR, which aims at identifying redundant computations (both within statements and within expressions), and to replace them by a new fresh variable, introduced before the first occurrence of the redundant computation.\r\n\r\nNote that it does not only try to do commoning on full expressions, but it is also able to do it on subexpressions. For instance, if the program computes the expression (w+x) + (y+z) and the expression (w+x)+u, it will introduce the subexpression (w+x) into a new variable.\r\n\r\nIf we want so, it will be easily possible in the future to make the notion of equivalence between terms more flexible, allowing for instance to identify expressions modulo commutativity (identifying for instance (x+y) with (y+x)), modulo associativity (identifying for instance (x+y)+z with x+(y+z)), etc. Replacing only the function bool EquivalentTerms(const PrimExpr& a, const PrimExpr& b) will be the only thing needed in order to do that. The typical way to rewrite it for such extensions would be to compute a canonical representant of a and a canonical representant of b and to then compare them with the strict syntactical equality.\r\n\r\nThe main CSE pass is declared and implemented respectively in the files common_subexpr_elim.h and common_subexpr_elim.cc.\r\nThe function Stmt CommonSubexpressionEliminator::VisitStmt(const Stmt& stmt) is a good entry point as it contains many comments about what the pass is doing.\r\n\r\nThe general idea of this pass is that it tries to introduce at the current level (the current root) the computations that are redundant and which are possible to introduce there (they should only contain variables that are in scope). This notion of variables in scope is implemented with a context, which is a vector of pairs (var, MaybeValue). The context is not only used for checking that variables that appear in candidate computations are known at this point, but also for checking if a computation has already been introduced into a variable.\r\n\r\nFor a greater flexibility in the future, there is a strong distinction already in place between :\r\n\r\n    - Syntactic computations, which are maintained in a hashtable which associates expressions (the computations already seen) to size_int (the number of times the computation has been seen).\r\n    - Semantic entities, which are obtained from the syntactic computations by merging equivalent computations (where this notion of \"equivalent\" is customizable). Semantic entities are stored into a vector of pairs (expr, size_int) where, again, the number is the number of times that expr or equivalent computations have been seen.\r\n\r\nThe VisitStmt() method starts by computing the syntactic computations (implemented in an auxiliary analysis), then it merges equivalent computations to obtain the semantic computations. Then it sorts these semantic computations from biggest to smallest in order to always consider first the biggest computations. The rest will essentially be a loop over all these candidates, which will stay sorted.\r\n\r\nWhen dealing with a candidate computation, there are three cases that can happen:\r\n\r\n    1 - Rare case A variable in the context already contains this computation. This variable can't have been introduced by the CSE, as we would have performed the replacements at the same time (see case 2). So this is the case where the user himself (or the previous TIR passes) has written something like \"let x = A in ...A...A...)\"\r\n    -> In this case, we simply perform the replacements of A with x in the current result. These replacements are done by an auxiliary transform/Mutator, declared and implemented in replace_expr_selected.h and in replace_expr_selected.cc.\r\n\r\n    2 - Case where we need to introduce the current computation inside a new variable This is the case where all the variables used by the current computation are within scope (i.e. are present in the context) and where our internal heuristic/predicate tells us to introduce this computation into a new variable.\r\n    -> In this case, a new variable new_var_i is generated, all the locations that use this computation in result are replaced by this fresh variable (using the same auxiliary Mutator mentioned in 1.), and the current result is replaced by let new_var_i = currentComputation in result.\r\n\r\n    3 - Case where we can't or don't want to introduce this computation inside a new variable This is the case where we either can't introduce the current computation inside a new variable (because it contains variables that are not yet in scope there) or because our internal heuristic/predicate did not want to introduce it.\r\n    -> In this case, we will compute the direct sub-expressions of the current computation (implemented by an auxiliary analysis), and we will add them to the vector of semantic computations so that they have a chance to be considered later. Note that they are added while still preserving the order.\r\n    Note that we do not add all the sub-expressions of the current expression but only its direct subexpressions given the fact that we always consider them from biggest to smallest, and given that some candidates are mutually exclusive. Otherwise it would be computationally more intensive and it would pose the problem of cleaning the vector of candidate computations when one of them gets introduced into a variable. Evaluating them lazily by only looking at the direct sub-expressions is at the same time more efficient and simpler.\r\n\r\nOnce the entire vector of semantic computations has been tried, the main function VisitStmt() calls the general dispatcher , which will in turn call the appropriate handlers. The only specific task of overridden handlers will be to update the context appropriately as new variables are introduced into scope (via Let-In, via For loop, etc) or leave the current scope. Thus, they will update the context appropriately before and after the calls to VisitStmt() and VisitExpr() on the child nodes.\r\n\r\n* Added empty newline at the end of every new file\r\n\r\n* Rolled-back the pointer to the submodule vta-hw\r\n\r\n* Improved the CSE by not commoning at the toplevel redundant computations that only appear in one of the possible execution path (for instance, only in the then/else branch of an IF statement). Redundant computations that appear only in a specific execution path are now being commoned at the entrance of their specific execution path instead of earlier at the toplevel. Introducing them at the toplevel was an anti-optimization as the redundant computation might not have been comptued at all. Added two additional tests for this too.\r\n\r\n* Spelling and comment\r\n\r\n* Improved the CSE by not commoning at the toplevel redundant computations that only appear in one of the possible execution path (for instance, only in the then/else branch of an IF statement). Redundant computations that appear only in a specific execution path are now being commoned at the entrance of their specific execution path instead of earlier at the toplevel. Introducing them at the toplevel was an anti-optimization as the redundant computation might not have been comptued at all. Added two additional tests for this too.\r\n\r\n* Revert \"Improved the CSE by not commoning at the toplevel redundant computations that only appear in one of the possible execution path (for instance, only in the then/else branch of an IF statement). Redundant computations that appear only in a specific execution path are now being commoned at the entrance of their specific execution path instead of earlier at the toplevel. Introducing them at the toplevel was an anti-optimization as the redundant computation might not have been comptued at all. Added two additional tests for this too.\"\r\n\r\nThis reverts commit c4138d9afc28e79f107a4eccf988a6d93221eb5a.\r\n\r\n* Fixed reference used for no reason instead of normal variable.\r\n\r\n* Added comment explaning why we do not need the union/intersection over N tables at the moment (because we would only use it for N=3)\r\n\r\n* Did most of the changes suggested by upstream\r\n\r\n* Continued to work on the remarks given on the public repo.\r\n\r\n* Final remarks addressed, small formatting things, and fixing things reported by the linter\r\n\r\n* Last linter fix.\r\n\r\n* Fixing newline\r\n\r\n* Adding newline missing.\r\n\r\n* Minor commit for style fo conform with clang-format\r\n\r\n* Removed trailing space at end of line\r\n\r\n* And more minor style changes\r\n\r\n* Fixing style of the python test files\r\n\r\n* And one more for style in python tests!\r\n\r\n* This linter is very annoying to force the style of indentation in a comment, in a test file. It makes it harder to read in this case! And that incitates people to not write comments\r\n\r\n* Deactivate the CSE pass for the lowering tests as it would otherwise do some commoning, and improve the way the CSE recurse + test added for cascade commonings\r\n\r\n* Fixing new lint offenses\r\n\r\n* Removing debug statement\r\n\r\n* Restore other test file to its previous state\r\n\r\n* One more for the linter...\r\n\r\n* Linter again, this time for the new test...\r\n\r\n* again\r\n\r\n* again...\r\n\r\n* Deactivating the CSE pass for another lowering test as it does some commoning\r\n\r\n* Disabling the CSE for the a test for GPU too\r\n\r\n* Trying to fix a VTA test by disabling the CSE pass for it, as it probably does some commoning\r\n\r\n* Complying with the linter\r\n\r\n* Restarting the CI 1/2\r\n\r\n* Restarting the CI 2/2\r\n\r\n* Restarting CI 1/2\r\n\r\n* Restarting CI 2/2\r\n\r\n* Slightly reduce size of large pretty printer test, copied from https://github.com/apache/tvm/pull/10026/commits/ae98f9e7809cbf8d910fa16bfeac8364196e57d7\r\n\r\n* Trying to resolve the problems on the weird tests\r\n\r\n* Linter.\r\n\r\n* Restarting CI which has skipped the MacOS build for no reason 1/2\r\n\r\n* Restarting CI which has skipped the MacOS build for no reason 2/2\r\n\r\n* Commented buggy tests\r\n\r\n* Linter...\r\n\r\n* Restore the VTA tests, and use trick kindly given  by Masa to disable the CSE pass for the VTA tests, as vta.build() overwrittes the config\r\n\r\n* New fix, which this time does not break the doc (VTA uses a set with {} for the disabled passes instead of a list with [] for some reason\r\n\r\n* More VTA fixes\r\n\r\n* vta tutorial fix\r\n\r\nCo-authored-by: Masahiro Masuda <masahi129@gmail.com>",
@@ -13,7 +58,7 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5140930972?check_suite_focus=true"
       },
       {
@@ -51,8 +96,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5141902807?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1644502100.171186
+    ]
   },
   {
     "sha": "222152b6a2e920cdf394a83182ff938530c52c7d",
@@ -63,7 +107,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2497/display/redirect"
       },
       {
@@ -137,7 +181,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2496/display/redirect"
       },
       {
@@ -5953,30 +5997,6 @@
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/4986103653?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "3af9c305a951162fda87cf01fce641f7ef62ec98",
-    "headline": "[microTVM] Update Zephyr to 2.7 (#10094)",
-    "body": "This supports the reference system added in #9853",
-    "author": "Mousius",
-    "date": "2022-01-28T17:30:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2395/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4984130278?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/4984130380?check_suite_focus=true"
       }
     ]
   }
