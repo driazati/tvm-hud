@@ -1,11 +1,61 @@
 [
   {
+    "sha": "b55997df0b5aa1bad1edd8b535a5a287c0acac5e",
+    "headline": "[microTVM][RVM] Skip USB device attach if device is already attached \u2026",
+    "body": "\u2026(#8737)\n\n* [microTVM][RVM] Skip USB device attach if device is already attached\r\n\r\nCurrently, when the VirtualBox provider is selected, if base-box-tool.py\r\n'test' command is used and a VM is already running with the USB device\r\nnecessary to perform the tests already attached to it the command fails\r\nbecause it tries to blindly attach again the USB device without checking\r\nif device is already attached.\r\n\r\nThe failure can be reproduced by first running a VM for testing (the\r\ntests need to fail and leave the VM running):\r\n\r\n$ ./base-box-tool.py --provider virtualbox test --microtvm-board=stm32f746g_disco\r\n\r\nthen one tries to re-run the tests without building the whole VM again:\r\n\r\n$ ./base-box-tool.py --provider virtualbox test --skip-build zephyr --microtvm-board=stm32f746g_disco\r\n\r\nThis commit fixes that error by checking and properly skipping the USB\r\ndevice attach if it's already attached to the VirtualBox VM.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* areusch review: Use --machinereadable for the output\r\n\r\nUse 'showvminfo --machinereadable' output to parse for more robustness\r\nto updates in VBoxManage.",
+    "author": "gromero",
+    "date": "2022-02-28T19:37:49Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2627/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5365019205?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5365019272?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5365109506?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5365141750?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5365283838?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5365330712?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1646079035.842807
+  },
+  {
     "sha": "b56770b2cb1d629cd852ff06f3ed8f7f9f8f4e88",
     "headline": "[microTVM] Zephyr: refactor _find_openocd_serial_port (#10346)",
     "body": "Refactor _find_openocd_serial_port() as a generic USB serial port\r\nfinder since other runners beyond openocd use it (e.g. jlink runner).\r\n\r\nAlso instead of using redundant hardcoded values in BOARD_USB_FIND_KW\r\ndict, use idVendor and idProduct from boards.json. And don't use 'usb'\r\nmodule to first find the serial number of the port and then pass it to\r\n'serial' module to obtain the port path, instead search for the port\r\npath directly via 'serial' module using the serial number (if provided)\r\nor use idVendor and idProduct values taken from boards.json.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>",
     "author": "gromero",
     "date": "2022-02-28T19:04:19Z",
     "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2626/display/redirect"
+      },
       {
         "name": "CI / MacOS",
         "status": "pending",
@@ -20,9 +70,28 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5364635019?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364798756?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364819478?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364944566?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364974171?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1646075272.351603
+    ]
   },
   {
     "sha": "5b5d969b0cb57526052553ee55a7c88608a132c0",
@@ -10608,30 +10677,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5222899674?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "b1206b66e2b125180270548522acea0a393d59e6",
-    "headline": "[Hexagon] Don't use cmake glob for auto-generated source files (#10259)",
-    "body": "* [Hexagon] Don't use cmake glob for auto-generated source files\r\n\r\nGlob treats inputs as patterns: if the file with a given name\r\ndoes not exist (is to be generated later), it won't be added to\r\nthe output.\r\n\r\n* Restart CI",
-    "author": "kparzysz-quic",
-    "date": "2022-02-16T20:43:14Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2527/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222895922?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222896000?check_suite_focus=true"
       }
     ]
   }
