@@ -1,5 +1,59 @@
 [
   {
+    "sha": "b56770b2cb1d629cd852ff06f3ed8f7f9f8f4e88",
+    "headline": "[microTVM] Zephyr: refactor _find_openocd_serial_port (#10346)",
+    "body": "Refactor _find_openocd_serial_port() as a generic USB serial port\r\nfinder since other runners beyond openocd use it (e.g. jlink runner).\r\n\r\nAlso instead of using redundant hardcoded values in BOARD_USB_FIND_KW\r\ndict, use idVendor and idProduct from boards.json. And don't use 'usb'\r\nmodule to first find the serial number of the port and then pass it to\r\n'serial' module to obtain the port path, instead search for the port\r\npath directly via 'serial' module using the serial number (if provided)\r\nor use idVendor and idProduct values taken from boards.json.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>",
+    "author": "gromero",
+    "date": "2022-02-28T19:04:19Z",
+    "jobs": [
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5364626847?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5364626933?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364635019?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1646075272.351603
+  },
+  {
+    "sha": "5b5d969b0cb57526052553ee55a7c88608a132c0",
+    "headline": "Add @slow decorator to run tests on `main` (#10057)",
+    "body": "* Add @slow decorator to run tests on `main`\r\n\r\nThis adds the infrastructure discussed in https://discuss.tvm.apache.org/t/rfc-ci-skip-slow-tests-on-prs/11910, but without affecting any tests. As we investigate reasons behind [slow tests](https://gist.github.com/driazati/e009f09ff44c6bc91c4d95a8e17fd6f1) in CI, this decorator will allow us to move these to run only on `main` and not PRs after checking with all concerned parties.\r\n\r\n* cleanup\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
+    "author": "driazati",
+    "date": "2022-02-28T18:59:57Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2625/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5364570272?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5364570383?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364586800?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "7127296c2b603e00344800f2d95aff5dc257f194",
     "headline": "[MetaSchedule] Arithmetic analysis (#10403)",
     "body": "This PR changes the normal form of the affine detector and supports a single var predicate. It also enhances ModularSet detector to enable floor mod patterns.",
@@ -13,12 +67,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5363334534?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5363334626?check_suite_focus=true"
       },
       {
@@ -60,9 +114,38 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5363915491?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364115603?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364157305?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364287401?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364314474?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364432267?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5364454316?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1646071877.190554
+    ]
   },
   {
     "sha": "9ca2139d0f3c52912b37a897c34d0d4175ce088a",
@@ -10549,79 +10632,6 @@
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5222896000?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "b16e230654847f06a4713de60208692bb8da99a6",
-    "headline": "[BUGFIX] Define kTargetPoolReadWriteAccess globally (#10262)",
-    "body": "* Fix bug\r\n\r\n* Fix whitespace\r\n\r\n* lint\r\n\r\n* Move the other consts out of PoolInfo",
-    "author": "electriclilies",
-    "date": "2022-02-16T20:16:05Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2526/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222575725?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222575835?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222623752?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222759699?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "646d1558299c86dd9f2a5f02e0cdc9187b9490d5",
-    "headline": "Fix JUnit failure reporting (#10121)",
-    "body": "* Fix spacing\r\n\r\n* Add try..finally everywhere\r\n\r\n* trigger ci\r\n\r\n* Fix pytest invocations\r\n\r\n* Remove junit collection where no files exist\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
-    "author": "driazati",
-    "date": "2022-02-16T19:19:08Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2525/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5221887537?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5221887652?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222033434?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222213392?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222395393?check_suite_focus=true"
       }
     ]
   }
