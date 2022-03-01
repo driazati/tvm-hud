@@ -1,5 +1,69 @@
 [
   {
+    "sha": "d101c50a794665a437253a6c1c0f30f74c30502f",
+    "headline": "[CI][1/2] Update the Python version of pyxir (#10406)",
+    "body": "Currently the CMake file for pyxir is looking for things in Python3.6,\r\nso it needs to be upgraded to use 3.7 now that we have moved to use 3.7.\r\nOtherwise the build fails when the docker images are updated since the\r\n3.6 can't find the pyxir packages which have moved to 3.7.\r\n\r\nAdditionally, there seems to be a problem with the newer version of\r\nsetuptools installing the pyxir libraries, so reverting these versions\r\nto the previous versions as a workaraound.\r\n\r\nNote that this has to be done in two patches for the changes to go\r\nthrough the current CI, this patch downgrades the pip and setuptools\r\nversions.",
+    "author": "ekalda",
+    "date": "2022-03-01T09:38:57Z",
+    "jobs": [
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5373041193?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5373041287?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5373127722?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5373159093?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5373312520?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "queued",
+        "url": "https://github.com/apache/tvm/runs/5373373266?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1646129428.091265
+  },
+  {
+    "sha": "5e353d5cdc4dffebf05e94dd75f64fe2a9f322c1",
+    "headline": "[Runtime][ThreadPool]Refactor affinity function and support CPU affin\u2026",
+    "body": "\u2026ity list setting. (#9802)\n\n* [Runtime][ThreadPool] Refactor affinity function and support CPU affinity list setting.\r\n\r\nIssue:\r\n1. There are multiple affinity function using \"LINUX\" and \"ANDROID\" macro\r\ncheck and the multiple check make the logic maintain and change become\r\ncomplex.\r\n\r\n2. Current logic of tvm [Runtime][ThreadPool] assume all of the cpu resources are available for\r\na single backend runtime to do the data flow computation. But such assumption may not\r\ntrue when user running multiple task on the system and not want tvm task\r\nexhaust all of the cpu resource, or when user going to run multiple backend\r\nruntime of tvm on the system, each backend runtime of tvm should use different cpu\r\naffinity settings to achieve best performance.\r\n\r\nSolution:\r\n1.Refactor the affinity functions to move the \"LINUX\" and \"ANDROID\" check\r\ninto one function.\r\n\r\n2.In this solution, we introduce a new \"CPU AffinityMode type\" named \"kSpecify\", by using\r\n\"kSpecify\" and the function named \"tvm::runtime::threading ::Configure\" user can specify\r\nthe cpu list for the cpu affinity of a backend runtime.\r\n\r\nThis solution reused the existing per thread thread pool logic of [Runtime][Threadpool] that\r\ncreated a worker thread pool for current thread which can running a particular runtime. for a multiple\r\nruntime use case, user can first launch multiple threads, then call \"tvm::runtime::threading ::Configure\"\r\nwith cpu list to create tvm data flow worker thread pool, after doing this the execution of the multiple\r\nruntime on the multiple threads will use different cpu resource list.\r\n\r\n* fix windows build issue.\r\n\r\n* fix build issue.\r\n\r\n* fix build issue.\r\n\r\n* fix windows build issue.\r\n\r\n* fix plint issue\r\n\r\n* polish comments.\r\n\r\n* address review comments.\r\n\r\n* address reivew comments.\r\n\r\n* address review comments.\r\n\r\n* address review comments.\r\n\r\nCo-authored-by: hua jiang <hua.jiang@xilinx.com>",
+    "author": "huajsj",
+    "date": "2022-03-01T09:33:13Z",
+    "jobs": [
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5372971095?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5372971246?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5372987361?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "111b2da1372ec53cae76d63a21a45eb0c26e4a64",
     "headline": "RelayViz Graphviz renderer (#10400)",
     "body": "Following https://github.com/apache/tvm/pull/10085, this PR adds a\r\ngraphviz backend. It requires python `graphviz` package and `dot`\r\nexecutable in the PATH, similar to `tedd.py`.\r\n\r\nThis implementation is much like a porting of `visualize` function in\r\nhttps://tvm.apache.org/2020/07/14/bert-pytorch-tvm, except that\r\n`node_attr_dict` is replaced with a callback `get_node_attr`.\r\n\r\n`get_node_attr` can be somehow used to emphasize a set of nodes.\r\nIt might be useful if we encounter problems in inferences\r\nand want to find nodes with certain types and attributes.\r\n\r\nAn example is provided in\r\nhttps://github.com/chiwwang/tvm/blob/graphviz_renderer_example/test_viz.py\r\n\r\nIts outputs are (conv2d with NCHW layout is green-colored):\r\nhttps://github.com/chiwwang/tvm/blob/graphviz_renderer_example/mod_with_subgraph.pdf\r\nhttps://github.com/chiwwang/tvm/blob/graphviz_renderer_example/mod_wo_subgraph.pdf",
@@ -223,11 +287,25 @@
       },
       {
         "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5372601372?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5372803037?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5372835262?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5372955947?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1646125770.865147
+    ]
   },
   {
     "sha": "92a80e93446331780cfa81452b164862845e7c65",
@@ -11004,134 +11082,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5225761261?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "1da0093e92e42c0f307096f8b3c1a9f87e32c8ac",
-    "headline": " Overload get() function for `Optional` type. (#9748)",
-    "body": "* upd\r\n\r\n* simplify\r\n\r\n* upd\r\n\r\n* fix\r\n\r\n* upd\r\n\r\n* fix docstring",
-    "author": "yzh119",
-    "date": "2022-02-16T21:46:58Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2532/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5223625696?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5223625761?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5223780565?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5223995607?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5224121907?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5224270231?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5224418707?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5224613038?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5224725341?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5224840384?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5224992721?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5225197425?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5225388041?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5225629318?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "75122db551c13f5c0ac7143080a75ff7f427b331",
-    "headline": "fix RPC waiting for device (#10255)",
-    "body": "Co-authored-by: pfk-beta <this_email_isnot_working@gmail.com>",
-    "author": "pfk-beta",
-    "date": "2022-02-16T20:49:30Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2531/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222965966?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5222966042?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5223101445?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5223315567?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5223450729?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5223614537?check_suite_focus=true"
       }
     ]
   }
