@@ -1,5 +1,73 @@
 [
   {
+    "sha": "0ac7c6fa57f76d0ce0d03cb4872184100b8f305c",
+    "headline": "Fix backward for nn.conv2d",
+    "body": "Current backward impl raises error for nn.Conv2d, either normal conv or depth-wise conv. See the code attached below.\r\n\r\n```python\r\nimport numpy as np\r\n\r\nimport tvm\r\nfrom tvm import relay\r\nfrom tvm.contrib import graph_executor\r\n\r\nnormal_conv_code = \"\"\"\r\nfn (%input0: Tensor[(1, 3, 32, 32), float32], %v0_weight: Tensor[(3, 1, 3, 3), float32], %v0_bias: Tensor[(3), float32]) {\r\n  %0 = nn.conv2d(%input0, %v0_weight, padding=[1, 1, 1, 1], groups=3, channels=3, kernel_size=[3, 3]);\r\n  nn.bias_add(%0, %v0_bias)\r\n}\r\n\"\"\"\r\n\r\ndepthwise_conv_code = \"\"\"\r\nfn (%input0: Tensor[(1, 3, 32, 32), float32], %v0_weight: Tensor[(3, 3, 3, 3), float32], %v0_bias: Tensor[(3), float32]) {\r\n  %0 = nn.conv2d(%input0, %v0_weight, padding=[1, 1, 1, 1], groups=1, channels=3, kernel_size=[3, 3]);\r\n  nn.bias_add(%0, %v0_bias)\r\n}\r\n\"\"\"\r\n\r\nSEMVER = '#[version = \"0.0.5\"]\\n'\r\nexpr = tvm.parser.parse_expr(SEMVER + normal_conv_code)\r\nfmod = tvm.IRModule.from_expr(expr)\r\n\r\nmod = relay.transform.InferType()(fmod)\r\nbwd_expr = relay.transform.gradient(mod[\"main\"], mode=\"first_order\")\r\n\r\nbwd_mod = tvm.IRModule.from_expr(bwd_expr)\r\nbwd_mod = relay.transform.InferType()(bwd_mod)\r\n```\r\n\r\nThis PR aims to roll back the impl to previous version while fixing the bug for depth-wise (previous backward does not work for depth-wise conv).",
+    "author": "Lyken17",
+    "date": "2022-03-02T06:59:12Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10439/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5387499200?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5387499322?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5387499437?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5387513128?check_suite_focus=true"
+      }
+    ],
+    "pr": 10439,
+    "pr_title": "Fix gradient OP for nn.conv2d",
+    "updated_at": 1646204570.794535
+  },
+  {
+    "sha": "ebfe57f516705f3ae08e43f6e2af5ef7f349adb9",
+    "headline": "Merge branch 'apache:main' into shukun-xzq-main",
+    "body": "",
+    "author": "ShuKun-coder",
+    "date": "2022-03-02T06:46:22Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10438/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5387434778?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5387499130?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5387499251?check_suite_focus=true"
+      }
+    ],
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
+  },
+  {
     "sha": "9f60a4e0b13a7b9a671f22000c2c61705304fba2",
     "headline": "[ci] Enable xdist for topi tests",
     "body": "",
@@ -23,13 +91,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5386857146?check_suite_focus=true"
       }
     ],
     "pr": 10437,
-    "pr_title": "[ci] Enable xdist for topi tests",
-    "updated_at": 1646201239.978947
+    "pr_title": "[ci] Enable xdist for topi tests"
   },
   {
     "sha": "fcdb1f0488aecec16038b18eb915d0a547894253",
@@ -148,7 +215,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10420/9/display/redirect"
       },
       {
@@ -1085,8 +1152,29 @@
         "url": "https://github.com/apache/tvm/runs/5363614513?check_suite_focus=true"
       }
     ],
-    "pr": 10412,
-    "pr_title": "shukun.net: complete pytorch grid_sample"
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
+  },
+  {
+    "sha": "df20d9a8fca2aefd7637a6055a44af49d126ce8b",
+    "headline": "shukun.net: complete pytorch grid_sample",
+    "body": "",
+    "author": "ShuKun-coder",
+    "date": "2022-02-28T17:34:21Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10412/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5363614513?check_suite_focus=true"
+      }
+    ],
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
   },
   {
     "sha": "f6deec11be96d26476b45dd0272bf96b49c0060b",
@@ -1168,8 +1256,8 @@
         "url": "https://github.com/apache/tvm/runs/5363007205?check_suite_focus=true"
       }
     ],
-    "pr": 10412,
-    "pr_title": "shukun.net: complete pytorch grid_sample"
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
   },
   {
     "sha": "e064d1f85474e8e589b8977f6472fe5c12586fca",
@@ -1189,8 +1277,29 @@
         "url": "https://github.com/apache/tvm/runs/5363007205?check_suite_focus=true"
       }
     ],
-    "pr": 10412,
-    "pr_title": "shukun.net: complete pytorch grid_sample"
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
+  },
+  {
+    "sha": "e064d1f85474e8e589b8977f6472fe5c12586fca",
+    "headline": "Merge branch 'apache:main' into shukun-xzq-main",
+    "body": "",
+    "author": "ShuKun-coder",
+    "date": "2022-02-28T16:25:25Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10409/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5363007205?check_suite_focus=true"
+      }
+    ],
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
   },
   {
     "sha": "8dbc57100b8a8495c8af39c5dc886f85e1431396",
@@ -2447,98 +2556,6 @@
     "pr_title": "Running CI for PR 9727"
   },
   {
-    "sha": "d7f0ce344b3351a78541fbfbfb3ff1de75aa6935",
-    "headline": "[no not review] Test CI functionality",
-    "body": "commit-id:82428e01",
-    "author": "driazati",
-    "date": "2022-02-24T20:24:17Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10380/1/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324788580?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324788686?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324788578?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324817274?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324817541?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324817624?check_suite_focus=true"
-      }
-    ],
-    "pr": 10380,
-    "pr_title": "[no not review] Test CI functionality"
-  },
-  {
-    "sha": "d7f0ce344b3351a78541fbfbfb3ff1de75aa6935",
-    "headline": "[no not review] Test CI functionality",
-    "body": "commit-id:82428e01",
-    "author": "driazati",
-    "date": "2022-02-24T20:24:17Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10380/1/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324788580?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324788686?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324788578?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324817274?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324817541?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5324817624?check_suite_focus=true"
-      }
-    ],
-    "pr": 10380,
-    "pr_title": "[no not review] Test CI functionality"
-  },
-  {
     "sha": "f29d4171b26e526f0bce0b6dd96a4cef497be1a4",
     "headline": "Fix lint errors.",
     "body": "",
@@ -2848,8 +2865,8 @@
         "url": "https://github.com/apache/tvm/runs/5265988627?check_suite_focus=true"
       }
     ],
-    "pr": 10412,
-    "pr_title": "shukun.net: complete pytorch grid_sample"
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
   },
   {
     "sha": "943d303280765d9be6d02b483c414bbff84a11b0",
@@ -2869,8 +2886,29 @@
         "url": "https://github.com/apache/tvm/runs/5265988627?check_suite_focus=true"
       }
     ],
-    "pr": 10412,
-    "pr_title": "shukun.net: complete pytorch grid_sample"
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
+  },
+  {
+    "sha": "943d303280765d9be6d02b483c414bbff84a11b0",
+    "headline": "correct coding format",
+    "body": "",
+    "author": "ShuKun-coder",
+    "date": "2022-02-20T18:10:25Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10329/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5265988627?check_suite_focus=true"
+      }
+    ],
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
   },
   {
     "sha": "cf1de565b0025195fc203f8389b4c68ce5597cf0",
@@ -2895,8 +2933,8 @@
         "url": "https://github.com/apache/tvm/runs/5265828885?check_suite_focus=true"
       }
     ],
-    "pr": 10412,
-    "pr_title": "shukun.net: complete pytorch grid_sample"
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
   },
   {
     "sha": "cf1de565b0025195fc203f8389b4c68ce5597cf0",
@@ -2921,8 +2959,34 @@
         "url": "https://github.com/apache/tvm/runs/5265828885?check_suite_focus=true"
       }
     ],
-    "pr": 10412,
-    "pr_title": "shukun.net: complete pytorch grid_sample"
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
+  },
+  {
+    "sha": "cf1de565b0025195fc203f8389b4c68ce5597cf0",
+    "headline": "complete pytorch grid_sample",
+    "body": "",
+    "author": "ShuKun-coder",
+    "date": "2022-02-20T17:21:34Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10329/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5265801107?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5265828885?check_suite_focus=true"
+      }
+    ],
+    "pr": 10438,
+    "pr_title": "@shukun.net: Complete pytorch grid_sample"
   },
   {
     "sha": "f3d17b20cf656b59be771e94af14216ecad285c6",
