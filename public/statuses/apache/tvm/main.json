@@ -1,5 +1,40 @@
 [
   {
+    "sha": "d1046f517245d41a3d587bee2bef73f0d05f9951",
+    "headline": "Correctly enable architecture extensions in CMSIS-NN Zephyr Demo (#10\u2026",
+    "body": "\u2026458)\n\n* Correctly enable architecture extensions in CMSIS-NN Zephyr Demo\r\n\r\nWithout `CONFIG_FPU` being set the correct architecture extensions weren't being applied which means the buffer sizes didn't necessarily match up - this corrects it so that they align.\r\n\r\n* Fix memory allocation in demo\r\n\r\nThe stack allocator forcibly aligns memory by removing parts of it which causes there not to be enough memory and the CMSIS-NN integration uses more stack than the demo with pure TVM operators (we should look to remove some of our stack usage)",
+    "author": "Mousius",
+    "date": "2022-03-04T09:57:30Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2671/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5420407713?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5420407811?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5420457257?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "queued",
+        "url": "https://github.com/apache/tvm/runs/5420504299?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1646388615.608492
+  },
+  {
     "sha": "0f2392cc9b87e66715d9bf2a193c2d2476a42a9b",
     "headline": "[Arith] Handle mod/floormod in modular set analysis (#10453)",
     "body": "",
@@ -18,7 +53,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5418987562?check_suite_focus=true"
       },
       {
@@ -80,9 +115,38 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5419800238?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5419980625?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5420008391?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5420117309?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5420145573?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5420275179?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5420305030?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1646384969.420744
+    ]
   },
   {
     "sha": "6ad7638be249fef0b2ce3f1112dd857e850949f1",
@@ -93,7 +157,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2669/display/redirect"
       },
       {
@@ -147,7 +211,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2668/display/redirect"
       },
       {
@@ -171,7 +235,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2667/display/redirect"
       },
       {
@@ -11188,50 +11252,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5282048507?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "d8d28bf5095f78b9bcd9ae6b8289d66b6389757b",
-    "headline": "[Relay] Fix TFlite frontend for unpack, stridedslice (#10333)",
-    "body": "We found this while converting an RNN model.\r\n\r\nThe relay tflite frontend use squeeze at converting unpack, but when the\r\nunpack.axis=0, `None` is passed to relay.squeeze(), which would squeeze\r\nall dimensions with length 1, causing different results from TFLite.\r\n\r\nA possible fix might be, assign the unpack.axis as-is to relay.squeeze()\r\n\r\nAs for stridedslice, when the tflite frontend handles shrink_axis_mask,\r\nthe wrapped `begin` should be used, instead of the original one which\r\ncan be negative. It can cause errors at\r\nhttps://github.com/apache/tvm/blob/d65ff6594d4d6db0062537a1d43c0504173b8e5c/include/tvm/topi/detail/strided_slice.h#L140\r\n\r\nRelated cases are also added to the python test.",
-    "author": "chiwwang",
-    "date": "2022-02-22T00:05:27Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2572/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5281365451?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5281365566?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5281453599?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5281515786?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5281667512?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5281695059?check_suite_focus=true"
       }
     ]
   }
