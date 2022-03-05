@@ -1,5 +1,35 @@
 [
   {
+    "sha": "70f223ba08a1cb161d202ff9d668d00d325526e0",
+    "headline": "[CodeGen][CUDA] use hrint for cuda half rounding (#10460)",
+    "body": "When cuda c codegen generate `tir.round` for fp16, there is no function named `hround`, but `hrint` for cuda half arithmetics. https://docs.nvidia.com/cuda/cuda-math-api/group__CUDA__MATH____HALF__FUNCTIONS.html#group__CUDA__MATH____HALF__FUNCTIONS_1gbbf7a989130edcbdbfbb4730f61c79b1\r\n\r\nTestcase to reproduce:\r\n```python\r\nimport tvm\r\nfrom tvm import relay\r\nfrom tvm.ir.module import IRModule\r\nx = relay.var(\"x\", shape=[16], dtype=\"float16\")\r\ny = relay.round(x)\r\nf = relay.Function([x], y)\r\nm = IRModule.from_expr(f)\r\nm = relay.transform.InferType()(m)\r\nrelay.build(m, target=\"cuda\")\r\n```",
+    "author": "wrongtest",
+    "date": "2022-03-05T03:04:14Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2679/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5430630760?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5430630786?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5430634833?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1646449764.837456
+  },
+  {
     "sha": "837d5d4e5273ffb73dcae21c64762143a7b560c1",
     "headline": "[ci] Disable flaky ethosu tests (#10488)",
     "body": "See #10487\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
@@ -8,7 +38,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2678/display/redirect"
       },
       {
@@ -75,9 +105,43 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5430285016?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5430361848?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5430398229?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5430464776?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5430525823?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5430547642?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5430574141?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5430614566?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1646445781.773984
+    ]
   },
   {
     "sha": "fd92947d1b38c464e8f7944f4a6862b7ec239bf1",
@@ -88,7 +152,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2677/display/redirect"
       },
       {
@@ -112,7 +176,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2676/display/redirect"
       },
       {
@@ -10958,45 +11022,6 @@
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5296597529?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "b5f1dabce45e4d4a68a2ecadeee811bac93b1c3c",
-    "headline": "[TIR] Tir constants integration into compilation pipeline (#8509)",
-    "body": "* [TIR] Introduce tir.allocate_const to TIR\r\n\r\nThis PR is adding non-scalar constant representation in TIR. This is used to\r\nexpress constants (i.e., parameters) in the TIR instead of bypassing the\r\nTIR as it's done until now.\r\n\r\nChange-Id: Id3afc4d7197260cb43ecde60f05ccbce3fc42430\r\n\r\nCo-authored-by: Giuseppe Rossini <giuseppe.rossini@arm.com>\r\nChange-Id: Id4a09a637c9c1fd7d49989c6c10f474a78569e18\r\n\r\n* [TIR] Integrate tir constant nodes in compilation pipeline\r\n\r\nThis PR integrates tir.allocate_const to the compilation pipeline to support --link-params.\r\n\r\nChange-Id: Ic8d0cb75d596299fcae7078b304598afbf0c5494\r\n\r\nCo-authored-by: Giuseppe Rossini <giuseppe.rossini@arm.com>\r\nChange-Id: Id98cc682bbfacfe75c4d8b260fd41658f1f196b2\r\n\r\n* [TIR] tir.const extraction\r\n\r\nThis commit tries to implement an amendment to tir.constant RFC\r\nwith centralized storage of constant data within the IRModule\r\nPlease note that data and irmod_storage_idx are not mutual exclisive\r\nfurther more the irmod_storage_idx is valid only immediatly after\r\nprim func addition to the mod or after update within the mod.\r\nIf prim func is out of the the module scope then the index become\r\nmeangless. irmod_storage_idx also is not used in calculation of hash\r\nfunction of the tir.constant node.\r\n\r\nChange-Id: I40742ed580468b0252ea3fec02184cba65e20871\r\n\r\n* unit test fixed\r\n\r\nChange-Id: Ied2186554d4cbad44b2346216c8be92449e55732\r\n\r\n* cmsis-nn codegen fix\r\n\r\nNow handled case when params of the functions came as constants\r\n\r\nChange-Id: I5874e182e34ef94e23048eaf3c61b01a56d91131\r\n\r\n* Fixes for unittests\r\n\r\nChange-Id: I5b82ee3f80337155706b5470973f494a301b5d90\r\n\r\n* Rebasing tests fixes\r\n\r\nChange-Id: I94ac87907081bab53c1dd1ab2db106ae057b4b19\r\n\r\n* Linter: added method param description\r\n\r\nChange-Id: I2f8c4c8d244b74c794abaa6079c46cc593ffcbdb\r\n\r\n* Printing removal fix\r\n\r\nThis patch removes forgotten print in fuse_ops\r\n\r\nChange-Id: I4bb5934f3b4cd5fde19d36a8e3319aae136bce8a\r\n\r\n* Bugfix\r\n\r\nFixed concurrent map update bug here\r\n\r\nChange-Id: Ifec3bf5030086d9079b9e493096f17dfd82297ec\r\n\r\n* Reworked logic for not to introduce empty constant list to modue attrs\r\n\r\nChange-Id: I082c85b3b4b70c218f0d714f5613ef6e178bd020\r\n\r\n* Added support for tir builtin::tvm_access_ptr\r\n\r\nThis fixed unit tests for tests/python/integration/test_arm_mprofile_dsp.py\r\n\r\nChange-Id: I10919f301ef9ddc3fd87f0e1a8414e9a52fc7938\r\n\r\n* Unit test fix\r\n\r\nFixes unit tests in torch frontend\r\n\r\nChange-Id: I6c179834f93dd202605d1ce5a7f07d987b9dc469\r\n\r\n* Addressed requested changes\r\n\r\nAddressed changes requested upstream\r\n\r\nChange-Id: I741e52b89eb285732c23b1ac7ff277e757a088c3\r\n\r\n* Namespace usage changed to conform earlier C++ standard\r\n\r\nChange-Id: I1b29238cfe2a6bedb525f4f823a3a540f631d836\r\n\r\n* Bugfix\r\n\r\nChange-Id: I57a44b714b307278a243817ec2864e53ad31366b\r\n\r\n* updated IRModuleNode::ExtractPrimFuncConstants\r\n\r\nUpdated IRModuleNode::ExtractPrimFuncConstants as per\r\nrequest upstream.\r\n\r\nChange-Id: I35db0145fb5827efd0445ce665d0c99465274016\r\n\r\n* Minor changes\r\n\r\ntypo fixd\r\nrenamed ExtractPrimFuncConstants to ExtractConstants\r\nremoved getters/setters from FuseMutator and added parametrized\r\nconstructor\r\n\r\nChange-Id: Ib2326805781779b88c963a8642ff683c8755956e\r\n\r\n* Moved LinkedParam/LinkedParamNode\r\n\r\nMoved LinkedParam/LinkedParamNode from tvm::tir namespace to tvm\r\nnamespace\r\n\r\nChange-Id: Ie3f0303bd4f7890c6d680268c91f2051977bc7f4\r\n\r\n* Addressed upstream comments\r\n\r\nChanged BindParams argument to Array<NDArray>\r\nRemoved 'name' argument from te.const\r\nSwitched to in-depth comparision of NDArrays in constant de-duplication\r\nRemoved extra final comma from NDArrayToTIR\r\nChanged return type of ConstantAllocationSize to int64_t\r\nMade link_param a tvm.testing.parameter for test_fuse_take and test_fuse_gather_nd\r\n\r\nChange-Id: I4285099cc63756aa5ebe91a5bd207d4135499b41\r\n\r\n* Removed unnecessary forward declaration\r\n\r\n+linter\r\n\r\nChange-Id: I2a6c0d1f97773aeb1ae3f458da252a22079ccdb1\r\n\r\n* Constant extractor now is a separate pass\r\n\r\nChange-Id: Ia4adca9d3315b26fbdc006ef7c115900c081e303\r\n\r\n* Added forgotten file + unit test fix\r\n\r\nChange-Id: Ice305f4fefd13fe95e97574e6d63ffeb664621df\r\n\r\n* Changed to IRModule pass\r\n\r\nRefactored ExtractPrimFuncConstants to IRModule pass.\r\ndeDup -> DeDup\r\nRefactored logic of Applicator supplementary class\r\n\r\nChange-Id: I6c120d175eb6790ba90f176c4f856bde8f0c7c94\r\n\r\n* bugfix after rebasing\r\n\r\nChange-Id: Ie3ee6ea2479476a30f486baef74f20070f117942\r\n\r\n* -v -> -vv to have more debug information\r\n\r\nChange-Id: I12c63731663b9c9ea574b9ed5cb17311ba3cf701\r\n\r\nCo-authored-by: Giuseppe Rossini <giuseppe.rossini@arm.com>",
-    "author": "d-smirnov",
-    "date": "2022-02-22T23:33:30Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2580/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5296381077?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5296381162?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5296389022?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5296491397?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5296514070?check_suite_focus=true"
       }
     ]
   }
