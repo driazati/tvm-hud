@@ -1,5 +1,25 @@
 [
   {
+    "sha": "12f213a7f7839b3593f18428cc71bb8f8e24a67d",
+    "headline": "[BYOC-DNNL] Support DNNL optimal layout (#10421)",
+    "body": "* enable dnnl optimal layout for supported ops\r\n\r\n* verfied cv models with onednnv1.7\r\n\r\n* rebase to the latest main branch\r\n\r\n* fix format related comments\r\n\r\n* remove unnecessary layout transformation\r\n\r\n* change deconv into conv_transpose\r\n\r\n* rename some variables and functions\r\n\r\n* simplify query_layout\r\n\r\n* add checkes for query_layout\r\n\r\n* fix lint\r\n\r\n* move partition_for_dnnl from dnnl.py to test_dnnl.py\r\n\r\n* remove unnecessary model test\r\n\r\n* add more dnnl layout\r\n\r\n* rename flag in convolution.cc\r\n\r\n* enhance dnnl layout",
+    "author": "crazydemo",
+    "date": "2022-03-07T05:06:35Z",
+    "jobs": [
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5443540108?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5443540174?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1646629758.085919
+  },
+  {
     "sha": "174d09ee2cef1ea2caab4c84e0bd58d90c09178f",
     "headline": "[TE][TIR] Implement layout transformations, non-flat memory buffers (\u2026",
     "body": "\u2026#9727)\n\n* [TIR] Added BufferLoadNode::LegalizeDtype\r\n\r\nWhen modifying a BufferLoad object, the return dtype must also be\r\nupdated.  This exposes the legalization function, so that passes that\r\nuse `BufferLoad::CopyOnWrite` to modify the buffer/indices don't need\r\nto repeat the logic to update the dtype returned.\r\n\r\n* Replacing Store/Load in Stmt/Expr Visitor/Mutator\r\n\r\n* Removing Store/Load from optimization passes\r\n\r\n- UpdatePointerStorageScope\r\n- UnrollLoop\r\n- ThreadSync\r\n- LinearAccessPatternFinder\r\n- StoragePlanRewriter\r\n- VectorTypeRewriter\r\n- VectorTypeAccessChecker\r\n- NarrowDataType\r\n- IRConvertSSA\r\n- CompactBufferRegion\r\n\r\n* Removing Store/Load from examples\r\n\r\n- ConvertAddToSubtract\r\n\r\n* Replacing Store/Load in StorageFlatten\r\n\r\nNow, outputs BufferLoad/BufferStore with a flattened buffer object.\r\n\r\ntemp commit, replacing Store/Load, BufferBindUnwrapper\r\n\r\ntemp commit, replacing Store/Load, StorageFlattener\r\n\r\n* Replacing Store/Load in utility passes.\r\n\r\n- StmtSimplifier\r\n- IRSubstitute\r\n- BaseInliner\r\n- FeatureVisitor\r\n\r\n* Replacing Store/Load in analysis functions\r\n\r\n- StorageAccessVisitor\r\n- VarTouchedAnalysis\r\n- MemoryAccessVerifier\r\n- InplaceOpVerifier\r\n- GPUCodeVerifier\r\n- VarTouchVisitor\r\n- LCADetector\r\n- BlockReadWriteDetector\r\n- InstrumentBoundCheckers\r\n\r\n* Replacing Store/Load in lowering/legalization passes.\r\n\r\n- MakeCrossThreadReduction\r\n- CacheReadRewriter/CacheWriteRewriter\r\n- InjectVirtualThread\r\n- InjectDoubleBuffer\r\n- InjectCopyIntrin\r\n- LowerWarpMemory\r\n- LowerThreadAllreduce\r\n- LowerThreadAllreduce\r\n- LowerCustomDatatypes\r\n- LowerTVMBuiltin\r\n- CoProcSync\r\n- MergeDynamicSharedMemAllocations\r\n- VectorizeLoop\r\n- BF16Legalize\r\n\r\n* Replacing Load/Store in codegens.\r\n\r\n- Device code generators\r\n  - CodegenC\r\n  - CodegenLLVM\r\n  - CodeGenOpenCL\r\n\r\n- Utilities used during codegen\r\n  - ArgBinder\r\n  - MakePackedAPI\r\n  - ReturnRewriter\r\n  - SplitHostDevice\r\n\r\n- Execution environments\r\n  - CodeGenStackVM\r\n  - CodeGenHybrid\r\n  - AOTExecutorCodegen\r\n\r\n* [UnitTest] Add unit tests to test physical layout remapping.\r\n\r\n* Updated tvm::address_of() to hold BufferLoad instead of Load.\r\n\r\n* [TIR] Added IndexMap class.\r\n\r\nHolds a set of variables representing the input indices and\r\nexpressions in terms of those input indices.\r\n\r\nTODO:\r\n\r\n- Add validation, the index mapping should be invertible.\r\n- Add helper function, apply mapping to a set of indices.\r\n- Add helper function, apply mapping to bounds of input indices.\r\n\r\n* Updated Buffer::vstore/vload to return BufferLoad/BufferStore objects.\r\n\r\nStorageFlatten/FlattenBuffer passes updated to modify the\r\nbuffer/indices directly, rather than using vload/vstore.\r\n\r\n- Primary purpose of vstore/vload is to allow IR written in python to\r\n  define vectorized load/store.  This usage is maintained by returning\r\n  a BufferLoad/BufferStore node whose index is a Ramp.\r\n\r\n- Previously, vstore/vload was also used to compute the 1-d physical\r\n  index of a location within a N-d tensor.  This usage will no longer\r\n  be allowed, as it would not allow layout transformations to be\r\n  performed after a schedule definition, but any uses of the buffer\r\n  are flattened.\r\n\r\n* [TE] Added Stage::transform_layout to the C++ TE implementation.\r\n\r\nAdds an `Array<IndexMap>` in the stage to define the transformations\r\nto be applied on the tensor's layout.  As of this commit, this mapping\r\nisn't propagated into the TIR graph yet.\r\n\r\n* Replace Store/Load with BufferStore/BufferLoad in ir_builder\r\n\r\n* [TE] Added Stage.transform_layout to the Python TE interface.\r\n\r\nAllows users to specify `s[A].transform_layout(mapping)`, and\r\npropagate into the TE definitions.\r\n\r\n* Added pre_flattened_shape/pre_flattened_stride fields to Buffer.\r\n\r\nThe shape and stride checks performed in ArgBinder::BindDLTensor\r\n(called from MakePackedAPI) require the tensor shape/strides prior to\r\nindex flattening.  Therefore, though it is no longer used by the\r\nlow-level code generators, we must maintain that information for use\r\nin MakePackedAPI.\r\n\r\n* [UnitTest] Test N-d indices exposed to low-level codegen\r\n\r\nWhen using te.AXIS_SEPARATOR in the call to .transform_layout, this\r\nshould define groups of axes, each of which is flattened to a single\r\naxis, then exposed to the low-level codegen.\r\n\r\n* [TIR] Added PrimFunc attribute \"layout_transform_map\", filled from TE.\r\n\r\nPropagated the TE definition of the physical layout into the TIR\r\ngraph.\r\n\r\n* Added pre_flattened_type.\r\n\r\nIf a boolean tensor is backed by an int8 buffer, the check on the\r\nargument buffer's type should be against the boolean type.\r\n\r\nWhen rebasing this PR, should be placed after the addition of\r\npre_flatten_shape/pre_flatten_strides.\r\n\r\n* [UnitTest] Added tests for loop iteration order.\r\n\r\nAfter transformation, the iteration order should follow the new\r\ntransformed axes.  In addition, the loop iteration variables should be\r\nexposed through the TE interface for further manipulation.\r\n\r\n* [TIR] Added BufferNode::axis_separators\r\n\r\n- Add axis_separators to represent divisions between groups\r\n  of tensor axes, where each group is flattened into a single\r\n  output axis, to be exposed to the low-level code generators.\r\n\r\n- Expose axis_separators to the python interface.\r\n\r\n- Update existing C++ calls to the Buffer() constructor.\r\n\r\n* [TIR] Added ApplyLayoutTransforms as part of StorageFlatten.\r\n\r\nFor any buffers that have layout transforms defined in the\r\n\"layout_transform_map\" attribute of a PrimFunc, rewrite access into\r\nthe buffer such that they use the updated ordering.\r\n\r\n* Update usage of ir_builder where necessary.\r\n\r\n* [TE] Implement te::Transform\r\n\r\nSimilar to Fuse and Split, this represents a modification to the\r\nexisting loop iterations.\r\n\r\n* [TE] Added Stage::set_axis_separators.\r\n\r\nIn C++, this is implemented as an `Array<IntImm>`, specifying\r\npre-flatteneing axes after which a new post-flattening should be\r\nstarted.  The python interface uses a sentinel value\r\n`te.AXIS_SEPARATOR` in the call to `transform_layout`, which is then\r\nused to define the array of axis separators.\r\n\r\n* [TIR] Expose tir.transform.ApplyLayoutTransforms for testing\r\n\r\n* [TE] Rewrite loop iteration order\r\n\r\nAfter .transform_layout, rewrite leaf_iter_vars to follow the updated\r\norder.  Use the te::Transform iter_var relationship to track use of\r\nthe transformed variable.\r\n\r\n* [TE] Fill BufferNode::axis_separators from StageNode\r\n\r\nDuring ScheduleOps and SchedulePostprocToPrimfunc, the axis separators\r\ndefined in the stage must be passed through to the TIR BufferNode.\r\n\r\n* [TE] Return transformed iteration variables\r\n\r\n* Moved Buffer's pre-flatten information to PrimFunc.\r\n\r\nSince the pre-flatten information is only used for validating user\r\ninputs, it makes much more sense to store it alongside the buffer_map.\r\n\r\n* Updated ethos-u C++ unit tests to remove use of Load/Store.\r\n\r\n* Bugfix, layout transformation.\r\n\r\nError occured during conversion from TE to IRModule, when layout\r\ntransforms were applied to a reader of a `cache_read`.\r\n\r\n* In test directory, replacing all instances of T.load.\r\n\r\n* Return buffer object from tvm.tir.script.scope_handler.Allocate\r\n\r\nNow that the load/store require buffer objects, allocation should also\r\nreturn a buffer object to be used.\r\n\r\n* Added .astype to tvm.script.tir.node.BufferSlice\r\n\r\nSince `buf[i]` returns a `BufferSlice`, this lets the TIR examples\r\nthat use `buf[i].astype('out_dtype')` continue functioning.\r\n\r\n* Replacing all T.store TIR calls.\r\n\r\n* Added LOG(FATAL) in constructor of Store/Load nodes.\r\n\r\n* Updated tvmscript parser to report error for Store/Load nodes.\r\n\r\n* [TVMScript] Added T.preflattened_buffer stmt\r\n\r\nUsed to specify `PrimFunc::preflattened_buffer_map`. Takes an argument\r\nof the postflattened buffer, so that it will work for both simple\r\ndeclarations and `T.match_buffer` statements without needing to\r\nintroduce a param handle.  All other arguments are identical to\r\n`T.match_buffer.`\r\n\r\n* [TVMScript] Updated TVMscript for BufferLoad/BufferStore\r\n\r\n- Use `T.preflattened_buffer` calls in TVMScript to represent\r\n  `PrimFunc::preflattened_buffer_map`.\r\n\r\n- Remove `T.buffer_decl` for return value of `T.allocate`, now that\r\n  `T.allocate` returns a buffer.\r\n\r\n- For buffer access as a different type, make a `T.buffer_decl` for\r\n  those accesses.\r\n\r\n* Updated test_tvmscript_roundtrip.py for BufferLoad/BufferStore.\r\n\r\n* Updated TIR reference in USMP pool allocation unit tests.\r\n\r\nUsing let var handles as the data pointer in buffers, rather than just\r\nas `T.load`/`T.store` arguments, requires annotation as\r\n`T.Ptr[T.primtype]`, rather than as `T.handle`.\r\n\r\n* fixup! Return buffer object from tvm.tir.script.scope_handler.Allocate\r\n\r\n* fixup! Return buffer object from tvm.tir.script.scope_handler.Allocate\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! Return buffer object from tvm.tir.script.scope_handler.Allocate\r\n\r\n* fixup! In test directory, replacing all instances of T.load.\r\n\r\n* tir.ComputeInline, correct variable count.\r\n\r\nPreviously, this metaschedule primitive relied on `tir::UndefinedVars`\r\nignoring the data pointer of BufferLoad/BufferStore nodes.  When\r\n`tir::UndefinedVars` was updated to visit the data pointer, similar to\r\nthe previous behavior when visiting Load/Store nodes, this caused the\r\ncount of undefined variables to be unexpectedly high.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! Updated Buffer::vstore/vload to return BufferLoad/BufferStore objects.\r\n\r\n* fixup! In test directory, replacing all instances of T.load.\r\n\r\n* fixup! In test directory, replacing all instances of T.load.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* Expose Buffer index flattening function to Python.\r\n\r\n* Updated test_tir_buffer.py offset tests.\r\n\r\nReplacing calls to `Buffer.vload` with `Buffer.offset_of`, when\r\ntesting the index calculations.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! Updated Buffer::vstore/vload to return BufferLoad/BufferStore objects.\r\n\r\n* fixup! Replacing Store/Load in lowering/legalization passes.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! Updated ethos-u C++ unit tests to remove use of Load/Store.\r\n\r\n* fixup! Replacing Store/Load in lowering/legalization passes.\r\n\r\nFix linting for inject_double_buffer.cc\r\n\r\n* fixup! Updated ethos-u C++ unit tests to remove use of Load/Store.\r\n\r\n* fixup! Added .astype to tvm.script.tir.node.BufferSlice\r\n\r\n* fixup! In test directory, replacing all instances of T.load.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! In test directory, replacing all instances of T.load.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* fixup! Replacing Store/Load in lowering/legalization passes.\r\n\r\n* [UnitTests] Added T.preflattened_buffer in expected result\r\n\r\n* fixup! In test directory, replacing all instances of T.load.\r\n\r\n* [UnitTests] Bound checker update, compare against N-d buffer bounds.\r\n\r\n* Fixup, bound checker vectorize test.\r\n\r\n* fixup! Return buffer object from tvm.tir.script.scope_handler.Allocate\r\n\r\n* [UnitTest] Fixed breakage in InjectRollingBuffer test.\r\n\r\nNeeded a bit more re-writing than usual, because the test was\r\nexplicitly calling lowering passes, then calling `tvm.build`.  Fixed\r\nby using the standard lowering flow, with preprocessing steps\r\ninserting with `tir.add_lower_pass`.\r\n\r\n* fixup! Return buffer object from tvm.tir.script.scope_handler.Allocate\r\n\r\n* [UnitTest] Fixed breakage in flatten buffer unit tests.\r\n\r\n- Updated pass to allow BufferStore/BufferLoad nodes to be visited\r\n  before the block's alloc buffer.\r\n\r\n- Added `T.preflattened_buffer` annotations.\r\n\r\n* fixup! Return buffer object from tvm.tir.script.scope_handler.Allocate\r\n\r\n* [UnitTests] Fixed breakage in test_tir_buffer.py\r\n\r\n- Updated vload test for new behavior.\r\n- Added test for offset_of, testing behavior no longer in vload.\r\n- Added null check for buffer visitor.\r\n\r\n* fixup! Replacing Load/Store in codegens.\r\n\r\n* [UnitTest] ComputeInline, opaque access test updates\r\n\r\n* [UnitTest] Fixup, allow unit test to use `ib.pointer()[0]`.\r\n\r\n* fixup! Replacing Load/Store in codegens.\r\n\r\nThe updated CodegenLLVM should use the BufferStore/BufferLoad\r\nconvention of indexing by `sizeof(dtype)`, rather than\r\n`sizeof(dtype.element_of())`.\r\n\r\n* fixup! Replacing Store/Load in lowering/legalization passes.\r\n\r\nBF16Legalize should also update the preflattened_buffer_map, since it\r\nis overwriting the `BufferNode::data` stored in the buffer_map.\r\n\r\n* fixup! Replacing all T.store TIR calls.\r\n\r\n* Fixed failing codegen c host unit tests.\r\n\r\n- Generated functions were making `uint8_t*` parameter arguments for\r\n  array handle for return value, rather than the earlier `void*`.\r\n\r\n- New parameter type was due to using\r\n  `PointerType(PrimType(DataType::UInt(8)))` as the type annotation, to\r\n  be usable as `BufferNode::data`.\r\n\r\n- Changing to `PointerType(PrimType(DataType::Void()))` still allows\r\n  usage as buffer, more appropriately expresses semantics.\r\n\r\n- Updated C codegens to allow `void*` types to be generated from\r\n  variables with type annotation, in addition to the previous behavior\r\n  of `DataType::Handle()` variables without type annotation.\r\n\r\n* Fixup, StorageFlatten when applied to post-StorageRewrite functions.\r\n\r\nIdentified in a test that applied `tvm.lower`, then `tvm.build` on the\r\nresult.  If the result of an allocate node is used as the backing\r\nbuffer for multiple buffers, such as the output of the StorageRewrite\r\npass, then StorageFlatten would erroneously think that the second\r\noccurrence was an usage without earlier definition.\r\n\r\n* fixup, StorageFlatten\r\n\r\nWhen flattening a boolean buffer, the backing buffer should have type\r\nint8, not the preflattened buffer.\r\n\r\n* Bugfix, correctly represent void* in LLVM IR.\r\n\r\n* Update, replace tir.Load with tir.BufferLoad\r\n\r\n* Added TVMScript error check for matching buffer/index dimensionality\r\n\r\nNeeded for tests/python/unittest/test_tvmscript_error_report.py::test_high_dim_store\r\n\r\n* Bugfix, correct return type when lowering custom datatype.\r\n\r\n* Bugfix, removed unused primfunc from test_tvmscript_complete.py\r\n\r\n* Updated test_meta_schedule_postproc_verify_gpu_code.py TIR\r\n\r\nReplaced Load/Store with BufferLoad/BufferStore.\r\n\r\n* Allowed ramp nodes with buffer use analysis.\r\n\r\n* Updated tests in test_meta_schedule_postproc_verify_gpu_code.py\r\n\r\nNeeded dummy writes to prevent buffer resizing, in order to trigger\r\nthe verification failure due to memory limits.\r\n\r\n* Updated TIR examples to be compatible with buffer dimension check.\r\n\r\n* Corrected section header in docstring.\r\n\r\n* Corrected indices size check in CogeGenC.\r\n\r\n* Fixed breakage in LowerThreadAllreduce.\r\n\r\nSince the AllocateNode is rewritten, any buffers that refer to those\r\nvariables must also be rewritten.\r\n\r\n* [UnitTests] Replaced Store/Load in CUDA codegen tests.\r\n\r\n* Resolved breakage in C-based codegen for vectorized store/load.\r\n\r\nNeeded to update to new convention of using the buffer's element type\r\nas the stride.\r\n\r\n* Bugfix, incorrect LCA for buffer access in root scope.\r\n\r\nThis had been present before the BufferLoad/BufferStore changes, but\r\nhadn't triggered on tests using Load/Store nodes.\r\n\r\n* Added docstrings for TransformNode member variables.\r\n\r\n* Added TODO for future removal of preflattened_buffer_map.\r\n\r\n* Fixup, transform layout + cache write tests.\r\n\r\nThe correct sequence is to first apply any caching as needed, then to\r\napply layout transformations, and finally to apply thread binds for\r\nthe computation step.\r\n\r\n* Bugfix, correct element type for scalarized access.\r\n\r\n* Bugfix, cuda buffer indexing when declared as different type.\r\n\r\n* Cuda codegen, update reference.\r\n\r\n* Bugfix, lower allreduce\r\n\r\nLoads of the output of the reduction should be replaced for all\r\nbuffers sharing a buffer pointer, not just for the buffer object\r\nitself.\r\n\r\n* Removed obsolete comment.\r\n\r\n* Changed PrimFunc constructor preflattened_buffer_map to Optional\r\n\r\n* Removed flatten_buffer argument from T.match_buffer.\r\n\r\n* Correct call to VarUseDefAnalysis::VisitBuffer\r\n\r\n* Reverted unintentional testing change, lanes=2.\r\n\r\n* Updated lower_cross_thread_reduction to use buffer in allreduce\r\n\r\n* Updated transform_layout test to disable CSE\r\n\r\n* Updated CSE unit tests to use BufferStore\r\n\r\n* Replaced Store/Load for vta.transform and unit tests.\r\n\r\n* Updated unit tests for lower_cross_thread_reduction.\r\n\r\n* Updated arange to use scalar tensors.\r\n\r\nThe start/stop/step tensors are declared as 0-d scalar tensors, but\r\nwere accessed as 1-d tensors.\r\n\r\n* Fix breakage in ethosu constant encoding.\r\n\r\nBuffers generated by \"ethosu_copy\" should have their buffer objects\r\nrewritten, but shouldn't have their size updated in ethosu-specific\r\nCall nodes.\r\n\r\n* Fix breakage in ethosu call argument checks.\r\n\r\nNeed to pull out indices from BufferLoad holders, not Load.\r\n\r\n* Resolve breakage from mismatched shape/index dimensions\r\n\r\n* Split out encoded parameters from preflattened buffer map.\r\n\r\n* Updated buffer shape/index dimensions to match in more ethosu tests\r\n\r\n* Fixed lint error\r\n\r\n* Removed debug code\r\n\r\n* Moved arith::Analyzer local variable to class member\r\n\r\n* Fixed SSA conversion of allocations.\r\n\r\nCan occur if allocation is inside an unrolled loop.  Added unit test\r\nto catch this failure mode.\r\n\r\n* Ethos-u index/buffer dimension updates.\r\n\r\n* Updated ethosu passes to handle buffer load/store.\r\n\r\n* Resolved bug in tvmscript printing of duplicate buffers.\r\n\r\n* Fix breakage in ethos-u test_assign_addresses, encode constants\r\n\r\n* Apply same changes to T.allocate_const as to T.allocate\r\n\r\nReturn a buffer when used in TVMScript, allow for aliasing buffers.\r\n\r\n* Fix lint errors.\r\n\r\n* Further updates for ethos-u tests.\r\n\r\n* Updated ethos.u buffer sizes in test.\r\n\r\n* Updated tir.BindParams to use BufferLoad instead of Load.\r\n\r\n* Updated topi.cuda.scan implementation to follow buffer dimensions.\r\n\r\n* Resolved breakage when flattening AllocateConst nodes.\r\n\r\n* Resolved breakages from latest merge with main.\r\n\r\n* Corrected error in merge.\r\n\r\n* Use empty indices for rank-0 tensor.\r\n\r\n* Added ir_builder workaround for 1-d indexing.\r\n\r\n* Consistent buffer access type in LLVM codegen, to match C codegen\r\n\r\n* StorageRewrite, update indices of modified buffers.\r\n\r\n* Dynamic relay nodes, access 0-d tensors with 0-d indices.\r\n\r\n* BFloat16 legalization, update buffer type.\r\n\r\n* Updated meshgrid to use 0-d index for 0-d buffer.\r\n\r\n* Corrected boolean handling in Allocate nodes.\r\n\r\n* Added workaround to unpack 1-d Tensor indices into N-d buffer indices.\r\n\r\n* Resolved a few more failures in relay tests on cuda.\r\n\r\n* Resolve linting\r\n\r\n* CI bump\r\n\r\n* Updated renormalize_split_pattern tests to use BufferLoad/BufferStore\r\n\r\n* Fixed cuda codegen checks for BufferStore/Ramp.\r\n\r\n* Simplify indices further, needed to avoid cuda register limit.\r\n\r\n* fixed dyn onehot shape func accessing 1d buffer with ()\r\n\r\n* Fixed codegen indexing for int4 scalar types.\r\n\r\n* Temporary workaround for incorrect constant folding.\r\n\r\nNeed to further investigate vectorized LLVM constants\r\n\r\n* s/find_allocate_usage/FindAllocateUsage/g\r\n\r\n* Added buffer type consistency TODO.\r\n\r\n* Improved comment on address_of Op.\r\n\r\n* Rename LegalizeDtype to LegalizeDType, made private.\r\n\r\n* fix format and lint errors\r\n\r\n* Disable vectorization of AllocateConst buffer in StorageRewrite.\r\n\r\n* Pass buffer_map through to the PrimFunc in cmsisnn\r\n\r\n* try disabling problematic winograd test case\r\n\r\n* try different way of buffer mapping in storage_rewrite\r\n\r\n* Removed unnecessary ramp node in ir_builder.\r\n\r\n\r\n* Updated LLVM codegen for buffer indexing.\r\n\r\nTVM data arrays are always densely packed.  If the LLVM type\r\ncorresponding to a vectorized TVM datatype contains padding for\r\nalignment, the array location should be computed based on the\r\nprimitive element type.\r\n\r\n\r\nCo-authored-by: Masahiro Masuda <masahi129@gmail.com>\r\nCo-authored-by: adstraw <astraw@octoml.ai>",
@@ -140,9 +160,48 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5443117229?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5443242238?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5443267263?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5443343158?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5443359871?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5443417996?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5443430170?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5443492815?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5443526325?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1646626312.29162
+    ]
   },
   {
     "sha": "19702235d4a178d4bc221f6b3cbdbf2031ef3c21",
@@ -12113,210 +12172,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5307829091?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "d8f639a84fd9a11f03a949eb751a18018a9c1033",
-    "headline": "[AOT] BugFix of workspace calculation (#10337)",
-    "body": "Following an investigation from #10022,\r\nit turns out, currently the workspace\r\ncalculation assumes there would be a single\r\nlowered PrimFunc could be produced per\r\nprimitive Relay Function.\r\n\r\nHowever, the exception turned out to\r\nbe the CMSIS-NN codegen that produces\r\nmultiple calls/PrimFuncs in the place\r\nof a single call to single relay PrimFunc.\r\n\r\nThis commit adds changes to workspace\r\ncalculation to be done on lowered IRModule.\r\n\r\nAdditionally, changes the test utils to\r\nnot to generate any stack allocator code\r\nwhen USMP is used to make the tests more\r\nstrict.\r\n\r\nThis change also removes the confusing\r\n\"run_model\" which has semantics identitical\r\nto \"__tvm_main__\" in TIR.",
-    "author": "manupa-arm",
-    "date": "2022-02-23T13:12:55Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2592/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5303875052?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5303875151?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5303977216?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304020052?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304137400?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304163183?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304310029?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304343557?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304515153?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304567373?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304774593?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304803441?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304941494?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5304982007?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5305161111?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5305200875?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5305390345?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5305448932?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5305688312?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5305735985?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5305886721?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5305917020?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5306074629?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5306107453?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5306298561?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5306362824?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5306600973?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5306652516?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5306857661?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5306895797?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5307039430?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5307098675?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5307198897?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5307269566?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5307447169?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5307487610?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5307622251?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5307649885?check_suite_focus=true"
       }
     ]
   }
