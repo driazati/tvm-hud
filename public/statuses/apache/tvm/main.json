@@ -1,5 +1,70 @@
 [
   {
+    "sha": "060d9d217f7c74d383a48034ad150ea26b821480",
+    "headline": "[AOT] Introduce checks for return values from operators (#10424)",
+    "body": "This matches the lowering of `call_cpacked` which checks only for an\r\noperator return of `0` in the main flow:\r\n\r\nhttps://github.com/apache/tvm/blob/bd14a4d36e0d364ef9bd34b2ee96cc09ce64d4b3/src/target/source/codegen_c_host.cc#L207-L231\r\n\r\nThis replaces:\r\n```c\r\n(void)tvmgen_default_fused_add(x_buffer_var, y_buffer_var, output_buffer_var);\r\n```\r\nwith:\r\n```c\r\nif (tvmgen_default_fused_add(x_buffer_var, y_buffer_var, output_buffer_var) != 0 ) return -1;\r\n```\r\n\r\nwhen AOT generates the C output.",
+    "author": "Mousius",
+    "date": "2022-03-09T22:19:26Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2707/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5487755632?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5487755761?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5487764565?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5487793780?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5487893860?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5487914695?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5488026184?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5488052037?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5488173143?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5488216222?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1646867378.884736
+  },
+  {
     "sha": "f9d39185e597190ed26e362931fd108c4f355f1c",
     "headline": "[LLVM][TIR] Propagate variable names to parameters. (#10514)",
     "body": "* [LLVM][TIR] Propagate variable names to parameters.\r\n\r\nTo aid in debugging, generate the variable names of function/closure\r\nparameters based on their TIR names.  These function/closure names can\r\nthen be observed in the generated LLVM IR.\r\n\r\n* Use name parameter in CreateLoad.\r\n\r\n* Fixed unit tests that check the parameter name.",
@@ -8,7 +73,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2706/display/redirect"
       },
       {
@@ -106,8 +171,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5487597563?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1646863778.323491
+    ]
   },
   {
     "sha": "fe33ed6d90a06c814e87c4ee45676264c93d50ec",
@@ -12648,120 +12712,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5339193779?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "308d320a66f16abf67c5daf4ae58cec3567decdd",
-    "headline": "[RELAY] [VIRTUALDEVICE] Change syntax for device planning and store p\u2026",
-    "body": "\u2026arameter virtual devices in virtual_device_ field (#10352)\n\n* parent 33082e0032fb57b0516ad7e3eabd11fe0203437e\r\nauthor electriclilies <lilyorthsmith@gmail.com> 1643141097 -0800\r\ncommitter Lily Orth-Smith <lilyorthsmith@gmail.com> 1645560059 -0800\r\n\r\nStore function param virtual devices in virtual_device_ field\r\n\r\nFix test_annotation.py and change result_virtual_device to virtual_device\r\n\r\n* Change plan devices tests to use the new syntax for function parameters\r\n\r\n* Fix free var problem\r\n\r\n* Fix attribute parsing if there is virtual device; most device planning tests passgit status\r\n\r\n* fixed lambda lifting\r\n\r\n* Debugging high order functions -- right now FunctionOnDevice and Bind are mutually recursive. This needs to not be the case.\r\n\r\n* tests pass wootgit status\r\n\r\n* Remove FunctionOnDevice from device planner\r\n\r\n* Don't use MaybeFunctionOnDevice in VM compiler\r\n\r\n* Remove MaybeFunctionOnDevice from lambda lifter\r\n\r\n* Delete FunctionOnDevice and MaybeFunctionOnDevice!\r\n\r\n* Reomve GetFunctionResultVirtualDevice\r\n\r\n* Remove GetFunctionParamVirtualDevice\r\n\r\n* lint\r\n\r\n* lint\r\n\r\n* Python formatting\r\n\r\n* Remove FunctionOnDevice python test\r\n\r\n* Fix bug in binds & debug output\r\n\r\n* Fix text printer\r\n\r\n* lint\r\n\r\n* Remove function on device from fold constant tests\r\n\r\n* Mark nits\r\n\r\n* Revert behavior of bind\r\n\r\n* clean up debug\r\n\r\n* Make ExprBinder public interface and use instead of Bind\r\n\r\n* Fix lambda lift\r\n\r\n* This is broken but not sure how to fix\r\n\r\n* passes all device planning tests yay!\r\n\r\n* Add substitution helper and use in device planner\r\n\r\n* Remove unnecessary check\r\n\r\n* Respond to comments\r\n\r\n* Update comment",
-    "author": "electriclilies",
-    "date": "2022-02-25T18:34:13Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2609/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5337818191?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5337818351?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5337828409?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5337851618?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5337959656?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5337980033?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338104001?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338149376?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338296505?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338314991?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338427155?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338458314?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338578182?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338606103?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338735420?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338777784?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338938599?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5338966272?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5339054933?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5339078841?check_suite_focus=true"
       }
     ]
   }
