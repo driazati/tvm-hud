@@ -1,5 +1,42 @@
 [
   {
+    "sha": "9c96c5312b3b5882fe2ccfe6146b8284b8c05856",
+    "headline": "[Hexagon] Improved ergonomics of HexagonLauncher in unit tests.",
+    "body": "The goal of this commit is to reduce/eliminate common code required\nthrough unit tests that interact with Hexagon hardware.\n\n- New testing fixtures in `tests/python/contrib/test_hexagon`.  A test\n  running on hexagon hardware should only need to use the\n  `hexagon_session` fixture.\n\n  - `rpc_server_port`: Iterates through port numbers, selecting an\n    unused port for each unit test.  Avoids needing to explicitly\n    specify unique ports for each unit test.\n\n  - `tvm_tracker`: Starts a tracker on use, exits after test.  Avoids\n    needing to manually start a tracker prior to running the unit\n    test.\n\n  - `hexagon_launcher`: Starts a `HexagonLauncher` server on use,\n    stops server after test.  Avoids needing to call `start_server()`\n    and `stop_server()` in each test.\n\n  - `hexagon_session`: Starts a hexagon session using\n    `hexagon_laucnehr.start_session()`, exits after test.\n\n- Added `Session.upload` function, which delegates to\n  `HexagonLauncher.upload`.  Avoids needing to interact with both the\n  launcher and the session.\n\n- Allowed `tvm.IRModule` as argument passed to `Session.load_module`,\n  which will automatically save/upload the module, then load it.\n  Avoids needing to handle save/upload of temporary files in each unit\n  test.",
+    "author": "Lunderberg",
+    "date": "2022-03-11T14:45:43Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10581/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5512637356?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5512637341?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5512637972?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5512638168?check_suite_focus=true"
+      }
+    ],
+    "pr": 10581,
+    "pr_title": "[Hexagon] Improved ergonomics of HexagonLauncher in unit tests.",
+    "updated_at": 1647011083.205403
+  },
+  {
     "sha": "606b2e29a536f39101b10959d775524f875dcb70",
     "headline": "[microNPU] re-enable network tests",
     "body": "* Specifying errors than just Exception\n\nChange-Id: I51e6915f2ed13263569f1864494c3fb16f80a927",
@@ -28,8 +65,7 @@
       }
     ],
     "pr": 10565,
-    "pr_title": "[microNPU] re-enable network tests",
-    "updated_at": 1647007335.402774
+    "pr_title": "[microNPU] re-enable network tests"
   },
   {
     "sha": "4e60baed6b2f13210623df30125f2f98146d5a18",
@@ -1661,37 +1697,6 @@
     "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
   },
   {
-    "sha": "4ff6471c88dc701ed78d1f36e7001d3a4b651684",
-    "headline": "Bugfix, pass context information to the precheck.",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-03-09T21:35:57Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10520/7/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5487291718?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5487296913?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5487297032?check_suite_focus=true"
-      }
-    ],
-    "pr": 10558,
-    "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
-  },
-  {
     "sha": "1c23651f5475b40a61747276330a33b13b8bd336",
     "headline": "pass order and shape to device api",
     "body": "",
@@ -1736,37 +1741,6 @@
     ],
     "pr": 10553,
     "pr_title": "[Bugfix] Simultaneous layout transform and axis separators."
-  },
-  {
-    "sha": "bc372da7b72cfda33f6ffb5da26f0c6937105c23",
-    "headline": "Bugfix, verify the precheck's allocations, not own.",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-03-09T20:12:21Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10520/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5486350787?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5486354944?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5486355056?check_suite_focus=true"
-      }
-    ],
-    "pr": 10558,
-    "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
   },
   {
     "sha": "bc372da7b72cfda33f6ffb5da26f0c6937105c23",
@@ -1849,37 +1823,6 @@
     ],
     "pr": 10534,
     "pr_title": "[MetaSchedule] Bug Fix for Relay Integration"
-  },
-  {
-    "sha": "794dbbfe8f9f509676d1e4e27a3b297731ee7f18",
-    "headline": "Updated fix to remove StackSizeChecker entirely.",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-03-09T19:03:25Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10520/5/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5485525677?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5485525821?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5485525684?check_suite_focus=true"
-      }
-    ],
-    "pr": 10558,
-    "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
   },
   {
     "sha": "794dbbfe8f9f509676d1e4e27a3b297731ee7f18",
@@ -2111,37 +2054,6 @@
     ],
     "pr": 10548,
     "pr_title": "[CMSIS-NN] Include clip in the qnn binary op patterns"
-  },
-  {
-    "sha": "7de3ae0f582d6e15d3b8f6a6b8102f5d5ea95bc8",
-    "headline": "Fix lint formatting error.",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-03-09T15:18:41Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10520/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5482346889?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5482347221?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5482347508?check_suite_focus=true"
-      }
-    ],
-    "pr": 10558,
-    "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
   },
   {
     "sha": "7de3ae0f582d6e15d3b8f6a6b8102f5d5ea95bc8",
@@ -2817,37 +2729,6 @@
     "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
   },
   {
-    "sha": "1088c6640fef53ebcabbc2eb182e318efa9eb3c2",
-    "headline": "CI bump",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-03-08T22:44:37Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10520/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5472264957?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5472265135?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5472265210?check_suite_focus=true"
-      }
-    ],
-    "pr": 10558,
-    "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
-  },
-  {
     "sha": "6273032129471c9fd4616c5cd2e4b2b62b35c325",
     "headline": "[skip ci][Bugfix] Allow constant folding of 0U - 0U",
     "body": "A check for unsigned integer overflow would throw an error if it\nencountered 0U - 0U.\n\nhttps://github.com/apache/tvm/pull/10484, which introduced the check,\nand https://github.com/apache/tvm/pull/9727, which introduced this\nedge case, were in CI at the same time, and each was tested against a\nmerge candidate that did not include the other.  The unittest failure\nonly occurred when both PRs were merged.",
@@ -3174,32 +3055,6 @@
     ],
     "pr": 10530,
     "pr_title": "[Driver] Remove duplicate PreProcessModuleForBuild"
-  },
-  {
-    "sha": "2c1ee84fe12a2955d5711da15c410ca2c805c4a8",
-    "headline": "Updated unittests to run all contrib/test_hexagon at CI.",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-03-08T15:22:47Z",
-    "jobs": [
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5466677728?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5466677980?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5466678280?check_suite_focus=true"
-      }
-    ],
-    "pr": 10558,
-    "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
   },
   {
     "sha": "2c1ee84fe12a2955d5711da15c410ca2c805c4a8",
@@ -3655,37 +3510,6 @@
     "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
   },
   {
-    "sha": "8cea1e1d012533509e829f6e0720bbc53a6b473d",
-    "headline": "Added comment indicating need for StackSizeChecker::MakeMemCopy.",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-03-07T20:57:29Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10520/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5455301040?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5455306566?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5455306707?check_suite_focus=true"
-      }
-    ],
-    "pr": 10558,
-    "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
-  },
-  {
     "sha": "3469c4afb879d939921d19a6d76135e3b9b4f84e",
     "headline": "[ci] Delay pytest errors until all invocations have run",
     "body": "This makes it a little easier to gather CI signal on a PR by ensuring that all pytest invocations run. Currently pytest runs through to completion for a single invocation so some failures are gathered, but not all. This is annoying for development since its hard to guage how a PR actually fared in CI without seeing the full picture. This will increase demands on CI since failures won't cause the skip the following pytests, but we can monitor CI to see if this has a big impact on queue times.\n\nThis also also kind of a stop-gap since this wouldn't be an issue if we used a single pytest invocation, but that is difficult since we rely on loading `tvm` multiple times over the course of the test suite.",
@@ -3784,42 +3608,6 @@
     "author": "adstraw",
     "date": "2022-03-07T20:27:06Z",
     "jobs": [],
-    "pr": 10558,
-    "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
-  },
-  {
-    "sha": "daac1889c4423f1490e3e0ecc49f1a947e13b908",
-    "headline": "[Hexagon] Resolve breakage in test_hexagon/test_cache_read_write",
-    "body": "Breakage was caused by https://github.com/apache/tvm/pull/9727, which\ndidn't account for the new `builtin::mem_copy()` when computing the\nstack size in `StackSizeChecker`.",
-    "author": "Lunderberg",
-    "date": "2022-03-07T20:25:40Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10520/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5454929158?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5454929160?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5454929494?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5454929599?check_suite_focus=true"
-      }
-    ],
     "pr": 10558,
     "pr_title": "[Hexagon] Generalize builtin for Nd memory alloc with storage scope and add lowering for VTCM / Hexagon"
   },
