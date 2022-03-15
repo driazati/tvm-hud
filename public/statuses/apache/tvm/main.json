@@ -1,5 +1,79 @@
 [
   {
+    "sha": "47978509929d0fd04a234137e4be1b8ec6a38fa3",
+    "headline": "[microTVM] Zephyr: add mps3_an547 board support (#10479)",
+    "body": "* [microTVM] Zephyr: add mps3_an547 board support\r\n\r\nAdd mps3_an547 board support to microTVM.\r\n\r\nOn Zephyr this board is supported by two emulators: QEMU and FVP. This\r\ncommit only enables the support for running mps3_an547 on QEMU, since\r\ncurrently there isn't a FVP transporter on microTVM. The main difference\r\nbetween these two emulators is that FVP is provided by Arm as a closed\r\nsource emulator and it supports the Ethos-U55 accelerator.\r\n\r\nThe mps3_an547 is an Arm reference board. For more details, please see:\r\nhttps://developer.arm.com/tools-and-software/development-boards/fpga-prototyping-boards/mps3\r\n\r\nSince there are already specific tests enabled on the CI to test\r\nEthos using the AOT executor, for instance, this commit will only add\r\nsupport for mps3_an547 using QEMU for now, also enabling the board to be\r\ntested on the CI.\r\n\r\nThe FPU is disabled on this commit (\"fpu\": false, in boards.json). This\r\nis due to commit d4cc1c2196 (\"target/arm: Enable MVE in Cortex-M55\")\r\nbeing absent in QEMU v6.1.1, so it's not available in any zephyr-sdk\r\nrelease yet. That commit enables MVE (M-Profile Vector Extension) and so\r\nfully enables the instructions to run the code generated when FPU is\r\nenabled on Zephyr. It's available from QEMU v6.2.0.\r\n\r\nThis commit also adds support for the QEMU_BIN_PATH env variable so it\r\nturns easy setting an alternative QEMU version other than the one that\r\nis available via PATH, when running / testing any virtualized board,\r\neither by the CI in the future or locally by the users/devs.\r\n\r\nFinally this commit fixes two typos in comments.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>\r\n\r\n* mehrdadh review: Add comment on why FPU is disabled if mps3_an547 supports it",
+    "author": "gromero",
+    "date": "2022-03-15T13:37:47Z",
+    "jobs": [
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5554513704?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5554513860?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5554642102?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5554684263?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5554887158?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "queued",
+        "url": "https://github.com/apache/tvm/runs/5554944305?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1647353380.764145
+  },
+  {
+    "sha": "0ea07a7a8320de8c75e538c97fe0f37642b7e856",
+    "headline": "[CI] Pin numpy version in image build (#10611)",
+    "body": "Tensorflow `2.4.2` expects the version of numpy to be `~=1.19.5`,\r\nhowever pip installing numpy will attempt to install `1.21.5` by\r\ndefault. Therefore, pinning the version of numpy when building the\r\ndocker image to be `~=1.19.5` until the version of Tensorflow is\r\nupgraded.\r\n\r\nChange-Id: Ia44e183afb660cac67fc4274ff70b23d28fc3e3e",
+    "author": "lhutton1",
+    "date": "2022-03-15T13:26:54Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2760/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5554350259?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5554350393?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5554458677?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5554486059?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "0b6125637058dd080371399e913314bc5f132af3",
     "headline": "Fix bug check trt (#10600)",
     "body": "Co-authored-by: Michalis Papapdimitriou <mpapapdimitriou@octoml.ai>",
@@ -450,9 +524,18 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5554036611?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5554266534?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5554315113?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1647350263.130784
+    ]
   },
   {
     "sha": "2f7bb58377736bec2a15b45fa730e6f5b73605fb",
@@ -12534,79 +12617,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5416933478?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "b7922f3abc2fad348e07f34dfdab471f722f4cda",
-    "headline": "[microTVM] Zephyr: add B-U585I-IOT02A board support (#10416)",
-    "body": "",
-    "author": "gromero",
-    "date": "2022-03-04T01:30:06Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2662/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416300072?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416300182?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416317132?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416531428?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416609990?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416777339?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416786108?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "83f8e54ccd6cdcd58d209affa29e4e93986b3b1d",
-    "headline": "[runtime][Hexagon] AOTExecutor implementation for C Codegen (#10311)",
-    "body": "* Hexagon AOT tests work\r\n\r\n* fix and address comments",
-    "author": "mehrdadh",
-    "date": "2022-03-04T01:28:31Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2661/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416285687?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5416285762?check_suite_focus=true"
       }
     ]
   }
