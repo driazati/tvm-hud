@@ -1,5 +1,78 @@
 [
   {
+    "sha": "b8e9a8e4129c35f48e5a472775b9f11cfaaad3df",
+    "headline": "[git] Remove duplicate .gitignore entry",
+    "body": "The ignore for `gallery/how_to/work_with_microtvm/micro_tvmc.py` was\nadded in both https://github.com/apache/tvm/pull/10701 and\nhttps://github.com/apache/tvm/pull/10729.  This removes the duplicate\nentry.",
+    "author": "Lunderberg",
+    "date": "2022-03-24T13:33:58Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10760/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5677185014?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5677184898?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5677185204?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5677185308?check_suite_focus=true"
+      }
+    ],
+    "pr": 10760,
+    "pr_title": "[git] Remove duplicate .gitignore entry",
+    "updated_at": 1648130594.262831
+  },
+  {
+    "sha": "3df612a8e73ad19b2272d9f30a61c4901c5ed81b",
+    "headline": "[TIR] Simplify final indices from transform_layout",
+    "body": "The final indices returned from transform_layout when applied on a\n`te.compute` are not simplified. Thus the returned index ranges are\nharder understand\n\nEg: When applying NHWC to NCHWc transform_layout\n\n```python\n   iter_vars = s[B].transform_layout(lambda n,h,w,c: [n, c//4, h, w, c%4])\n   print(iter_vars)\n```\n\niter_vars before simplification:\n```python\n[iter_var(axis0, range(min=0, ext=((w - 1) + 1))), iter_var(axis1,\nrange(min=0, ext=(floordiv(((z_div*4) - 1), 4) + 1))), iter_var(axis2,\nrange(min=0, ext=((x - 1) + 1))), iter_var(axis3, range(min=0, ext=((y -\n1) + 1))), iter_var(axis4, range(min=0, ext=4))]\n```\n\niter_vars after simplification:\n```python\n[iter_var(axis0, range(min=0, ext=w)), iter_var(axis1, range(min=0, ext=z_div)), iter_var(axis2, range(min=0, ext=x)), iter_var(axis3, range(min=0, ext=y)), iter_var(axis4, range(min=0, ext=4))]\n```",
+    "author": "quic-sanirudh",
+    "date": "2022-03-24T13:01:30Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10761/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5677390333?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5677390319?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5677390558?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5677390678?check_suite_focus=true"
+      }
+    ],
+    "pr": 10761,
+    "pr_title": "[TIR] Simplify final indices from transform_layout"
+  },
+  {
     "sha": "53b0c489f9a9dc4f8ec1d9423077492b9dd0fed7",
     "headline": "More cleanup and op support added for TRT patterns",
     "body": "",
@@ -28,8 +101,7 @@
       }
     ],
     "pr": 10759,
-    "pr_title": "[BYOC][TRT] Add DFPattern support for TRT backend",
-    "updated_at": 1648127712.623412
+    "pr_title": "[BYOC][TRT] Add DFPattern support for TRT backend"
   },
   {
     "sha": "eb6ad916c9d1c17e3bd7d06a04737d0cda346967",
@@ -71,7 +143,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10735/3/display/redirect"
       },
       {
@@ -2572,68 +2644,6 @@
     ],
     "pr": 10703,
     "pr_title": "[skip ci][Community] Krzysztof Parzyszek -> PMC"
-  },
-  {
-    "sha": "a40df6634d3cd55cc28ed1edf436f5d6a3d15322",
-    "headline": "[wip] Mark slowest frontend tests with `@slow`",
-    "body": "This uses the `@tvm.testing.slow` decorator to mark these tests, making them only run on builds from `main` and not from PRs.\n\nTODO:\n* Notify / get buy-in from relevant test owners",
-    "author": "driazati",
-    "date": "2022-03-22T00:39:43Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10702/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5638493965?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5638494119?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5638494157?check_suite_focus=true"
-      }
-    ],
-    "pr": 10702,
-    "pr_title": "[wip] Mark slowest frontend tests with `@slow`"
-  },
-  {
-    "sha": "af938e63531ca86f87759e350bf4613f97ffb83d",
-    "headline": "[skip ci] Add generated docs file to .gitignore",
-    "body": "cc @mehrdadh",
-    "author": "driazati",
-    "date": "2022-03-22T00:10:33Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10701/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5636637789?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5636639152?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5636639742?check_suite_focus=true"
-      }
-    ],
-    "pr": 10701,
-    "pr_title": "[skip ci] Add generated docs file to .gitignore"
   },
   {
     "sha": "151b31fdfcde9ceecfa9352d0c47a206aea84bed",
