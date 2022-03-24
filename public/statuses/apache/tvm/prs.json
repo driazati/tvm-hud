@@ -1,5 +1,125 @@
 [
   {
+    "sha": "85aba6ca5e551e546c9f06644258f9b7c870f4cf",
+    "headline": "add USE_LIBTORCH to GPU build config",
+    "body": "",
+    "author": "t-vi",
+    "date": "2022-03-24T20:44:35Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10758/3/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5682938753?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5682938925?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5682938813?check_suite_focus=true"
+      }
+    ],
+    "pr": 10758,
+    "pr_title": "Manually add libtorch op test",
+    "updated_at": 1648155726.449055
+  },
+  {
+    "sha": "f7ff75c4779205f308da7ac0318c479a761ee3c1",
+    "headline": "Properly disable test",
+    "body": "",
+    "author": "driazati",
+    "date": "2022-03-24T20:35:02Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10749/3/display/redirect"
+      }
+    ],
+    "pr": 10749,
+    "pr_title": "[ci] Skip flaky CMSISNN test"
+  },
+  {
+    "sha": "2425a5cf8ea1fb6945300889a491bbc6dc7a804c",
+    "headline": "[ARM] Fix NCHWc int8 dot product schedule lowering",
+    "body": "",
+    "author": "masahi",
+    "date": "2022-03-24T20:27:46Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10773/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5683049950?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5683049949?check_suite_focus=true"
+      }
+    ],
+    "pr": 10773,
+    "pr_title": "[ARM] Fix NCHWc int8 dot product schedule lowering"
+  },
+  {
+    "sha": "5d01361407f3705fddf6fb886645534899377045",
+    "headline": "[build] Update libinfo and add lint rule",
+    "body": "This updates `tvm.support.libinfo()` to be in-line with the current tvm options. It also adds a lint rule to ensure these stay matched up in the future as well as a script to print out the options in more detail. This should add in communication when debugging (i.e. tell someone to run `python -c 'import tvm; tvm.support.describe()` to learn everything you need about their envrionment)",
+    "author": "driazati",
+    "date": "2022-03-24T20:22:50Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10774/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5682910750?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5682910846?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5682910841?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5682910964?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5682926055?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5682926141?check_suite_focus=true"
+      }
+    ],
+    "pr": 10774,
+    "pr_title": "[build] Update libinfo and add lint rule"
+  },
+  {
     "sha": "111efec1225ab4257842434e78b5727508e85071",
     "headline": "Fix hexagon test.",
     "body": " * previously I believe we required interface_api == \"c\", but\n   this really means to generate C API bindings, and we are generating\n   \"packed\" bindings.\n * I think \"c\" was chosen here because the distinction between\n   interface-api and use-unpacked-api is confusing. \"c\" interface-api\n   means to generate an entrypoint API for microcontrollers that\n   accepts bare data buffers. \"packed\" interface-api means to generate\n   a TVMBackendPackedCFunc entrypoint. use-unpacked-api forms the same\n   determination for the operator functions.\n * A further confusion here is that there are two ways to call\n   \"packed\" operator functions: tir.tvm_builtin_call_packed and\n   tir.tvm_builtin_call_cpacked. This distinction describes whether or\n   not to late-bind calls via TVMBackendGetFuncFromEnv. Right now, AOT\n   only ever requires call_cpacked because target_host == target, and\n   for all suitable target_host, we expect a single DSO-exportable\n   runtime.Module. When we move away from this by introducing\n   heterogeneous target support to AOT, we can use this as a condition\n   to help us choose between call_cpacked and call_packed (and\n   possibly add a compile-time option to assert it is call_cpacked,\n   for situations where we really don't want call_packed).",
@@ -15,11 +135,20 @@
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5682425642?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5682445100?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5682445314?check_suite_focus=true"
       }
     ],
     "pr": 10753,
-    "pr_title": "[AOT] Support LLVM backend with C++ runtime",
-    "updated_at": 1648152311.104758
+    "pr_title": "[AOT] Support LLVM backend with C++ runtime"
   },
   {
     "sha": "33a884ac7d667e8362f26f708beda58f11c7d525",
@@ -30,7 +159,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10772/1/display/redirect"
       },
       {
@@ -76,7 +205,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10732/4/display/redirect"
       }
     ],
@@ -92,7 +221,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10771/1/display/redirect"
       },
       {
@@ -154,7 +283,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10770/1/display/redirect"
       },
       {
@@ -364,12 +493,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5681809536?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5681809632?check_suite_focus=true"
       }
     ],
@@ -385,7 +514,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10759/4/display/redirect"
       },
       {
@@ -982,8 +1111,8 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10739/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10739/4/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -999,6 +1128,21 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5667991482?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5682766863?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5682766872?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5682778725?check_suite_focus=true"
       }
     ],
     "pr": 10739,
@@ -2168,109 +2312,6 @@
     ],
     "pr": 10718,
     "pr_title": "[QNN] Add per-channel quantization to add/subtract/multiply"
-  },
-  {
-    "sha": "673eba5f4109f8ed8d656af96a03543066911bcb",
-    "headline": "[AUTO_SCHEDULER] Only run rewrite layout tests on CPU",
-    "body": "Set the layout rewriting tests to only run on \"llvm\" and \"llvm\n-device=arm_cpu\" as layout rewriting is only supported on CPUs.\nCurrently, the arm test will not be run on arm CI because integration\ntests are not enabled.",
-    "author": "tkonolige",
-    "date": "2022-03-22T22:17:05Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10717/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5652043064?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5652043129?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5652043291?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5652043394?check_suite_focus=true"
-      }
-    ],
-    "pr": 10717,
-    "pr_title": "[AUTO_SCHEDULER] Only run rewrite layout tests on CPU"
-  },
-  {
-    "sha": "f338b3b5bb170f90104738a6a24348eb122678dc",
-    "headline": "lint",
-    "body": "",
-    "author": "anwang2009",
-    "date": "2022-03-22T22:02:11Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10716/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5651858394?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5651861250?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5651861371?check_suite_focus=true"
-      }
-    ],
-    "pr": 10716,
-    "pr_title": "[fix] relax QnnConv2DTransposeRel constraint"
-  },
-  {
-    "sha": "a7b25f5eb8728d6520fa44e34985010466db1f06",
-    "headline": "zp check",
-    "body": "",
-    "author": "anwang2009",
-    "date": "2022-03-22T21:54:03Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10716/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5651816748?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5651816744?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5651816982?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5651817028?check_suite_focus=true"
-      }
-    ],
-    "pr": 10716,
-    "pr_title": "[fix] relax QnnConv2DTransposeRel constraint"
   },
   {
     "sha": "052094e4cbb7bbf363188fa0da557c734d2d75a7",
