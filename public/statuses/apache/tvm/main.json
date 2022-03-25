@@ -1,5 +1,30 @@
 [
   {
+    "sha": "8813d0a2bd25e3fde7a97336ca1070fedae4e8a3",
+    "headline": "[TVMScript] Parser `int64` support (#10789)",
+    "body": "## Context\r\n\r\nWhen dealing with end-to-end models, we note that some tensors may have large shapes. Thus, when designing graph-level IR, we sometimes use `int64` instead of `int32` for the shape. Below is an dense GeMM example which has `int64` input tensor shape:\r\n\r\n```python\r\n@tvm.script.ir_module\r\nclass Module:\r\n    @T.prim_func\r\n    def main(rxplaceholder: T.Buffer[(1, 512), \"float32\"], rxplaceholder_1: T.Buffer[(T.int64(1000), T.int64(512)), \"float32\"], T_matmul_NT: T.Buffer[(1, T.int64(1000)), \"float32\"]) -> None:\r\n        # function attr dict\r\n        T.func_attr({\"global_symbol\": \"dense\", \"tir.noalias\": True, \"op_pattern\": 3})\r\n        # body\r\n        # with T.block(\"root\")\r\n        for i0_0, i1_0, i0_1, i1_1, i2_0, i0_2, i1_2, i2_1, i0_3, i1_3 in T.grid(1, 4, 1, 25, 8, 1, 10, 64, 1, 1):\r\n            with T.block(\"T_matmul_NT\"):\r\n                i = T.axis.spatial(1, 0)\r\n                j = T.axis.spatial(T.int64(1000), i1_0 * T.int64(250) + i1_1 * T.int64(10) + i1_2)\r\n                k = T.axis.reduce(512, i2_0 * 64 + i2_1)\r\n                T.reads(T_matmul_NT[i, j], rxplaceholder[i, k], rxplaceholder_1[j, k])\r\n                T.writes(T_matmul_NT[i, j])\r\n                T.block_attr({\"layout_free_placeholders\":[rxplaceholder_1], \"meta_schedule.tiling_structure\":\"SSRSRS\"})\r\n                with T.init():\r\n                    T_matmul_NT[i, j] = T.float32(0)\r\n                T_matmul_NT[i, j] = T_matmul_NT[i, j] + rxplaceholder[i, k] * rxplaceholder_1[j, k]\r\n```\r\n\r\n## Problem\r\n\r\nThough our TVMScript printer can easily print `int64` constants, the parser had poor support for `int64`. So this PR introduces some parser support for `int64`, basically about the data type of loop variables, block iterators and block read/write regions.\r\n\r\nBesides the parser, most of the TIR schedule primitives didn't take `int64` into account in their implementations. These schedule primitives will be fixed and updated in recent future, in followup PRs.",
+    "author": "MasterJH5574",
+    "date": "2022-03-25T22:09:24Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2885/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5698911561?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5698911633?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1648246199.593238
+  },
+  {
     "sha": "e956eb3375b768dbdd274f6562039bb31c842088",
     "headline": "[TVMC] Fix wrong terminology in tvmc source (#10320)",
     "body": "Renames variable from `runtime` with `executor` to better\r\nreflect current terminology and reduce confusion.",
@@ -30,9 +55,48 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5698298587?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5698449964?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5698471251?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5698573965?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5698598572?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5698702986?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5698725414?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5698838483?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5698871874?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1648242554.21012
+    ]
   },
   {
     "sha": "802be0dc966cecad5a9597690d943de92b8ae0d5",
@@ -126,12 +190,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5697488490?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5697488632?check_suite_focus=true"
       }
     ]
@@ -199,7 +263,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2879/display/redirect"
       },
       {
@@ -9828,110 +9892,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5580117142?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "7775550684c199da7d09f4f649a9e2471f4a9d30",
-    "headline": "[Hexagon] Add flags to control floating point support in HVX (#10644)",
-    "body": "Add explicit parameters to `tvm.target.hexagon()` to control LLVM\r\ncode generation for floating point vector instructions.",
-    "author": "kparzysz-quic",
-    "date": "2022-03-16T22:06:42Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2786/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5577584585?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5577584687?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5577733213?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5577759719?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5577853261?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5577880989?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5577997021?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578021735?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578078483?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578137744?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578174978?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578322499?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578348408?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578431650?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578450926?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578485648?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578539198?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5578559132?check_suite_focus=true"
       }
     ]
   }
