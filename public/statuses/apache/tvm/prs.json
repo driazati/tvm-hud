@@ -1,5 +1,109 @@
 [
   {
+    "sha": "5efcc99144a1a05ef87da6abc80993bc8cc19d89",
+    "headline": "include dlpack at very top",
+    "body": "",
+    "author": "t-vi",
+    "date": "2022-03-25T16:47:33Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10758/5/display/redirect"
+      }
+    ],
+    "pr": 10758,
+    "pr_title": "Manually add libtorch op test",
+    "updated_at": 1648228164.386657
+  },
+  {
+    "sha": "067110a789bbcfac99fc4fd29674cbd965820200",
+    "headline": "Merge branch 'fix-scalar-reduce' of github.com:ganler/tvm into fix-sc\u2026",
+    "body": "\u2026alar-reduce",
+    "author": "ganler",
+    "date": "2022-03-25T16:32:06Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10780/4/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5695036240?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5695036345?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5695036501?check_suite_focus=true"
+      }
+    ],
+    "pr": 10780,
+    "pr_title": "[ONNX] fix reduce crash on scalar inputs"
+  },
+  {
+    "sha": "3ce49cdbe6eb894f515a09cf09e3f86b8a0cf033",
+    "headline": "fix on different opset to pass ci",
+    "body": "",
+    "author": "ganler",
+    "date": "2022-03-25T16:31:37Z",
+    "jobs": [],
+    "pr": 10780,
+    "pr_title": "[ONNX] fix reduce crash on scalar inputs"
+  },
+  {
+    "sha": "244609b1c8b513b092388716edc6f9b362b88fba",
+    "headline": "Update tests/scripts/task_config_build_gpu.sh",
+    "body": "Co-authored-by: driazati <9407960+driazati@users.noreply.github.com>",
+    "author": "t-vi",
+    "date": "2022-03-25T16:24:46Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10758/4/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5694936912?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/5694937395?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/5694937517?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5695235897?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5695236028?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5695230225?check_suite_focus=true"
+      }
+    ],
+    "pr": 10758,
+    "pr_title": "Manually add libtorch op test"
+  },
+  {
     "sha": "742b96a08b5592a51ef432cbdad139aedb7dc158",
     "headline": "fix arm task extraction test not running",
     "body": "",
@@ -23,13 +127,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5693410352?check_suite_focus=true"
       }
     ],
     "pr": 10773,
-    "pr_title": "[ARM] Fix NCHWc int8 dot product schedule lowering",
-    "updated_at": 1648224309.59067
+    "pr_title": "[ARM] Fix NCHWc int8 dot product schedule lowering"
   },
   {
     "sha": "5d76d3bcb9a88ec03e15fc2ff5cd8f17faf8e670",
@@ -753,7 +856,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10769/2/display/redirect"
       },
       {
@@ -1830,6 +1933,42 @@
     "pr_title": "Onnx squeeze enabled with auto axis handling."
   },
   {
+    "sha": "6f04bcf57d07f915a98fd91178f04d9e92a09fcd",
+    "headline": "[Hexagon] 2-d allocation cleanup",
+    "body": "- Added device validity check in allocation. HexagonDeviceAPI should\n  only be called for CPU/Hexagon types.\n\n- Check for \"global.vtcm\" scope instead of \"vtcm\".  The ccope of N-d\n  allocations produced by `LowerVtcmAlloc` should be `\"global.vtcm\"`.\n  The previous check allowed unsupported scope such as `\"local.vtcm\"`.\n\n- Remove `vtcmallocs` entry after calling free. Previously, the vtcm\n  allocation map kept dangling pointers to `HexagonBuffer` objects\n  after they had been freed.\n\n- Rename N-d alloc and free packed functions.  Since most of the\n  similar device functions use snake case, renaming `*.AllocND` to\n  `*.alloc_nd` and `*.FreeND` to `*.free_nd`.\n\nCo-authored-by: Adam Straw <astraw@octoml.ai>",
+    "author": "Lunderberg",
+    "date": "2022-03-23T20:30:05Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10786/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5694945030?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5694945029?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5694945392?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5694945524?check_suite_focus=true"
+      }
+    ],
+    "pr": 10786,
+    "pr_title": "[Hexagon] 2-d allocation cleanup"
+  },
+  {
     "sha": "c29a197d0f93fb5d6e9a1f8ae49b76f7d291e031",
     "headline": "[ci] Generate frontend GPU CI shards from a template",
     "body": "This uses the templating to generate the frontend GPU shards so we can easily control the number of shards",
@@ -2307,38 +2446,6 @@
     "pr_title": "[BYOC][TRT] Add DFPattern support for TRT backend"
   },
   {
-    "sha": "620515e82370c810a1e47d5e2691a9d376381609",
-    "headline": "Fix link formatting.",
-    "body": "",
-    "author": "areusch",
-    "date": "2022-03-23T16:06:04Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10730/1/display/redirect"
-      }
-    ],
-    "pr": 10730,
-    "pr_title": "Fix ReStructuredText link in docs."
-  },
-  {
-    "sha": "003867502f62751b9b0f4ba3fea7c701272417a2",
-    "headline": "[git] Ignore auto-generated micro_tvmc.py example.",
-    "body": "This file is generated automatically by\n`tests/scripts/task_convert_scripts_to_python.sh`, added in\nhttps://github.com/apache/tvm/pull/10555, and can be generated when\nrunning the `ci.py lint` script locally.",
-    "author": "Lunderberg",
-    "date": "2022-03-23T15:36:38Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10729/1/display/redirect"
-      }
-    ],
-    "pr": 10729,
-    "pr_title": "[git] Ignore auto-generated micro_tvmc.py example."
-  },
-  {
     "sha": "548b5de75c8156ec535245a105129bdba0546729",
     "headline": "Register more patterns for TRT",
     "body": "",
@@ -2347,42 +2454,6 @@
     "jobs": [],
     "pr": 10759,
     "pr_title": "[BYOC][TRT] Add DFPattern support for TRT backend"
-  },
-  {
-    "sha": "7f37dbb0b663b0ba40c64178a449b5bd701acff6",
-    "headline": "[NDArray] Update runtime.TVMArrayAllocWithScope to use ShapeTuple",
-    "body": "`runtime.TVMArrayAllocWithScope` predates the introduction of\nShapeTuple, and its use simplifies the `tvm.nd.empty` function.  The\ntwo modified locations are the only occurrences of the string\n\"TVMArrayAllocWithScope\" in the repository, so no other call sites\nshould need to be updated.",
-    "author": "Lunderberg",
-    "date": "2022-03-23T14:27:17Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10728/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5662144603?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5662144601?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5662144911?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5662145103?check_suite_focus=true"
-      }
-    ],
-    "pr": 10728,
-    "pr_title": "[NDArray] Update runtime.TVMArrayAllocWithScope to use ShapeTuple"
   },
   {
     "sha": "cae005908ed4d652d2b485cd6b2fb24d5a2177ab",
@@ -2662,6 +2733,52 @@
     "jobs": [],
     "pr": 10753,
     "pr_title": "[AOT] Support LLVM backend with C++ runtime"
+  },
+  {
+    "sha": "528dc1e8df2c0134ab66ef35fad95dd1c2ed980f",
+    "headline": "[Pass][Bugfix] Disable re-use of non-flat buffers in StorageRewrite.",
+    "body": "As a follow-up from https://github.com/apache/tvm/pull/9727,\nrestricting StorageRewrite to only modify flat memory buffers.  When\nrewriting, the existing algorithm in StorageRewrite flattens N-d\nallocations into 1-d allocations, preventing them from being exposed\nto the codegen.",
+    "author": "Lunderberg",
+    "date": "2022-03-18T23:01:32Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10787/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5694961623?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5694961644?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5694961822?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5694961924?check_suite_focus=true"
+      }
+    ],
+    "pr": 10787,
+    "pr_title": "[Pass][Bugfix] Disable re-use of non-flat buffers in StorageRewrite."
+  },
+  {
+    "sha": "ab5e6be3b0d2434fdd759390937cacb3aa8db9bd",
+    "headline": "[Pass][Bugfix] StorageFlatten, buffer var definitions in LetStmt",
+    "body": "Previously, any buffers whose buffer var was defined in a Let or\nLetStmt would result in an error when running `StorageFlatten`,\nstating that the buffer var was undefined.  These are used for\nallocations in external calls, such as those produced by\n`LowerVtcmAlloc`.",
+    "author": "Lunderberg",
+    "date": "2022-03-18T17:55:52Z",
+    "jobs": [],
+    "pr": 10788,
+    "pr_title": "[Pass][Bugfix] StorageFlatten, buffer var definitions in LetStmt"
   },
   {
     "sha": "86c59e7580b75919db6e6eca3f14c75795bdc1f2",
