@@ -1,5 +1,50 @@
 [
   {
+    "sha": "ba8698f0a683dcfcdf57519cb08be661e172297e",
+    "headline": "[CI] Fix Vitis-AI tests when USE_VITIS_AI flag set to OFF  (#10802)",
+    "body": "* Register relay.ext.vitis_ai.available function\r\n\r\n* Fix vitis-ai tests when running with USE_VITIS_AI OFF\r\n\r\n* Replace skip_test with pytest skipif\r\n\r\n* Add a function to see if vitis_ai is available\r\n\r\n* Use requires_vitis_ai function for running tests",
+    "author": "anilmartha",
+    "date": "2022-03-29T18:46:12Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2908/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5742727032?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5742727127?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5742755706?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5742781540?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5742927069?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "queued",
+        "url": "https://github.com/apache/tvm/runs/5742975631?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1648580888.324412
+  },
+  {
     "sha": "f6256df2d63bb22017daff8423c3cc998729e52e",
     "headline": "Fix compile error when AddRewrite gets additional args (#10669)",
     "body": "",
@@ -8,7 +53,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2907/display/redirect"
       },
       {
@@ -100,9 +145,28 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5742173808?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5742393664?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5742439595?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5742593086?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5742623132?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1648577509.882477
+    ]
   },
   {
     "sha": "47ab54538fb83dc836f6516ed63870495df56253",
@@ -9093,35 +9157,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5635696503?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "290395a87be1c4be0b426928841af4cbbca069cf",
-    "headline": "[microNPU] Refactor Relay to TIR hook (#10599)",
-    "body": "* [microNPU] Refactor Relay to TIR hook\r\n\r\nRefactors the Relay to TIR python hook for the NPU so that optimizations\r\ncan be applied across the whole module and not just functions that will\r\nbe offloaded to the NPU. A pass `OutlineCompilerFunctions` is introduced\r\nto outline NPU functions, which now happens before optimization passes\r\nare run (this previously happened after the prim_func had been created).\r\n\r\nIn addition, optimization passes that should only run on NPU functions\r\nare now limited to running on outlined functions for the NPU (by\r\nchecking the \"Compiler\" attribute). To help avoid code duplication, a\r\nhelpful decorator `create_npu_function_pass` has been created for python\r\npasses that should only run on NPU functions.\r\n\r\nThis refactor helps move a number of passes in the microNPU codegen to\r\nuse an IRModule -> IRModule philosophy.\r\n\r\nChange-Id: Icdea9ba43da0157d5ee17529d2b23b761396d112\r\n\r\n* add mixed compilers to test\r\n\r\nChange-Id: I3ca48738e096bb0f4dc362f0e9550317fc0d5afd\r\n\r\n* Address comments including renaming both npu_pass and RelayToTIR\r\n\r\nThis commit renames `npu_pass` -> `create_npu_function_pass`.\r\n\r\nIt also renames the `RelayToTIR` pass created in Python to `LowerToTIR`,\r\nalong with moving it to compiler.py to make it clear that this pass is a\r\nwrapper around the `_lower_to_tir` function. In addition, to make it\r\nexplicit that the `lower_to_tir` func->func pass should not be used\r\ndirectly it has been renamed to `_lower_to_tir` - it is being maintained\r\nsince it is used in many tests.\r\n\r\nChange-Id: I3a0a06801f029aeaa4a51c2d86d8703bb0d7afbb\r\n\r\n* address nit and small fix to example\r\n\r\nChange-Id: I44c64de15fa8680cc89ce0440ffa6c9e0ec62a50",
-    "author": "lhutton1",
-    "date": "2022-03-21T17:19:23Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2809/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5631628396?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5631628601?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5631643615?check_suite_focus=true"
       }
     ]
   }
