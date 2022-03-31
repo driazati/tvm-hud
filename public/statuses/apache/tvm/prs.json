@@ -1,5 +1,42 @@
 [
   {
+    "sha": "fd2d605506b5501bf39e759a398bb5feb1625518",
+    "headline": "[Hexagon] Treat \"global\" scope allocations as 1-d",
+    "body": "This updates `HexagonDeviceAPIv2::AllocDataSpace` to follow the\nsemantics of `DeviceAPI::AllocDataSpace`, to avoid breaking caller\nassumptions in `tvm.nd.array` or graph_executor/aot allocation.",
+    "author": "Lunderberg",
+    "date": "2022-03-31T16:53:10Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10846/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5775253395?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5775253398?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5775253765?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5775253932?check_suite_focus=true"
+      }
+    ],
+    "pr": 10846,
+    "pr_title": "[Hexagon] Support both 1-d and 2-d VTCM allocations",
+    "updated_at": 1648746590.443131
+  },
+  {
     "sha": "b92aefd1ea70a0d06b4e757d1354e7ab5868e9b3",
     "headline": "[CMSIS-NN] skip test if import tflite fails",
     "body": "Change-Id: Icdcdc3bcc2f3330fc78410eede66c8c4ea273d43",
@@ -9,7 +46,7 @@
       {
         "name": "tvm-ci/pr-merge",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10817/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10817/7/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -23,13 +60,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "queued",
+        "status": "pending",
         "url": "https://github.com/apache/tvm/runs/5774394891?check_suite_focus=true"
       }
     ],
     "pr": 10817,
-    "pr_title": "[CMSIS-NN] Aligned scale computation with TFLM to fix numerical mismatch",
-    "updated_at": 1648742730.828813
+    "pr_title": "[CMSIS-NN] Aligned scale computation with TFLM to fix numerical mismatch"
   },
   {
     "sha": "bcb0b5041b0c4228b72a4459ccb2e63d927a5211",
@@ -102,7 +138,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10845/2/display/redirect"
       },
       {
@@ -321,7 +357,7 @@
     "pr_title": "[TIR] StmtFunctor ReGenerateDef"
   },
   {
-    "sha": "0a1c06a4f7d51579785e6ab8a71a100a65da7bbf",
+    "sha": "4b25b72a02d62eca8d330c8175bacc2ea99e815f",
     "headline": "[Pass] Fix printer formatting for PassInfo",
     "body": "The format of the printed PassInfoNode was difficult to read as there\nwas no separation between the different attributes of the node\n\nBefore this change, PassInfo is printed as:\nThe meta data of the pass: pass name: tir.ApplyLayoutTransformsopt_level: 0required passes: [\n]\n\nAfter this change, PassInfo is printed as:\nThe meta data of the pass - pass name: tir.ApplyLayoutTransforms, opt_level: 0, required passes: []",
     "author": "quic-sanirudh",
@@ -329,28 +365,23 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10844/1/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10844/2/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5771493724?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5771493583?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/5775227736?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5771493773?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5775228089?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5771493898?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5775228193?check_suite_focus=true"
       }
     ],
     "pr": 10844,
@@ -2149,6 +2180,16 @@
     "pr_title": "[BugFix] Fix NeedsMultiLevelTiling by skipping trivial block iterators"
   },
   {
+    "sha": "7ab8724904c35cd503297d56438690019b119d74",
+    "headline": "[Hexagon] Distinguish between 1-d buffer and single-alloc 2-d buffer",
+    "body": "Previously, HexagonBuffer represented 1-d buffers as 2-d buffers with\n`nallocs==1`.  Since this is used to determine the return type of the\ndata pointer exposed to the generated code, the ambiguity between\n`shape=[N]` and `shape=[1,N]` must be avoided.  This commit replaces\n`HexagonBuffer::nallocs_` with `HexagonBuffer::ndim_`, avoiding this\nambiguity.",
+    "author": "Lunderberg",
+    "date": "2022-03-28T15:38:41Z",
+    "jobs": [],
+    "pr": 10846,
+    "pr_title": "[Hexagon] Support both 1-d and 2-d VTCM allocations"
+  },
+  {
     "sha": "4089f17812437a36f4aeac39595df07abb574693",
     "headline": "fix python module import error",
     "body": "",
@@ -2753,37 +2794,6 @@
     "pr_title": "[Metaschedule] Add demonstration of selectively tuning relay ops with TIR schedules "
   },
   {
-    "sha": "692da68b66bae0817c1ac544f586b81fc1dea13f",
-    "headline": "test",
-    "body": "",
-    "author": "driazati",
-    "date": "2022-03-25T21:13:08Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10790/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5698379232?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5698382832?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5698382907?check_suite_focus=true"
-      }
-    ],
-    "pr": 10790,
-    "pr_title": "[wip][testing only] Test PR apache#10664"
-  },
-  {
     "sha": "9f9a020367863c3b04ccf447aecfe0486084648c",
     "headline": "[skip ci][ci] Fix bad merge after moving to templated Jenkinsfile",
     "body": "",
@@ -2823,37 +2833,6 @@
     ],
     "pr": 10792,
     "pr_title": "[skip ci][ci] Fix bad merge after moving to templated Jenkinsfile"
-  },
-  {
-    "sha": "489f3fbd0d1f2bdc1cb3e3a72cb4c89c521c055e",
-    "headline": "rebase",
-    "body": "",
-    "author": "driazati",
-    "date": "2022-03-25T19:25:26Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10664/15/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5698375557?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5698379144?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/5698379237?check_suite_focus=true"
-      }
-    ],
-    "pr": 10790,
-    "pr_title": "[wip][testing only] Test PR apache#10664"
   },
   {
     "sha": "05e673c82073d23670b180b325c6371fc4898413",
@@ -2912,6 +2891,16 @@
     "pr_title": "[CI] Fix Vitis-AI tests when USE_VITIS_AI flag set to OFF "
   },
   {
+    "sha": "30c52ce980a115c19a6830a1aed1d46a36d574e8",
+    "headline": "[Hexagon] Support both 1-d and 2-d VTCM allocations",
+    "body": "Previously, all VTCM allocations were assumed to be 2-d buffers.  This\ncommit extends `HexagonDeviceAPIv2::AllocVtcmWorkspace` to allow both\n1-d and 2-d VTCM allocations.  Matching the semantics used in\n`CodeGenHexagon::CreateBufferPtr`, allocation of 1-d buffers returns a\n`void*`, and allocation of 2-d buffers returns a `void**`.\n\nCo-authored-by: Adam Straw <astraw@octoml.ai>",
+    "author": "Lunderberg",
+    "date": "2022-03-23T20:38:50Z",
+    "jobs": [],
+    "pr": 10846,
+    "pr_title": "[Hexagon] Support both 1-d and 2-d VTCM allocations"
+  },
+  {
     "sha": "241dffb08b4d863329147b71ae6de00bedec19c9",
     "headline": "prune dnnl subgraph, and add related test case.",
     "body": "",
@@ -2946,16 +2935,6 @@
     ],
     "pr": 10835,
     "pr_title": "[BYOC-DNNL] Prune dnnl subgraph."
-  },
-  {
-    "sha": "2a1a9a405244b34ed373f74dbe2212f498907113",
-    "headline": "use built images",
-    "body": "",
-    "author": "driazati",
-    "date": "2022-03-22T21:06:33Z",
-    "jobs": [],
-    "pr": 10790,
-    "pr_title": "[wip][testing only] Test PR apache#10664"
   },
   {
     "sha": "b51d7c31e6e0c0fe14d8543c2765ef700d945d10",
