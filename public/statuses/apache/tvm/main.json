@@ -1,5 +1,45 @@
 [
   {
+    "sha": "72c761c807beae48948bd78bb7e6478dae829e0b",
+    "headline": "[MetaSchedule] Fine-Grained Rewrite Unbound Block (#10823)",
+    "body": "In this PR we introduced more fine-grained loop spliting and reordering for Rewrite-Unbound-Block post processor based on given cuda target's attribute (`max_threads_per_block`). After this PR the performance of non-reductional kernels could improve by ~20%. Regression tests are also added.",
+    "author": "zxybazh",
+    "date": "2022-03-31T00:02:27Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2927/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5763267722?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5763267834?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5763288787?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5763426268?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5763484430?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1648687431.650754
+  },
+  {
     "sha": "10f037f03376b9ee14384329de63b3e1b0ad36a7",
     "headline": "[ci][docker] Remove nvidia ml repository before updating (#10828)",
     "body": "`bash docker/build.sh ci_gpu` fails locally as well as in CI: https://ci.tlcpack.ai/blue/organizations/jenkins/docker-images-ci%2Fdaily-docker-image-rebuild/detail/daily-docker-image-rebuild/273/pipeline/57\r\n\r\nFrom [this post](https://forums.developer.nvidia.com/t/failed-to-fetch-https-developer-download-nvidia-com-compute-machine-learning-repos-ubuntu1804-x86-64-packages-gz/156287), so long as the build completes (meaning we don't use any images from this repo), it should be fine\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
@@ -8,7 +48,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2926/display/redirect"
       },
       {
@@ -105,9 +145,43 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5762770923?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5762885640?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5762912558?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5762938675?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5763018640?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5763036459?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5763128725?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5763150311?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1648681804.089784
+    ]
   },
   {
     "sha": "642fc57c5e8bf59bfe102357f1ceb2926ea3fa57",
@@ -118,7 +192,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/2925/display/redirect"
       },
       {
@@ -8888,50 +8962,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5654566795?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "4c608be12a80594cefc4c81a0dc62d7069be1971",
-    "headline": "[Relay] Remove DynamicToStatic pass from graph runtime build (#10691)",
-    "body": "Closes https://github.com/apache/tvm/issues/10692\r\n\r\nTo solve this problem, we can either remove this pass from `relay.build(...)` pipeline or run `DynamicToStatic` in both VM and non-VM paths. I propose to remove it because  (1) usually `DynamicToStatic` is supposed to be applied after model import and (2) the only case running `DynamicToStatic` during `relay.build(...)` helps is when the input is entirely static but a frontend fails to produce a static mod AND a user forgets to run `DynamicToStatic` after model import.\r\n\r\n I hope the latter case happens rarely but if not, that's something we should fix in the frontend side. We should avoid relying on `DynamicToStatic` that runs during `relay.build(...)` since not all use cases of TVM use `relay.build(...)` (BYOC, for example).",
-    "author": "masahi",
-    "date": "2022-03-23T00:44:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2827/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5653374367?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5653374474?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5653408349?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5653415503?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5653720085?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5653755472?check_suite_focus=true"
       }
     ]
   }
