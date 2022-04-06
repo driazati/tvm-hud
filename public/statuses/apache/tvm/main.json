@@ -1,5 +1,40 @@
 [
   {
+    "sha": "591a0009c47f7361cffa977307073c758dfac4b3",
+    "headline": "[Hexagon] Use single allocation to back 2-d arrays (#10903)",
+    "body": "* [Hexagon] Use single allocation to back 2-d arrays\r\n\r\nCurrently, each allocation allocates an entire page, so even a\r\nrelatively small number of allocations can use very large amounts of\r\nVTCM.  This commit changes calls to `AllocVtcmWorkspace` of shape\r\n`[N,M]` from performing `N` allocations of size `M`, to 1 allocation\r\nof size `N*M`.  Since `N` is usually much smaller than a page, this\r\nreduces the total amount of memory required.\r\n\r\nThis is an intermediate step, where the long-term solution is to use\r\nstatic planning for VTCM allocations.  This returns the same `void**`\r\ntype as the static planning eventually will, but avoids excess memory\r\nuse in the meantime.\r\n\r\n* [Hexagon] Maintain alignment of allocations\r\n\r\nPreviously, when a single monolithic allocation is used to back a 2-d\r\nHexagon buffer of shape `[nallocs, nbytes_per_allocation]`, the\r\nallocation itself is aligned, but each individual region is not.  This\r\ncommit ensures that each individual region also followed the alignment\r\nspecified.",
+    "author": "Lunderberg",
+    "date": "2022-04-06T15:58:00Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2987/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5854222174?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/5854222370?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5854280287?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5854347239?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1649261602.9967
+  },
+  {
     "sha": "fc736ed6dcc1108b411af16e6dfae68b2ef7f96a",
     "headline": "[ETHOSN] Improved handling of 5d reshapes (#10860)",
     "body": "Resolves an issue with 5d reshapes in the Yolo network and added a\r\ntest case. Refactored the reshape tests to use parametrization.",
@@ -93,11 +128,40 @@
       },
       {
         "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/5853339088?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5853609501?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5853665124?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5853840171?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5853875543?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5854050173?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/5854083546?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1649257823.363762
+    ]
   },
   {
     "sha": "d7d8fdbc9c8be5a7b94850b6227e3c164a6cb12d",
@@ -11548,175 +11612,6 @@
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5700876891?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "8813d0a2bd25e3fde7a97336ca1070fedae4e8a3",
-    "headline": "[TVMScript] Parser `int64` support (#10789)",
-    "body": "## Context\r\n\r\nWhen dealing with end-to-end models, we note that some tensors may have large shapes. Thus, when designing graph-level IR, we sometimes use `int64` instead of `int32` for the shape. Below is an dense GeMM example which has `int64` input tensor shape:\r\n\r\n```python\r\n@tvm.script.ir_module\r\nclass Module:\r\n    @T.prim_func\r\n    def main(rxplaceholder: T.Buffer[(1, 512), \"float32\"], rxplaceholder_1: T.Buffer[(T.int64(1000), T.int64(512)), \"float32\"], T_matmul_NT: T.Buffer[(1, T.int64(1000)), \"float32\"]) -> None:\r\n        # function attr dict\r\n        T.func_attr({\"global_symbol\": \"dense\", \"tir.noalias\": True, \"op_pattern\": 3})\r\n        # body\r\n        # with T.block(\"root\")\r\n        for i0_0, i1_0, i0_1, i1_1, i2_0, i0_2, i1_2, i2_1, i0_3, i1_3 in T.grid(1, 4, 1, 25, 8, 1, 10, 64, 1, 1):\r\n            with T.block(\"T_matmul_NT\"):\r\n                i = T.axis.spatial(1, 0)\r\n                j = T.axis.spatial(T.int64(1000), i1_0 * T.int64(250) + i1_1 * T.int64(10) + i1_2)\r\n                k = T.axis.reduce(512, i2_0 * 64 + i2_1)\r\n                T.reads(T_matmul_NT[i, j], rxplaceholder[i, k], rxplaceholder_1[j, k])\r\n                T.writes(T_matmul_NT[i, j])\r\n                T.block_attr({\"layout_free_placeholders\":[rxplaceholder_1], \"meta_schedule.tiling_structure\":\"SSRSRS\"})\r\n                with T.init():\r\n                    T_matmul_NT[i, j] = T.float32(0)\r\n                T_matmul_NT[i, j] = T_matmul_NT[i, j] + rxplaceholder[i, k] * rxplaceholder_1[j, k]\r\n```\r\n\r\n## Problem\r\n\r\nThough our TVMScript printer can easily print `int64` constants, the parser had poor support for `int64`. So this PR introduces some parser support for `int64`, basically about the data type of loop variables, block iterators and block read/write regions.\r\n\r\nBesides the parser, most of the TIR schedule primitives didn't take `int64` into account in their implementations. These schedule primitives will be fixed and updated in recent future, in followup PRs.",
-    "author": "MasterJH5574",
-    "date": "2022-03-25T22:09:24Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2885/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5698911561?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5698911633?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699007875?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699032500?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699111792?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699127101?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699212621?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699233240?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699323747?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699356610?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699474165?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699493922?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699561117?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699578150?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699650932?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699667451?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699772739?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699875875?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5699926963?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700062948?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700087103?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700310482?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700337158?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700481397?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700530025?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700656948?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700671002?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700763699?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700770084?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700822864?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5700838225?check_suite_focus=true"
       }
     ]
   }
