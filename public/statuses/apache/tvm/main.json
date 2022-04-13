@@ -1,5 +1,40 @@
 [
   {
+    "sha": "5cfb4bc3d0e39ac59b9beec22852456489974969",
+    "headline": "[TVMC] Allow output module name to be passed as a command line argume\u2026",
+    "body": "\u2026nt (#10962)\n\n* Allows module-name as a command line argument to tvmc\r\n * Updates microNPU graph partitioner to pass module name to PartitionGraph()\r\n * Updates CMSIS-NN graph partitioner to pass module name to PartitionGraph()\r\n\r\nChange-Id: I12a4a2eef2ddc7e3c4a6c0dd8fdcab009c975bac",
+    "author": "grant-arm",
+    "date": "2022-04-13T07:50:27Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3038/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6003499384?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6003499489?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6003633274?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6003695661?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1649837616.407478
+  },
+  {
     "sha": "597000c74e6f9692ccb5bc1cf9dd612393a5d4fb",
     "headline": "[ONNX] Add MatMulInteger importer (#10450)",
     "body": "* implement matmulinteger\r\n\r\n* rm test\r\n\r\n* rm outdated comments\r\n\r\n* fix lint and review\r\n\r\n* wip\r\n\r\n* fixes\r\n\r\n* fix\r\n\r\n* alter tests\r\n\r\n* extra 4x4x4 step\r\n\r\n* comments",
@@ -145,9 +180,38 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6002958605?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6003135089?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6003167406?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6003284608?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6003311013?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6003445114?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6003476085?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1649833844.161337
+    ]
   },
   {
     "sha": "6d9a1118b12e53d9b6b51e144bcc4a7efb09df67",
@@ -11463,30 +11527,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5782911392?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "912993ff3984ddb47ec98888d645a8f157daa3fc",
-    "headline": "[ARM] Fix int8 NCHWc compute and alter layout (#10839)",
-    "body": "This PR fixes a bug in TE ARM int8 compute for NCHWc conv2d, introduced in https://github.com/apache/tvm/pull/10310. The compute itself, not the schedule, is broken for the following reasons:\r\n\r\n* We are using `n_elems = 8` in https://github.com/apache/tvm/blob/e9091d6c68d5d70c28881e5c75bfe72e385c1f4d/python/tvm/topi/arm_cpu/conv2d_alter_op.py#L350. Thus, the innermost axis of the transformed kernel has extent 8: https://github.com/apache/tvm/blob/e9091d6c68d5d70c28881e5c75bfe72e385c1f4d/python/tvm/topi/arm_cpu/conv2d_alter_op.py#L375\r\n* In the TE compute, we iterate over the innermost axis `ic_s_inner` of the kernel at https://github.com/apache/tvm/blob/f6f252f0abc8f621a96506739f9534083d1fe213/python/tvm/topi/nn/conv2d.py#L577. `ic_s_inner` has extent `n_elems` according to https://github.com/apache/tvm/blob/f6f252f0abc8f621a96506739f9534083d1fe213/python/tvm/topi/nn/conv2d.py#L566. `n_elems` is 4 by default according to https://github.com/apache/tvm/blob/f6f252f0abc8f621a96506739f9534083d1fe213/python/tvm/topi/nn/conv2d.py#L478\r\n* The ARM code that calls this compute does not explicitly pass `n_elems`, according to https://github.com/apache/tvm/blob/e9091d6c68d5d70c28881e5c75bfe72e385c1f4d/python/tvm/topi/arm_cpu/conv2d_int8.py#L106-L108\r\n* Thus, even though the innermost axis of the kernel has extent 8, the TE compute only loops over `n_elems = 4` of the input channel dimension. \r\n\r\nInitially, I tried to keep `n_elems = 8` in alter layout and fix the intrinsic definition. But `n_elems = 8` breaks tensorization pattern matching, since now the compute is doing 4x8 innermost loop but this intrinsic is supposed to do 4x4 dot product, see https://github.com/apache/tvm/blob/7896108fc41663a1fecbb52345194a93278e9e28/python/tvm/topi/arm_cpu/tensor_intrin.py#L467-L479. Setting `num_int8_elements = 8` there does fix the tensorize pattern matching, but the result was still incorrect.\r\n\r\nRather than fixing the intrin implementation in https://github.com/apache/tvm/blob/7896108fc41663a1fecbb52345194a93278e9e28/python/tvm/topi/arm_cpu/tensor_intrin.py#L492 to adapt for 4x8 dot product, I settled on setting `n_elems = 4` in alter layout. It turned out this change is enough to get the correct output. Moreover, `n_elems = 8` is simply wrong for the dot product path in https://github.com/apache/tvm/blob/7896108fc41663a1fecbb52345194a93278e9e28/python/tvm/topi/arm_cpu/conv2d_int8.py#L154-L155 which computes 4x4 dot product in one instruction. \r\n\r\n@tkonolige I suggest doing perf benchmark again, since the numbers in https://github.com/apache/tvm/pull/10310 are invalid.\r\n\r\ncc @mbrookhart @Mousius  @junrushao1994 @vinx13",
-    "author": "masahi",
-    "date": "2022-04-01T00:11:32Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2938/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5780261515?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5780261654?check_suite_focus=true"
       }
     ]
   }
