@@ -1,5 +1,94 @@
 [
   {
+    "sha": "0e1a2a2ff8bfd048470ae222f02a94ad4e5da5b0",
+    "headline": "Fix broken CI when git-merge needs to create a commit. (#11007)",
+    "body": "- This fixes an error seen when CI needs to create a merge commit\r\n   to sync the PR. CI started doing this recently to ensure that all\r\n   CI branches use the same commit for their regressions.\r\n - The error looks like:\r\n\r\n        + git merge e370ed459739f5312e45a2fb3a446b120f8ec5d1\r\n\r\n        *** Please tell me who you are.\r\n\r\n        Run\r\n\r\n          git config --global user.email \"you@example.com\"\r\n          git config --global user.name \"Your Name\"\r\n\r\n        to set your account's default identity.\r\n        Omit --global to set the identity only in this repository.",
+    "author": "areusch",
+    "date": "2022-04-14T20:41:15Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3059/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6030624938?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6030625015?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6030680755?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6030709620?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6030859031?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6030906278?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1649970552.296625
+  },
+  {
+    "sha": "b94119692eaa7307201fbad3e3434f8721c50ede",
+    "headline": "[TIR] Ignore Allocate/AllocateConst in BufferAllocationLocator (#10998)",
+    "body": "* [TIR] Ignore Allocate/AllocateConst in BufferAllocationLocator\r\n\r\nPrior to this commit, the BufferAllocationLocator mutator used in the\r\nPlanAndUpdateBufferAllocationLocation pass would erroneously insert an\r\nentry to `BlockNode::alloc_buffers` for buffers allocated using\r\n`Allocate` or `AllocateConst` nodes.  This error was introduced in\r\nhttps://github.com/apache/tvm/pull/9727, which deprecated `Load` and\r\n`Store` nodes, replacing them with `BufferLoad` and `BufferStore`\r\nnodes.  As a result, BufferAllocationLocator identified these as\r\nbuffers whose allocations should be moved to inner loops, rather than\r\nas unmanaged allocations that should be ignored.\r\n\r\nThis commit restores the earlier behavior by only operating on buffer\r\nallocations in `BlockNode::alloc_buffers`, and explicitly ignoring any\r\nbuffers whose allocation is done with `Allocate` or `AllocateConst`.\r\n\r\n* Only inject opaque block if managed buffers exist.\r\n\r\nPreviously, all buffers found were managed buffers, so this check\r\nwasn't needed.",
+    "author": "Lunderberg",
+    "date": "2022-04-14T20:18:09Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3058/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6030350676?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6030350813?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6030378976?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6030418547?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6030530205?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6030553323?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "a34731b7fcdd41f381e94b53f2279b97b75f7bbd",
     "headline": "[ROCM] DP4A intrinsic support for TE/TIR (#11009)",
     "body": "* [ROCM] Support dp4a on AMDGPU by sdot4 intrinsic\r\n\r\ncommit 0225f2bfe3f413cd4764c2dba6c922af2520146b\r\nAuthor: Masahiro Masuda <masahi129@gmail.com>\r\nDate:   Thu Apr 14 08:56:10 2022 +0900\r\n\r\n    share op strategy between cuda and rocm\r\n\r\ncommit 762c7e8611c9ec3cca3321428e2362c81fe89b9b\r\nAuthor: Masahiro Masuda <masahi129@gmail.com>\r\nDate:   Thu Apr 14 08:28:34 2022 +0900\r\n\r\n    fixed rocm batch_matmul strategy for mixed i8i8i32\r\n\r\ncommit ce53e8d141f7f901303ec6a91674337cbf2b2384\r\nAuthor: Masahiro Masuda <masahi129@gmail.com>\r\nDate:   Thu Apr 14 06:17:30 2022 +0900\r\n\r\n    add rocm sdot4 TIR intrin\r\n\r\ncommit f4562b991f9180b61be7339b2890de1584656c10\r\nAuthor: Masahiro Masuda <masahi129@gmail.com>\r\nDate:   Thu Apr 14 06:03:44 2022 +0900\r\n\r\n    rocm sdot4 works\r\n\r\ncommit 6cc62805f82dd884a18a1c4c0e9bae5866e00da0\r\nAuthor: Masahiro Masuda <masahi129@gmail.com>\r\nDate:   Thu Apr 14 05:32:07 2022 +0900\r\n\r\n    more wip\r\n\r\ncommit 0602f4a3157d4cb5a3f280a3a3c514bb6535aac8\r\nAuthor: Masahiro Masuda <masahi129@gmail.com>\r\nDate:   Thu Apr 14 03:47:37 2022 +0900\r\n\r\n    Squashed commit of the following:\r\n\r\n    commit 65b8bcf955f44540d6a52c8416e60f3047c8366c\r\n    Author: Masahiro Masuda <masahi129@gmail.com>\r\n    Date:   Wed Apr 13 20:36:49 2022 +0900\r\n\r\n        [WIP] adding DP4A support to rocm\r\n\r\n    commit 4f8f308ab6bb85ef3bdcc2b8e846c2eea15f2167\r\n    Author: Masahiro Masuda <masahi129@gmail.com>\r\n    Date:   Wed Apr 13 14:03:25 2022 +0900\r\n\r\n        Squashed commit of the following:\r\n\r\n        commit 1711be38a17e3b6171350009f1da05824cd0b340\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Wed Apr 13 13:11:40 2022 +0900\r\n\r\n            fixed condition for real\r\n\r\n        commit 8a48fb5262e80e318cd81d5ff51bf95fd5eb576e\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Wed Apr 13 09:57:42 2022 +0900\r\n\r\n            Revert \"Skip applying sch_rule when both ann and sch_rule are defined\"\r\n\r\n            This reverts commit 4915c6a5a91ff87038e71f8aff9f31db684b4a95.\r\n\r\n        commit daea033d2cb06388ef27ddadb80fc5bce72181d2\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Mon Apr 11 09:31:05 2022 +0900\r\n\r\n            [Metaschedule] Support rocm and spirv\r\n\r\n        commit eb0cae2c779808cced074d189e8f487bf46ea89f\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Wed Apr 13 07:25:04 2022 +0900\r\n\r\n            dp4a works\r\n\r\n        commit 4915c6a5a91ff87038e71f8aff9f31db684b4a95\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Wed Apr 13 06:13:45 2022 +0900\r\n\r\n            Skip applying sch_rule when both ann and sch_rule are defined\r\n\r\n        commit 7b3d71c6b21a9c5de9ef2b89d0a7db2800a5f3a2\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Wed Apr 13 04:40:31 2022 +0900\r\n\r\n            fixed intrin description\r\n\r\n        commit 7666cd7a5b0ce182791662673fbe45944c84d0ae\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Tue Apr 12 19:59:47 2022 +0900\r\n\r\n            add DP4A intrin\r\n\r\n        commit 7086bdb75546a2680d12dc8f80c040cea23f729a\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Tue Apr 12 19:03:44 2022 +0900\r\n\r\n            works\r\n\r\n        commit db343974bfae86e51078e40e6170022a782d8e0a\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Tue Apr 12 12:49:52 2022 +0900\r\n\r\n            more hack to tensorize loop mapping to make resnet50 e2e work\r\n\r\n        commit 2409674a7884a60beb50d7aa3345c4b907b8cd13\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Mon Apr 11 13:40:59 2022 +0900\r\n\r\n            wip support pad + qnn.conv2d folding\r\n\r\n        commit 613cb7ec33b6df41f1ebe0f0a0ac8eca7c73cff1\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Sun Apr 10 12:04:08 2022 +0900\r\n\r\n            hack to tensorize loop mapping to make conv2d work\r\n\r\n        commit 9e4f9df6a409396a8a4a20d967c4f51accf5d210\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Sun Apr 10 11:34:13 2022 +0900\r\n\r\n            wrap tensorize with try/catch\r\n\r\n        commit d4b496d858da0ae43063d47cb03a28b803d0269f\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Sun Apr 10 11:33:39 2022 +0900\r\n\r\n            revert change in task_scheduler.cc\r\n\r\n        commit 476129be7b286f5d109402280aea585e89f6dc1d\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Sat Apr 9 05:54:10 2022 +0900\r\n\r\n            try / catch in ThreadedApply\r\n\r\n        commit d8226ff26f25eba17d4000f25131822874bdc2cc\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Fri Apr 8 17:17:59 2022 +0900\r\n\r\n            filter out invalid candidate\r\n\r\n        commit 2632899a2759885d338e25f2a25ba0b2c555f0c3\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Fri Apr 8 10:09:48 2022 +0900\r\n\r\n            try graceful exit in parallel_for_dynamic\r\n\r\n        commit 9d6741c3dd29c4dde861aa1d3b2ca85f560f5ac6\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Fri Apr 8 09:35:51 2022 +0900\r\n\r\n            [QNN] Fix broadcast for invalid axis\r\n\r\n        commit 6ccde0959343ce4246ef99505b4f54de469a1a5c\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 20:51:15 2022 +0900\r\n\r\n            refactor rewrite_tensorize\r\n\r\n        commit 2ce206699f10b03b9611c4683018f7e0c70c7eb5\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 20:48:17 2022 +0900\r\n\r\n            allow missing schedule_rule in post order apply\r\n\r\n        commit 3a69353a29abfc454e28d4e530d22a3e2043712e\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 19:42:48 2022 +0900\r\n\r\n            refactor rewrite_tensorize\r\n\r\n        commit 43e0b2f7f98299679807aaf1ffb13cce2b5f5ce3\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 18:25:14 2022 +0900\r\n\r\n            rewrite_vnni -> rewrite_tensorize\r\n\r\n        commit 823797e2627a9bfa812b72019468569ee79eb4c6\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 18:12:12 2022 +0900\r\n\r\n            VNNI -> WithIntrin\r\n\r\n        commit 4284a47e5933aa89c1c3362b15ad53b14782fc81\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 17:45:41 2022 +0900\r\n\r\n            introduce TileForIntrin\r\n\r\n        commit b87ef32e30e1e71b3f39789f7289976a8cba4ab4\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 17:34:04 2022 +0900\r\n\r\n            move TilingwithTensorIntrin to auto_tensorize.cc\r\n\r\n        commit 2fc118b3726586ba13f7de950beaa299b83a0af3\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 17:28:45 2022 +0900\r\n\r\n            clean up headers\r\n\r\n        commit d8b2aa325c91b524bec22dc1ec2fc52c9f060fce\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 17:09:32 2022 +0900\r\n\r\n            clean up using namespace\r\n\r\n        commit eb05d25e2b71f4a1232a8796d1413011ec7629d3\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 17:03:05 2022 +0900\r\n\r\n            refactored init\r\n\r\n        commit 5e6b0a08d447c0470c2c8a993e4bd62673e34fe3\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 16:57:14 2022 +0900\r\n\r\n            compiled\r\n\r\n        commit 2b8c430e2fec7ceb285eed7bc7aa73bb9a74a997\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 12:51:55 2022 +0900\r\n\r\n            wip MultiLevelTiling refactor\r\n\r\n        commit 7c21a9fea0511c88bd82f49f799b5198252df40a\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:58:33 2022 +0900\r\n\r\n            function doc string not supported by tvmscript\r\n\r\n        commit 40f9742bc9c3aa11e8c2c0551d1827ad47fc0f39\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:56:45 2022 +0900\r\n\r\n            update vnni intrin name\r\n\r\n        commit 4814f825a5315efd2a3da8c36d2ce6b5df5447cd\r\n        Merge: e0c5eb84b 07bbb38f7\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:44:47 2022 +0900\r\n\r\n            Merge branch 'tir-tensor-intrin' into auto-tensorize-vnni\r\n\r\n        commit 07bbb38f7fb52db4a2ecde3d5c87cf4d5cd000a1\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:24:56 2022 +0900\r\n\r\n            more lint fix\r\n\r\n        commit 15e60b42362cc64b1428b219c8eada414d1b8372\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:16:08 2022 +0900\r\n\r\n            black\r\n\r\n        commit 7a757fe53758e06418ea1367b348b47c8cd2dcf9\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:12:54 2022 +0900\r\n\r\n            pylint\r\n\r\n        commit 9a3e508b6f4529158e703b4617f2ddaa351a89eb\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 10:58:52 2022 +0900\r\n\r\n            simplify import\r\n\r\n        commit d8e43ecf1c0a79a2c195ff31e1e699a447a11335\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 10:52:50 2022 +0900\r\n\r\n            use vectorlow/high in arm intrin\r\n\r\n        commit 625cd2774ec455307646b0c26bb3971d89613d1e\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 10:34:57 2022 +0900\r\n\r\n            fixed offset factor\r\n\r\n        commit 69e72b6b612588e670937e003435afa647030ceb\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 10:12:02 2022 +0900\r\n\r\n            Add ARM intrin\r\n\r\n        commit 1351fdea6b22f231a290a6c28e06732c9cf993cf\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 08:27:27 2022 +0900\r\n\r\n            use buffer syntax sugar\r\n\r\n        commit 0ced85fd097ed48aad8714912718d8735791e1fb\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 08:17:43 2022 +0900\r\n\r\n            rename vnni.py to x86.py\r\n\r\n        commit 38a5aca87ec438446593a3af17760339211f5ad9\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 07:24:44 2022 +0900\r\n\r\n            add VNNI unittest\r\n\r\n        commit 88b763ec48c20cf68db8bc3bae3fa3ae78996ee8\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 07:10:06 2022 +0900\r\n\r\n            refactored existing test using VNNI intrin\r\n\r\n        commit 711a0076d9be2b9aa80ada67e1edda5ba1fdf1fd\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 07:04:58 2022 +0900\r\n\r\n            [TIR] Add VNNI dot product intrinsic for TIR\r\n\r\n        commit e0c5eb84bf6a0ad2ba0cddc4bdf22a799dc4b8a0\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:42:26 2022 +0900\r\n\r\n            merge fix\r\n\r\n        commit b171748139e53f0cf75ff4b6fde436f9d8a5fe91\r\n        Merge: 71fe3bdf0 82e152a3c\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:33:59 2022 +0900\r\n\r\n            Merge branch 'tir-tensor-intrin' into auto-tensorize-vnni\r\n\r\n        commit 71fe3bdf02ae10ddbe090a4fd1020f545a05bb41\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 06:57:38 2022 +0900\r\n\r\n            move tensor intrin under tir\r\n\r\n        commit 0c51badef45af2a1025ab42fe38d1b3f07ab493e\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 06:12:39 2022 +0900\r\n\r\n            remove log\r\n\r\n        commit fed910e03eb94c169d4a160b8f3cad406d04c6aa\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 06:11:22 2022 +0900\r\n\r\n            more revert\r\n\r\n        commit 7150aff9fba167d88dbfb40d48727de8a144b9c0\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 06:10:44 2022 +0900\r\n\r\n            revert stmt_functor change\r\n\r\n        commit 155107b98b09c5e5cc7f19afbd327b0557a02843\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 06:10:09 2022 +0900\r\n\r\n            refactored RewriteVNNI a bit\r\n\r\n        commit ca15255e3a882b89b05bb83079640c929fb63096\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 05:41:13 2022 +0900\r\n\r\n            add RewriteVNNI\r\n\r\n        commit dc9f71d5e3122b50fa8ae6a4462f959f13870b05\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 05:38:56 2022 +0900\r\n\r\n            vectorized init loop\r\n\r\n        commit fcc31ee20ddfafd47f566bf98ff40a9f684d12eb\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 04:55:36 2022 +0900\r\n\r\n            tensorize worked\r\n\r\n        commit 2b534377a45b9ab84bf35c3d7c03ecae7616d17f\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Wed Apr 6 19:11:05 2022 +0900\r\n\r\n            TilingwithTensorIntrin works\r\n\r\n        commit 86baa31e773fc864f77dc113bc9a93b79f3fc652\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Wed Apr 6 08:58:27 2022 +0900\r\n\r\n            Ported auto-tensorization code\r\n\r\n        commit 82e152a3c91144041ade783116a50565ebb48b89\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:24:56 2022 +0900\r\n\r\n            more lint fix\r\n\r\n        commit 88d9bdd3b21302bc2dd068a990df15c375a1a8ef\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:16:08 2022 +0900\r\n\r\n            black\r\n\r\n        commit 31fe7eb8075445161d804d170772eac8e90d3425\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 11:12:54 2022 +0900\r\n\r\n            pylint\r\n\r\n        commit 7876754effc40ad089349534dacd75df19d38fc4\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 10:58:52 2022 +0900\r\n\r\n            simplify import\r\n\r\n        commit 56f2e9a85069426021e2872eb1da95bf134ac7e0\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 10:52:50 2022 +0900\r\n\r\n            use vectorlow/high in arm intrin\r\n\r\n        commit 995cc8d6fcec70a3fadcfb1c6fee7b9f0b5a0951\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 10:34:57 2022 +0900\r\n\r\n            fixed offset factor\r\n\r\n        commit 86bbd4955b34257d68d957cb4a2536aea3ef9bac\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 10:12:02 2022 +0900\r\n\r\n            Add ARM intrin\r\n\r\n        commit 120fd96e80307b4301ee3fc93e6793e0b40485f0\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 08:27:27 2022 +0900\r\n\r\n            use buffer syntax sugar\r\n\r\n        commit 0f0682d00c3961afd1f492ae55f180c5b5502767\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 08:17:43 2022 +0900\r\n\r\n            rename vnni.py to x86.py\r\n\r\n        commit f88c31ead1fa6db4bfd2c88eeaf5f665e4c6dddb\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 07:24:44 2022 +0900\r\n\r\n            add VNNI unittest\r\n\r\n        commit 6cc80094adac398762924b0b31a4c741417ba9dc\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 07:10:06 2022 +0900\r\n\r\n            refactored existing test using VNNI intrin\r\n\r\n        commit 11a29c704cdaad96aeeca39c9c753ef006d27a50\r\n        Author: Masahiro Masuda <masahi129@gmail.com>\r\n        Date:   Thu Apr 7 07:04:58 2022 +0900\r\n\r\n            [TIR] Add VNNI dot product intrinsic for TIR\r\n\r\n* cleanup\r\n\r\n* black\r\n\r\n* update dot prod intrin\r\n\r\n* add mattr kind\r\n\r\n* conv2d topi test working\r\n\r\n* add dense and bmm test\r\n\r\n* add conv2d relay test\r\n\r\n* add tir intrin test\r\n\r\n* pylint",
@@ -141,8 +230,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6030192697?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1649967114.639204
+    ]
   },
   {
     "sha": "3d63b2d944d43cea42ce068def0ffd4cffa67218",
@@ -10014,529 +10102,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5822933873?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "fcdf4636d866fefbf3e2a55daa614565ce97203a",
-    "headline": "Fix Arduino workspace alignment (#10886)",
-    "body": "* Fix Arduino workspace alignment\r\n\r\n* Fix linter error\r\n\r\n* Rerun tests",
-    "author": "guberti",
-    "date": "2022-04-04T01:33:34Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2960/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809455701?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809455739?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809471524?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809702986?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809786085?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809944482?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809989741?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810143105?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810181392?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810307545?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810321314?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810374098?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810392421?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810437798?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810475955?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810612227?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810639287?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810727550?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810745825?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810808840?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810821687?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810883007?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5810917909?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811046739?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811064490?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811128324?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811149718?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811229350?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811247060?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811338219?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811385530?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811555788?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811590534?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811699960?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811723090?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811813837?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811832616?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811928543?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5811976679?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812169320?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812202957?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812310282?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812336767?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812461848?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812490336?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812637640?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812694141?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812907704?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5812952485?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813098701?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813128153?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813252104?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813279063?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813440755?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813499460?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813722621?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813765436?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813901011?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5813928635?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814071000?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814106970?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814271690?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814329395?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814548464?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814593619?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814735040?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814760464?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814878594?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5814906359?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815061044?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815116700?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815318923?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815349852?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815469496?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815505474?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815654618?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815687008?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815845418?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5815913707?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5816154649?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5816199267?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5816434561?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5816484680?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5816646666?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5816836357?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5816855746?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5817066174?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5817120717?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5817307018?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5817351248?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5817475310?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5817506522?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5817713219?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5817779994?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5818046023?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5818096376?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5818237710?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "d91fdbb0abd6cf6776303bbb1f1de41fe530ab15",
-    "headline": "[runtime-hexagon-rpc] more Hexagon/Android logging (#10767)",
-    "body": "- Alter `android_bash.sh` to meet the runtime conditions needed\r\n  for FARF logging.  (Note that FARF logging is also governed\r\n  by certain preprocessor definitions.)\r\n\r\n- Alter `android_bash.sh` so that any stdout/stderr emitted\r\n  by `tvm_rpc_android_server` is saved to a log file\r\n  (`tvm_rpc_android.log`). Previously that output was simply\r\n  lost.",
-    "author": "cconvey",
-    "date": "2022-04-04T01:32:12Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2959/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809445804?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5809445851?check_suite_focus=true"
       }
     ]
   }
