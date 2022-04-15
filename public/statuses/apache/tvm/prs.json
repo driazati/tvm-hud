@@ -1,5 +1,37 @@
 [
   {
+    "sha": "e2cb3e3d091de7616dcce5f5addb36f4d1edc668",
+    "headline": "[OpenCL] Fix type casting error",
+    "body": "Faced situation when generated OpenCL kernel contained the following if\ncondition:\n```\nif (uint4(...) && (int4(...) == int4(...)))\n```\n\nIn this case, got the following error:\n\"can't convert between vector values of different size ('uint4' and 'int __attribute__((ext_vector_type(4)))')\"\n\nAdded casts for binary ops. But it was necessary to modify `CastFromTo`\nand add new method `CastTo`. Because with `CastFromTo` the following\ncode was generated:\n```\nif (uint4(...) && (convert_uint4(int4(...)) == convert_uint4(int4(...))))\n```\nBut the OpenCL compiler still generated the same error.\n\nThis is why added new method `CastTo`. In this method we don't check the\ncurrent type of op and just add cast to a new type.\n\nFinally the following code will be generated:\n```\nif (uint4(...) && convert_uint4(convert_uint4(int4(...)) == convert_uint4(int4(...))))\n```",
+    "author": "echuraev",
+    "date": "2022-04-15T09:42:12Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11021/3/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6036857005?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6036859191?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6036859275?check_suite_focus=true"
+      }
+    ],
+    "pr": 11021,
+    "pr_title": "[OpenCL] Fix type casting error",
+    "updated_at": 1650017067.45423
+  },
+  {
     "sha": "d72399e2e2b5579a6fcdfb0b57521f7bb1868682",
     "headline": "cpplint",
     "body": "",
@@ -28,8 +60,7 @@
       }
     ],
     "pr": 11020,
-    "pr_title": "[Metaschedule, Refactor] Move MultiLevelTilingNode decl to a header",
-    "updated_at": 1650013408.598879
+    "pr_title": "[Metaschedule, Refactor] Move MultiLevelTilingNode decl to a header"
   },
   {
     "sha": "f0822cbdcfab568f7215e7389b9c43830207ebc9",
@@ -102,7 +133,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11011/3/display/redirect"
       },
       {
@@ -133,7 +164,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-merge",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10990/3/display/redirect"
       },
       {
@@ -236,27 +267,6 @@
     ],
     "pr": 11020,
     "pr_title": "[Metaschedule, Refactor] Move MultiLevelTilingNode decl to a header"
-  },
-  {
-    "sha": "574583a41cd276749326432a1baae3dd224bb0f4",
-    "headline": "trigger",
-    "body": "",
-    "author": "mkatanbaf",
-    "date": "2022-04-15T00:34:29Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10967/13/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6032813385?check_suite_focus=true"
-      }
-    ],
-    "pr": 10967,
-    "pr_title": "[rpc] Implemented rpc logging"
   },
   {
     "sha": "c0d35fa997712184c0c77e4bc1a5c4069155fc84",
@@ -3071,27 +3081,6 @@
     ],
     "pr": 11015,
     "pr_title": "U3 usecase"
-  },
-  {
-    "sha": "b3a00c5524597daef8eb8ff205a6869a9ad1ea4c",
-    "headline": "Implemented rpc logging",
-    "body": "",
-    "author": "mkatanbaf",
-    "date": "2022-03-11T23:34:26Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-merge",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-10967/12/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6030762365?check_suite_focus=true"
-      }
-    ],
-    "pr": 10967,
-    "pr_title": "[rpc] Implemented rpc logging"
   },
   {
     "sha": "5fd72b776e5015a7df96a6868a8818b39cee4372",
