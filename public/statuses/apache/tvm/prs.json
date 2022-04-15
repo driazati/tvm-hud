@@ -1,5 +1,37 @@
 [
   {
+    "sha": "072a557e14e5f4dd2ca673974e5815b6827dc069",
+    "headline": "fix error about boolean value of Tensor with more than one value is a\u2026",
+    "body": "\u2026mbiguous.",
+    "author": "billishyahao",
+    "date": "2022-04-15T12:45:51Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-merge",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11011/4/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6038267394?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6038267464?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6038267540?check_suite_focus=true"
+      }
+    ],
+    "pr": 11011,
+    "pr_title": "[QNNParam] Refactor the implmentation of QNNParam",
+    "updated_at": 1650028560.955453
+  },
+  {
     "sha": "e2cb3e3d091de7616dcce5f5addb36f4d1edc668",
     "headline": "[OpenCL] Fix type casting error",
     "body": "Faced situation when generated OpenCL kernel contained the following if\ncondition:\n```\nif (uint4(...) && (int4(...) == int4(...)))\n```\n\nIn this case, got the following error:\n\"can't convert between vector values of different size ('uint4' and 'int __attribute__((ext_vector_type(4)))')\"\n\nAdded casts for binary ops. But it was necessary to modify `CastFromTo`\nand add new method `CastTo`. Because with `CastFromTo` the following\ncode was generated:\n```\nif (uint4(...) && (convert_uint4(int4(...)) == convert_uint4(int4(...))))\n```\nBut the OpenCL compiler still generated the same error.\n\nThis is why added new method `CastTo`. In this method we don't check the\ncurrent type of op and just add cast to a new type.\n\nFinally the following code will be generated:\n```\nif (uint4(...) && convert_uint4(convert_uint4(int4(...)) == convert_uint4(int4(...))))\n```",
@@ -9,7 +41,7 @@
       {
         "name": "tvm-ci/pr-merge",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11021/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11021/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -38,18 +70,17 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6037369304?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6037369396?check_suite_focus=true"
       }
     ],
     "pr": 11021,
-    "pr_title": "[OpenCL] Fix type casting error",
-    "updated_at": 1650024614.050908
+    "pr_title": "[OpenCL] Fix type casting error"
   },
   {
     "sha": "d72399e2e2b5579a6fcdfb0b57521f7bb1868682",
