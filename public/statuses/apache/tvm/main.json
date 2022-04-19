@@ -1,5 +1,40 @@
 [
   {
+    "sha": "71067799ef0178c894c1b327791b847b8b6a1f72",
+    "headline": "[TE][TIR] Enable CreatePrimFunc to properly handle 'layout_free_place\u2026",
+    "body": "\u2026holder' (#11054)\n\n`layout_free_placeholder` is used to guide proper layout transformation on TE/TIR-level. However, previously it is not properly supported on upstream AutoTIR. This PR introduces legalization of this block annotation into function attributes.\r\n\r\nNote that this attribute is not useful on Relax end-to-end tuning, because in Relax @jinhongyii developed a set of more powerful mechanisms to handle these cases more effectively without introducing bugs like https://github.com/apache/tvm/issues/9476.",
+    "author": "junrushao1994",
+    "date": "2022-04-19T06:53:33Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3086/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6073431182?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6073431319?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6073514196?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6073561341?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1650352225.426406
+  },
+  {
     "sha": "4178617fcf19d209ea545a2708f8bfcdbfa02056",
     "headline": "[AOT] Support LLVM backend with C++ runtime (#10753)",
     "body": "* add get_c_struct_name() method to Metadata to distinguish struct type name in llvm\r\n\r\n* add metadata serialization support to llvm codegen\r\n\r\n* Organize MetadataQueuer into a separate file.\r\n\r\n* Add DiscoverArraysVisitor to metadata_utils\r\n\r\n* Fill DLTensor metadata in LegalizePackedCalls.\r\n\r\n* Improve error message from Call asserts\r\n\r\n* Pass non-String device_context down to codegen.\r\n\r\n * this is necessary to allow CodeGenCPU to emit calls that include resource_handle.\r\n\r\n* Scope usage of lvalue refs in LowerTVMBuiltin to avoid corrupt memory.\r\n\r\n* test fixes\r\n\r\n* Also fill preflattened_buffer_map (TODO, maybe don't do this)\r\n\r\n* Fix C codegen.\r\n\r\n* Set USMP elem_offset to 0.\r\n\r\n* Clarify calculation of byte_offset from elem_offset.\r\n\r\n* fix tests\r\n\r\n* Fix arm compile warning\r\n\r\n* Fix hexagon test.\r\n\r\n * previously I believe we required interface_api == \"c\", but\r\n   this really means to generate C API bindings, and we are generating\r\n   \"packed\" bindings.\r\n * I think \"c\" was chosen here because the distinction between\r\n   interface-api and use-unpacked-api is confusing. \"c\" interface-api\r\n   means to generate an entrypoint API for microcontrollers that\r\n   accepts bare data buffers. \"packed\" interface-api means to generate\r\n   a TVMBackendPackedCFunc entrypoint. use-unpacked-api forms the same\r\n   determination for the operator functions.\r\n * A further confusion here is that there are two ways to call\r\n   \"packed\" operator functions: tir.tvm_builtin_call_packed and\r\n   tir.tvm_builtin_call_cpacked. This distinction describes whether or\r\n   not to late-bind calls via TVMBackendGetFuncFromEnv. Right now, AOT\r\n   only ever requires call_cpacked because target_host == target, and\r\n   for all suitable target_host, we expect a single DSO-exportable\r\n   runtime.Module. When we move away from this by introducing\r\n   heterogeneous target support to AOT, we can use this as a condition\r\n   to help us choose between call_cpacked and call_packed (and\r\n   possibly add a compile-time option to assert it is call_cpacked,\r\n   for situations where we really don't want call_packed).\r\n\r\n* Document T.preflattened_buffer\r\n\r\n* Fix test_aot_legalize_packed_calls\r\n\r\n* Address manupa comments\r\n\r\n* Fix convert_pool_allocations_to_offsets test.\r\n\r\n* lint\r\n\r\n* Fix T.preflattened_buffer\r\n\r\n* Add preflattened_buffer_map to TIRTextPrinter\r\n\r\n* Fix tests\r\n\r\n* Fix BYOC\r\n\r\n* Fix invoking C device API.\r\n\r\n* remove comments\r\n\r\n* Address Mousius comments\r\n\r\n* lint\r\n\r\n* lint\r\n\r\n* Fix GMock linking on new CMake\r\n\r\n* address masahi comment\r\n\r\nCo-authored-by: Masahiro Masuda <masahi129@gmail.com>",
@@ -135,9 +170,38 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6072969931?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6073126449?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6073159895?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6073274620?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6073297361?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6073391119?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6073412338?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1650348835.010182
+    ]
   },
   {
     "sha": "0cd4fa688c29c3ed9d219ec2d32a59066d74ff8e",
@@ -11543,65 +11607,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5855846674?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "591a0009c47f7361cffa977307073c758dfac4b3",
-    "headline": "[Hexagon] Use single allocation to back 2-d arrays (#10903)",
-    "body": "* [Hexagon] Use single allocation to back 2-d arrays\r\n\r\nCurrently, each allocation allocates an entire page, so even a\r\nrelatively small number of allocations can use very large amounts of\r\nVTCM.  This commit changes calls to `AllocVtcmWorkspace` of shape\r\n`[N,M]` from performing `N` allocations of size `M`, to 1 allocation\r\nof size `N*M`.  Since `N` is usually much smaller than a page, this\r\nreduces the total amount of memory required.\r\n\r\nThis is an intermediate step, where the long-term solution is to use\r\nstatic planning for VTCM allocations.  This returns the same `void**`\r\ntype as the static planning eventually will, but avoids excess memory\r\nuse in the meantime.\r\n\r\n* [Hexagon] Maintain alignment of allocations\r\n\r\nPreviously, when a single monolithic allocation is used to back a 2-d\r\nHexagon buffer of shape `[nallocs, nbytes_per_allocation]`, the\r\nallocation itself is aligned, but each individual region is not.  This\r\ncommit ensures that each individual region also followed the alignment\r\nspecified.",
-    "author": "Lunderberg",
-    "date": "2022-04-06T15:58:00Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/2987/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5854222174?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5854222370?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5854280287?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5854347239?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5854602502?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5854654902?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5854861929?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5854902158?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5855047759?check_suite_focus=true"
       }
     ]
   }
