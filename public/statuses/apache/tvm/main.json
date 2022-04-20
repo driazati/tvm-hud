@@ -1,5 +1,79 @@
 [
   {
+    "sha": "2025e368c4c52fd986e112a307fa418ee4faf064",
+    "headline": "[CMSIS-NN] Add Arm(R) Cortex(R)-M55 CPU and CMSIS-NN demo (#11013)",
+    "body": "* [CMSIS-NN] Add Arm(R) Cortex(R)-M55 CPU and CMSIS-NN demo\r\n\r\n- Downloads a quantized (int8) person detection model\r\n- Uses tvmc to compile the model for Cortex(R)-M55 CPU and CMSIS-NN\r\n- Downloads an image to run the model on\r\n- Creates a C header file inputs.c containing the image data as a C array\r\n- Builds the demo application\r\n- Runs the demo application on the FVP\r\n- Application reports whether a person was detected e.g. \"Person detected\"\r\n\r\nChange-Id: If58d02ed0c4d2a85c0100398f65e6915a86f6546\r\n\r\n* [CMSIS-NN] Add Arm(R) Cortex(R)-M55 CPU and CMSIS-NN demo\r\n- Downloads a quantized (int8) person detection model\r\n- Uses tvmc to compile the model for Cortex(R)-M55 CPU and CMSIS-NN\r\n- Downloads an image to run the model on\r\n- Creates a C header file inputs.c containing the image data as a C array\r\n- Builds the demo application\r\n- Runs the demo application on the FVP\r\n- Application reports whether a person was detected e.g. \"Person detected\"\r\n\r\nChange-Id: Ic20ceed80bc6e48d5c96ff0d5ca6c85e7f19174b",
+    "author": "grant-arm",
+    "date": "2022-04-19T23:57:21Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3105/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6087034807?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6087034918?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6087112267?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6087260335?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6087307836?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6087517320?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6087539182?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1650416179.326034
+  },
+  {
+    "sha": "b78e44e42dc98f804872e968ca7e949420ab074c",
+    "headline": "[TOPI] Fix nn.lrn result dtype on fp16 (#11032)",
+    "body": "The buggy script as below:\r\n```python\r\nimport tvm\r\nfrom tvm import relay\r\nfrom tvm.contrib import graph_executor\r\nx = relay.var(\"x\", shape=[1, 3, 224, 224], dtype=\"float16\")\r\ny = relay.nn.lrn(x)\r\nmod = tvm.IRModule.from_expr(relay.Function([x], y))\r\nlib = relay.build(mod, target=\"llvm\")\r\nf = graph_executor.GraphModule(lib[\"default\"](tvm.cpu()))\r\nf.run()\r\n```\r\n\r\nThe error I get is\r\n```\r\nCheck failed: ret == 0 (-1 vs. 0) : Assert fail: (((tir.tvm_struct_get(arg.T_divide, 0, 5) == (uint8)2) && (tir.tvm_struct_get(arg.T_divide, 0, 6) == (uint8)32)) && (tir.tvm_struct_get(arg.T_divide, 0, 7) == (uint16)1)), arg.T_divide.dtype is expected to be float32\r\n```",
+    "author": "wrongtest",
+    "date": "2022-04-19T23:51:51Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3104/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6086991886?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6086991940?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "0bf7f3313ae597596d75cc7f699d21653c4b19f7",
     "headline": "[OpenCL] Fix type casting (#11038)",
     "body": "* [OpenCL] Fix type casting\r\n\r\nThe previous PR apache/tvm#11021 was reverted in apache/tvm#11035 due\r\nto it affected performance of generated OpenCL code.\r\n\r\nThis PR fixed the same issue but doesn't lead to performance\r\ndegradation. Tested on Resnet50_v2 network.\r\n\r\n* Implement using select built-in",
@@ -160,9 +234,38 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6086564918?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6086710919?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6086732128?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6086816486?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6086842868?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6086944237?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6086964129?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1650409760.252966
+    ]
   },
   {
     "sha": "1efd7df370ffe942dbe321ffe7b353396580da43",
@@ -11189,254 +11292,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5875940426?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "00c830ece0feb9455fe0045b85ed01d6d363a495",
-    "headline": "relax reorder primitive's  affineness check (#10887)",
-    "body": "",
-    "author": "wrongtest",
-    "date": "2022-04-07T19:01:33Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3001/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874358806?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874358930?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874406644?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874590355?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874614215?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874742869?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874781428?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874933494?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874964858?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5875132191?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5875183373?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5875383144?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5875424390?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5875542944?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5875568056?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5875703449?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5875734568?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "c7c76d1940a4688f76307958e7ed9f4418e2d593",
-    "headline": "[ci] Add sccache to remaining Docker images (#10751)",
-    "body": "* [ci] Add sccache to remaining Docker images\r\n\r\nThese just need sccache installed and available on the `PATH` to start\r\nusing it in CI\r\n\r\n* Remove docker/ from glob skip list\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
-    "author": "driazati",
-    "date": "2022-04-07T15:55:52Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3000/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5871755786?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5871756008?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5871844287?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5871910696?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872166265?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872219218?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872424766?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872464361?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872602038?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872661725?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872762250?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872824353?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5872996754?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873039601?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873170205?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873195719?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873334611?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873370293?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873540127?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873591510?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873804896?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5873849828?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874005710?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874038894?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874177866?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874204055?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5874354434?check_suite_focus=true"
       }
     ]
   }
