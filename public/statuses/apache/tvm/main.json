@@ -1,5 +1,40 @@
 [
   {
+    "sha": "876e2532278052d27c55adf982c9848ef3a76d4b",
+    "headline": "[TIR] StmtFunctor RenewDefs (#10843)",
+    "body": "* [TIR] StmtFunctor RenewDefs\r\n\r\nIn this PR, I introduce a StmtFunctor `RenewDefs` for deep copy all definition nodes in PrimFunc (including Var, Buffer, and IterVar). This functor can create a new PrimFunc with the same behavior as the old one but contains different Nodes.\r\n\r\nThis Functor may help TIR fusion or inline multiple PrimFuncs\r\n\r\n* add ut\r\n\r\n* address comments\r\n\r\n* address comments\r\n\r\n* lint\r\n\r\n* lint",
+    "author": "Hzfengsy",
+    "date": "2022-04-21T17:55:04Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3122/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6117034030?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6117034159?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6117118788?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6117169473?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1650564795.328763
+  },
+  {
     "sha": "ba4cc6c1f26d64c37b0d3d58d18c670895fed2cb",
     "headline": "[TVMScript] Allow `val = buf[index]` without type annotation (#11060)",
     "body": "* [TVMScript] Allow `val = buf[index]` without type annotation\r\n\r\nOther instances of `var = expr` were previously allowed without\r\nrequiring a type annotation, by using the dtype of the expression as\r\nthe dtype of `var`.  This behavior didn't work for `buf[index]`\r\nexpressions, which are internally represented as `BufferSlice` python\r\nobjects, and only converted to `BufferLoad` primexprs when used as an\r\nexpression.\r\n\r\nThis commit adds a `dtype` property to `BufferSlice`, allowing\r\n`buf[index]` to be used in a let statement without a type annotation.\r\n\r\n* Reverted a wider change\r\n\r\nAutomatically adding a type annotation to Var if it could be\r\ndetermined from the dtype let the unit test directly compare the\r\nannotated and unannotated versions of buffer load.  Unfortunately, it\r\nalso broke 54 unrelated tests, so that change is removed from this PR.",
@@ -25,9 +60,38 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6116418875?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6116586616?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6116629032?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6116797025?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6116830542?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6116946518?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6116974882?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1650561622.181653
+    ]
   },
   {
     "sha": "97ae25cf830d9fa8e04112f4f3deee6c0ef9d4e8",
@@ -10578,75 +10642,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/5976903136?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "872773fee23e4cfabe1aa5345ecd8530b613b338",
-    "headline": "[Hexagon] Do not pass lookup_linked_params to graph executor (#10944)",
-    "body": "This function is no longer used or generated, so it comes from the\r\nregistry as an \"empty\" PackedFunc. If the lookup function is provided,\r\nthe executor will expect it not to be empty, which leads to a failed\r\nassertion.",
-    "author": "kparzysz-quic",
-    "date": "2022-04-11T16:03:38Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3017/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5975755075?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5975755284?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5975786157?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5976047206?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5976102000?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5976326655?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5976365705?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5976510875?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5976579585?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5976669016?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/5976763447?check_suite_focus=true"
       }
     ]
   }
