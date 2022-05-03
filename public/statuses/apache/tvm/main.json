@@ -1,5 +1,45 @@
 [
   {
+    "sha": "5733d9754a9904fb5d5c2a6084dd2efe23c01096",
+    "headline": "[microNPU] Match requantize in min/max with activation pattern (#11010)",
+    "body": "* [microNPU] Match requantize in min/max with activation pattern\r\n\r\nOptimizes a corner case where min/max + clip also produces a requantize\r\noperation. Previously the requantize was lowered separately as an\r\nidentity operation which is unnecessary. Now the quantization parameters\r\nfrom requantize will be used by the lowered min/max operation.\r\n\r\nChange-Id: Id740d975bd8ba2952f3444ce1061acef560d74d7\r\n\r\n* add random seed to legalization test\r\n\r\nChange-Id: Ic4ff78af94c3e8250dba8e3ce5c2775fcc7a17f6",
+    "author": "lhutton1",
+    "date": "2022-05-03T16:54:08Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3191/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6277170763?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6277170882?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6277223475?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6277399429?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6277406067?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1651598512.24826
+  },
+  {
     "sha": "91d351c1f7972eeb906d85b7f0a5747a918c54fc",
     "headline": "[CI] Update GoogleTest (#11162)",
     "body": "This updates GoogleTest across all our images which also has the side\r\neffect of using the same version for any host OS.\r\n\r\nRather than updating to a fixed version, I've followed the best practice\r\nadvertised by GoogleTest itself which is the Live-at-Head philosophy:\r\nhttps://github.com/google/googletest#live-at-head\r\n\r\nCloses #11002",
@@ -13,12 +53,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6276190735?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6276190883?check_suite_focus=true"
       },
       {
@@ -45,9 +85,28 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6276492830?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6276741224?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6276793316?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6277013630?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6277062946?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1651594529.31518
+    ]
   },
   {
     "sha": "f00c8db5ce8ec4e04736e5a6689ff9f65caeaeb5",
@@ -12553,175 +12612,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6075535380?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "4178617fcf19d209ea545a2708f8bfcdbfa02056",
-    "headline": "[AOT] Support LLVM backend with C++ runtime (#10753)",
-    "body": "* add get_c_struct_name() method to Metadata to distinguish struct type name in llvm\r\n\r\n* add metadata serialization support to llvm codegen\r\n\r\n* Organize MetadataQueuer into a separate file.\r\n\r\n* Add DiscoverArraysVisitor to metadata_utils\r\n\r\n* Fill DLTensor metadata in LegalizePackedCalls.\r\n\r\n* Improve error message from Call asserts\r\n\r\n* Pass non-String device_context down to codegen.\r\n\r\n * this is necessary to allow CodeGenCPU to emit calls that include resource_handle.\r\n\r\n* Scope usage of lvalue refs in LowerTVMBuiltin to avoid corrupt memory.\r\n\r\n* test fixes\r\n\r\n* Also fill preflattened_buffer_map (TODO, maybe don't do this)\r\n\r\n* Fix C codegen.\r\n\r\n* Set USMP elem_offset to 0.\r\n\r\n* Clarify calculation of byte_offset from elem_offset.\r\n\r\n* fix tests\r\n\r\n* Fix arm compile warning\r\n\r\n* Fix hexagon test.\r\n\r\n * previously I believe we required interface_api == \"c\", but\r\n   this really means to generate C API bindings, and we are generating\r\n   \"packed\" bindings.\r\n * I think \"c\" was chosen here because the distinction between\r\n   interface-api and use-unpacked-api is confusing. \"c\" interface-api\r\n   means to generate an entrypoint API for microcontrollers that\r\n   accepts bare data buffers. \"packed\" interface-api means to generate\r\n   a TVMBackendPackedCFunc entrypoint. use-unpacked-api forms the same\r\n   determination for the operator functions.\r\n * A further confusion here is that there are two ways to call\r\n   \"packed\" operator functions: tir.tvm_builtin_call_packed and\r\n   tir.tvm_builtin_call_cpacked. This distinction describes whether or\r\n   not to late-bind calls via TVMBackendGetFuncFromEnv. Right now, AOT\r\n   only ever requires call_cpacked because target_host == target, and\r\n   for all suitable target_host, we expect a single DSO-exportable\r\n   runtime.Module. When we move away from this by introducing\r\n   heterogeneous target support to AOT, we can use this as a condition\r\n   to help us choose between call_cpacked and call_packed (and\r\n   possibly add a compile-time option to assert it is call_cpacked,\r\n   for situations where we really don't want call_packed).\r\n\r\n* Document T.preflattened_buffer\r\n\r\n* Fix test_aot_legalize_packed_calls\r\n\r\n* Address manupa comments\r\n\r\n* Fix convert_pool_allocations_to_offsets test.\r\n\r\n* lint\r\n\r\n* Fix T.preflattened_buffer\r\n\r\n* Add preflattened_buffer_map to TIRTextPrinter\r\n\r\n* Fix tests\r\n\r\n* Fix BYOC\r\n\r\n* Fix invoking C device API.\r\n\r\n* remove comments\r\n\r\n* Address Mousius comments\r\n\r\n* lint\r\n\r\n* lint\r\n\r\n* Fix GMock linking on new CMake\r\n\r\n* address masahi comment\r\n\r\nCo-authored-by: Masahiro Masuda <masahi129@gmail.com>",
-    "author": "areusch",
-    "date": "2022-04-19T01:44:46Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3085/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6071040170?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6071040218?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6071267635?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6071359640?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6071607632?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6071682571?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6071866422?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6071940399?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072014666?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072125903?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072202569?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072255778?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072333766?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072437607?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072438066?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072534901?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072549681?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072624595?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072665669?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072727548?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072755775?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072814057?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072829950?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072927940?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6072969931?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6073126449?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6073159895?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6073274620?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6073297361?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6073391119?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6073412338?check_suite_focus=true"
       }
     ]
   }
