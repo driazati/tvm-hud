@@ -1,5 +1,60 @@
 [
   {
+    "sha": "e1acd4b872e02a9bc188dd6e5ff8d0a6a71b285f",
+    "headline": "[Hexagon] Removes directory after stopping the server (#11212)",
+    "body": "* removes hexagon directory",
+    "author": "farshidsp",
+    "date": "2022-05-04T21:31:14Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3207/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6297507445?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6297507529?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297528415?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297551295?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297671921?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297697650?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297831016?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297875772?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1651702216.245308
+  },
+  {
     "sha": "521b80af217a60bf4be3febd5a1e081eb4f76b93",
     "headline": "[Relay] Support 'external codegen targets'. (#11173)",
     "body": "* [Relay] Support 'external codegen targets'.\r\n\r\n(Part of Collage, https://github.com/apache/tvm-rfcs/blob/main/rfcs/0062-collage.md)\r\n\r\nThis change prepares the VM and Relay target handling machinery to support\r\nexternal codegen targets in addition to 'regular' targets. This allows us\r\nto configure the build with Collage as follows:\r\n```\r\n    host_target = tvm.target.Target(\"llvm\")\r\n    targets = [tvm.target.Target(\"cuda\", host_target),\r\n               tvm.target.Target(\"cutlass\", host_target),\r\n               tvm.target.Target(\"cudnn\", host_target)]\r\n    with tvm.transform.PassContext(...):\r\n        exe = tvm.relay.vm.compile(module, target=targets)\r\n```\r\n\r\nFour changes are required:\r\n1. I introduce four new target kinds for the external codegens currently supported\r\n   by Collage. Others can be added as they are vetted for use by Collage. These\r\n   are given a device type matching the external codegen's assumption (ie just CUDA\r\n   currently), and given a target kind attribute \"is_external_codegen\" of True. The\r\n   latter is needed by Collage to signal the target kind name represents and external\r\n   codegen 'compiler' name. See the RFC for specifics.\r\n2. I introduce the binary relation Target::IsExternalCodegenFor so that\r\n   external codegen targets can be related back to the 'underlying' targets\r\n   they are implicitly using in their codegen.\r\n3. I rework the VMCompiler and BuildModule interfaces to accept an Array<Target> of\r\n   'raw targets' instead of a Map<Integer, Target>. This more general representation\r\n   is needed because we may now have multiple targets of the same device type\r\n   active simultaneously. I add new static methods on the Python Target to\r\n   convert to this form in a way that mimics check_and_update_host_consist.\r\n4. I rework CompilationConfig to work from Array<Target> directly, to not depend\r\n   on the host_target argument (since dealt with on the Python side), and to\r\n   understand that if we have two targets for the same device type the non-external\r\n   codegen target takes precedence.\r\n\r\nThe change to CompilationConfig seems neutral with respect to the recent discussions\r\non compilation configuration representation and tvmc.\r\n\r\nI made a few attempts to remove Target.check_and_update_host_const entirely in favor\r\nof using CompilationConfig as the definitive target handling choke point but backed\r\nout once they became too large.\r\n\r\n* - Working on unit tests\r\n\r\n* - Fix two Debug-only failures\r\n\r\n* - Use Array<Target> in GraphExecutorCodegen/AOTExecutorCodegen ifaces instead\r\n  of CompilationConfig (don't want to bake it into any official APIs).\r\n- Started unit tests.\r\n\r\n* - Lints\r\n\r\n* - Moar Lints\r\n\r\n* - Fix some unit tests\r\n\r\n* - Fix last unit test failures\r\n\r\n* - whitespace\r\n\r\n* - Address Eric's comments.\r\n  CI likely to fail due to stricter FindPrimitiveTargetOrFail but let's see.\r\n\r\n* - Comment adjustments.\r\n- Unit test for new Target members.",
@@ -30,9 +85,18 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6297198871?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297383794?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297415861?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1651698619.180868
+    ]
   },
   {
     "sha": "8de64cfba1c694571b0768af19bd5aaab8e07e1e",
@@ -12753,125 +12817,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6092091600?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "3823b39b8a197e9e01ebb93dffaa1e710118c148",
-    "headline": "[TIR] Utility function to decide loop mapping for auto tensorization \u2026",
-    "body": "\u2026(#11050)\n\n* [TIR] Add TensorizeInfo and GetTensorizeLoopMapping\r\n\r\n* expose PreOrderVisit to python\r\n\r\n* add test case\r\n\r\n* add conv2d nchwc test\r\n\r\n* add mma test\r\n\r\n* add arm nhwc conv2d test\r\n\r\n* Revert \"add arm nhwc conv2d test\"\r\n\r\nThis reverts commit eb147f33bb02d62a0eacc9cdfe777ac047ee1bc9.\r\n\r\n* refine\r\n\r\n* add doc\r\n\r\n* update\r\n\r\n* fixd condition\r\n\r\n* black\r\n\r\n* pylint\r\n\r\n* Update python/tvm/tir/schedule/analysis.py\r\n\r\nCo-authored-by: Ruihang Lai <lairuihangdongdong@qq.com>\r\n\r\n* run black\r\n\r\n* bring back logic in original code to support loop permutation\r\n\r\n* add comment\r\n\r\n* simplify\r\n\r\n* minor fix to test\r\n\r\nCo-authored-by: Ruihang Lai <lairuihangdongdong@qq.com>\r\n\r\nCo-authored-by: Siyuan Feng <Hzfengsy@sjtu.edu.cn>\r\nCo-authored-by: Bohan Hou <32121147+spectrometerHBH@users.noreply.github.com>\r\nCo-authored-by: Hongyi Jin <3231950289@qq.com>\r\nCo-authored-by: Ruihang Lai <lairuihangdongdong@qq.com>\r\nCo-authored-by: Wuwei Lin <wuwei@apache.org>",
-    "author": "masahi",
-    "date": "2022-04-20T03:01:24Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3106/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6088476342?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6088476419?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6088580791?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6088639615?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6088856802?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6088866039?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089021250?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089058677?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089227899?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089249788?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089369372?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089463667?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089521575?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089646089?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089668167?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089737475?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089757828?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089813570?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6089862066?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6090012570?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6090046096?check_suite_focus=true"
       }
     ]
   }
