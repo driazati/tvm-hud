@@ -1,5 +1,64 @@
 [
   {
+    "sha": "521b80af217a60bf4be3febd5a1e081eb4f76b93",
+    "headline": "[Relay] Support 'external codegen targets'. (#11173)",
+    "body": "* [Relay] Support 'external codegen targets'.\r\n\r\n(Part of Collage, https://github.com/apache/tvm-rfcs/blob/main/rfcs/0062-collage.md)\r\n\r\nThis change prepares the VM and Relay target handling machinery to support\r\nexternal codegen targets in addition to 'regular' targets. This allows us\r\nto configure the build with Collage as follows:\r\n```\r\n    host_target = tvm.target.Target(\"llvm\")\r\n    targets = [tvm.target.Target(\"cuda\", host_target),\r\n               tvm.target.Target(\"cutlass\", host_target),\r\n               tvm.target.Target(\"cudnn\", host_target)]\r\n    with tvm.transform.PassContext(...):\r\n        exe = tvm.relay.vm.compile(module, target=targets)\r\n```\r\n\r\nFour changes are required:\r\n1. I introduce four new target kinds for the external codegens currently supported\r\n   by Collage. Others can be added as they are vetted for use by Collage. These\r\n   are given a device type matching the external codegen's assumption (ie just CUDA\r\n   currently), and given a target kind attribute \"is_external_codegen\" of True. The\r\n   latter is needed by Collage to signal the target kind name represents and external\r\n   codegen 'compiler' name. See the RFC for specifics.\r\n2. I introduce the binary relation Target::IsExternalCodegenFor so that\r\n   external codegen targets can be related back to the 'underlying' targets\r\n   they are implicitly using in their codegen.\r\n3. I rework the VMCompiler and BuildModule interfaces to accept an Array<Target> of\r\n   'raw targets' instead of a Map<Integer, Target>. This more general representation\r\n   is needed because we may now have multiple targets of the same device type\r\n   active simultaneously. I add new static methods on the Python Target to\r\n   convert to this form in a way that mimics check_and_update_host_consist.\r\n4. I rework CompilationConfig to work from Array<Target> directly, to not depend\r\n   on the host_target argument (since dealt with on the Python side), and to\r\n   understand that if we have two targets for the same device type the non-external\r\n   codegen target takes precedence.\r\n\r\nThe change to CompilationConfig seems neutral with respect to the recent discussions\r\non compilation configuration representation and tvmc.\r\n\r\nI made a few attempts to remove Target.check_and_update_host_const entirely in favor\r\nof using CompilationConfig as the definitive target handling choke point but backed\r\nout once they became too large.\r\n\r\n* - Working on unit tests\r\n\r\n* - Fix two Debug-only failures\r\n\r\n* - Use Array<Target> in GraphExecutorCodegen/AOTExecutorCodegen ifaces instead\r\n  of CompilationConfig (don't want to bake it into any official APIs).\r\n- Started unit tests.\r\n\r\n* - Lints\r\n\r\n* - Moar Lints\r\n\r\n* - Fix some unit tests\r\n\r\n* - Fix last unit test failures\r\n\r\n* - whitespace\r\n\r\n* - Address Eric's comments.\r\n  CI likely to fail due to stricter FindPrimitiveTargetOrFail but let's see.\r\n\r\n* - Comment adjustments.\r\n- Unit test for new Target members.",
+    "author": "mbs-octoml",
+    "date": "2022-05-04T20:57:21Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3206/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6297099578?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6297099658?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297148353?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297198871?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1651698619.180868
+  },
+  {
+    "sha": "8de64cfba1c694571b0768af19bd5aaab8e07e1e",
+    "headline": "[Hexagon] Update launcher cmake flags for Android (#11213)",
+    "body": "Don't build graph executor for Android (it's not needed).",
+    "author": "kparzysz-quic",
+    "date": "2022-05-04T20:55:50Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3205/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6297083121?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6297083206?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "3d0fc36ae4967a5ee24a75cff311828447003235",
     "headline": "[CI] Update GoogleTest in ci_wasm (#11207)",
     "body": "Looks like I missed this one in #11162 due to missing the cpptest call\r\nin the Jenkinsfile",
@@ -280,9 +339,38 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6296457882?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6296654021?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6296696167?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6296821032?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6296842372?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6296980391?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6297007880?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1651695110.671991
+    ]
   },
   {
     "sha": "f0854ae456a98581d7cc4004fc848f73879e5c3e",
@@ -12784,99 +12872,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6090046096?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "2025e368c4c52fd986e112a307fa418ee4faf064",
-    "headline": "[CMSIS-NN] Add Arm(R) Cortex(R)-M55 CPU and CMSIS-NN demo (#11013)",
-    "body": "* [CMSIS-NN] Add Arm(R) Cortex(R)-M55 CPU and CMSIS-NN demo\r\n\r\n- Downloads a quantized (int8) person detection model\r\n- Uses tvmc to compile the model for Cortex(R)-M55 CPU and CMSIS-NN\r\n- Downloads an image to run the model on\r\n- Creates a C header file inputs.c containing the image data as a C array\r\n- Builds the demo application\r\n- Runs the demo application on the FVP\r\n- Application reports whether a person was detected e.g. \"Person detected\"\r\n\r\nChange-Id: If58d02ed0c4d2a85c0100398f65e6915a86f6546\r\n\r\n* [CMSIS-NN] Add Arm(R) Cortex(R)-M55 CPU and CMSIS-NN demo\r\n- Downloads a quantized (int8) person detection model\r\n- Uses tvmc to compile the model for Cortex(R)-M55 CPU and CMSIS-NN\r\n- Downloads an image to run the model on\r\n- Creates a C header file inputs.c containing the image data as a C array\r\n- Builds the demo application\r\n- Runs the demo application on the FVP\r\n- Application reports whether a person was detected e.g. \"Person detected\"\r\n\r\nChange-Id: Ic20ceed80bc6e48d5c96ff0d5ca6c85e7f19174b",
-    "author": "grant-arm",
-    "date": "2022-04-19T23:57:21Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3105/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087034807?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087034918?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087112267?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087260335?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087307836?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087517320?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087539182?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087833011?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6087884172?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6088260604?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6088276721?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "b78e44e42dc98f804872e968ca7e949420ab074c",
-    "headline": "[TOPI] Fix nn.lrn result dtype on fp16 (#11032)",
-    "body": "The buggy script as below:\r\n```python\r\nimport tvm\r\nfrom tvm import relay\r\nfrom tvm.contrib import graph_executor\r\nx = relay.var(\"x\", shape=[1, 3, 224, 224], dtype=\"float16\")\r\ny = relay.nn.lrn(x)\r\nmod = tvm.IRModule.from_expr(relay.Function([x], y))\r\nlib = relay.build(mod, target=\"llvm\")\r\nf = graph_executor.GraphModule(lib[\"default\"](tvm.cpu()))\r\nf.run()\r\n```\r\n\r\nThe error I get is\r\n```\r\nCheck failed: ret == 0 (-1 vs. 0) : Assert fail: (((tir.tvm_struct_get(arg.T_divide, 0, 5) == (uint8)2) && (tir.tvm_struct_get(arg.T_divide, 0, 6) == (uint8)32)) && (tir.tvm_struct_get(arg.T_divide, 0, 7) == (uint16)1)), arg.T_divide.dtype is expected to be float32\r\n```",
-    "author": "wrongtest",
-    "date": "2022-04-19T23:51:51Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3104/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6086991886?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6086991940?check_suite_focus=true"
       }
     ]
   }
