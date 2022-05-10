@@ -1,5 +1,50 @@
 [
   {
+    "sha": "be2ae9433ebe19738529bb9008251b883a3f5e89",
+    "headline": "[TENSORRT] Improvements and fixes for TensorRT (#11203)",
+    "body": "A number of small fixes and refactors to improve the robustness of\r\nthe TensorRT integration.\r\n\r\nCo-authored-by: Mark Shields <mbs@octoml.ai>\r\n\r\nCo-authored-by: Mark Shields <mbs@octoml.ai>",
+    "author": "mbaret",
+    "date": "2022-05-10T19:39:25Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3237/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6376686466?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6376686552?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6376772581?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6376808210?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6376980010?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6377041034?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1652213564.456784
+  },
+  {
     "sha": "8d4f4dd73ff2d762ade38aa0f9e8e9fba5f933da",
     "headline": "[microTVM] Add support for host-driven AoT Executor (#11044)",
     "body": "* Generate AOT Metadata when targeting C runtime and packed API.\r\n\r\n* Also copy metadata.h and metadata_base.h to standalone_crt.\r\n\r\n* add support for get_input_index as well as setting up get_input_info as unsupported\r\n\r\n* add support for tvm.aot_executor.create in C runtime\r\n\r\n* changes in-progress to unit tests\r\n\r\n* Include get_c_metadata in emitted function list\r\n\r\n* make CRT error codes generic for graph or AoT executor, fix AoT lib link order\r\n\r\n* add AoT executor creation and initializaion, as well as support for get_input_index()\r\n\r\n* add allocation of inputs, outputs, and pools; add get_input(), but shape encoded in metadata appears to be incorrect;\r\n\r\n* add support to test_aot_executor for get_input()\r\n\r\n* fix numpy array shape so that get_input() works properly\r\n\r\n* implement run(), get_output(), get_num_inputs(), and get_num_outputs(); test_aot_executor() is now passing;\r\n\r\n* fix up some issues from rebase with main\r\n\r\n* clean up logging and test_graph_executor()\r\n\r\n* lint clean-up\r\n\r\n* more lint clean-up\r\n\r\n* fix i386 build errors\r\n\r\n* first set of changes addressing PR feedback\r\n\r\n* more PR feedback: device pass-by-value, docstring entries, return variable name\r\n\r\n* add mangling of get_c_metadata() name to avoid function name collisions\r\n\r\n* only mangle get_c_metadata() when using C runtime\r\n\r\n* add static specifier to all kTvmgenMetadata variables to avoid namespace collisions\r\n\r\n* use TVM_IS_CPP_RUNTIME preprocessor define to deteremine whether or not to include metadata.h c++ code\r\n\r\n* add TVM_IS_CPP_RUNTIME define for cpptest\r\n\r\n* add TVM_IS_CPP_RUNTIME to apps/bundle_deploy\r\n\r\n* add TVM_IS_CPP_RUNTIME web/Makefile\r\n\r\n* update number of expected generated C files for AoT source files\r\n\r\n* break out metadata data structures into separate metadata_types.h header to avoid c/c++ issues and remove the need for the TVM_IS_CPP_RUNTIME define\r\n\r\n* remove TVM_IS_CPP_RUNTIME from web makefile\r\n\r\n* fix metadata.h include-order lint issue\r\n\r\n* correct error mask bits\r\n\r\n* address PR feedback\r\n\r\n* trigger build\r\n\r\n* trigger build\r\n\r\n* trigger build\r\n\r\n* trigger build\r\n\r\n* add alternate name for test_graph_executor() too see if it runs in CI\r\n\r\n* fix lint\r\n\r\n* revert alternate test code\r\n\r\nCo-authored-by: Andrew Reusch <areusch@gmail.com>",
@@ -486,8 +531,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6374830223?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1652209756.404151
+    ]
   },
   {
     "sha": "24d6c3f3f0effd303519df14ba35c17118861e70",
@@ -13503,45 +13547,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6161367706?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "24e5498021cecca2fe7d44149ce90efe28b6d930",
-    "headline": "[TVMC] compile/tune: Check if FILE exists (#10865)",
-    "body": "Currently when a non-existing FILE is passed to 'tvmc tune' it throws\r\na traceback because a FileNotFoundError exception is not handled. Since\r\nthere is no need for such abrupt exit, and the trace can also confuse\r\nusers, this commit fixes it by checking if FILE indeed exists, kindly\r\ninforming the user about the non-existing FILE before exiting.\r\n\r\nAdd test for verifying if 'tvmc compile' and 'tvmc tune' commands handle\r\ncorrectly the FILE option when it is invalid (e.g. missing, a dir, or a\r\nbroken link).\r\n\r\nA TVMCException will be generated by test_tune_rpc_tracker_parsing test\r\nbecause FILE will be set by pytest to a mock object, which is not a\r\nvalid input. Since FILE argument is irrelevant for the test in question,\r\ncircumvent the Mock hijack of FILE argument by setting it before using\r\nmock.\r\n\r\nSigned-off-by: Gustavo Romero <gustavo.romero@linaro.org>",
-    "author": "gromero",
-    "date": "2022-04-25T14:47:01Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3136/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6159729920?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6159730139?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6159758068?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6160004497?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6160076805?check_suite_focus=true"
       }
     ]
   }
