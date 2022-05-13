@@ -1,5 +1,84 @@
 [
   {
+    "sha": "2eb742d6da8246465dff170696c9a9c41d47bb17",
+    "headline": "[profiler] Skip i386 skip condition (#11280)",
+    "body": "See #10698 for some context, this test wasn't actually being skipped on i386\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
+    "author": "driazati",
+    "date": "2022-05-13T18:44:38Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3270/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6428128820?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6428128895?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6428188271?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6428211303?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6428324608?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6428366565?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1652468954.044739
+  },
+  {
+    "sha": "0e8107bfc7740015a96e44b98950e536de54866d",
+    "headline": "[TIR][Arith] Implemented padded inverses in IndexMap (#11235)",
+    "body": "* [Debug] Error logging in DetectIterMap\r\n\r\n* [Affine] Allowed PrimExpr argument to NormalizeIterMapToExpr\r\n\r\nThis allows it to be used for any expression containing an\r\n`IterMapExpr`, not just expressions whose top-level node is an\r\n`IterMapExpr`.\r\n\r\n* [Affine] Implemented DetectPaddedIterMap\r\n\r\nThe existing DetectIterMap tries to rewrite index expression as a\r\nlinear combination of split/fused iterators, where the new iterators\r\ncover the exact same indices as the original expression.\r\nDetectPaddedIterMap relaxes this condition, allowing the new iterators\r\nto cover a superset of indices that the initial index expression\r\ncovered.  It uses the minimum amount of padding necessary to represent\r\nthese transformations, and also a predicate that identifies any\r\npadding that has been added.\r\n\r\nThis is a utility function to be used for layout transformations of\r\nbuffers, in cases where the pre-transformation shape of the buffer\r\ndoes not evenly fit into the post-transformation shape.\r\n\r\n* [IndexMap] Implemented IndexMap::NonSurjectiveInverse\r\n\r\nAllow non-surjective transformations, with DetectIterMap used to\r\ndetermine the minimum padding to insert.  Returns the inverse\r\nfunction, along with a predicate that identifies padding indices.  The\r\npredicate is in terms of the transformed variables.\r\n\r\n* [IndexMap] Exposed methods to python\r\n\r\n- `IndexMap::Inverse` exposed as `IndexMap.inverse`\r\n- `IndexMap::MapShape` exposed as `IndexMap.map_shape`\r\n- `IndexMap::NonSurjectiveInverse` exposed as `IndexMap.non_surjective_inverse`\r\n\r\n* [IndexMap] Extracted _assert_equal_index_map into class method\r\n\r\nIn preparation for adding additional tests for the IndexMap class,\r\nwhich will require this functionality.\r\n\r\n* [IndexMap] Added unit tests for new behavior\r\n\r\n* Re-enabled divisibility check in CheckMapping\r\n\r\nInitially disabled as dynamic shapes resulted in padded lengths whose\r\ndivisiblity couldn't be proven.  Re-enabled along with a\r\nsimplification rule to resolve it.\r\n\r\n* Fixed breakage in compute_at primitive\r\n\r\n* Corrected typos/examples in docstring",
+    "author": "Lunderberg",
+    "date": "2022-05-13T18:36:50Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3269/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6428037964?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6428038052?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6428050308?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6428073539?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "6c339eaa8ffcde34f183654e3cebae523da5d489",
     "headline": "[Hexagon] Remove sim_options from tvm.target.hexagon() (#11293)",
     "body": "We no longer run simulator automatically, so this is not necessary.\r\nAlso, the only way to pass options to the simulator was by setting\r\nan environment variable. That variable (HEXAGON_SIM_ARGS) should\r\nbe set independently by the user from now on.",
@@ -13,12 +92,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6426952642?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6426952779?check_suite_focus=true"
       },
       {
@@ -70,9 +149,18 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6427652763?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6427850746?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6427895918?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1652465712.67639
+    ]
   },
   {
     "sha": "80d827018a940943e3640fd7508c6785d2a0e848",
@@ -88,12 +176,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6426696703?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6426696852?check_suite_focus=true"
       },
       {
@@ -112,7 +200,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/3266/display/redirect"
       },
       {
@@ -12454,159 +12542,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6232584846?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "d393cdfbe964c4e84011a6197cfe7d852025f94a",
-    "headline": "Update CUDA key to fix #11168. (#11170)",
-    "body": "",
-    "author": "areusch",
-    "date": "2022-04-29T15:48:33Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3170/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6231138021?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6231138179?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6231164354?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6231334371?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6231393865?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6231624208?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "ef79f6122b5dd9d282dec990eb8f48332e58ecc9",
-    "headline": "[Analysis] Readability/Deduplication in Analyzer CanProve/Simplify (#\u2026",
-    "body": "\u202611130)",
-    "author": "Lunderberg",
-    "date": "2022-04-29T13:50:24Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3169/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229243687?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229243825?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229306876?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229342975?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229416937?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229516577?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229728180?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229767865?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229920315?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6229960266?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6230140138?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6230182235?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6230386071?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6230450651?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6230706236?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6230763987?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6230941552?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6230977914?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6231132787?check_suite_focus=true"
       }
     ]
   }
