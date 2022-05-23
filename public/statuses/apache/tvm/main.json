@@ -1,5 +1,94 @@
 [
   {
+    "sha": "553eb1acd0c115adea0c7d04ce36e26332339769",
+    "headline": "[tests] add utility to replace direct call to pytest.main (#11393)",
+    "body": "",
+    "author": "gigiblender",
+    "date": "2022-05-23T18:52:22Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3357/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6561224756?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6561224901?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6561342330?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6561396551?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1653332907.186645
+  },
+  {
+    "sha": "7bab8f73b5d7ca8a45040b773d9507132fbf0d79",
+    "headline": "[CI] Revert #10181 / #11399, use non-versioned scipy intersphinx link\u2026",
+    "body": "\u2026 (#11411)\n\nFollow-up from https://github.com/apache/tvm/pull/10181 and\r\nhttps://github.com/apache/tvm/pull/11399.  Thank you to @rgommers for\r\n[pointing out]\r\n(https://github.com/apache/tvm/pull/11399#issuecomment-1133874138)\r\nthat the non-versioned link is stable and working.  The use of\r\nthe versioned link was only introduced to work around the breakage of\r\nthe stable link, so this reverts to the pre-breakage behavior.",
+    "author": "Lunderberg",
+    "date": "2022-05-23T18:31:16Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3356/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6560953503?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6560953631?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6561036106?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6561065842?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6561193775?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6561214465?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6561218032?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6561220533?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "d1467777c66d20f32008c9cbf55d64f0cd8e401a",
     "headline": "Finish support for list-of-targets (#11382)",
     "body": "* Finish support for list-of-targets\r\n\r\nThis finishes the work started in https://github.com/apache/tvm/pull/11173 to support\r\n'external codegen' targets in the N build-like API surfaces.\r\n\r\n - It turns out it's ok if a build is given only a single 'external codegen' target, so remove that check\r\n   in CompilationConfig::Init. When Collage builds a 'candidate partition' it does so for a single target.\r\n   As far as Collage is concerned it does not care whether the target is regular (eg Target(\"cuda\")), or\r\n   for a specific external codegen (eg Target(\"cutlass\")), it just passes the target into the build.\r\n\r\n - Add CompilationConfig::FindPrimitiveTargetForKind which I'll later need to retrieve\r\n   the external codegen Target instance corresponding to a \"Compiler\" attribute value.\r\n\r\n - Target.update_target_host_consist was supporting three API styles:\r\n    - single target\r\n    - map from device type to target\r\n    - map from target to IRModule (for the ir_to_runtime API)\r\n   I replaced all those calls with a more specialized 'canonicalize' call:\r\n    - Target.canonicalize_target_and_host\r\n    - Target.canonicalize_multi_targets_and_host\r\n    - Target.canonicalize_target_map_and_host\r\n   In particular, all the tuning interfaces (task extraction, tuning, tuning records) all explicitly\r\n   *do not* support multiple targets since the underlying code just doesn't support that.\r\n\r\n* - Lints\r\n- Revert unintended changes\r\n\r\n* - more lints\r\n\r\n* - Fix model_library_format handling of target.\r\n- Improve comments in compilation_config.h\r\n\r\n* - Lints\r\n- Update target/target_host params documentation\r\n\r\n* - Fix micro library format tests\r\n- Rev micro library format from 5 to 6\r\n- Use Target.current() in a few places\r\n\r\n* - eta contract comprehension\r\n\r\n* - Woops, one more device: target map left\r\n- Handle host already being in Target\r\n\r\n* - lint\r\n\r\n* - lint\r\n\r\n* - Bug with append\r\n- Take device type from target\r\n\r\n* - Fix hexagon",
@@ -8,7 +97,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/3355/display/redirect"
       },
       {
@@ -100,9 +189,18 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6560593275?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6560816053?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6560864085?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1653329581.619075
+    ]
   },
   {
     "sha": "4626a61fe2c9213e156316df300de5a3228b2d11",
@@ -10049,149 +10147,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6413585178?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "ec129cf48c0fff852304eedf5d1d805d81d14cca",
-    "headline": "[ci] Run docker prune directly in Jenkins (#11275)",
-    "body": "* [ci] Run docker prune directly in Jenkins\r\n\r\n* Inline script\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
-    "author": "driazati",
-    "date": "2022-05-12T20:58:22Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3257/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413581878?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413581972?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "53fe5966823eee4e011d7228bceab3c82c1d9caa",
-    "headline": "[rpc] Implemented rpc logging (#11232)",
-    "body": "* Implemented rpc logging\r\n\r\n* fixing windows build issue\r\n\r\n* trigger\r\n\r\nCo-authored-by: Mohamad <mkatanbaf@users.noreply.github.com>",
-    "author": "mkatanbaf",
-    "date": "2022-05-12T18:48:30Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3256/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411859384?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411859554?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411890075?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411925672?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412036832?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412089832?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412288598?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412316166?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412439304?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412476871?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412631291?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412667042?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412832825?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6412891472?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413095423?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413138441?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413275899?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413301268?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413417567?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413433608?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6413462540?check_suite_focus=true"
       }
     ]
   }
