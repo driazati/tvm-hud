@@ -1,5 +1,14 @@
 [
   {
+    "sha": "d1467777c66d20f32008c9cbf55d64f0cd8e401a",
+    "headline": "Finish support for list-of-targets (#11382)",
+    "body": "* Finish support for list-of-targets\r\n\r\nThis finishes the work started in https://github.com/apache/tvm/pull/11173 to support\r\n'external codegen' targets in the N build-like API surfaces.\r\n\r\n - It turns out it's ok if a build is given only a single 'external codegen' target, so remove that check\r\n   in CompilationConfig::Init. When Collage builds a 'candidate partition' it does so for a single target.\r\n   As far as Collage is concerned it does not care whether the target is regular (eg Target(\"cuda\")), or\r\n   for a specific external codegen (eg Target(\"cutlass\")), it just passes the target into the build.\r\n\r\n - Add CompilationConfig::FindPrimitiveTargetForKind which I'll later need to retrieve\r\n   the external codegen Target instance corresponding to a \"Compiler\" attribute value.\r\n\r\n - Target.update_target_host_consist was supporting three API styles:\r\n    - single target\r\n    - map from device type to target\r\n    - map from target to IRModule (for the ir_to_runtime API)\r\n   I replaced all those calls with a more specialized 'canonicalize' call:\r\n    - Target.canonicalize_target_and_host\r\n    - Target.canonicalize_multi_targets_and_host\r\n    - Target.canonicalize_target_map_and_host\r\n   In particular, all the tuning interfaces (task extraction, tuning, tuning records) all explicitly\r\n   *do not* support multiple targets since the underlying code just doesn't support that.\r\n\r\n* - Lints\r\n- Revert unintended changes\r\n\r\n* - more lints\r\n\r\n* - Fix model_library_format handling of target.\r\n- Improve comments in compilation_config.h\r\n\r\n* - Lints\r\n- Update target/target_host params documentation\r\n\r\n* - Fix micro library format tests\r\n- Rev micro library format from 5 to 6\r\n- Use Target.current() in a few places\r\n\r\n* - eta contract comprehension\r\n\r\n* - Woops, one more device: target map left\r\n- Handle host already being in Target\r\n\r\n* - lint\r\n\r\n* - lint\r\n\r\n* - Bug with append\r\n- Take device type from target\r\n\r\n* - Fix hexagon",
+    "author": "mbs-octoml",
+    "date": "2022-05-23T16:14:28Z",
+    "jobs": [],
+    "updated_at": 1653322473.881804
+  },
+  {
     "sha": "4626a61fe2c9213e156316df300de5a3228b2d11",
     "headline": "[TVMScript] fix typo for block syntax (#11407)",
     "body": "",
@@ -30,9 +39,48 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6557896205?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6558170871?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6558228527?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6558415837?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6558453986?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6558618420?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6558654214?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6558825432?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6558892021?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1653318707.766122
+    ]
   },
   {
     "sha": "6247bf48aaa59be9549dd8c342702c6005f16c5f",
@@ -10048,125 +10096,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6413462540?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "1b3990808ec11c0255609a62a2dfc37df9152172",
-    "headline": "[microNPU] Update existing microNPU tutorial for CMSIS-NN (#11285)",
-    "body": "* [microNPU] Update existing microNPU tutorial for CMSIS-NN\r\n\r\n * Added instructions to existing microNPU tutorial indicating how to offload operators to CMSIS-NN.\r\n\r\nChange-Id: I9faef1d92a2107e04cfc21b7bfd1b72dc1bd5489\r\n\r\n* [microNPU] Update existing microNPU tutorial for CMSIS-NN\r\n\r\n  * Reformat micro_ethosu.py with black\r\n\r\nChange-Id: Id189f333b5bd891232781d4eb58522a240146c95",
-    "author": "grant-arm",
-    "date": "2022-05-12T16:06:55Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3255/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6409595526?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6409595648?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6409821823?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6409875214?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410115243?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410159800?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410332973?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410517525?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410525234?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410696413?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410730915?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410887963?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6410930745?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411036721?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411071369?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411214976?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411270766?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411488744?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411540230?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411722929?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6411751236?check_suite_focus=true"
       }
     ]
   }
