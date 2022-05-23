@@ -5,8 +5,64 @@
     "body": "* Finish support for list-of-targets\r\n\r\nThis finishes the work started in https://github.com/apache/tvm/pull/11173 to support\r\n'external codegen' targets in the N build-like API surfaces.\r\n\r\n - It turns out it's ok if a build is given only a single 'external codegen' target, so remove that check\r\n   in CompilationConfig::Init. When Collage builds a 'candidate partition' it does so for a single target.\r\n   As far as Collage is concerned it does not care whether the target is regular (eg Target(\"cuda\")), or\r\n   for a specific external codegen (eg Target(\"cutlass\")), it just passes the target into the build.\r\n\r\n - Add CompilationConfig::FindPrimitiveTargetForKind which I'll later need to retrieve\r\n   the external codegen Target instance corresponding to a \"Compiler\" attribute value.\r\n\r\n - Target.update_target_host_consist was supporting three API styles:\r\n    - single target\r\n    - map from device type to target\r\n    - map from target to IRModule (for the ir_to_runtime API)\r\n   I replaced all those calls with a more specialized 'canonicalize' call:\r\n    - Target.canonicalize_target_and_host\r\n    - Target.canonicalize_multi_targets_and_host\r\n    - Target.canonicalize_target_map_and_host\r\n   In particular, all the tuning interfaces (task extraction, tuning, tuning records) all explicitly\r\n   *do not* support multiple targets since the underlying code just doesn't support that.\r\n\r\n* - Lints\r\n- Revert unintended changes\r\n\r\n* - more lints\r\n\r\n* - Fix model_library_format handling of target.\r\n- Improve comments in compilation_config.h\r\n\r\n* - Lints\r\n- Update target/target_host params documentation\r\n\r\n* - Fix micro library format tests\r\n- Rev micro library format from 5 to 6\r\n- Use Target.current() in a few places\r\n\r\n* - eta contract comprehension\r\n\r\n* - Woops, one more device: target map left\r\n- Handle host already being in Target\r\n\r\n* - lint\r\n\r\n* - lint\r\n\r\n* - Bug with append\r\n- Take device type from target\r\n\r\n* - Fix hexagon",
     "author": "mbs-octoml",
     "date": "2022-05-23T16:14:28Z",
-    "jobs": [],
-    "updated_at": 1653322473.881804
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3355/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6559039359?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6559039472?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6559153979?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6559207797?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6559418467?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6559459989?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6559599967?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6559668916?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6559762769?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6559849940?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1653326182.071563
   },
   {
     "sha": "4626a61fe2c9213e156316df300de5a3228b2d11",
@@ -17,17 +73,17 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/3354/display/redirect"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6557811328?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6557811662?check_suite_focus=true"
       },
       {
