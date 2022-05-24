@@ -18,12 +18,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6578440278?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6578440412?check_suite_focus=true"
       },
       {
@@ -34,7 +34,7 @@
     ],
     "pr": 11430,
     "pr_title": "Fix type checking annotation for Union type",
-    "updated_at": 1653415691.407238
+    "updated_at": 1653418923.960599
   },
   {
     "sha": "fe7b776df5e4ece7edb4aaaff2da72ecd41631b7",
@@ -60,12 +60,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6578262806?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6578263060?check_suite_focus=true"
       }
     ],
@@ -122,7 +122,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11429/2/display/redirect"
       },
       {
@@ -220,7 +220,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11427/3/display/redirect"
       },
       {
@@ -492,7 +492,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11422/2/display/redirect"
       },
       {
@@ -502,12 +502,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6577896770?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6577896927?check_suite_focus=true"
       },
       {
@@ -703,6 +703,37 @@
     ],
     "pr": 11413,
     "pr_title": "[Topi][Relay] Support for FP16 ERF on CPU."
+  },
+  {
+    "sha": "04085b07ef8d119ab65f0c5e2560373770fb4115",
+    "headline": "[Relay] Plumb external codegen target via Target.current() for all ex\u2026",
+    "body": "\u2026ternal codegen paths\n\n(See https://discuss.tvm.apache.org/t/byoc-supporting-cutlass-byoc-with-collage/12796/6 for\ncontext, which in turn is part of Collage (https://github.com/apache/tvm-rfcs/blob/main/rfcs/0062-collage.md).\n\nWe want both old-style (via relay.ext.$toolchain) and new-style (via \"RelayToTIR\" Pass\nattribute on target kind) external codegen to be able to access the current 'external codegen'\nTarget instance via Target.current().\n\n - For old-style, plumb the true Target through TEComplier and push it on the context\n   stack before calling relay.ext.$toolchain.\n\n - For new-style, pass the CompilationConfig to the RelayToTIRTargetHook pass, make the jump from\n   \"Compiler\" attribute value to Target via the new CompilationConfig::FindPrimitiveTargetForKind\n   method, and push on the stack before invoking the custom \"RelayToTIR\" pass.\n\nWhile working on this discovered RelayToTIRTargetHook was incompatible with the VM's compilation\nflow since RelayToTIRTargetHook assumes all \"Compiler\" attributed functions are inlined. Generalize\nit to support both inline and global function styles.\n\nExtend Target::IsExternalCodegen to recognize target kinds with \"RelayToTIR\" attributes as\nexternal.\n\nUpdate target hooks unit test to exercise new support for outline-style, picking up the current target,\nand compiling via the VM.",
+    "author": "mbs-octoml",
+    "date": "2022-05-23T20:07:18Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11432/2/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6579863103?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6579863295?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6579863110?check_suite_focus=true"
+      }
+    ],
+    "pr": 11432,
+    "pr_title": "[Relay] Plumb external codegen target via Target.current()"
   },
   {
     "sha": "bcf37649c018b6c44609143e52ac22d848c0591b",
@@ -2135,12 +2166,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6578124737?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6578125031?check_suite_focus=true"
       }
     ],
@@ -2719,27 +2750,6 @@
     ],
     "pr": 11365,
     "pr_title": "Fix function number datatype from char to uint16_t"
-  },
-  {
-    "sha": "dca80d78360333ec5c6880d057316bc4410d23dc",
-    "headline": "[ci][wip] Use CPU-SMALL for all CPU tests",
-    "body": "This adds CPU-SMALL for the CPU integration/frontend tests. If these hit memory issues due to being on a more restricted machine we may have to revert this change.",
-    "author": "driazati",
-    "date": "2022-05-18T22:59:40Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11364/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6527448420?check_suite_focus=true"
-      }
-    ],
-    "pr": 11364,
-    "pr_title": "[ci][wip] Use CPU-SMALL for all CPU tests"
   },
   {
     "sha": "92edef5a18f3f7bb6fb1fb6ae1f156d548969123",
