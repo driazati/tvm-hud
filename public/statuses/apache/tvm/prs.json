@@ -1,5 +1,42 @@
 [
   {
+    "sha": "f56e49845a917378e952503f11b508a07df00c04",
+    "headline": "- Lints",
+    "body": "",
+    "author": "mbs-octoml",
+    "date": "2022-05-26T18:34:14Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11474/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6614624047?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6614630258?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6614630390?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6614630520?check_suite_focus=true"
+      }
+    ],
+    "pr": 11474,
+    "pr_title": "[BYOC] Two helper passes for external codegen using RelayToTIR custom pass machinery",
+    "updated_at": 1653591727.264025
+  },
+  {
     "sha": "b2e30cc6f09867b7eecc52b2dc4f42b50dddf612",
     "headline": "add more test cases",
     "body": "",
@@ -23,7 +60,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613905593?check_suite_focus=true"
       },
       {
@@ -38,8 +75,7 @@
       }
     ],
     "pr": 11472,
-    "pr_title": "Add tests for arm schedules",
-    "updated_at": 1653588431.648763
+    "pr_title": "Add tests for arm schedules"
   },
   {
     "sha": "8e7d23c8fc51d4785929fc0ff39df85558252529",
@@ -60,12 +96,12 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613720760?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613721063?check_suite_focus=true"
       },
       {
@@ -178,17 +214,17 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613261249?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613261377?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613261544?check_suite_focus=true"
       },
       {
@@ -234,7 +270,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6612960743?check_suite_focus=true"
       }
     ],
@@ -260,7 +296,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6612809575?check_suite_focus=true"
       },
       {
@@ -286,7 +322,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11453/3/display/redirect"
       },
       {
@@ -424,7 +460,7 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613184232?check_suite_focus=true"
       },
       {
@@ -434,7 +470,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613184468?check_suite_focus=true"
       }
     ],
@@ -723,6 +759,16 @@
     ],
     "pr": 11448,
     "pr_title": "[Runtime][Thread pool]"
+  },
+  {
+    "sha": "00b7bd3b02a674a0eceaf466fcf685b13a28de2d",
+    "headline": "[BYOC] Two helper passes for external codegen using RelayToTIR custom\u2026",
+    "body": "\u2026 pass machinery\n\n(See https://discuss.tvm.apache.org/t/byoc-supporting-cutlass-byoc-with-collage/12796/6 for\ncontext, which in turn is part of Collage (https://github.com/apache/tvm-rfcs/blob/main/rfcs/0062-collage.md).\n\nFor reasons explained in the above thread I'm moving CUTLASS to be IRModule-at-a-time external codegen\nusing a custom RelayToTIR pass instead of the traditional function-at-a-time external codegen using\na relay.ext.cutlass registered function. This means some of the rewriing done on-the-fly by LowerTEPass now\nneeds to be done by the custom pass directly. This PR supplies two passes which ease that burden:\n - Before starting the CUTLASS-specific processing, make sure all \"Compiler\" attributed functions have\n   unique global definitions (ie are outlined). Though functions start in this form after BYOC partitioning,\n   under Graph and AOT compilation flows those functions are then inlined to pass through the 'codegen' keyhole\n   which assumes the whole model is just one self-contained main function. This pass will undo that. (I gave up\n   trying to just remove the inlining in the first place.)\n - After the CUTLASS-specific processing the now compiled \"Compiler\" attributed functions need to marked as\n   'extern'. The te_compiler.cc uses the \"ExternalSymbol\" attribute for that, but since a) the symbol name\n   is never needed, on the presense of the attribute is significant downstream and b) \"ExternalSymbol\" is\n   easy to confuse with \"global_symbol\", I just replaced \"ExternalSymbol\" with \"Extern\" with an Integer(1)\n   (cf \"Primitive\").\n\n The outlining pass is a little more general than necessary because it (will also) be used by Collage to\n rewrite the IRModule into optimally partitioned form while making maximal reuse of partition functions.\n Hence the abstract GlobalSymbolCache.",
+    "author": "mbs-octoml",
+    "date": "2022-05-26T00:15:46Z",
+    "jobs": [],
+    "pr": 11474,
+    "pr_title": "[BYOC] Two helper passes for external codegen using RelayToTIR custom pass machinery"
   },
   {
     "sha": "70e318f31901d888a2d197938cce500ae5fb0b14",
@@ -1617,6 +1663,11 @@
         "name": "Merge / maybe-merge",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6583317024?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6614729737?check_suite_focus=true"
       }
     ],
     "pr": 11423,
@@ -2942,42 +2993,6 @@
     "pr_title": "[microNPU] Add transform matrices and part matcher to identity op"
   },
   {
-    "sha": "87e665941486916d1df44e10a0767f8bfbb9b0b5",
-    "headline": "[TVMScript] fix typo for block syntax",
-    "body": "",
-    "author": "Hzfengsy",
-    "date": "2022-05-23T02:59:45Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11407/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6548356142?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6548356249?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6548356348?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6548356398?check_suite_focus=true"
-      }
-    ],
-    "pr": 11407,
-    "pr_title": "[TVMScript] fix typo for block syntax"
-  },
-  {
     "sha": "7a23cb5675311107c651f8e5bd22138b6c69f209",
     "headline": "fix imports",
     "body": "",
@@ -3062,17 +3077,17 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613402156?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613402278?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6613402413?check_suite_focus=true"
       }
     ],
