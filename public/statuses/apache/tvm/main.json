@@ -1,5 +1,110 @@
 [
   {
+    "sha": "89c02358a13f2e744580c4615bfeb06962d71965",
+    "headline": "[Relay] Plumb external codegen target via Target.current() (#11432)",
+    "body": "* [Relay] Plumb external codegen target via Target.current() for all external codegen paths\r\n\r\n(See https://discuss.tvm.apache.org/t/byoc-supporting-cutlass-byoc-with-collage/12796/6 for\r\ncontext, which in turn is part of Collage (https://github.com/apache/tvm-rfcs/blob/main/rfcs/0062-collage.md).\r\n\r\nWe want both old-style (via relay.ext.$toolchain) and new-style (via \"RelayToTIR\" Pass\r\nattribute on target kind) external codegen to be able to access the current 'external codegen'\r\nTarget instance via Target.current().\r\n\r\n - For old-style, plumb the true Target through TEComplier and push it on the context\r\n   stack before calling relay.ext.$toolchain.\r\n\r\n - For new-style, pass the CompilationConfig to the RelayToTIRTargetHook pass, make the jump from\r\n   \"Compiler\" attribute value to Target via the new CompilationConfig::FindPrimitiveTargetForKind\r\n   method, and push on the stack before invoking the custom \"RelayToTIR\" pass.\r\n\r\nWhile working on this discovered RelayToTIRTargetHook was incompatible with the VM's compilation\r\nflow since RelayToTIRTargetHook assumes all \"Compiler\" attributed functions are inlined. Generalize\r\nit to support both inline and global function styles.\r\n\r\nExtend Target::IsExternalCodegen to recognize target kinds with \"RelayToTIR\" attributes as\r\nexternal.\r\n\r\nUpdate target hooks unit test to exercise new support for outline-style, picking up the current target,\r\nand compiling via the VM.\r\n\r\n* - A bit of polishing en passant.\r\n\r\n* - Add comment as per Josh's suggestion\r\n\r\nCan't repro tests/python/contrib/test_ethosu/cascader/test_scheduler.py::test_compute_cycles_annotation failure, flake?",
+    "author": "mbs-octoml",
+    "date": "2022-06-01T18:51:35Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3421/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6695881025?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6695881177?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6695881337?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6695882974?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6695887821?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6695894294?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6695905341?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6696014227?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6696015404?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6696030234?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6696032703?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6696035378?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6696039888?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6696044471?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6696052835?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6696068805?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6696092747?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6696126978?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1654110526.914151
+  },
+  {
     "sha": "62e449cb858bde9be0bdd3903f3515916bff0131",
     "headline": "[microTVM][ARM]Add tests for arm schedules (#11472)",
     "body": "* add more tests for arm_cpu schedules\r\n\r\nconv1d_ncw, conv1d_nwc, conv2d_NCHWc, depthwise_conv2d_NCHWc, dense_dsp, avg_ pool and max_pool tests are added.\r\n\r\nCo-authored-by: Mohamad <mkatanbaf@users.noreply.github.com>",
@@ -8,7 +113,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/3420/display/redirect"
       },
       {
@@ -18,12 +123,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6694035566?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6694035714?check_suite_focus=true"
       },
       {
@@ -196,8 +301,7 @@
         "status": "cancelled",
         "url": "https://github.com/apache/tvm/runs/6694549313?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1654107206.846223
+    ]
   },
   {
     "sha": "ee26ecf1d516af3c7693f6cb53901b4a055ef9d4",
@@ -16008,60 +16112,6 @@
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6496287233?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "fb0938a5410ad91594cb4b56fdb5a84845197cb0",
-    "headline": "[CI] update oneDNN to v2.6 (#11140)",
-    "body": "* enable CI to get and build latest oneDNN release\r\n\r\n* remove the source code after installed\r\n\r\n* fix wget error and improve naming\r\n\r\n* refine the cmake/make commands\r\n\r\nCo-authored-by: driazati <9407960+driazati@users.noreply.github.com>\r\n\r\n* pinned to v2.6 by default\r\n\r\n* simplify the logic and install to /usr/lib\r\n\r\nCo-authored-by: driazati <9407960+driazati@users.noreply.github.com>",
-    "author": "yangulei",
-    "date": "2022-05-18T19:23:42Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3320/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6495732360?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6495732448?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6495832272?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6495871560?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6496029136?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6496063614?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6496228471?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6496286001?check_suite_focus=true"
       }
     ]
   }
