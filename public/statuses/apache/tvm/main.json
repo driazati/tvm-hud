@@ -1,5 +1,165 @@
 [
   {
+    "sha": "c6d7ecd0b5e71796c79b001f439322ae1d0ddbe0",
+    "headline": "[TE] Fix `te.CreatePrimFunc` for 0-dim computation (#11518)",
+    "body": "For 0-dimensional computation, `te.CreatePrimFunc` creates an opaque block with 0 block iters,\r\nwhich is mistakenly passed into TVMScript auto-completion that failed to add the root block properly.\r\nAs an example,\r\n\r\n```python\r\n>> from tvm import te\r\n>> a = te.placeholder((), name=\"a\", dtype=\"int32\")\r\n>> b = te.placeholder((), name=\"b\", dtype=\"int32\")\r\n>> c = te.compute(a.shape, lambda *i: a(*i) + b(*i), name=\"c\")\r\n>> f = te.create_prim_func([a, b, c])\r\n>> print(f.body.block.reads)\r\n[a[], b[]]\r\n>> print(f.body.block.writes)\r\n[c[]]\r\n```\r\n\r\nThis PR fixes this issue by enforcing the consistency that `te.CreatePrimFunc`\r\nalways creates scheduleable blocks with at least 1 block iter:\r\n\r\n```python\r\n@T.prim_func\r\ndef func(a: T.Buffer[(), \"int32\"], b: T.Buffer[(), \"int32\"], c: T.Buffer[(), \"int32\"]) -> None:\r\n    # function attr dict\r\n    T.func_attr({\"global_symbol\": \"main\", \"tir.noalias\": True})\r\n    # body\r\n    # with T.block(\"root\")\r\n    with T.block(\"c\"):\r\n        vi = T.axis.spatial(1, 0)\r\n        T.reads(a[()], b[()])\r\n        T.writes(c[()])\r\n        c[()] = a[()] + b[()]\r\n```",
+    "author": "junrushao1994",
+    "date": "2022-06-02T06:57:33Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3428/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6703671489?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6703671588?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6703671702?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703675388?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703680625?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703683512?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703700220?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703705245?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703710409?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703728834?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703732680?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703732964?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703733412?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703761847?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703763345?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703774383?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703776032?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703778134?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703778278?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703780032?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703783912?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703785454?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703787794?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703798658?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703799688?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6703801182?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703803123?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703809845?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6703814110?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1654153911.005724
+  },
+  {
     "sha": "ce60bfa0ff014752e879ea5eae7ad87a9d32bc2c",
     "headline": "[ci] Add filter to teams (#11455)",
     "body": "This improves the parsing to avoid issues like in #11454\r\n\r\ncommit-id:53a06ab3\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
@@ -131,8 +291,7 @@
         "status": "cancelled",
         "url": "https://github.com/apache/tvm/runs/6699090038?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1654150456.905922
+    ]
   },
   {
     "sha": "a329df40289eeca45163454bc1998a998d151d26",
@@ -16168,140 +16327,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6510913780?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "ffc0443913d837c6b7a6ec55375ea29cf3d1fa7c",
-    "headline": "[Frontend] [PaddlePaddle] Add split operator (#11354)",
-    "body": "* suuport split op of paddlepaddle\r\n\r\n* black formatting",
-    "author": "heliqi",
-    "date": "2022-05-19T08:53:03Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3327/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6503985488?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6503985633?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6504115544?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6504183249?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6504423752?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6504475947?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6504633213?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6504668846?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6504825838?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6504858358?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505044788?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505104807?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505336554?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505379092?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505543513?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505576868?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505711035?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505739534?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505897755?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6505948035?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6506161365?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6506196388?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6506331127?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6506365030?check_suite_focus=true"
       }
     ]
   }
