@@ -1,5 +1,114 @@
 [
   {
+    "sha": "7915b6b1e378ce4f690d5f9c66571806825613c8",
+    "headline": "[Frontend][ONNX] mark dynamic softmax tests as xfailed with cuda",
+    "body": "",
+    "author": "hope51607",
+    "date": "2022-06-02T04:19:51Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11507/5/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6702215728?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6702215721?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6702215819?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6702215898?check_suite_focus=true"
+      }
+    ],
+    "pr": 11507,
+    "pr_title": "[Frontend][ONNX] Fix softmax converter when input shape is dynamic",
+    "updated_at": 1654147328.422155
+  },
+  {
+    "sha": "97b0394e77861bbb9b27e68ea91a812ddc0314ba",
+    "headline": "[Bugfix][TIR] Handle bool tensor in FlattenBuffer",
+    "body": "This PR fixes an existing bug in TIR lowering where the TIR below triggers an error:\n\n```python\n@T.prim_func\ndef func(a: T.Buffer[10, \"bool\"], b: T.Buffer[10, \"bool\"]) -> None:\n    T.func_attr({\"global_symbol\": \"main\", \"tir.noalias\": True})\n    for i in T.serial(10):\n        with T.block(\"b\"):\n            vi = T.axis.spatial(10, i)\n            b[vi] = a[vi]\n\ntvm.build(func, target=\"llvm\")\n```\n\nThe error message is:\n\n```\n  File \"/root/Projects/tvm-dev/src/tir/transforms/flatten_buffer.cc\", line 173\nTVMError:\n---------------------------------------------------------------\nAn error occurred during the execution of TVM.\nFor more information, please see: https://tvm.apache.org/docs/errors.html\n---------------------------------------------------------------\n\nCheck failed: store->buffer->dtype == DataType::Int(8) (bool vs. int8) : Expected int8 backing array\nfor boolean tensor\n```\n\nThis PR fixes this behavior.",
+    "author": "junrushao1994",
+    "date": "2022-06-02T04:00:33Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11532/5/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6702069668?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6702073344?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6702073425?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6702073621?check_suite_focus=true"
+      }
+    ],
+    "pr": 11532,
+    "pr_title": "[Bugfix][TIR] Handle boolean tensor properly in Flatten-Buffer"
+  },
+  {
+    "sha": "815b84ebe83e77855c972bdd6db66db64764400c",
+    "headline": "[TE] Fix `te.CreatePrimFunc` for 0-dim computation",
+    "body": "For 0-dimensional computation, `te.CreatePrimFunc` creates an opaque block with 0 block iters,\nwhich is mistakenly passed into TVMScript auto-completion that failed to add the root block properly.\nAs an example,\n\n```python\n>> from tvm import te\n>> a = te.placeholder((), name=\"a\", dtype=\"int32\")\n>> b = te.placeholder((), name=\"b\", dtype=\"int32\")\n>> c = te.compute(a.shape, lambda *i: a(*i) + b(*i), name=\"c\")\n>> f = te.create_prim_func([a, b, c])\n>> print(f.body.block.reads)\n[a[], b[]]\n>> print(f.body.block.writes)\n[c[]]\n```\n\nThis PR fixes this issue by enforcing the consistency that `te.CreatePrimFunc`\nalways creates scheduleable blocks with at least 1 block iter:\n\n```python\n@T.prim_func\ndef func(a: T.Buffer[(), \"int32\"], b: T.Buffer[(), \"int32\"], c: T.Buffer[(), \"int32\"]) -> None:\n    # function attr dict\n    T.func_attr({\"global_symbol\": \"main\", \"tir.noalias\": True})\n    # body\n    # with T.block(\"root\")\n    with T.block(\"c\"):\n        vi = T.axis.spatial(1, 0)\n        T.reads(a[()], b[()])\n        T.writes(c[()])\n        c[()] = a[()] + b[()]\n```",
+    "author": "junrushao1994",
+    "date": "2022-06-02T03:58:38Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11518/6/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6702049154?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6702049145?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6702049218?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6702049274?check_suite_focus=true"
+      }
+    ],
+    "pr": 11518,
+    "pr_title": "[TE] Fix `tvm.te.CreatePrimFunc` for 0-dim computation"
+  },
+  {
     "sha": "7edbab543f89d62fdba41bb765baa612faa0975d",
     "headline": "Removed extra asterisk",
     "body": "",
@@ -8,7 +117,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11524/4/display/redirect"
       },
       {
@@ -23,110 +132,22 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6701281792?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6701281840?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6701281910?check_suite_focus=true"
       }
     ],
     "pr": 11524,
-    "pr_title": "[TIR][Arith] Additional Simplifications Inside Conditionals",
-    "updated_at": 1654138989.475943
-  },
-  {
-    "sha": "727032e8a58092384662e522b9108d6725439964",
-    "headline": "The right fix",
-    "body": "",
-    "author": "junrushao1994",
-    "date": "2022-06-02T02:05:04Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11532/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6701152071?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/6701156388?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/6701156514?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/6701156639?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6701366661?check_suite_focus=true"
-      }
-    ],
-    "pr": 11532,
-    "pr_title": "[Bugfix][TIR] Handle boolean tensor properly in Flatten-Buffer"
-  },
-  {
-    "sha": "b066c94fccbdd51a80a50a11a2d515841c7f867a",
-    "headline": "[TIR] Handle boolean tensor properly in Flatten-Buffer",
-    "body": "",
-    "author": "junrushao1994",
-    "date": "2022-06-02T00:42:11Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11532/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6700476589?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6700476604?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6700476721?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6700476788?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6700476895?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6700491220?check_suite_focus=true"
-      }
-    ],
-    "pr": 11532,
-    "pr_title": "[Bugfix][TIR] Handle boolean tensor properly in Flatten-Buffer"
+    "pr_title": "[TIR][Arith] Additional Simplifications Inside Conditionals"
   },
   {
     "sha": "466acce7bb9a18eb94a7601dd640d704073b65d8",
@@ -452,51 +473,25 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6699751927?check_suite_focus=true"
-      }
-    ],
-    "pr": 11528,
-    "pr_title": "[ci] Upload docs with folder structure to S3"
-  },
-  {
-    "sha": "8bda4e656d2850d11035f5586e134f001b92916e",
-    "headline": "[TE] Fix CreatePrimFunc for 0-dim computation",
-    "body": "",
-    "author": "junrushao1994",
-    "date": "2022-06-01T19:37:10Z",
-    "jobs": [
+      },
       {
-        "name": "tvm-ci/pr-head",
+        "name": "Teams / tag-teams",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11518/4/display/redirect"
+        "url": "https://github.com/apache/tvm/runs/6702574543?check_suite_focus=true"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6696581339?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/6702574541?check_suite_focus=true"
       },
       {
-        "name": "CI / Android",
+        "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6696587344?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6696587532?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6696587693?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6701344477?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/6702579498?check_suite_focus=true"
       }
     ],
-    "pr": 11518,
-    "pr_title": "[TE] Fix `tvm.te.CreatePrimFunc` for 0-dim computation"
+    "pr": 11528,
+    "pr_title": "[ci] Upload docs with folder structure to S3"
   },
   {
     "sha": "a47d92ae8627f0c2c733acf3f3c722ed2c63f9fa",
