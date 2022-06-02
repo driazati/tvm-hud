@@ -1,5 +1,218 @@
 [
   {
+    "sha": "c78539cc59b60b77794276699f9430cd5e838106",
+    "headline": "[TIR][Arith] Additional Simplifications Inside Conditionals (#11524)",
+    "body": "* [TIR][Arith] Use equality constraints in analyzer\r\n\r\nPreviously, constraints with inequalities were recognized and used for\r\nsimplifications by `ConstIntBoundAnalyzer` and `ModularSetAnalyzer`,\r\nbut constraints with equalities were not.  This adds equality-based\r\nconstraints.  (e.g. Inside the then-case of `if i==5`, the value of\r\n`i` is known to be 5.)\r\n\r\n* [TIR][Arith] RewriteSimplifier, apply literal constraints\r\n\r\nPreviously, constraints were only checked within a `tir.likely`\r\nannotation.  After this change, constraints are used for\r\nsimplification of all boolean expressions.  (e.g. Within a conditional\r\n`if i==n`, the expression `(i==n) and (j==m)` can be simplified to\r\n`j==m`.)\r\n\r\n* [TIR][Arith] Do not apply literal constraints to BufferLoad\r\n\r\nIf a literal constraint relies on the contents of a buffer, the\r\nconstraint may not be assumed to hold.  This prevents the incorrect\r\nrewriting of `A[i]==n` to true within a `if A[i]==n` conditional, as\r\nthe value of `A[i]` may have changed.\r\n\r\n* [TIR][Arith] Use each independent constraints in RewriteSimplifier\r\n\r\nInside a constraint `if i==n and j==m`, both `i==n` and `j==m` may be\r\nreplaced with true, even in separate expressions.\r\n\r\nThis commit uses a new internal utility function\r\n`tvm::arith::ExtractConstraints`, which breaks up a boolean expression\r\ninto a list of true statements.  This may be used to reduce\r\nduplication elsewhere, such as `const_int_bound.cc` and\r\n`iter_affine_map.cc`.\r\n\r\n* [TIR][Arith] Check for negation of literal constraints\r\n\r\nWhen inside a conditional of `i!=n`, in addition to the previous\r\nreplacement of `i!=n` with true, we can also replace `i==n` with\r\nfalse.\r\n\r\n* [TIR][Arith] Added unittests for new simplifications\r\n\r\n* Fix lint error\r\n\r\n* Fixed handling of negation of non-boolean types\r\n\r\n* Removed extra asterisk",
+    "author": "Lunderberg",
+    "date": "2022-06-02T20:08:13Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3438/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6715375741?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6715375883?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6715376060?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6715414558?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1654200693.316148
+  },
+  {
+    "sha": "03eefe0b41587fecb910f3543b0ddc1adeb4fcff",
+    "headline": "[ci] Add @tvm-bot rerun (#11480)",
+    "body": "This adds a command to restart CI runs that have stopped (either from a\r\nfailure, success, or abort) via GitHub comments addressed to tvm-bot:\r\n\r\n```\r\n@tvm-bot rerun\r\n```\r\n\r\ntvm-bot will then comment on the thread and send a request to Jenkins to\r\nrestart CI. This does not restart GitHub Actions jobs though we may be\r\nable to add that in the future.\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
+    "author": "driazati",
+    "date": "2022-06-02T19:43:06Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3437/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6715026647?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6715026856?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6715026999?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6715064400?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6715098171?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6715278322?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6715332477?check_suite_focus=true"
+      }
+    ]
+  },
+  {
+    "sha": "a2f89c53cc761a9ef8fa918105486b81a539a02b",
+    "headline": "Restore integration test on Mac and Windows (#11538)",
+    "body": "Signed-off-by: Alexander Peskov <peskovnn@gmail.com>",
+    "author": "apeskov",
+    "date": "2022-06-02T19:24:24Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3436/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6714767751?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6714767932?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6714768066?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6714773931?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714780077?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714830824?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714858769?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6714883975?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6714889389?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714894239?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714899072?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6714901194?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714902544?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714906687?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/6714917813?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714921640?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714928205?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714935458?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714941559?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6714953022?check_suite_focus=true"
+      },
+      {
+        "name": "Merge / maybe-merge",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/runs/6714973978?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6715018802?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6715018806?check_suite_focus=true"
+      }
+    ]
+  },
+  {
     "sha": "3bee5cacd7da5295e42e99e92d1864a97c9ffe80",
     "headline": "[ci][wip] Upload docs with folder structure to S3 (#11528)",
     "body": "Keeping the files as-is lets us serve them from S3 + CloudFront\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
@@ -8,17 +221,17 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/3435/display/redirect"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6713890201?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6713890352?check_suite_focus=true"
       },
       {
@@ -276,8 +489,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6714281293?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1654196933.825182
+    ]
   },
   {
     "sha": "84eb78cbc4663d6f25ee5a7ead6a930eba02776b",
@@ -288,22 +500,22 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/3434/display/redirect"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6713394040?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6713394254?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6713394348?check_suite_focus=true"
       },
       {
@@ -16745,88 +16957,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6522007903?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "909851c2f5d66337a2897b6a9fb2b2f786bfa917",
-    "headline": "[ci][easy] Fix parameters for macros (#11377)",
-    "body": "Co-authored-by: driazati <driazati@users.noreply.github.com>",
-    "author": "driazati",
-    "date": "2022-05-20T08:56:23Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3337/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6521872794?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6521872917?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6521943255?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "13272a19ef30b32c457a48b04dca72ed05aef784",
-    "headline": "[ci] Disable flaky onnx tests (#11376)",
-    "body": "Co-authored-by: driazati <driazati@users.noreply.github.com>",
-    "author": "driazati",
-    "date": "2022-05-20T08:55:55Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3336/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6521866164?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6521866341?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "7e99d30d63a0c20eedc247c723e2318686b815cf",
-    "headline": "[PTX] Intrinsics for async copy from global to shared (SM80) (#11368)",
-    "body": "* registor ptx builtin for async copy\r\n\r\n* add basic codegen\r\n\r\n* add test\r\n\r\n* update codegen\r\n\r\n* wip\r\n\r\n* codegen bug fixed, test working\r\n\r\n* add commit group\r\n\r\n* add doc",
-    "author": "masahi",
-    "date": "2022-05-20T08:50:32Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3335/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6521790914?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6521791025?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6521795289?check_suite_focus=true"
       }
     ]
   }
