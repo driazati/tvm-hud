@@ -1,45 +1,40 @@
 [
   {
-    "sha": "554b70108817a121e790d9062f2f35cea10c725b",
+    "sha": "644576c68e890c48457beee96be917a8ab0f4362",
     "headline": "[TIR] Prevent loop binding over-simplification",
     "body": "@vinx13 @jinhongyii and I observe a recent regression on TVM mainline: over-simplification in\n`Schedule.split` leads to information loss that negatively impacts search space generation.\n\n**Impact.** This affects common operators like `softmax` and even simpler reductions.\n\n**Example.** Consider splitting a simple reduction loop:\n\n```python\n@T.prim_func\ndef main(\n    A: T.Buffer[2, \"float32\"],\n    B: T.Buffer[2, \"float32\"],\n    C: T.Buffer[(), \"float32\"],\n) -> None:\n    for i in T.serial(2):  # <= split `i` into `i_0` and `i_1`, where `i_0` is a trivial loop\n        with T.block(\"C\"):\n            k = T.axis.reduce(2, i)\n            with T.init():\n                C[()] = T.float32(1)\n            C[()] = T.min(C[()], A[k] / B[k])\n```\n\nSplitting loop `i`  by factors `[1, 2]`, we get:\n\n```python\n@T.prim_func\ndef main(\n    A: T.Buffer[2, \"float32\"],\n    B: T.Buffer[2, \"float32\"],\n    C: T.Buffer[(), \"float32\"],\n) -> None:\n    for i_0, i_1 in T.grid(1, 2):\n        with T.block(\"C\"):\n            k = T.axis.reduce(2, i_1)  # <= i_0 is not part of the binding,\n                                       # so the system cannot tell if i_0 is a reduction loop\n            with T.init():\n                C[()] = T.float32(1)\n            C[()] = T.min(C[()], A[k] / B[k])\n```\n\nIn this case, loop `i_0` will be considered as a spatial loop, even it\u2019s the outcome of splitting\na reduction loop. However, if we change the factors from `[1, 2]` to `[2, 1]`, loop `i_0` becomes\na reduction loop. This means the loop iteration property depends on the loop extent.\n\n**Why is it problematic**? MetaSchedule has an assumption: extremely seldomly, a loop extent would\nimpact the iteration property of the loop itself, i.e. no matter the extent is 1 or 2 or anything,\nthe fact that the loop is a reduction loop should rarely change.\n\nAs an example, `Auto-Bind` finds the outer `k` spatial loops, which are fused together and bound to\nthread axis. In the trace, the number (`k`) of the outer loops has to be a constant.\n\nHowever, if Auto-Bind thinks there are `k=3` outer loops to fuse during search space generation,\nwhere the last loop happens to be a reduction loop with extent 1, as shown below:\n\n```python\nfor spatial_loop_0 in range(...):\n  for spatial_loop_1 in range(...):\n    for reduction_loop in range(1):  # <= Auto-Bind mistakes this loop as spatial, because extent==1\n```\n\nDuring evolutionary search, the extent of reduction_loop will change and become larger than 1.\nIn this case, the binding strategy will consistently fail because it considers fusing `k=3` loops\n- which means the entire search strategy will fail with almost no valid candidates.\n\nThanks @MasterJH5574 for figuring out the root cause of the issue,\nand @jinhongyii for valuable pointers to the right fix!",
     "author": "junrushao1994",
-    "date": "2022-06-05T02:57:22Z",
+    "date": "2022-06-05T04:46:23Z",
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11578/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6742316074?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/6742316075?check_suite_focus=true"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11578/4/display/redirect"
       },
       {
         "name": "CI / Android",
         "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/6742316100?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/6742802153?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6742802178?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
         "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/6742316135?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/6742802200?check_suite_focus=true"
       },
       {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/6742318082?check_suite_focus=true"
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6742802155?check_suite_focus=true"
       }
     ],
     "pr": 11578,
     "pr_title": "[TIR] Prevent loop binding over-simplification",
-    "updated_at": 1654401887.183366
+    "updated_at": 1654405337.25729
   },
   {
     "sha": "9bdcab5f1af23a99955a4846d50ade2796ae4da3",
@@ -50,7 +45,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11581/1/display/redirect"
       },
       {
@@ -70,13 +65,18 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6742299593?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6742299611?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6742787363?check_suite_focus=true"
       }
     ],
     "pr": 11581,
