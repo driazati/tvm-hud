@@ -1,5 +1,119 @@
 [
   {
+    "sha": "e282c23dd69bd3612e304bf1d086cb3b99d025f9",
+    "headline": "add: cpu custom allocator",
+    "body": "",
+    "author": "jsheng-jian",
+    "date": "2022-06-05T01:08:40Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11579/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741910998?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741910999?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741911063?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6741911070?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6741911084?check_suite_focus=true"
+      }
+    ],
+    "pr": 11579,
+    "pr_title": "[Runtime] Add runtime.contrib.set_custom_cpu_allocator to use custom memalign() and free() functions",
+    "updated_at": 1654396966.34887
+  },
+  {
+    "sha": "3567e1fe4644725b83aebd9f841276f56ca586a2",
+    "headline": "[TIR] Prevent loop binding over-simplification",
+    "body": "@vinx13 @jinhongyii and I observe a recent regression on TVM mainline: over-simplification in\n`Schedule.split` leads to information loss that negatively impacts search space generation.\n\n**Impact.** This affects common operators like `softmax` and even simpler reductions.\n\n**Example.** Consider splitting a simple reduction loop:\n\n```python\n@T.prim_func\ndef main(\n    A: T.Buffer[2, \"float32\"],\n    B: T.Buffer[2, \"float32\"],\n    C: T.Buffer[(), \"float32\"],\n) -> None:\n    for i in T.serial(2):  # <= split `i` into `i_0` and `i_1`, where `i_0` is a trivial loop\n        with T.block(\"C\"):\n            k = T.axis.reduce(2, i)\n            with T.init():\n                C[()] = T.float32(1)\n            C[()] = T.min(C[()], A[k] / B[k])\n```\n\nSplitting loop `i`  by factors `[1, 2]`, we get:\n\n```python\n@T.prim_func\ndef main(\n    A: T.Buffer[2, \"float32\"],\n    B: T.Buffer[2, \"float32\"],\n    C: T.Buffer[(), \"float32\"],\n) -> None:\n    for i_0, i_1 in T.grid(1, 2):\n        with T.block(\"C\"):\n            k = T.axis.reduce(2, i_1)  # <= i_0 is not part of the binding,\n                                       # so the system cannot tell if i_0 is a reduction loop\n            with T.init():\n                C[()] = T.float32(1)\n            C[()] = T.min(C[()], A[k] / B[k])\n```\n\nIn this case, loop `i_0` will be considered as a spatial loop, even it\u2019s the outcome of splitting\na reduction loop. However, if we change the factors from `[1, 2]` to `[2, 1]`, loop `i_0` becomes\na reduction loop. This means the loop iteration property depends on the loop extent.\n\n**Why is it problematic**? MetaSchedule has an assumption: extremely seldomly, a loop extent would\nimpact the iteration property of the loop itself, i.e. no matter the extent is 1 or 2 or anything,\nthe fact that the loop is a reduction loop should rarely change.\n\nAs an example, `Auto-Bind` finds the outer `k` spatial loops, which are fused together and bound to\nthread axis. In the trace, the number (`k`) of the outer loops has to be a constant.\n\nHowever, if Auto-Bind thinks there are `k=3` outer loops to fuse during search space generation,\nwhere the last loop happens to be a reduction loop with extent 1, as shown below:\n\n```python\nfor spatial_loop_0 in range(...):\n  for spatial_loop_1 in range(...):\n    for reduction_loop in range(1):  # <= Auto-Bind mistakes this loop as spatial, because extent==1\n```\n\nDuring evolutionary search, the extent of reduction_loop will change and become larger than 1.\nIn this case, the binding strategy will consistently fail because it considers fusing `k=3` loops\n- which means the entire search strategy will fail with almost no valid candidates.\n\nThanks @MasterJH5574 for figuring out the root cause of the issue,\nand @jinhongyii for valuable pointers to the right fix!",
+    "author": "junrushao1994",
+    "date": "2022-06-05T00:55:27Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11578/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741800877?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741803080?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741803122?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741803144?check_suite_focus=true"
+      }
+    ],
+    "pr": 11578,
+    "pr_title": "[TIR] Prevent loop binding over-simplification"
+  },
+  {
+    "sha": "9dd27b09512926006d5cecd8d62e9ee50cd8cb54",
+    "headline": "fix lint",
+    "body": "",
+    "author": "jsheng-jian",
+    "date": "2022-06-05T00:35:26Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11577/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741705651?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741707347?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741707405?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6741707439?check_suite_focus=true"
+      }
+    ],
+    "pr": 11577,
+    "pr_title": "[GraphExecutor] Add API get_output_info to graph_executor"
+  },
+  {
     "sha": "ffacf6e4b850a792d51b4114d1895ac77742dd91",
     "headline": "resolved comments",
     "body": "",
@@ -13,17 +127,17 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6741426846?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6741426893?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6741426969?check_suite_focus=true"
       },
       {
@@ -43,8 +157,7 @@
       }
     ],
     "pr": 11576,
-    "pr_title": "[MetaSchedule] exposed method: TuneContextNodeInitialize",
-    "updated_at": 1654389253.063058
+    "pr_title": "[MetaSchedule] exposed method: TuneContextNodeInitialize"
   },
   {
     "sha": "54e971da5480d1d183edd3b794f7ea518b6eee22",
@@ -55,7 +168,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11575/2/display/redirect"
       },
       {
@@ -75,7 +188,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6741287890?check_suite_focus=true"
       },
       {
@@ -440,6 +553,21 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/6739769861?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6742205900?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6742205905?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6742210693?check_suite_focus=true"
       }
     ],
     "pr": 11574,
@@ -757,17 +885,17 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "cancelled",
         "url": "https://github.com/apache/tvm/runs/6741624370?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "cancelled",
         "url": "https://github.com/apache/tvm/runs/6741624406?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "cancelled",
         "url": "https://github.com/apache/tvm/runs/6741624458?check_suite_focus=true"
       }
     ],
@@ -3737,52 +3865,6 @@
     "pr_title": "[TIR] CSE pass : Restrict the equivalence to be decided by a normal form - avoids comparison of terms"
   },
   {
-    "sha": "5f96e8ac6dd49b6f3438d3ac9500b1a9db17bdd7",
-    "headline": "[MetaSchedule] Enable Task Filtering",
-    "body": "",
-    "author": "junrushao1994",
-    "date": "2022-05-31T20:28:14Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11512/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6678122206?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6678122472?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6678122665?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6678122788?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6679887639?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6679887507?check_suite_focus=true"
-      }
-    ],
-    "pr": 11512,
-    "pr_title": "[MetaSchedule] Enable Task Filtering"
-  },
-  {
     "sha": "2848ce7e6a175699851bfb9541687ce7c71a5cff",
     "headline": "Reuse hexagon launcher in test session",
     "body": "",
@@ -3955,88 +4037,6 @@
     ],
     "pr": 11513,
     "pr_title": "[BYOC][DNNL] Enhance performance of DNNL BYOC dense operator"
-  },
-  {
-    "sha": "a613b2a34906155cd6739d2e3ddb654704c959bd",
-    "headline": "Add docstring",
-    "body": "",
-    "author": "slyubomirsky",
-    "date": "2022-05-30T21:54:14Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11511/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6661554804?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6661557671?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6661557740?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6661557805?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6662383946?check_suite_focus=true"
-      }
-    ],
-    "pr": 11511,
-    "pr_title": "[Frontend][PyTorch][Bugfix] Ignore Cuda in PyTorch version number when comparing versions"
-  },
-  {
-    "sha": "b30d3fcae81441cc294867e0b405eb04721fc1f2",
-    "headline": "Do not consider cuda in the PT version number",
-    "body": "",
-    "author": "slyubomirsky",
-    "date": "2022-05-30T21:40:39Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11511/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6661478573?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6661478572?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6661478738?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6661478797?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6661478858?check_suite_focus=true"
-      }
-    ],
-    "pr": 11511,
-    "pr_title": "[Frontend][PyTorch][Bugfix] Ignore Cuda in PyTorch version number when comparing versions"
   },
   {
     "sha": "e071cbfeb072156b36b3363a686999dc458b05f6",
