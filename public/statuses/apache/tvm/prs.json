@@ -1,5 +1,93 @@
 [
   {
+    "sha": "1ebeab2901c1b1cbe612f4508492e4d9986a0d54",
+    "headline": "[TIR] Add preserve-unit-iters",
+    "body": "Follow-up of #11578, which enforces structural stability of TIR by\navoiding over-simplification in affine analysis. On the other hand, it\nis possible that over-simplification could be desirable behavior.\nTherefore, following the precedent of `preserve-unit-loops` in\n`Compute-At`, this PR introduces `preserve-unit-iters` in block binding\nfor cases where users don't need structural stability (which is\nadmittedly rare).\n\nThis PR does not affect any existing functionalities.",
+    "author": "junrushao1994",
+    "date": "2022-06-05T23:52:09Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11585/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6748171848?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6748171850?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6748172114?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6748172181?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6748172206?check_suite_focus=true"
+      }
+    ],
+    "pr": 11585,
+    "pr_title": "[TIR] Add preserve-unit-iters",
+    "updated_at": 1654475193.174341
+  },
+  {
+    "sha": "c6bb950339872b89c6f0928f8517805e1dcaf785",
+    "headline": "[MetaSchedule] Fix Summary Format for Invalid Runs",
+    "body": "Previously for invalid tasks, MetaSchedule prints a huge number in\nlatency which is aesthetically unacceptable. For example,\n\n```\n 69 |  fused_cast_add_cast_3 | 16777216 | 2 | 0.0000 | 10000000000000000019156750857346687362159551272651920111528035145993793242039887559612361451081803235328.0000 | 20000000000000000038313501714693374724319102545303840223056070291987586484079775119224722902163606470656.0000 |     64 |\n```\n\nThis PR fixes this behavior and turns the huge number into \"N/A\".",
+    "author": "junrushao1994",
+    "date": "2022-06-05T23:09:46Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11584/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6747957684?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6747957685?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6747957731?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6747957752?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6747957785?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6747979267?check_suite_focus=true"
+      }
+    ],
+    "pr": 11584,
+    "pr_title": "[Minor][MetaSchedule] Fix Summary Format for Invalid Runs"
+  },
+  {
     "sha": "c5111829812cc73c0bf26293f3e21276906019d9",
     "headline": "[Bugfix][TIR] compute-at/fuse/split dtype mismatch",
     "body": "The schedule primitives, including compute-at, fuse and split usually\ngenerate loop variables with `dtype=int32` as default. However, in some\nmodels, there are usecases where int64 are part of tensor shapes, which\nleads to unexpected behavior in scheduling. This PR brings the fix to\nexisting known issues.",
@@ -23,7 +111,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/6747678441?check_suite_focus=true"
       },
       {
@@ -48,8 +136,7 @@
       }
     ],
     "pr": 11582,
-    "pr_title": "[Bugfix][TIR] compute-at/fuse/split dtype mismatch",
-    "updated_at": 1654470255.197417
+    "pr_title": "[Bugfix][TIR] compute-at/fuse/split dtype mismatch"
   },
   {
     "sha": "a4e9cf14aa6ae3593cd07a8ae5188fc53e682d20",
@@ -3191,47 +3278,6 @@
     "pr_title": "[Bugfix][TIR] Handle boolean tensor properly in Flatten-Buffer"
   },
   {
-    "sha": "815b84ebe83e77855c972bdd6db66db64764400c",
-    "headline": "[TE] Fix `te.CreatePrimFunc` for 0-dim computation",
-    "body": "For 0-dimensional computation, `te.CreatePrimFunc` creates an opaque block with 0 block iters,\nwhich is mistakenly passed into TVMScript auto-completion that failed to add the root block properly.\nAs an example,\n\n```python\n>> from tvm import te\n>> a = te.placeholder((), name=\"a\", dtype=\"int32\")\n>> b = te.placeholder((), name=\"b\", dtype=\"int32\")\n>> c = te.compute(a.shape, lambda *i: a(*i) + b(*i), name=\"c\")\n>> f = te.create_prim_func([a, b, c])\n>> print(f.body.block.reads)\n[a[], b[]]\n>> print(f.body.block.writes)\n[c[]]\n```\n\nThis PR fixes this issue by enforcing the consistency that `te.CreatePrimFunc`\nalways creates scheduleable blocks with at least 1 block iter:\n\n```python\n@T.prim_func\ndef func(a: T.Buffer[(), \"int32\"], b: T.Buffer[(), \"int32\"], c: T.Buffer[(), \"int32\"]) -> None:\n    # function attr dict\n    T.func_attr({\"global_symbol\": \"main\", \"tir.noalias\": True})\n    # body\n    # with T.block(\"root\")\n    with T.block(\"c\"):\n        vi = T.axis.spatial(1, 0)\n        T.reads(a[()], b[()])\n        T.writes(c[()])\n        c[()] = a[()] + b[()]\n```",
-    "author": "junrushao1994",
-    "date": "2022-06-02T03:58:38Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11518/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6702049154?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6702049145?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6702049218?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6702049274?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6703670128?check_suite_focus=true"
-      }
-    ],
-    "pr": 11518,
-    "pr_title": "[TE] Fix `tvm.te.CreatePrimFunc` for 0-dim computation"
-  },
-  {
     "sha": "4264e05e971cfee9194a654a9bb9a32d2e115f46",
     "headline": "Improve comment.",
     "body": "",
@@ -4073,47 +4119,6 @@
     ],
     "pr": 11547,
     "pr_title": "[Hexagon] Run single RPC server on Android in each testing session "
-  },
-  {
-    "sha": "7f687731fb6dd70816b876cc885368614ee1899d",
-    "headline": "[TFLite] Support quantized GREATER op in TFLite frontend",
-    "body": "Support GREATER quantization operation conversion as part of issue #9187",
-    "author": "dchauhan-arm",
-    "date": "2022-05-31T13:30:51Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11519/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6685930747?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6685930761?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6685930967?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6685931191?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6685931487?check_suite_focus=true"
-      }
-    ],
-    "pr": 11519,
-    "pr_title": "[TFLite] Support quantized GREATER op in TFLite frontend"
   },
   {
     "sha": "00064352c7a1bef79c53f28bca52867479d76a7d",
