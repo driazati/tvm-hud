@@ -1,5 +1,320 @@
 [
   {
+    "sha": "dfc8e95604afc8475970b8371d2a93d76b0bddf6",
+    "headline": "[BYOC] Make CUTLASS BYOC integration 'Collage friendly'   (#11631)",
+    "body": "* [BYOC] Make CUTLASS BYOC integration 'Collage friendly'\r\n\r\n(See https://discuss.tvm.apache.org/t/byoc-supporting-cutlass-byoc-with-collage/12796/6 for\r\ncontext, which in turn is part of Collage (https://github.com/apache/tvm-rfcs/blob/main/rfcs/0062-collage.md).\r\n\r\nCurrently CUTLASS has four entry points:\r\n - The usual 'partition_for_cutlass' partitioning function, using the\r\n   standard pattern table and pass machinery (see cutlass/build.py).\r\n - A 'tune_cutlass_kernels' function which augments CUTLASS partition\r\n   functions with the results of building and running test kernels (see cutlass/build.py).\r\n - A 'relay.ext.cutlass' external codegen function which inspects the\r\n   turning results and generates a CSourceModule for each partitions\r\n   (see cutlass/codegen.cc).\r\n - A 'build_cutlass_kernels_vm' function which runs 'export_library' with\r\n   all the nvcc compiler options needed to build all the CSourceModules\r\n   (see cutlass/bild.py).\r\n\r\nFor Collage we'd like CUTLASS to have only two entry points: 'partition_for_cutlass',\r\nand 'relay.ext.cutlass' or equivalent. This makes the CUTLASS external codegen integration\r\ncomposable with other integrations, which in turn helps Collage avoid having to understand any\r\nexternal codegen APIs other than the global pattern table and the custom compilation function/pass.\r\n\r\nCollage also tends to end up requiring multiple partitions for the same backend since it is\r\nmore aggressive at mixing-and-matching smaller sub-graphs between backends. Thus we'd also like\r\nto make sure all tuning, generated code and compilation overhead is shared between all such CUTLASS\r\npartitions.\r\n\r\nSo, in this PR:\r\n - We add all the CUTLASS-specific tuning and compilation options as new Target\r\n   attributes for the 'external codegen' \"cutlass\" TargetKind (cutlass/target.cc).\r\n   The user now has one place to provide those settings, and we've already done the\r\n   legwork to plumb the target instance.\r\n - We replace 'relay.ext.cutlass' with a 'RelayToTIR' custom pass hook\r\n   'CompileForCutlass' (see cutlass/codegen.cc). This pass obviously can see all\r\n   the CUTLASS partitions in the IRModule, so we can now share tuning results\r\n   between them all and can be sure to generate a single CSourceModule. The pass can\r\n   also invoke the compiler to yield a StaticModule, which we've also already done the\r\n   legwork to support. In this way all CUTLASS-specific steps are handled at once.\r\n - For convenience we supply 'finalize_modules' and 'finalize_modules_vm' which\r\n   invoke nvcc for final linking (using export_library as usual). However, there's now\r\n   nothing CUTLASS specific in those helpers other than their overriding of the 'compiler' to\r\n   be nvcc.\r\n - test_cutlass.py is updated to use the new API.\r\n\r\n Though this is a breaking change for existing users of the CUTLASS integration the\r\n change is pretty minor, as shown in test_cutlass.py.\r\n\r\n* - Masa's comments\r\n\r\n* - Remove unnecessary save.",
+    "author": "mbs-octoml",
+    "date": "2022-06-11T02:52:29Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3519/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6840465165?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6840465195?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6840465240?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840467597?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840473294?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840474221?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840502904?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840504502?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840504604?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840504763?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840504928?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840505834?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840506557?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840513332?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840516967?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840517997?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840518092?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840518179?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840518310?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840518401?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840518507?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840518671?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6840523724?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840527356?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840530725?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840531427?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840532945?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840537949?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840538505?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840540225?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840540503?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840540626?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840540940?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840541134?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840541241?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840541521?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840541922?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840542153?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840542346?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840543482?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840545646?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840548400?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6840549368?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840552435?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840552705?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6840606123?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840615350?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840675630?check_suite_focus=true"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6840683828?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840687682?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840688708?check_suite_focus=true"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6840690810?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840692662?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840698195?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840701626?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840702141?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840703438?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840703554?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840703738?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/6840703862?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1654918810.283799
+  },
+  {
     "sha": "50c6a9896d2c85cdb0eddd5302e041156fb52e90",
     "headline": "[MetaSchedule] Generate MetaSchedule Dataset (#11641)",
     "body": "In order to build a dataset for improving the cost model for MetaSchedule, I added several files\r\nincluding importing models to TVM, extracting tuning tasks, and sampling measure candidates.\r\nMeanwhile, I exposed some methods in C++ to the Python side to assist the process.",
@@ -8,7 +323,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/3518/display/redirect"
       },
       {
@@ -351,8 +666,7 @@
         "status": "neutral",
         "url": "https://github.com/apache/tvm/runs/6840158496?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1654915907.265896
+    ]
   },
   {
     "sha": "7de8980f24dbcf8568707cdc287edd89e5ae6407",
@@ -363,7 +677,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/3517/display/redirect"
       },
       {
@@ -20803,225 +21117,6 @@
         "name": "Merge / maybe-merge",
         "status": "cancelled",
         "url": "https://github.com/apache/tvm/runs/6694549313?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "ee26ecf1d516af3c7693f6cb53901b4a055ef9d4",
-    "headline": "[microNPU] Add transform matrices and part matcher to identity op (#1\u2026",
-    "body": "\u20261453)\n\n* [microNPU] Add transform matrices and part matcher to identity op\r\n\r\n* Address comments\r\n\r\n* Enable cascader in identity tests\r\n\r\n* Address comments",
-    "author": "NicolaLancellotti",
-    "date": "2022-06-01T14:51:56Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/3419/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6691835024?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6691835435?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6691835877?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6691842066?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691868716?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691875026?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691903274?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691909060?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691920256?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691936880?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691940921?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691946858?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691957813?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6691969157?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692023194?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692077686?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692096550?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692099231?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692104389?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692130086?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692148924?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692153432?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692156929?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692182373?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692186616?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692190108?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692215946?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692223048?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692236185?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692358848?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692387505?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692411209?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692419166?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692418279?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692426021?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692430480?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692432820?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692447020?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692451020?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6692459716?check_suite_focus=true"
-      },
-      {
-        "name": "Merge / maybe-merge",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/6692467042?check_suite_focus=true"
       }
     ]
   }
