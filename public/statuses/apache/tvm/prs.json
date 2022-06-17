@@ -1,5 +1,88 @@
 [
   {
+    "sha": "5de3adf8dc3817af634784d23154ccd196d38362",
+    "headline": "[BYOC] Handle constants in IRModule-at-a-time external codegen",
+    "body": "I tried to do to the TensorRT integration what #11631 did to the CUTLASS integration, viz:\n - Make sure all compilation options are passed in Target instances. This helps Collage.\n - Use a custom pass invoked via RelayToTIRTargetHooks instead of the relay.ext.$toolchain mechanism.\n   This helps use decouple external codegen from lowering.\n\nThis PR collects the prep for that change:\n - TensorRT uses the JSONSerializer visitor to encode each partition function. Previously, when the\n   visitor encountered a Constant it simply generated and recorded a name for the constant. Then,\n   completely separately, and via a callback in TECompiler, the function is visited again in the\n   same order and with the same name generation convention by a ConstantUpdater to actually collect the\n   bindings, which are then encoded into a ConstLoaderModule to be made available at runtime.\n\n   However if all TensorRT compilation is to be done by a stand-alone pass there's no TECompiler callback\n   hackery available. So I've added a \"const_name_to_ndarray\" attribute to the IRModule of type\n   Map<String, runtime::NDArray> so that named constants can be accumulated throughout compilation by\n   any pass which needs to do so. Then the Graph, AOT and VM executors are all updated to merge those\n   constants into the final runtime artifact\n\n   (Compare with \"Constants\", the equivalent attribute for extracting TIR AllocateConsts.)\n\n - The TensorRT tests use the create_executor interface but it wasn't quite ready for the\n   new more general form of passing list-of-targets.\n\n - I want TensorRT compilation to work out of the box without the need for any special targets if\n   all the default options should apply. Go back and make the CUTLASS integration I did follow the\n   same convention.\n\n - TensorRT actually needs to 'undo' partitionings in some situations. Add an InlineCompilerFunctions\n   pass to make that robust. In particular, it must undo both the 'partitioning' (ie separating out\n   the \"Compiler\" function) and any 'compositing' (ie separating out small sub-graphs as\n   \"Composite\" functions).",
+    "author": "mbs-octoml",
+    "date": "2022-06-17T21:01:07Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11770/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6942785189?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6942785187?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6942785378?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6942785451?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6942785542?check_suite_focus=true"
+      }
+    ],
+    "pr": 11770,
+    "pr_title": "[BYOC] Handle constants in IRModule-at-a-time external codegen",
+    "updated_at": 1655499838.028661
+  },
+  {
+    "sha": "2b053e23ce51b0e41d898f1d7c2ebda402b78346",
+    "headline": "[ci][docker] Remove Docker image upload prefix",
+    "body": "These should go to the same tag as in `tlcpack` so the only difference is the user\n\nPart of #11768",
+    "author": "driazati",
+    "date": "2022-06-17T20:38:59Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11769/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6942612653?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/6942612642?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6942612641?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6942612763?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/6942612864?check_suite_focus=true"
+      }
+    ],
+    "pr": 11769,
+    "pr_title": "[ci][docker] Remove Docker image upload prefix"
+  },
+  {
     "sha": "9fa414294066b069162c5e80d625e0fb92c84293",
     "headline": "[lint] CHange docker lint message",
     "body": "",
@@ -8,7 +91,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11767/1/display/redirect"
       },
       {
@@ -38,8 +121,7 @@
       }
     ],
     "pr": 11767,
-    "pr_title": "[skip ci] Change docker lint message",
-    "updated_at": 1655496201.215961
+    "pr_title": "[skip ci] Change docker lint message"
   },
   {
     "sha": "46ed73645a6538a402894789e0243024ca9e46dd",
@@ -3300,93 +3382,6 @@
     "pr_title": "[QNN] Add hardswish int8 impl using table lookup"
   },
   {
-    "sha": "26337c5e99ba742b45f21d437b0f96359da73197",
-    "headline": "pylint",
-    "body": "",
-    "author": "mengceng15",
-    "date": "2022-06-14T03:35:52Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11699/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874213599?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874213598?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874213877?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874213965?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874214087?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/6875099024?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/6875758241?check_suite_focus=true"
-      }
-    ],
-    "pr": 11699,
-    "pr_title": "Fix AutoTVM int8 vnni dense task extraction problem"
-  },
-  {
-    "sha": "bc69a62674ce7bb125afe218b48ef8218c8c3655",
-    "headline": "[Hotfix][MetaSchedule] Importing from test foldeer",
-    "body": "A concurrent merge breaks the unittest which imports directly from\n`meta_schedule.testing`.",
-    "author": "junrushao1994",
-    "date": "2022-06-14T00:29:56Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-11695/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874509500?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874509625?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874509761?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/6874509891?check_suite_focus=true"
-      }
-    ],
-    "pr": 11695,
-    "pr_title": "[Hotfix][MetaSchedule] Importing from test folder"
-  },
-  {
     "sha": "9d8f7501fb527c9aec9b95522a8c033533a29314",
     "headline": "[ETHOSN] Upgrade NPU driver stack to v22.05",
     "body": "In updating the driver stack to v22.05 some additional things needed\nchanges:\n* Prevent split being offloaded to the NPU which is not supported in\n  v22.05.\n* Removes compile algorithm configuration option since this was removed\n  in v22.05. Versions before v22.05 will use the default option.\n* Managing some API changes.\n* Updating network compile hashes.\n* Updating expected error message for overall scale bounds check.\n\nChange-Id: I09343c398a1f47dec44e135ff8252a6315a9b63f",
@@ -3426,16 +3421,6 @@
     ],
     "pr": 11759,
     "pr_title": "[ETHOSN] Upgrade NPU driver stack to v22.05"
-  },
-  {
-    "sha": "a5847eb60d13c08d9e64a107971f22e80d85f117",
-    "headline": "fix autotvm int8 dense vnni extraction",
-    "body": "",
-    "author": "mengceng15",
-    "date": "2022-06-13T05:44:13Z",
-    "jobs": [],
-    "pr": 11699,
-    "pr_title": "Fix AutoTVM int8 vnni dense task extraction problem"
   },
   {
     "sha": "31318fe0b9f1c630e51b9ae1f01feac6d8360624",
