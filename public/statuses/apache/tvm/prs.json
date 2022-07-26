@@ -39,7 +39,7 @@
     ],
     "pr": 12186,
     "pr_title": "Decouple the complication of TVM and PyTorch ",
-    "updated_at": 1658837447.891822
+    "updated_at": 1658844297.164821
   },
   {
     "sha": "148340fec0a28bdc2a19e0927524b88cd2c1814f",
@@ -510,6 +510,42 @@
     ],
     "pr": 12151,
     "pr_title": "[BYOC-DNNL] add post_sum pattern"
+  },
+  {
+    "sha": "2d2e7c69066bff9636c1743b91730827c5cfc638",
+    "headline": "[JIT] Force finalization of JITed code, expose sf/hf runtime functions",
+    "body": "Code that handles fp16 and fp32 may end up calling builtins that do the\nconversions between these types. LLVM emits calls to __truncsfhf2, and\n__extendhfsf2, which are not present in TVM or TVM runtime. This creates\ntwo problems:\n- Problem 1: JITed code that does the conversions will fail because it\n  calls non-existent functions.\nAdding these functions to libtvm.so/libtvm_runtime.so solves this part,\nbut there is another issue:\n- Problem 2: JITed code may still not call these functions, because the\ngenerated object may not be fully resolved.\nTo force full resolution, try to obtain an address of a non-existent\nsymbol.",
+    "author": "kparzysz-quic",
+    "date": "2022-07-25T18:46:52Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12187/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/7521734329?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/7521742834?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/7521743175?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/7521743569?check_suite_focus=true"
+      }
+    ],
+    "pr": 12187,
+    "pr_title": "[JIT] Force finalization of JITed code, expose sf/hf runtime functions"
   },
   {
     "sha": "e567ba09c46c003aea202e10c0735c4ae6fa6c62",
@@ -993,7 +1029,7 @@
     "pr_title": "[TIR] Asynchronous stage in software pipeline"
   },
   {
-    "sha": "5f7cf3dfcd1150ff3cbdae2824bb0c380dc3fcd9",
+    "sha": "f9c7263fc3e66aa7b59e614d332d84f6c828f6f1",
     "headline": "[TIR Pass] decouple flatten buffer to lower opaque block pass and fla\u2026",
     "body": "\u2026tten buffer.",
     "author": "fengrong.jia",
@@ -1002,27 +1038,27 @@
       {
         "name": "tvm-ci/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12172/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12172/3/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7517718546?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/7519830051?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
         "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/7517719404?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/7519830179?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7517719568?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/7519830400?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7517719739?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/7519830566?check_suite_focus=true"
       }
     ],
     "pr": 12172,
@@ -3427,47 +3463,6 @@
     ],
     "pr": 12122,
     "pr_title": "[MetaSchedule, Testing] Generalize in/out dtype of testing te workloads"
-  },
-  {
-    "sha": "7e0652fc609ce55c428bdc02b6353fbc30e8bd48",
-    "headline": "[Target] Add \"features\" property to Target",
-    "body": "This adds a generated property \"features\" to the `Target` which can\ncontain a read-only list of available features in line with\nhttps://github.com/apache/tvm-rfcs/pull/78.\n\nFeatures are re-generated upon parsing into a `Target` object rather than being\nattached as `attrs`. The `Target` JSON is therefore stored without the\ninferred `features` attached.",
-    "author": "Mousius",
-    "date": "2022-07-18T15:52:52Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12121/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7407262535?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7407262572?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7407262772?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7407262925?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7410738875?check_suite_focus=true"
-      }
-    ],
-    "pr": 12121,
-    "pr_title": "[Target] Add \"features\" property to Target"
   },
   {
     "sha": "9bc984cc27311a27fcda63496a5d016a80bcfa16",
