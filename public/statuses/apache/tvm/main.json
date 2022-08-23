@@ -1,5 +1,95 @@
 [
   {
+    "sha": "1d71c1b4aad72843540f897e27c01aa73256a463",
+    "headline": "[skip ci][ci] Mark more ethosu tests with xfail (#12560)",
+    "body": "See #12511 for context. Since more parameterizations are popping up as\r\nfailed, this disables whole tests rather than specific combinations of\r\nparameters.",
+    "author": "driazati",
+    "date": "2022-08-23T18:08:55Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4140/display/redirect"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980037442?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980039593?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980045173?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980046412?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/7980053410?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980056022?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980063757?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980064292?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980076267?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980076210?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980080530?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980091079?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980100021?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980103917?check_suite_focus=true"
+      },
+      {
+        "name": "docs-bot / run-docs-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/7980109022?check_suite_focus=true"
+      }
+    ],
+    "updated_at": 1661278395.471351
+  },
+  {
     "sha": "da5836f230525afe8984dcbfea8ee788a6286b5c",
     "headline": "[AutoTVM] Add support for text buffers to ApplyHistoryBest (#12521)",
     "body": "Currently, AutoTVM's ApplyHistoryBest class does not support loading tuning logs from memory. This is a pet peeve of mine, as it requires you to work with a tempfile whenever writing autotuning tests. This is also just strange, as the rest of AutoTVM has support for text buffers (e.g. tvm.autotvm.callback.log_to_file supports passing in a text buffer, letting us write to but not read from them).\r\n\r\nAdditionally, ApplyHistoryBest handles input arguments very unintuitively. Before this PR, it allowed users to pass string filepaths, a list of string filepaths, or an Iterable (such as a list) of input and result tuples. However, it did not support taking in StringIO objects as mentioned above, nor pathlib.Path objects, nor combinations of a filepath and an Iterable of tuples.\r\n\r\nIn a perfect world, we would change ApplyHistoryBest to take as input a path-like object, file-like object, or an Iterable of input and result tuples (similar to what ApplyGraphBest takes as an argument). However, this would break the existing functionality to take as input a list of filepaths.\r\n\r\nTo be backwards compatible, while fixing this issue, this pull request defines a new type inside dispatcher.py:\r\n\r\nRecords = Union[\r\n    Union[str, bytes, Path],  # Path-like objects\r\n    TextIOBase,  # File-like objects\r\n    Iterable[Tuple[MeasureInput, MeasureResult]],\r\n]\r\nIt then rewrites ApplyHistoryBest.load so it takes the following arguments:\r\n\r\ndef load(self, records: Union[Records, Iterable[Records]]):\r\nThis PR also adds unit tests for this new functionality, and fixes a relevant bug in tests/micro/common/test_autotune.py in which a StringIO object was passed to apply_history_best, causing it to appear to pass but not actually read any data.",
@@ -13,7 +103,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/7978364696?check_suite_focus=true"
       },
       {
@@ -23,7 +113,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/7978365028?check_suite_focus=true"
       },
       {
@@ -501,8 +591,7 @@
         "status": "neutral",
         "url": "https://github.com/apache/tvm/runs/7978653160?check_suite_focus=true"
       }
-    ],
-    "updated_at": 1661274914.122302
+    ]
   },
   {
     "sha": "dd7ae2d3e5a7e169021e75d0c9d0f6a8cc477a9c",
@@ -518,12 +607,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/7977537277?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/7977537463?check_suite_focus=true"
       },
       {
@@ -36663,100 +36752,6 @@
         "name": "docs-bot / run-docs-bot",
         "status": "neutral",
         "url": "https://github.com/apache/tvm/runs/7809550937?check_suite_focus=true"
-      }
-    ]
-  },
-  {
-    "sha": "d874a8ed5241d5c90207ee54c9bb3003b8244d63",
-    "headline": "[microNPU] Reorder copies and computes based on the cycle count (#11591)",
-    "body": "If the cascader is enabled and the ops in TIR have the cycle\r\ncount annotation, enabling the reorder_by_cycles option will\r\nreorder to copies and computes based on a cycle count.\r\n\r\nIf reorder_by_cycles is enabled, max_copy_movements is ignored.\r\n\r\nThis pass is currently not part of the TIR pipeline since it\r\nassumes that weights and bias of a compute op are merged into\r\none constant (which is WIP).",
-    "author": "ekalda",
-    "date": "2022-08-12T15:20:08Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4037/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7808993352?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7808993563?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7808993797?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7808999783?check_suite_focus=true"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7809012279?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809015147?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809018098?check_suite_focus=true"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7809067180?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809073447?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809081305?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809103365?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809106233?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809133772?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809134437?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809142086?check_suite_focus=true"
-      },
-      {
-        "name": "docs-bot / run-docs-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7809147625?check_suite_focus=true"
       }
     ]
   }
