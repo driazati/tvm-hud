@@ -34,44 +34,80 @@
     ],
     "pr": 12631,
     "pr_title": "[TIR] Add partition unroll hint pragma",
-    "updated_at": 1661789224.547186
+    "updated_at": 1661793169.042928
   },
   {
-    "sha": "dad2d5b19ad7ae428225a1adeafe032d5a828b08",
+    "sha": "7f3f1f95504c9c07c9b624d93d301115a47d6161",
+    "headline": "Add TIR statement printing",
+    "body": "Co-authored-by: Greg Bonik <gbonik@octoml.ai>",
+    "author": "yelite",
+    "date": "2022-08-28T14:46:02Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12635/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8075817200?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8075817189?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075817579?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075817729?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075817892?check_suite_focus=true"
+      }
+    ],
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
+  },
+  {
+    "sha": "afeef6f8f3a076715c0f8ae55b651d3bc332a67a",
     "headline": "[MetaSchedule] Introduce `MergedDatabase`",
-    "body": "Following up #12520 and #12626, this PR introduces `MergedDatabase`,\nwhich allow users to compose multiple databases so that the high-level\nIR could select the best tuning records among them.\n\nThe `MergedDatabase` also comes with an extra field `preferred` to allow\nusers to override tuning records from other databases. A classic usecase\nof the `preferred` parameter is through handcrafted schedule functions:\n\n```python\ndef schedule_fn(sch: tir.Schedule) -> bool:\n  if \"nn_conv2d\" in sch.mod.attrs[\"task_name\"]:\n    handcrafted_scheduling(sch)\n    return True\n  return False\n\nwith ms.database.MergedDatabase(\n  databases=[database],\n  preferred=ms.database.ScheduleFn(schedule_fn),\n):\n  lib = relay.build(...)\n```",
+    "body": "Following up #12520 and #12626, this PR introduces `MergedDatabase`,\nwhich allow users to compose multiple databases so that the high-level\nIR could select the best tuning records among them.\n\nThe `MergedDatabase` also comes with an extra field `preferred` to allow\nusers to override tuning records from other databases. A classic usecase\nof the `preferred` parameter is through handcrafted schedule functions:\n\n```python\ndef schedule_fn(sch: tir.Schedule) -> bool:\n  if \"nn_conv2d\" in sch.mod.attrs[\"task_name\"]:\n    handcrafted_scheduling(sch)\n    return True\n  return False\n\nwith ms.database.MergedDatabase(\n  preferred=ms.database.ScheduleFn(schedule_fn),\n  # ^^^^ override scheduling decisions\n  databases=[database],\n  fallback=libtorch_database,\n  # ^^^^ fallback to libtorch\n):\n  lib = relay.build(...)\n```",
     "author": "junrushao",
     "date": "2022-08-28T00:36:54Z",
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
         "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12628/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8054129618?check_suite_focus=true"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12628/3/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8054129619?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8075809671?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8054129699?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075818428?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8054129730?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075818620?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8054129775?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075818778?check_suite_focus=true"
       }
     ],
     "pr": 12628,
@@ -1278,22 +1314,58 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8073515701?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8073515856?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8073516119?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
+  },
+  {
+    "sha": "327097fd7ddbdc2ff69082b8213ba8c40ae50b2f",
+    "headline": "Add TIR assert stmt printing",
+    "body": "Co-authored-by: Greg Bonik <gbonik@octoml.ai>",
+    "author": "yelite",
+    "date": "2022-08-25T17:22:45Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12603/5/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8073515334?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8073515701?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8073515856?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8073516119?check_suite_focus=true"
+      }
+    ],
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "04a9395a840b7a845f9041c41ba75c0cd83633a7",
@@ -1391,7 +1463,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12633/1/display/redirect"
       },
       {
@@ -2257,8 +2329,8 @@
         "url": "https://github.com/apache/tvm/runs/8050110539?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "26256052639107c5826f48a31812accdcee133bc",
@@ -2293,8 +2365,44 @@
         "url": "https://github.com/apache/tvm/runs/8050110539?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
+  },
+  {
+    "sha": "26256052639107c5826f48a31812accdcee133bc",
+    "headline": "Add TIR simple stmt printing",
+    "body": "Co-authored-by: Greg Bonik <gbonik@octoml.ai>",
+    "author": "yelite",
+    "date": "2022-08-24T19:53:29Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12582/4/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050110383?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050110476?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050110512?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050110539?check_suite_focus=true"
+      }
+    ],
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "a02a4158d4b24e638b6c0449404df2d00455cdfd",
@@ -2636,8 +2744,8 @@
         "url": "https://github.com/apache/tvm/runs/8050111263?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "615aa8735f38f24cd7c57e49c202e95b5ee43955",
@@ -2672,8 +2780,8 @@
         "url": "https://github.com/apache/tvm/runs/8050111263?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "615aa8735f38f24cd7c57e49c202e95b5ee43955",
@@ -2708,8 +2816,44 @@
         "url": "https://github.com/apache/tvm/runs/8050111263?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
+  },
+  {
+    "sha": "615aa8735f38f24cd7c57e49c202e95b5ee43955",
+    "headline": "Add op.cc",
+    "body": "Co-authored-by: Greg Bonik <gbonik@octoml.ai>",
+    "author": "yelite",
+    "date": "2022-08-24T18:09:53Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12576/3/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050110897?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050111156?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050111222?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050111263?check_suite_focus=true"
+      }
+    ],
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "c72417d7ce0fd34354f78a43e66130b630a28d43",
@@ -3009,83 +3153,6 @@
     "pr_title": "[CI][ONNX] Set test python.contrib.test_onnx.test_resize as xfail"
   },
   {
-    "sha": "0e375d704c84e17f3dba0b9151704d1b24e01a44",
-    "headline": "merging two tests",
-    "body": "",
-    "author": "crawlingcub",
-    "date": "2022-08-24T03:52:38Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12563/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7987193322?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7987245017?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7987245115?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7987245220?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7987245013?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7987264342?check_suite_focus=true"
-      }
-    ],
-    "pr": 12563,
-    "pr_title": "[PyTorch][Fix] Fix for numerically unstable logsigmoid"
-  },
-  {
-    "sha": "45a4b23959ceb0aafac83c4e3798c85c5f072fae",
-    "headline": "add test for overflow check",
-    "body": "",
-    "author": "crawlingcub",
-    "date": "2022-08-24T01:21:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12563/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7985898356?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7987085682?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7987094257?check_suite_focus=true"
-      }
-    ],
-    "pr": 12563,
-    "pr_title": "[PyTorch][Fix] Fix for numerically unstable logsigmoid"
-  },
-  {
     "sha": "a4b00ebc5972089e549173e9593fa9ba8bfc7f1c",
     "headline": "Change default printing of buffer.",
     "body": "",
@@ -3340,67 +3407,6 @@
     "pr_title": "[Runtime] Change default alignment to 64 bytes."
   },
   {
-    "sha": "ee10e42b34e365cc69593eab2b68e74cc8e782c9",
-    "headline": "update",
-    "body": "",
-    "author": "crawlingcub",
-    "date": "2022-08-23T19:47:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12563/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/7981700468?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/7981700634?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/7984515825?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7984515925?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7984516052?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7981704854?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7981703974?check_suite_focus=true"
-      }
-    ],
-    "pr": 12563,
-    "pr_title": "[PyTorch][Fix] Fix for numerically unstable logsigmoid"
-  },
-  {
-    "sha": "8603d9cc508f8d7297ab82d91de77245e004953c",
-    "headline": "Fix numerical instability for log sigmoid",
-    "body": "Fix numerical instability for log sigmoid in pytorch frontend",
-    "author": "crawlingcub",
-    "date": "2022-08-23T19:45:09Z",
-    "jobs": [],
-    "pr": 12563,
-    "pr_title": "[PyTorch][Fix] Fix for numerically unstable logsigmoid"
-  },
-  {
     "sha": "de2df87dc8ead1ac5e8605ea96366b2679c98c3b",
     "headline": "fix a rounding error with avg pooling in fq2i",
     "body": "",
@@ -3494,8 +3500,8 @@
         "url": "https://github.com/apache/tvm/runs/8050103901?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "ea7a9701a6454998784b0d70e90f56ef20a9145a",
@@ -3530,8 +3536,8 @@
         "url": "https://github.com/apache/tvm/runs/8050103901?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "ea7a9701a6454998784b0d70e90f56ef20a9145a",
@@ -3566,40 +3572,76 @@
         "url": "https://github.com/apache/tvm/runs/8050103901?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
-    "sha": "fd7f037524ad555665e8e08b8aedad4a113b1dd7",
-    "headline": "WIP better support for 2-tier memory allocations",
-    "body": "- needs cleanup\n- unit tests passed until I rebased",
+    "sha": "ea7a9701a6454998784b0d70e90f56ef20a9145a",
+    "headline": "Add TIR expr printing",
+    "body": "Co-authored-by: Greg Bonik <gbonik@octoml.ai>",
+    "author": "yelite",
+    "date": "2022-08-23T04:54:07Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12552/8/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050103785?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050103847?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050103875?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050103901?check_suite_focus=true"
+      }
+    ],
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
+  },
+  {
+    "sha": "3e8a6683d89717d41f9e8bc112ee27048e27207e",
+    "headline": "[WIP] [hexagon] better support for 2-tier memory",
+    "body": "- Extend Hexagon runtime's \"global\" memory scope to support two-tier\n  memory allocations.\n\n- Add memory-scope name 'global.ddr', as an alias for 'global'.\n\n- Add unit tests for one-tier and two-tier memory allocations.",
     "author": "cconvey",
     "date": "2022-08-21T18:19:50Z",
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
         "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12574/6/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12574/8/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8045615138?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8045619379?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8075581634?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8045619476?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075588256?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075588480?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/8045619548?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8075588624?check_suite_focus=true"
       }
     ],
     "pr": 12574,
@@ -3638,8 +3680,8 @@
         "url": "https://github.com/apache/tvm/runs/8050101467?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "daf1cb72314bd091f6634f5e909b135a3f598e32",
@@ -3674,8 +3716,8 @@
         "url": "https://github.com/apache/tvm/runs/8050101467?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "daf1cb72314bd091f6634f5e909b135a3f598e32",
@@ -3710,8 +3752,44 @@
         "url": "https://github.com/apache/tvm/runs/8050101467?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
+  },
+  {
+    "sha": "daf1cb72314bd091f6634f5e909b135a3f598e32",
+    "headline": "Add TIR buffer printing",
+    "body": "Co-authored-by: Junru Shao <jshao@octoml.ai>\nCo-authored-by: Greg Bonik <gbonik@octoml.ai>\n\nFix lint",
+    "author": "yelite",
+    "date": "2022-08-19T16:57:52Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12506/10/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050101303?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050101416?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050101445?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8050101467?check_suite_focus=true"
+      }
+    ],
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "2163d5c9d9efd5f5f9dff384675c3d84f07c3cc1",
@@ -3746,8 +3824,8 @@
         "url": "https://github.com/apache/tvm/runs/8044214233?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "2163d5c9d9efd5f5f9dff384675c3d84f07c3cc1",
@@ -3782,8 +3860,8 @@
         "url": "https://github.com/apache/tvm/runs/8044214233?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
     "sha": "2163d5c9d9efd5f5f9dff384675c3d84f07c3cc1",
@@ -3818,7 +3896,43 @@
         "url": "https://github.com/apache/tvm/runs/8044214233?check_suite_focus=true"
       }
     ],
-    "pr": 12603,
-    "pr_title": "[TVMScript] TIR Printer: Assert and Concise Scoping"
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
+  },
+  {
+    "sha": "2163d5c9d9efd5f5f9dff384675c3d84f07c3cc1",
+    "headline": "Add TIR var and type printing",
+    "body": "Co-authored-by: Greg Bonik <gbonik@octoml.ai>",
+    "author": "yelite",
+    "date": "2022-08-17T21:13:11Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12492/6/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8044213792?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8044214000?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8044214123?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8044214233?check_suite_focus=true"
+      }
+    ],
+    "pr": 12635,
+    "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   }
 ]
