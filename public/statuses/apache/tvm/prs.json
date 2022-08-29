@@ -1,5 +1,83 @@
 [
   {
+    "sha": "5bc62eae826daed7836efdd57e67bdf9535f36de",
+    "headline": "Fix test utils",
+    "body": "",
+    "author": "mehrdadh",
+    "date": "2022-08-29T22:35:48Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12641/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8081244803?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8081244784?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081245141?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081245272?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081245390?check_suite_focus=true"
+      }
+    ],
+    "pr": 12641,
+    "pr_title": "[microTVM]Fix test util functions",
+    "updated_at": 1661814235.979514
+  },
+  {
+    "sha": "5a272aab467a726beffb6c91edee7c123ef8dc28",
+    "headline": "[ci][wip] Break up lint step",
+    "body": "This part of CI fails most often and dependably, plus we need several\nmachines for the following build steps anyways so there's no harm in\nparallelizing the lint more to decrease runtime",
+    "author": "driazati",
+    "date": "2022-08-29T22:25:41Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12640/3/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8081415773?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081420942?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081421037?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081421122?check_suite_focus=true"
+      }
+    ],
+    "pr": 12640,
+    "pr_title": "[ci][wip] Break up lint step"
+  },
+  {
     "sha": "afec355fa15c226bafb0e4ae9e3f7ca19c56d808",
     "headline": "remove template",
     "body": "",
@@ -18,7 +96,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8080316004?check_suite_focus=true"
       },
       {
@@ -33,8 +111,7 @@
       }
     ],
     "pr": 12618,
-    "pr_title": "[TVMScript] support float inf, -inf and nan in TVMScript parser and printer",
-    "updated_at": 1661810754.682196
+    "pr_title": "[TVMScript] support float inf, -inf and nan in TVMScript parser and printer"
   },
   {
     "sha": "81b477aa4fc4c42f889fdec1a8064916f90bcf57",
@@ -60,12 +137,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8080237832?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8080237996?check_suite_focus=true"
       },
       {
@@ -106,12 +183,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8080140762?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8080140942?check_suite_focus=true"
       }
     ],
@@ -237,7 +314,7 @@
     "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
-    "sha": "afeef6f8f3a076715c0f8ae55b651d3bc332a67a",
+    "sha": "d1d3f4bee8d63ba900ab60396f0c17979d044e1a",
     "headline": "[MetaSchedule] Introduce `MergedDatabase`",
     "body": "Following up #12520 and #12626, this PR introduces `MergedDatabase`,\nwhich allow users to compose multiple databases so that the high-level\nIR could select the best tuning records among them.\n\nThe `MergedDatabase` also comes with an extra field `preferred` to allow\nusers to override tuning records from other databases. A classic usecase\nof the `preferred` parameter is through handcrafted schedule functions:\n\n```python\ndef schedule_fn(sch: tir.Schedule) -> bool:\n  if \"nn_conv2d\" in sch.mod.attrs[\"task_name\"]:\n    handcrafted_scheduling(sch)\n    return True\n  return False\n\nwith ms.database.MergedDatabase(\n  preferred=ms.database.ScheduleFn(schedule_fn),\n  # ^^^^ override scheduling decisions\n  databases=[database],\n  fallback=libtorch_database,\n  # ^^^^ fallback to libtorch\n):\n  lib = relay.build(...)\n```",
     "author": "junrushao",
@@ -245,28 +322,38 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12628/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12628/4/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8075809671?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8081361225?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8075818428?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8075818620?check_suite_focus=true"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081361461?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081361602?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081361734?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8075818778?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8081413150?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8081413154?check_suite_focus=true"
       }
     ],
     "pr": 12628,
@@ -444,12 +531,12 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12622/display/redirect"
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12622/5/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8080822474?check_suite_focus=true"
       },
       {
@@ -584,7 +671,7 @@
     "pr_title": "[TVMScript] support float inf, -inf and nan in TVMScript parser and printer"
   },
   {
-    "sha": "bc0fab27fd2c718da800095f5b7a7b7aed550ac4",
+    "sha": "ebbc184305ddafc0a52fe85a1b95f657fb49b27f",
     "headline": "[CI] Update Hexagon image to install boost (#12613)",
     "body": "The new image has xgboost installed, which I need for https://github.com/apache/tvm/pull/12587\n\nValidated in https://ci.tlcpack.ai/blue/organizations/jenkins/tvm/detail/ci-docker-staging/279/pipeline",
     "author": "masahi",
@@ -592,28 +679,28 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12609/5/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12609/6/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081131555?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081131694?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8081131803?check_suite_focus=true"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8045697196?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8045697311?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8045697387?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8045697451?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8081131548?check_suite_focus=true"
       }
     ],
     "pr": 12609,
@@ -3029,47 +3116,6 @@
     "pr_title": "[TIR] Expose Vector-related API in Python"
   },
   {
-    "sha": "7c801e0eab154ff07e9e8f25524a96673e38e63d",
-    "headline": "[CI] Set test python.contrib.test_onnx.test_resize as xfail",
-    "body": "`python.contrib.test_onnx.test_resize` is failing due to a numerical\naccuracy issue, reported in #12567. This patch marks that test as\nan xfail, so that other tests can be enabled, while this one is\ninvestigated separately.\n\nChange-Id: I313e5d4853fff126c607f6cb93259552b1b078b8",
-    "author": "leandron",
-    "date": "2022-08-24T08:04:43Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12568/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7990837593?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7990846056?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7990846320?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7990846514?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7995045167?check_suite_focus=true"
-      }
-    ],
-    "pr": 12568,
-    "pr_title": "[CI][ONNX] Set test python.contrib.test_onnx.test_resize as xfail"
-  },
-  {
     "sha": "a4b00ebc5972089e549173e9593fa9ba8bfc7f1c",
     "headline": "Change default printing of buffer.",
     "body": "",
@@ -3128,57 +3174,6 @@
     "jobs": [],
     "pr": 12577,
     "pr_title": "[F2QI] Fix a rounding error on AvgPool when input and output affine scales differ"
-  },
-  {
-    "sha": "a27aff081391a459b873da730dd6404eeaa75a0b",
-    "headline": "[microNPU] Remove xfail from tests relating to #12511",
-    "body": "Simply removes tests previously marked as xfail since the issue has\nnow been resolved.\n\nChange-Id: If4d3c2fd336a1c94c308b2aba5abbc237d631a32",
-    "author": "lhutton1",
-    "date": "2022-08-23T16:18:41Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12570/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7992164659?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7992164668?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7992165099?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7992165361?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/7992165588?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/7992534599?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8012089819?check_suite_focus=true"
-      }
-    ],
-    "pr": 12570,
-    "pr_title": "[microNPU] Remove xfail from tests relating to #12511"
   },
   {
     "sha": "ea7a9701a6454998784b0d70e90f56ef20a9145a",
@@ -3333,7 +3328,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12574/12/display/redirect"
       },
       {
