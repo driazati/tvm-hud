@@ -39,7 +39,7 @@
     ],
     "pr": 12658,
     "pr_title": "[Frontend][Paddle] Fix op in paddle did't transmit layout information",
-    "updated_at": 1661928420.550952
+    "updated_at": 1661930929.190803
   },
   {
     "sha": "b20440078a579f9d0692ced5d8434e815e25eac0",
@@ -277,7 +277,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8107067106?check_suite_focus=true"
       },
       {
@@ -1328,36 +1328,46 @@
     "pr_title": "[TVMScript] TIR Printer: LetStmt and others"
   },
   {
-    "sha": "a2b9ee14932f1d52c31d4bfda4ab0519765038a4",
-    "headline": "[MetaSchedule] Introduce `MergedDatabase`",
-    "body": "Following up #12520 and #12626, this PR introduces `MergedDatabase`,\nwhich allow users to compose multiple databases so that the high-level\nIR could select the best tuning records among them.\n\nThe `MergedDatabase` also comes with an extra field `preferred` to allow\nusers to override tuning records from other databases. A classic usecase\nof the `preferred` parameter is through handcrafted schedule functions:\n\n```python\ndef schedule_fn(sch: tir.Schedule) -> bool:\n  if \"nn_conv2d\" in sch.mod.attrs[\"task_name\"]:\n    handcrafted_scheduling(sch)\n    return True\n  return False\n\nwith ms.database.MergedDatabase(\n  preferred=ms.database.ScheduleFn(schedule_fn),\n  # ^^^^ override scheduling decisions\n  databases=[database],\n  fallback=libtorch_database,\n  # ^^^^ fallback to libtorch\n):\n  lib = relay.build(...)\n```",
+    "sha": "370d247130305fa50291dfcc470bd0922e7c8167",
+    "headline": "[MetaSchedule] `Union` and `OrderedUnion` Database",
+    "body": "Following up #12520 and #12626, this PR introduces two database classes:\n`UnionDatabase` and `OrderedUnionDatabase`, both of which allow users to\norganically compose multiple databases together, so that the high-level\nIR (Relay, Relax) could select the best tuning records according to\nrunning time or a preferred order given by users.\n\nTo each query, `UnionDatabase` returns the best record among all the\ndatabases given; Instead, `OrderedUnionDatabase` returns he record from\nthe first database that responds to the query.\n\nUsed together, users may specify complicated dispatching patterns like\nbelow:\n\n```python\ndef schedule_fn(sch: tir.Schedule) -> bool:\n  if \"nn_conv2d\" in sch.mod.attrs[\"task_name\"]:\n    if some_other_tir_conditions(sch.mod):\n      handcrafted_scheduling(sch)\n      return True\n  return False\n\nwith ms.database.OrderedUnionDatabase(\n  ms.database.ScheduleFn(schedule_fn),  # hand-override some scheduling\n  ms.database.Union(                    # existing databases\n    db_for_matmul,\n    db_for_conv2d,\n    db_for_softmax,\n  )\n  libtorch_database,                    # fallback to libtorch\n):\n  lib = relay.build(...)\n```",
     "author": "junrushao",
     "date": "2022-08-28T00:36:54Z",
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12628/7/display/redirect"
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12628/9/display/redirect"
       },
       {
-        "name": "CI / Android",
-        "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/8107320791?check_suite_focus=true"
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/8107876173?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
         "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/8107320912?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8107880194?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8107880369?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
         "status": "pending",
-        "url": "https://github.com/apache/tvm/runs/8107321055?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8107880526?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8107879072?check_suite_focus=true"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8107320909?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8107880975?check_suite_focus=true"
       }
     ],
     "pr": 12628,
