@@ -1,5 +1,47 @@
 [
   {
+    "sha": "5264dd8b63e080dce97ca813c39bd9e0e41dd61a",
+    "headline": "dequantize op hexagon",
+    "body": "",
+    "author": "aakaverm",
+    "date": "2022-09-01T20:01:42Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12677/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8144032743?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8144033673?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8144033079?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8144033241?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8144033395?check_suite_focus=true"
+      }
+    ],
+    "pr": 12677,
+    "pr_title": "[HEXAGON] [TOPI] Dequantize",
+    "updated_at": 1662062788.609589
+  },
+  {
     "sha": "8bcaba26641fe40bfda0a07e458f51a5b00fdb7e",
     "headline": "[hexagon][tests] re-enable maxpool hardware test",
     "body": "- Re-enable test_max_pool2d_slice.py when run on Hexagon\n  hardware (as opposed to hexagon-sim).\n\n  This is now safe because https://github.com/apache/tvm/issues/11928\n  has been fixed.",
@@ -38,8 +80,7 @@
       }
     ],
     "pr": 12676,
-    "pr_title": "[hexagon][tests] re-enable maxpool hardware test",
-    "updated_at": 1662058920.747771
+    "pr_title": "[hexagon][tests] re-enable maxpool hardware test"
   },
   {
     "sha": "12bba285db0ed4f52fc1c8e6ee4b9eb3a92b4905",
@@ -2453,10 +2494,15 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "neutral",
         "url": "https://github.com/apache/tvm/runs/8127677427?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8143046203?check_suite_focus=true"
       }
     ],
     "pr": 12647,
-    "pr_title": "Define memory_info for global.texture*"
+    "pr_title": "[Adreno] Define memory_info for global.texture*"
   },
   {
     "sha": "6f9a6697a44890d24c7fa68aa587e37bfc38aa9f",
@@ -2567,46 +2613,51 @@
     "pr_title": "[TVMScript] TIR Printer: AttrStmt and Allocate"
   },
   {
-    "sha": "cc5f1f0aa9cd466e945b6937e155dd946ada8dac",
+    "sha": "10d019226bd657167a3bddf802c5ed29cd406e98",
     "headline": "[MetaSchedule] `Union` and `OrderedUnion` Database",
-    "body": "Following up #12520 and #12626, this PR introduces two database classes:\n`UnionDatabase` and `OrderedUnionDatabase`, both of which allow users to\norganically compose multiple databases together, so that the high-level\nIR (Relay, Relax) could select the best tuning records according to\nrunning time or a preferred order given by users.\n\nTo each query, `UnionDatabase` returns the best record among all the\ndatabases given; Instead, `OrderedUnionDatabase` returns he record from\nthe first database that responds to the query.\n\nUsed together, users may specify complicated dispatching patterns like\nbelow:\n\n```python\ndef schedule_fn(sch: tir.Schedule) -> bool:\n  if \"nn_conv2d\" in sch.mod.attrs[\"task_name\"]:\n    if some_other_tir_conditions(sch.mod):\n      handcrafted_scheduling(sch)\n      return True\n  return False\n\nwith ms.database.OrderedUnionDatabase(\n  ms.database.ScheduleFn(schedule_fn),  # hand-override some scheduling\n  ms.database.Union(                    # existing databases\n    db_for_matmul,\n    db_for_conv2d,\n    db_for_softmax,\n  )\n  libtorch_database,                    # fallback to libtorch\n):\n  lib = relay.build(...)\n```",
+    "body": "Following up #12520 and #12626, this PR introduces two database classes:\n`UnionDatabase` and `OrderedUnionDatabase`, both of which allow users to\norganically compose multiple databases together, so that the high-level\nIR (Relay, Relax) could select the best tuning records according to\nrunning time or a preferred order given by users.\n\nTo each query, `UnionDatabase` returns the best record among all the\ndatabases given; Instead, `OrderedUnionDatabase` returns he record from\nthe first database that responds to the query.\n\nUsed together, users may specify complicated dispatching patterns like\nbelow:\n\nExamples below demonstrate the usecases of and difference between\nUnionDatabase and OrderDatabase.\n\nAssumption:\n* db1, db2 do not have tuning records for the target workload.\n* Each of db3, db4, db5 has tuning records r3, r4, r5 for target\nworkload respectively.\n\n```python\n#### Case 1. `UnionDatabase`:\nmerged_db = ms.database.UnionDatabase(\n    db1, # no record\n    db2, # no record\n    db3, # has r3\n    db4  # has r4\n)\n# returns the better one between r3 and r4\nmerged_db.query_tuning_record(..., target_workload)\n\n### Case 2. `OrderedUnionDatabase`\nmerged_db = ms.database.OrderedUnionDatabase(\n    db1, # no record\n    db2, # no record\n    db3, # has r3\n    db4  # has r4\n)\n# returns r3\nmerged_db.query_tuning_record(..., target_workload)\n\n### Case 3. Mix-use scenario\nmerged_db = ms.database.UnionDatabase(\n    db1, # no record\n    db2, # no record\n    db3, # has r3\n    ms.database.OrderedUnionDatabase( # returns r4\n        db4,  # has r4\n        db5,  # has r5\n    )\n)\n# returns the better one between r3 and r4\nmerged_db.query_tuning_record(..., target_workload)\n\n### Case 4. Another mix-use scenario\nmerged_db = ms.database.UnionDatabase(\n    db1, # no record\n    db2, # no record\n    db3, # has r3\n    ms.database.UnionDatabase( # returns the better one between r4 and r5\n        db4,  # has r4\n        db5,  # has r5\n    )\n)\n# returns the best one among r3, r4 and r5\nmerged_db.query_tuning_record(..., target_workload)\n\n### Case 5. Yet another mix-use scenario\nmerged_db = ms.database.OrderedUnionDatabase(\n    db1, # no record\n    db2, # no record\n    ms.database.UnionDatabase( # returns the better one between r3 and r4\n        db3, # has r3\n        db4, # has r4\n    )\n    db5,  # has r5\n)\n# returns the better one between r3 and r4\nmerged_db.query_tuning_record(..., target_workload)\n```\n\nCo-authored-by: sunggg <49998730+sunggg@users.noreply.github.com>",
     "author": "junrushao",
     "date": "2022-08-28T00:36:54Z",
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12628/11/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12628/15/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8124432172?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8124432321?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8124432393?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8143871299?check_suite_focus=true"
       },
       {
         "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8143873335?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8143873445?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8143873535?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/8143876255?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/runs/8143875810?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
         "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8124432459?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/8137993221?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/8141415423?check_suite_focus=true"
+        "url": "https://github.com/apache/tvm/runs/8143879634?check_suite_focus=true"
       }
     ],
     "pr": 12628,
@@ -2999,47 +3050,6 @@
     ],
     "pr": 12614,
     "pr_title": "[BYOC] Integrate CSI-NN2 and add unit test for Conv2D"
-  },
-  {
-    "sha": "2f3d60477acf5ba38e3c6440b1436bd78d3ba69a",
-    "headline": "[ci] Add bot to post welcome comment",
-    "body": "This would post the comment that the tests bot and the docs comment bot\nuses straightaway when a PR is posted. This will contain links to\ngeneric info about posting PRs (and obviate the\n`.github/PULL_REQUEST_TEMPLATE.md`) as well as dynamic info about the\nspecific PR (filled in later by the respective bots). This would make\nthings like the auto-cc bot more transparent since it would have a link\nto the relevant issue.",
-    "author": "driazati",
-    "date": "2022-08-26T05:27:43Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12612/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8044161903?check_suite_focus=true"
-      },
-      {
-        "name": "welcome-bot / run-welcome-bot",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/runs/8044162145?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8044168133?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8044168250?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8044168400?check_suite_focus=true"
-      }
-    ],
-    "pr": 12612,
-    "pr_title": "[ci] Add bot to post welcome comment"
   },
   {
     "sha": "02c0eb7e9fd6cd1f26027781cb036a24d1a8b1d2",
