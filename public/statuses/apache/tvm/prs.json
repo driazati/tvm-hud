@@ -1,5 +1,47 @@
 [
   {
+    "sha": "bdf9b5796ecb1e98148ae8733af50bf2ec935241",
+    "headline": "[Runtime][Bugfix] Added type-checking for Array::insert",
+    "body": "Prior to this commit, the following code would compile and run without\nerror.  This occurs because the typed `Array<T>::insert` calls the\nuntyped `ArrayNode::InitRange`, with no type-checking done before the\ncall.\n\n```c++\nVar x(\"x\");\nVar y(\"y\");\nArray<Var> var_arr{x, y};\nArray<PrimExpr> expr_arr{x + 1, y + 2};\n// Erroneously inserts static-type PrimExpr, runtime-type Add, even\n// though neither PrimExpr is a type of Var.\nvar_arr.insert(var_arr.begin(), expr_arr.begin(), expr_arr.end());\n```\n\nAfter this commit, a `static_assert` in `Array<T>::insert` and in\n`Array<T>::Array(IterType,IterTYpe)` restricts the iterators, such\nthat they must dereference to `T`, `Optional<T>`, a subclass of `T`,\nor `Optional<U>` where `U` is a subclass of `T`.\n\nThe public method `ArrayNode::SetItem` exposes a similar issue.  In\nthe future, we may want to make it be private, accessed only through\ntype-safe method in `Array<T>::Set`.",
+    "author": "Lunderberg",
+    "date": "2022-09-02T17:44:46Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12691/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8161664130?check_suite_focus=true"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8161664133?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8161664401?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8161664525?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8161664609?check_suite_focus=true"
+      }
+    ],
+    "pr": 12691,
+    "pr_title": "[Runtime][Bugfix] Added type-checking for Array::insert",
+    "updated_at": 1662142104.149412
+  },
+  {
     "sha": "823527c2379be47015592aefc6649e8840d787b7",
     "headline": "[Hexagon] Fix test_parallel_hvx_load_vtcm.py test output to be human \u2026",
     "body": "\u2026readable.",
@@ -43,8 +85,7 @@
       }
     ],
     "pr": 12667,
-    "pr_title": "[Hexagon] Create tests to showcase vtcm loading capabilities on Hexagon. ",
-    "updated_at": 1662138783.76938
+    "pr_title": "[Hexagon] Create tests to showcase vtcm loading capabilities on Hexagon. "
   },
   {
     "sha": "c0659cc119b90cb59174f51a1c826ae73cc453a6",
@@ -65,7 +106,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12688/1/display/redirect"
       },
       {
@@ -3319,57 +3360,6 @@
     ],
     "pr": 12665,
     "pr_title": "[TVMScript] TIR Printer: AttrStmt and Allocate"
-  },
-  {
-    "sha": "4f8f52def9106a0d88df820ead1fafe02dcaf6fe",
-    "headline": "[Utils] Handled Callable in tir.schedule._type_checker",
-    "body": "Previously, `Callable` was handled as an atomic type.  This worked\nwhen it was included as last element of a `Union[]` annotation with no\nsubtypes, but raised an error for other use cases, including\n`Optional[Callable]`.\n\nThis commit adds explicit checks for `Callable` type annotations to\nvalidate whether the argument is callable, but doesn't recursively\nvalidate the signature of the callable object, because lambda\nfunctions cannot have type\nannotations. (https://peps.python.org/pep-3107/#lambda)",
-    "author": "Lunderberg",
-    "date": "2022-08-25T14:45:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12633/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8072205665?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8072205644?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8072206166?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8072206346?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8072206548?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8080146110?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/8080360838?check_suite_focus=true"
-      }
-    ],
-    "pr": 12633,
-    "pr_title": "[Utils] Handled Callable in tir.schedule._type_checker"
   },
   {
     "sha": "26256052639107c5826f48a31812accdcee133bc",
