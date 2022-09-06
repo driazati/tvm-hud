@@ -35,11 +35,57 @@
         "name": "CI / Windows",
         "status": "pending",
         "url": "https://github.com/apache/tvm/runs/8207619476?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/8208044312?check_suite_focus=true"
       }
     ],
     "pr": 12712,
     "pr_title": "[Build] Update C++ standard to C++17 for AOT, iOS, VTA",
-    "updated_at": 1662471221.567791
+    "updated_at": 1662473443.173059
+  },
+  {
+    "sha": "ff515633a432e37ee2d3615fe4706e14ecbf3c9b",
+    "headline": "[TVMC] Run module once by default",
+    "body": "Currently executing `tvmc run module.tar` will run the input model\ntwice. For benchmaking this is to be expected as the first run is used\nto prime caches etc before taking a measurement. However, this seems a\nbit unintuitive to have as default, especially when benchmarking is not\nalways intended. In this sense, this commit aims to amend the\nnumber of runs for the default: `tvmc run module.tar` to a single run.\n\nAfter inspection, this seems to be down to the use of the `.benchmark()`\nmethod which runs (1 + repeat * number) executions in total. This means\nthat at least two runs are required (i.e. when repeat=1, number=1). It\nalso seems that it is only necessary to benchmark the model when\n`--print-time` has been set from the CLI POV. From the python interface\nPOV, benchmarking is always run, but this may not always be necessary.\n\nThis commit makes use of the `.run()` method to singularly execute the\nmodel by default. From the CLI this will be used when `--print-time` is\nset to False whereas from the python interface this will be used when\n`benchmark=False`. Otherwise, the `.benchmark()` method will be used\nas before. Complementary to this change `repeat`, `number` and\n`end_to_end` parameters are only used when either `--print-time` or\n`benchmark` are set to True - and the documentation has been updated to\nindicate this.\n\nChange-Id: I18a38a9d430d660264f7fce5caf0779aa059fed3",
+    "author": "lhutton1",
+    "date": "2022-09-06T12:50:25Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12713/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8208706336?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8208706334?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8208706847?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "queued",
+        "url": "https://github.com/apache/tvm/runs/8208707161?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8208707366?check_suite_focus=true"
+      }
+    ],
+    "pr": 12713,
+    "pr_title": "[TVMC] Run module once by default"
   },
   {
     "sha": "706c3cbb37446dc6e95be1fa0865630e495a05bc",
@@ -331,8 +377,8 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12674/4/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12674/5/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -351,7 +397,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "queued",
+        "status": "pending",
         "url": "https://github.com/apache/tvm/runs/8207964944?check_suite_focus=true"
       }
     ],
@@ -946,6 +992,11 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/runs/8158640904?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/8208312334?check_suite_focus=true"
       }
     ],
     "pr": 12689,
@@ -1561,42 +1612,6 @@
     "pr_title": "[hexagon][tests] re-enable maxpool hardware test"
   },
   {
-    "sha": "12bba285db0ed4f52fc1c8e6ee4b9eb3a92b4905",
-    "headline": "Strip DeclBuffer annotation in FlattenBuffer",
-    "body": "The DeclBuffer annotations aren't yet supported in all passes.  This\nrestricts them to being introduced in LowerOpaqueBuffer, then\nimmediately removed in FlattenBuffer.",
-    "author": "Lunderberg",
-    "date": "2022-09-01T15:55:04Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12652/8/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8139654286?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8139654797?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8139654965?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8139655116?check_suite_focus=true"
-      }
-    ],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
-  },
-  {
     "sha": "00bdc832916212a51fc43521c1becccf1b5398b6",
     "headline": "[ETHOSN] Fix some more pylint issues",
     "body": "Fixing a few more pylint issues caught when using pylint==2.9.3 locally.\n\nChange-Id: Ie7ca61e1a8083a40e0ffccf1418192966884707a",
@@ -1646,16 +1661,6 @@
     ],
     "pr": 12675,
     "pr_title": "[ETHOSN] Fix some more pylint issues"
-  },
-  {
-    "sha": "ea0a87ada70e640102cd2c8864ee0877787f60f7",
-    "headline": "Update LowerOpaqueBuffer to expect the DeclBuffer nodes",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-09-01T15:21:45Z",
-    "jobs": [],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
   },
   {
     "sha": "99a8b6b345f4732166b6a72cdb3451083e543a65",
@@ -2173,52 +2178,6 @@
     "pr_title": "[TIR][StorageRewrite] Allow in-place buffer reuse of non-flat memory"
   },
   {
-    "sha": "aaa47b825fde6a9fe348eaf6e35fe7b2456fca6c",
-    "headline": "Fix usage of T.decl_buffer in updated tests",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-08-31T16:56:12Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12652/7/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8118835492?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8118844466?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8118844692?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8118844821?check_suite_focus=true"
-      }
-    ],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
-  },
-  {
-    "sha": "82ac543149a9824d40ccef5166d2452283f4223f",
-    "headline": "Merge branch 'main' into swap_loweropaqueblock_flattenbuffer",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-08-31T16:53:33Z",
-    "jobs": [],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
-  },
-  {
     "sha": "17a7e954951ed222c0c652188edfac38a9574d18",
     "headline": "Cleanup",
     "body": "",
@@ -2258,216 +2217,6 @@
     ],
     "pr": 12664,
     "pr_title": "Add methods to get and set late-bound constants."
-  },
-  {
-    "sha": "2bf7bf280766170f262b8b10326cc4545b4ff8d1",
-    "headline": "Use T.allocate in unit tests",
-    "body": "With the insertion of `DeclBuffer` nodes, `LowerOpaqueBlock` no longer\nneeds to be before `FlattenBuffer`, and has been moved back to its\noriginal position.  Revering the tests to use `T.allocate` instead of\n`T.alloc_buffer` more closely represents the functions as they are\nbeing lowered.",
-    "author": "Lunderberg",
-    "date": "2022-08-31T16:27:33Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12652/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8118381709?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8118389103?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8118389305?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8118389562?check_suite_focus=true"
-      }
-    ],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
-  },
-  {
-    "sha": "97fcb29a294ad61d52086bc6b2d012009d0b9093",
-    "headline": "Use DeclBuffer information in FlattenBuffer",
-    "body": "The DeclBuffer node can be inserted during LowerOpaqueBlock, then\nprovide the missing Buffer information required to flatten the\nallocation.",
-    "author": "Lunderberg",
-    "date": "2022-08-31T16:03:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12652/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8117931555?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8117944608?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8117944842?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8117945043?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8118036842?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8118036871?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8118081517?check_suite_focus=true"
-      }
-    ],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
-  },
-  {
-    "sha": "a4b7573dfff9d6c2135bc979db977bdb262bacbf",
-    "headline": "Update incorrect docstring for test",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-08-31T15:10:31Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12652/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8116783123?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116783791?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116784063?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116784286?check_suite_focus=true"
-      }
-    ],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
-  },
-  {
-    "sha": "6bc203cce637dc744d5741d3b544753dc5c13c7b",
-    "headline": "Explicitly write T.reads for test on BufferRegion updates",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-08-31T15:05:13Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12652/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116664812?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/8116664846?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116673167?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116673449?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116673664?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/8116779036?check_suite_focus=true"
-      }
-    ],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
-  },
-  {
-    "sha": "b123adb1202e88d13e9b0e49ef6aed6841ff1257",
-    "headline": "Add unit test to validate non-flat memory after tvm.lower",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2022-08-31T14:51:39Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12652/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8116363220?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116363568?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116363823?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/runs/8116364055?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/8116624473?check_suite_focus=true"
-      }
-    ],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
   },
   {
     "sha": "37bf72abc0226329d8acf68ea839cf0172ba7d2b",
@@ -2867,57 +2616,6 @@
     ],
     "pr": 12687,
     "pr_title": "[PROFILING] Add max_repeat_ms arg to the time evaluator"
-  },
-  {
-    "sha": "841b2a9ef6b937f4785e6f5486caeefc67c953a5",
-    "headline": "[TIR] Moved tir.FlattenBuffer to occur before tir.LowerOpaqueBlock",
-    "body": "For buffers with more than one physical axis, the `axis_separators`\nare required in order to know which groups of logical axes to fuse\ninto each physical axis.  The implementation in `tir.FlattenBuffer`\nassumed that all buffers were being flattened to a single physical\naxis.  Because `tir.LowerOpaqueBlock` replaces the\n`BlockNode::alloc_buffers` with `Allocate` nodes, `tir.FlattenBuffer`\nno longer has access to the axis separators and performs inconsistent\nflattening for `Allocate` as opposed to `BufferLoad`/`BufferStore`.\nThis was introduced in https://github.com/apache/tvm/pull/12172, which\ndecoupled the lowering/flattening steps.\n\nThe commit reorders the `tir.FlattenBuffer` to occur before\n`tir.LowerOpaqueBlock`, to make use of the axis separators.  Any\n`Allocate` nodes that exist at that point (e.g. from hand-written\nschedules) are still flattened to 1-d physical buffers, but the\n`BlockNode::alloc_buffers` are flattened according to the axis\nseparators.",
-    "author": "Lunderberg",
-    "date": "2022-08-30T14:56:03Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12652/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8096988399?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8096988530?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8096988858?check_suite_focus=true"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8096989037?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8096989226?check_suite_focus=true"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8100752739?check_suite_focus=true"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/runs/8104596722?check_suite_focus=true"
-      }
-    ],
-    "pr": 12652,
-    "pr_title": "[TIR] Handle axis_separators during FlattenBuffer"
   },
   {
     "sha": "0972920aa5db6e702546e186e3d5c1319abcda00",
