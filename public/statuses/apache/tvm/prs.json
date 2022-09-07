@@ -1,5 +1,47 @@
 [
   {
+    "sha": "fcb6cc9f11da5a9686d654a9ec774c66d4043552",
+    "headline": "[TIR][Fix] Handle iter vars in block predicate for SHash/SEqual",
+    "body": "When lowering a non-opaque TIR block to an opaque block in\n`tir.transform.ConvertBlocksToOpaque`, the iter vars in\n`BlockNode::iter_vars` are replaced by their values in\n`BlockRealizeNode::iter_values` wherever they occur in `BlockRealize`.\nHowever, prior to this commit, the `BlockRealizeNode::predicate` was\nvisited before the variable definition of `BlockNode::iter_vars`.  As\na result, StructuralHash and StructuralEqual would treat any\noccurrences as undefined variables, which is inconsistent with how\nthey are handled in `ConvertBlocksToOpaque`.\n\nThis commit resolves the inconsistency by changing the visit order\nsuch that `BlockRealizeNode::block` is visited before\n`BlockRealizeNode::predicate`.",
+    "author": "Lunderberg",
+    "date": "2022-09-07T15:38:30Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12724/1/display/redirect"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8232118945?check_suite_focus=true"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/runs/8232118970?check_suite_focus=true"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8232119366?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8232119545?check_suite_focus=true"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/runs/8232119752?check_suite_focus=true"
+      }
+    ],
+    "pr": 12724,
+    "pr_title": "[TIR][Fix] Handle iter vars in block predicate for SHash/SEqual",
+    "updated_at": 1662566826.070766
+  },
+  {
     "sha": "c46304307913324b9342dae6d574f16e846d3140",
     "headline": "Removed debug code",
     "body": "",
@@ -18,28 +60,32 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8229626962?check_suite_focus=true"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8229627177?check_suite_focus=true"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/runs/8229627375?check_suite_focus=true"
       },
       {
         "name": "tvm-bot / run-tvm-bot",
         "status": "neutral",
         "url": "https://github.com/apache/tvm/runs/8229638013?check_suite_focus=true"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/runs/8232140310?check_suite_focus=true"
       }
     ],
     "pr": 12720,
-    "pr_title": "[TIR] Implement API for padded layout transformations",
-    "updated_at": 1662563107.672722
+    "pr_title": "[TIR] Implement API for padded layout transformations"
   },
   {
     "sha": "5a1e63fe5f571d2d69c094874d0dbc135b1c4b7c",
@@ -2926,42 +2972,6 @@
     ],
     "pr": 12664,
     "pr_title": "Add methods to get and set late-bound constants."
-  },
-  {
-    "sha": "37bf72abc0226329d8acf68ea839cf0172ba7d2b",
-    "headline": "[Hexagon] Validate 2-d physical shapes for TIR-derived schedules",
-    "body": "Previously, the test cases only tested TE-based schedules.  This\ncommit runs the same tests for equivalent TIR-based schedules as\nwell.  This is intended to catch Hexagon-specific regressions, such as\nthe one resolved in https://github.com/apache/tvm/pull/12652.",
-    "author": "Lunderberg",
-    "date": "2022-08-31T14:41:29Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12662/2/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8120331555?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8120331793?check_suite_focus=true"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8120332100?check_suite_focus=true"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/runs/8120323238?check_suite_focus=true"
-      }
-    ],
-    "pr": 12662,
-    "pr_title": "[Hexagon] Validate 2-d physical shapes for TIR-derived schedules"
   },
   {
     "sha": "2a8d90acd9c532770c09f6b8f9632291855d3986",
