@@ -1,6 +1,750 @@
 [
   {
-    "sha": "aaa6411329a54891aed10bea29c5e6323210b9f7",
+    "sha": "98798c709efee7fc74c436115a828e14621a80e0",
+    "headline": "Also remap VarNode to USMP-allocated buffer.",
+    "body": " * Fixes cases where a USMP buffer is used with tensorization\n   intrinsics. In these cases, the buffer data var is referenced\n   directly in the call_extern args.\n\nBefore this patch, ConvertPoolAllocationsToOffsets would generate TIR\nlike the following:\n\n  let dense_let: Pointer(global int32) = @tir.address_of(global_workspace_37_buffer_var[69952], dtype=handle)\n  for (k.outer: int32, 0, 64) {\n    @tir.call_extern(\"gemm_1x1x1_update_UKVNAEBL\", ..., dense, ...)\n  }\n\n  T_multiply[ax1] = @tir.q_multiply_shift(((dense: Buffer(dense_let,\n      int32, [10], [], align=32)[ax1], ...)\n\nThis caused CodegenSourceBase to later fail with this error:\n  \"src/target/source/codegen_source_base.cc\", line 67\n  Check failed: (it != var_idmap_.end()) is false: Find undefined\n    Variable dense\n\nAfter this patch, \"dense\" in the call_extern is changed to read \"dense_let.\"",
+    "author": "areusch",
+    "date": "2022-09-23T02:06:17Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12880/1/display/redirect"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3110035168/jobs/5040818381"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3110035172/jobs/5040818391"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110035181/jobs/5040818435"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110035181/jobs/5040818492"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110035181/jobs/5040818585"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3110036012/jobs/5040820105"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3110036019/jobs/5040820367"
+      }
+    ],
+    "pr": 12880,
+    "pr_title": "[usmp] Also remap VarNode to USMP-allocated buffer",
+    "updated_at": 1663910122.989619
+  },
+  {
+    "sha": "edd1f16548dca876f8f83c5a3d14feae3599a8b0",
+    "headline": "[Runtime] Release temp param buffer after creating graph executor.",
+    "body": "",
+    "author": "xuzhi",
+    "date": "2022-09-23T01:47:23Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12881/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110091066/jobs/5040922762"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110091078/jobs/5040922740"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110091109/jobs/5040922839"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110091109/jobs/5040922881"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110091109/jobs/5040922938"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110217069/jobs/5041188225"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110217071/jobs/5041188221"
+      }
+    ],
+    "pr": 12881,
+    "pr_title": "[Runtime] Release temp param buffer after creating graph executor"
+  },
+  {
+    "sha": "32dcd02ae53d50d15edd866ab98153cf08c7534f",
+    "headline": "[TIR] Fix wmma index in CUDA tensor intrins",
+    "body": "",
+    "author": "vinx13",
+    "date": "2022-09-22T23:16:12Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12879/1/display/redirect"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109380715/jobs/5039544723"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109380718/jobs/5039544582"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109380795/jobs/5039544874"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109380795/jobs/5039544943"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109380795/jobs/5039545001"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3109516390/jobs/5039790807"
+      }
+    ],
+    "pr": 12879,
+    "pr_title": "[TIR] Fix wmma index in CUDA tensor intrins"
+  },
+  {
+    "sha": "8d79e61cb3bf1d84631200b98383e9dc71fc0cde",
+    "headline": "Update multi_level_tiling_with_intrin.cc",
+    "body": "",
+    "author": "vinx13",
+    "date": "2022-09-22T22:26:52Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12875/5/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109152880/jobs/5039109564"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109152919/jobs/5039114912"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109152919/jobs/5039115019"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109152919/jobs/5039115100"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3110237438/jobs/5041226494"
+      }
+    ],
+    "pr": 12875,
+    "pr_title": "[TIR] Allow missing TensorIntrin in registry lookup"
+  },
+  {
+    "sha": "f334af5a8f9de5b061ad73851932d441727322d1",
+    "headline": "Merge branch 'main' into feat/tensor-intrin-get-allow-missing",
+    "body": "",
+    "author": "vinx13",
+    "date": "2022-09-22T21:40:07Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12875/4/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108922821/jobs/5038639182"
+      },
+      {
+        "name": "CI / Android",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/3108922866/jobs/5038644580"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/3108922866/jobs/5038644661"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108922866/jobs/5038644754"
+      }
+    ],
+    "pr": 12875,
+    "pr_title": "[TIR] Allow missing TensorIntrin in registry lookup"
+  },
+  {
+    "sha": "1f200a644dddac362b4941e61fa38094d8132e22",
+    "headline": "add test",
+    "body": "",
+    "author": "vinx13",
+    "date": "2022-09-22T21:36:54Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12875/3/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108906307/jobs/5038605841"
+      }
+    ],
+    "pr": 12875,
+    "pr_title": "[TIR] Allow missing TensorIntrin in registry lookup"
+  },
+  {
+    "sha": "90344adb3c332e0ed66cc63fc0c1642e7678f40a",
+    "headline": "Update include/tvm/tir/function.h",
+    "body": "Co-authored-by: Junru Shao <junrushao1994@gmail.com>",
+    "author": "vinx13",
+    "date": "2022-09-22T21:25:43Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12875/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108848111/jobs/5038485527"
+      },
+      {
+        "name": "CI / Android",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108848135/jobs/5038485606"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108848135/jobs/5038485802"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108848135/jobs/5038485941"
+      }
+    ],
+    "pr": 12875,
+    "pr_title": "[TIR] Allow missing TensorIntrin in registry lookup"
+  },
+  {
+    "sha": "5de9518492b032fd11905061deb3fdbf9b7c5c40",
+    "headline": "change to using CMake add_library()",
+    "body": "",
+    "author": "alanmacd",
+    "date": "2022-09-22T20:52:05Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12851/8/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108659394/jobs/5038097581"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108659518/jobs/5038097903"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108659518/jobs/5038098024"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108659518/jobs/5038098144"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108661527/jobs/5038101587"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108661533/jobs/5038102102"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108663550/jobs/5038106196"
+      }
+    ],
+    "pr": 12851,
+    "pr_title": "[microTVM][Windows] Enable building TVM on Windows with USE_MICRO"
+  },
+  {
+    "sha": "07d3084f883edfcd5d45590a4292fc1776c16197",
+    "headline": "[LLVM] Emit fp16/fp32 builtins directly into target module",
+    "body": "For conversions between _Float16 and float, LLVM uses runtime functions\n`__extendhfsf2` and `__truncsfhf2`.  On X86 up until version 14, LLVM used\n`uint16_t` for representing `_Float16`. Starting with LLVM 15, half-\nprecision values can be passed in XMM registers (i.e. as floating-point).\nThis happens when the compilation target has SSE2 enabled (either directly,\nor by enabling a feature that implies SSE2).\nBecause the names of the conversion functions remain unchanged, it is\nimpossible for TVM to provide them in the runtime, and have them work in\nboth cases. To solve this issue, emit these functions directly into the\ntarget module after detecting whether or not to use floating-point ABI.\nTo allow the linker to remove potential duplicates (or if they are unused),\nthey are weak and reside in a separate section.",
+    "author": "kparzysz-quic",
+    "date": "2022-09-22T20:00:55Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12877/7/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109857672/jobs/5040470795"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109857701/jobs/5040473385"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3109857701/jobs/5040473431"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/3109857701/jobs/5040473464"
+      }
+    ],
+    "pr": 12877,
+    "pr_title": "[LLVM] Emit fp16/fp32 builtins directly into target module"
+  },
+  {
+    "sha": "b7e165ece41cdf20ab3ac04397518d7bd09df407",
+    "headline": "* trigger build",
+    "body": "",
+    "author": "srkreddy1238",
+    "date": "2022-09-22T19:04:15Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12833/13/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108053022/jobs/5036828515"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108053057/jobs/5036828524"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108053057/jobs/5036828693"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3108053057/jobs/5036828858"
+      }
+    ],
+    "pr": 12833,
+    "pr_title": "[DOCKER][Adreno]Docker infra for Adreno target with CLML support"
+  },
+  {
+    "sha": "835f137e1a34526993413f9293979d04a7aa166e",
+    "headline": "Fix clang warnings",
+    "body": "",
+    "author": "vinx13",
+    "date": "2022-09-22T18:27:29Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12876/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107837677/jobs/5036380181"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107837683/jobs/5036380188"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107837778/jobs/5036380496"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107837778/jobs/5036380644"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107837778/jobs/5036380782"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3107905001/jobs/5036519578"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3108593911/jobs/5037958561"
+      }
+    ],
+    "pr": 12876,
+    "pr_title": "Fix clang warnings"
+  },
+  {
+    "sha": "e5f4f1500441f7266ea15ab96d13cff03cb4aca0",
+    "headline": "lint",
+    "body": "",
+    "author": "alanmacd",
+    "date": "2022-09-22T17:51:17Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12851/7/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107612535/jobs/5035914902"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107612602/jobs/5035921196"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107612602/jobs/5035921323"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107612602/jobs/5035921442"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108518294/jobs/5037805237"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108518297/jobs/5037805260"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3108543150/jobs/5037859404"
+      }
+    ],
+    "pr": 12851,
+    "pr_title": "[microTVM][Windows] Enable building TVM on Windows with USE_MICRO"
+  },
+  {
+    "sha": "30a48ffc764e1bf95accecf46336afd6b255168f",
+    "headline": "update docs",
+    "body": "",
+    "author": "vinx13",
+    "date": "2022-09-22T17:29:31Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12864/6/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107481598/jobs/5035639963"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107481693/jobs/5035640200"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107481693/jobs/5035640319"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107481693/jobs/5035640466"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3108479300/jobs/5037721776"
+      }
+    ],
+    "pr": 12864,
+    "pr_title": "[TOPI] Add layer norm operator"
+  },
+  {
+    "sha": "a820ab9dfd0807ce08b5b535521f926ec8b12094",
+    "headline": "[Relay] Fix handling of TransfromLayout in TE compiler cache",
+    "body": "",
+    "author": "vinx13",
+    "date": "2022-09-22T17:12:30Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12874/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107390408/jobs/5035440889"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107390415/jobs/5035440901"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107390551/jobs/5035441323"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107390551/jobs/5035441484"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107390551/jobs/5035441645"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3107922946/jobs/5036559211"
+      }
+    ],
+    "pr": 12874,
+    "pr_title": "[Relay] Fix handling of TransfromLayout in TE compiler cache"
+  },
+  {
+    "sha": "edd199402906a6e9be7c9c34d69f0a8039b9a961",
+    "headline": "Remove nullptr default on Impl unique_ptr",
+    "body": "In g++ 7, defining a default constructor attempts to define the\ndestructor, which fails because `Impl` is an incomplete type.  As far\nas I should tell, the destructor should only be defined at the point\nwhere `~TransitiveComparisonAnalyzer` is defined, at which point\n`Impl` has a full definition.  This issue does not occur in g++ 10.",
+    "author": "Lunderberg",
+    "date": "2022-09-22T17:04:51Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12863/4/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107353764/jobs/5035359020"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107353867/jobs/5035359357"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107353867/jobs/5035359558"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107353867/jobs/5035359692"
+      }
+    ],
+    "pr": 12863,
+    "pr_title": "[TIR][Arith] Prove conditionals by transitively applying knowns"
+  },
+  {
+    "sha": "9fa7f0b478c6c05f1b4fc7950d39f354909af579",
+    "headline": "move ssize.h to an easier-to-use location; remove unused code;",
+    "body": "",
+    "author": "alanmacd",
+    "date": "2022-09-22T16:43:45Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12851/6/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107306764/jobs/5035264547"
+      },
+      {
+        "name": "CI / Android",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3107306854/jobs/5035270596"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3107306854/jobs/5035270727"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3107306854/jobs/5035270901"
+      }
+    ],
+    "pr": 12851,
+    "pr_title": "[microTVM][Windows] Enable building TVM on Windows with USE_MICRO"
+  },
+  {
+    "sha": "88018672464a5a35e83cb03bf31a291652d1a34c",
+    "headline": "Float and quantized dense operators with schedules",
+    "body": "",
+    "author": "joshherr-quic",
+    "date": "2022-09-22T15:23:18Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12873/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106758056/jobs/5034033457"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106758058/jobs/5034033422"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106758144/jobs/5034033795"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106758144/jobs/5034033913"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106758144/jobs/5034034053"
+      }
+    ],
+    "pr": 12873,
+    "pr_title": "[Hexagon] Float and quantized dense operators with schedules"
+  },
+  {
+    "sha": "af3ed923991ecd0de89cec38eb3604f9672cc763",
+    "headline": "* review comments",
+    "body": "",
+    "author": "srkreddy1238",
+    "date": "2022-09-22T14:31:45Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12833/12/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106957135/jobs/5034475677"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106957514/jobs/5034485133"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106957514/jobs/5034485375"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106957514/jobs/5034485637"
+      }
+    ],
+    "pr": 12833,
+    "pr_title": "[DOCKER][Adreno]Docker infra for Adreno target with CLML support"
+  },
+  {
+    "sha": "6da6943980b6cb9eb067bd2c3e8fb799c97fe268",
     "headline": "support aten::zero_ operator",
     "body": "",
     "author": "chengven027-intellif",
@@ -8,41 +752,35 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12872/1/display/redirect"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105234257/jobs/5030601325"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12872/2/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105234265/jobs/5030601483"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105234282/jobs/5030601729"
+        "url": "https://github.com/apache/tvm/actions/runs/3110004461/jobs/5040759173"
       },
       {
         "name": "CI / MacOS",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105234282/jobs/5030601874"
+        "url": "https://github.com/apache/tvm/actions/runs/3110004553/jobs/5040759336"
       },
       {
         "name": "CI / Android",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105234282/jobs/5030602091"
+        "url": "https://github.com/apache/tvm/actions/runs/3110004553/jobs/5040759389"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3110004553/jobs/5040759437"
       }
     ],
     "pr": 12872,
-    "pr_title": "[frontend][pytorch]support aten::zero_ operator",
-    "updated_at": 1663856201.205689
+    "pr_title": "[frontend][pytorch]support aten::zero_ operator"
   },
   {
-    "sha": "fddeec199055e7d367740f94d3e10dc79dfb29bb",
+    "sha": "65c5f8e40b37042dcd512800f97a18399c69970e",
     "headline": "Support aten::Tensor_split operator",
     "body": "",
     "author": "chengven027-intellif",
@@ -51,37 +789,27 @@
       {
         "name": "tvm-ci/pr-head",
         "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12871/5/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12871/6/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105151732/jobs/5030427463"
+        "url": "https://github.com/apache/tvm/actions/runs/3110045199/jobs/5040836709"
       },
       {
         "name": "CI / Android",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105151854/jobs/5030432628"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105151854/jobs/5030432746"
+        "url": "https://github.com/apache/tvm/actions/runs/3110045229/jobs/5040836816"
       },
       {
         "name": "CI / Windows",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105151854/jobs/5030432879"
+        "url": "https://github.com/apache/tvm/actions/runs/3110045229/jobs/5040836864"
       },
       {
-        "name": "PR / cc-reviewers",
+        "name": "CI / MacOS",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105235989/jobs/5030605351"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3105235991/jobs/5030605215"
+        "url": "https://github.com/apache/tvm/actions/runs/3110045229/jobs/5040836912"
       }
     ],
     "pr": 12871,
@@ -97,7 +825,7 @@
       {
         "name": "tvm-ci/pr-head",
         "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12866/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12866/3/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -369,42 +1097,6 @@
     "pr_title": "[TOPI] Fix dtype legalize logic for CPU dot product instruction"
   },
   {
-    "sha": "014fa3b23f20e8a636b65e99812cf3d40fa7ae8d",
-    "headline": "change build.extra_flags to be empty when no flag added",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-21T21:28:48Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/16/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3101568703/jobs/5023066009"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3101568774/jobs/5023070066"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3101568774/jobs/5023070154"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3101568774/jobs/5023070220"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
     "sha": "d2219a7117fb012c6c6d6d59cc1219178530c90d",
     "headline": "lint",
     "body": "",
@@ -487,151 +1179,22 @@
     "pr_title": "[TOPI] Add layer norm operator"
   },
   {
-    "sha": "f4a90981f51eb33b57cde1f6fc0414158fbd1b8b",
-    "headline": "address comments, refactor two more options",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-21T20:12:17Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "5e267d747856e1b5d9db651377e5c5763071eecd",
+    "sha": "9ea3f1137bb96d127a1881e93bcc77e6068a18b1",
     "headline": "Change mutable reference to mutable pointer",
     "body": "",
     "author": "Lunderberg",
     "date": "2022-09-21T19:10:47Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12863/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3100449957/jobs/5020745502"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3100450022/jobs/5020751014"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3100450022/jobs/5020751171"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3100450022/jobs/5020751296"
-      }
-    ],
+    "jobs": [],
     "pr": 12863,
     "pr_title": "[TIR][Arith] Prove conditionals by transitively applying knowns"
   },
   {
-    "sha": "ee11374a390ce2a8c4db2b41726c5356e0b78a00",
-    "headline": "lint",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-21T18:02:11Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/14/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3100045671/jobs/5019878452"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3100045806/jobs/5019884768"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3100045806/jobs/5019884950"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3100045806/jobs/5019885077"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3100202164/jobs/5020216167"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3100809328/jobs/5021494048"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "4c921e3ff5bf4e157e35eb33384c54cc604dc9ad",
-    "headline": "address comments",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-21T17:43:47Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/13/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3099955054/jobs/5019696959"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "ddcedffad8a265238ec14fd7920ed6d7ccaae452",
+    "sha": "5d416f4d83a0b94ec05074a7a54d58d02b86d2a6",
     "headline": "[TIR][Arith] Prove conditionals by transitively applying knowns",
     "body": "This commit adds a new sub-analyzer, `TransitiveComparisonAnalyzer`,\nwhich attempts to apply multiple known comparisons to prove an\nunknown.  For example, `a <= b` and `b <= c` imply that `a <= c`.\nThese simplifications are necessary for simplifying conditionals\nresulting from padded layout\ntransformations (https://github.com/apache/tvm/issues/12261).\n\nWhile some of these conditions may be proven using\n`ConstIntBoundAnalyzer` or `IntSetAnalyzer`, each has some\nlimitations.  `ConstIntBoundAnalyzer` can only compare against a\nconstant, `IntSetAnalyzer` internally calls `RewriteSimplifier` which\ncan result in infinite recursion, and neither can handle not-equal\nconditions because it would require tracking multiple intervals per\nexpression.  Therefore, introducing a new sub-analyzer for these\nsimplifications.",
     "author": "Lunderberg",
     "date": "2022-09-21T17:32:49Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12863/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3099971900/jobs/5019732327"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3099971902/jobs/5019732343"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3099971902/jobs/5019732513"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3099971902/jobs/5019732654"
-      }
-    ],
+    "jobs": [],
     "pr": 12863,
     "pr_title": "[TIR][Arith] Prove conditionals by transitively applying knowns"
   },
@@ -1047,7 +1610,7 @@
       }
     ],
     "pr": 12851,
-    "pr_title": "[microTVM] initial version building TVM on windows with USE_MICRO enabled"
+    "pr_title": "[microTVM][Windows] Enable building TVM on Windows with USE_MICRO"
   },
   {
     "sha": "a96774e98009a239f575d75db32035364f51f3e0",
@@ -1093,7 +1656,7 @@
       }
     ],
     "pr": 12851,
-    "pr_title": "[microTVM] initial version building TVM on windows with USE_MICRO enabled"
+    "pr_title": "[microTVM][Windows] Enable building TVM on Windows with USE_MICRO"
   },
   {
     "sha": "a221bf8a89f7b8bba5bc5a829b00fa7429dcea32",
@@ -1170,7 +1733,7 @@
       }
     ],
     "pr": 12851,
-    "pr_title": "[microTVM] initial version building TVM on windows with USE_MICRO enabled"
+    "pr_title": "[microTVM][Windows] Enable building TVM on Windows with USE_MICRO"
   },
   {
     "sha": "75df910d58955e3e072bb3c5bc84afd293f232c9",
@@ -1373,7 +1936,7 @@
     "pr_title": "[skip ci] Revert \"[ci] Lint PR title/body for @ tags (#12840)\""
   },
   {
-    "sha": "7dad442b764dacbd935839132589cad60a0355d4",
+    "sha": "06abb55dbb3ee5617a295591f884dd61f959e801",
     "headline": "[CMSIS-NN] This change reduced the code size of AOT test runner binar\u2026",
     "body": "\u2026y for CMSIS-NN flow.\n\nPresently, integration tests for CMSIS-NN generate\nbinaries which includes all the CMSIS-NN kernels sources.\nThis fix introduces additional compilation and runtime\nknobs to pick kernel sources for which TVM has generated\nthe code.\n\nChange-Id: Id222ca0d32222882a7a9c6f47bafea281f578c43",
     "author": "ashutosh-arm",
@@ -1382,27 +1945,27 @@
       {
         "name": "tvm-ci/pr-head",
         "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12846/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12846/3/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3091627737/jobs/5001930624"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3091627884/jobs/5001931798"
+        "url": "https://github.com/apache/tvm/actions/runs/3106903879/jobs/5034362656"
       },
       {
         "name": "CI / Android",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3091627884/jobs/5001932011"
+        "url": "https://github.com/apache/tvm/actions/runs/3106904037/jobs/5034363069"
       },
       {
         "name": "CI / MacOS",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/3091627884/jobs/5001932223"
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106904037/jobs/5034363215"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3106904037/jobs/5034363340"
       }
     ],
     "pr": 12846,
@@ -1649,47 +2212,6 @@
     "pr_title": "Fix a typo in rpc/client.py"
   },
   {
-    "sha": "3c476d110077fde833a030e762455c91d54bef28",
-    "headline": "add cmsis support",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-19T23:29:15Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/12/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3086394041/jobs/4990698332"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3086394142/jobs/4990699947"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3086394142/jobs/4990700017"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3086394142/jobs/4990700083"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3088767383/jobs/4995630597"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
     "sha": "dd2bf9cff71af77814f367e265df841c2344d316",
     "headline": "correct name for Summary.cmake",
     "body": "",
@@ -1888,52 +2410,6 @@
     ],
     "pr": 12839,
     "pr_title": "[BUILD] Re-enable ccache by default"
-  },
-  {
-    "sha": "0fdef7c8ec6908e079af6dfd582b4017324c20ce",
-    "headline": "fix flash and build command",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-19T21:34:50Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/10/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3085792441/jobs/4989483115"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3085792439/jobs/4989484732"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3085792439/jobs/4989484861"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3085792439/jobs/4989484972"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3086367529/jobs/4990647075"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/3086367528/jobs/4990647073"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
   },
   {
     "sha": "841b6b64e6522afd48db33523e035d697b9969fc",
@@ -2571,52 +3047,6 @@
     "pr_title": "[Hybrid] Fix sys version check"
   },
   {
-    "sha": "e73de0f997887966386743987a25d3a3ceab7799",
-    "headline": "fix test",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-19T17:24:12Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/8/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3084354409/jobs/4986407052"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3084354557/jobs/4986407329"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3084354557/jobs/4986407452"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3084354557/jobs/4986407563"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "38319712011d81aafb3548ccdb095172cf9257bc",
-    "headline": "fix test, add board to makefile",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-19T17:04:53Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
     "sha": "2fce354ecf0df3e72d8508fdc7fab21fb2a11d76",
     "headline": "Method without SMLAD",
     "body": "",
@@ -2888,42 +3318,6 @@
     "pr_title": "Fix caffe, boost install in Python venvs by creating python3.X link"
   },
   {
-    "sha": "81c3b190e9752539e117aa015a270ef2800e8c42",
-    "headline": "fix flash command",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T21:46:54Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/7/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3071032349/jobs/4961379576"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3071032349/jobs/4961379629"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3071032349/jobs/4961379675"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3071032359/jobs/4961357956"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
     "sha": "40774f29aa584653a6283c734a753e663f78bd9d",
     "headline": "Tests",
     "body": "",
@@ -2968,47 +3362,6 @@
     ],
     "pr": 12827,
     "pr_title": "[TIR] Support pattern matching argmax/argmin generated by TOPI"
-  },
-  {
-    "sha": "0bc7aad15a117d5ba8e83745514b46fcca0f2340",
-    "headline": "Add mypy checks",
-    "body": "",
-    "author": "cyx-6",
-    "date": "2022-09-16T21:44:48Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12815/7/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070915299/jobs/4961122156"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070915300/jobs/4961123510"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070915300/jobs/4961123606"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070915300/jobs/4961123684"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3071626634/jobs/4962477104"
-      }
-    ],
-    "pr": 12815,
-    "pr_title": "[TVMScript] IRBuilder methods for `Block`"
   },
   {
     "sha": "e09ae693c23c537279dfb0c60edfdbf4171ed872",
@@ -3116,57 +3469,6 @@
     ],
     "pr": 12826,
     "pr_title": "[TOPI][Hexagon] Add schedule and test for maxpool uint8 layout"
-  },
-  {
-    "sha": "d6452f4c68c2613594e1e48966d55b10aba5d71f",
-    "headline": "Use ThreadScope and StorageScope",
-    "body": "",
-    "author": "MasterJH5574",
-    "date": "2022-09-16T21:06:49Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12819/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070739104/jobs/4960772602"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070739170/jobs/4960776469"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070739170/jobs/4960776608"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070739170/jobs/4960776706"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3070741433/jobs/4960777818"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3071188393/jobs/4961648598"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3073473970/jobs/4965626224"
-      }
-    ],
-    "pr": 12819,
-    "pr_title": "[BugFix][TIR] Fix Buffer LCA Detector"
   },
   {
     "sha": "e2e262a7955c7cd36fa25335a4657f59b8afe4a0",
@@ -3363,42 +3665,6 @@
     "pr_title": "[do not review] test"
   },
   {
-    "sha": "8a8f3f68c5955752171c5101f4f921034a325ff1",
-    "headline": "fix test",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T20:27:10Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070543851/jobs/4960375939"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070543954/jobs/4960379434"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070543954/jobs/4960379551"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3070543954/jobs/4960379666"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
     "sha": "f989802dcd3bd2c62ebd1ecf47b3b99cfc4627d0",
     "headline": "[Utils] Move constructor for tvm::With",
     "body": "Previously, `tvm::With` had the default compiler-provided move\nconstructors.  If these were used (e.g. by storing a `With` into a\nvector), the `ExitWithScope` would be called multiple times.  This\ncommit explicitly removes the copy constructor/assignment, and\nexplicitly implements move constructor/assignment.",
@@ -3481,337 +3747,6 @@
     "pr_title": "[TOPI][Hexagon] Implement quantize op for hexagon"
   },
   {
-    "sha": "7c423bdbcbabdbf9064768628ab6dd2142edba32",
-    "headline": "[BugFix][TIR] Fix Buffer LCA Detector",
-    "body": "Prior to this PR, the LCA detector of buffers in TIR didn't take buffer memory scopes and GPU hierarchy into consideration. An consequent issue is that, when an intermediate buffer is in global memory, TIR's lowering passes don't necessarily allocated the intermediate buffer outside all `blockIdx`. As a result, the global intermediate buffer is allocated under a GPU thread block, which is illegal.\n\nThis PR fixes this issue by fixing the LCA detector, making it be aware of the buffer memory scopes and GPU hierarchy. With this fix, the global intermediate buffers are all allocated outside `blockIdx`.",
-    "author": "MasterJH5574",
-    "date": "2022-09-16T18:36:34Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12819/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070026626/jobs/4959325674"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070026625/jobs/4959325663"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3070026754/jobs/4959325939"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070026754/jobs/4959326027"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070026754/jobs/4959326149"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3070179276/jobs/4959642152"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3070275814/jobs/4959832272"
-      }
-    ],
-    "pr": 12819,
-    "pr_title": "[BugFix][TIR] Fix Buffer LCA Detector"
-  },
-  {
-    "sha": "0981a737fb234fbe42d7328f3bf3ad6156d8da13",
-    "headline": "lint",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T18:16:42Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12818/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3070511402/jobs/4960310369"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3070511533/jobs/4960311527"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3070511533/jobs/4960311622"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3070511533/jobs/4960311723"
-      }
-    ],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "8d28673fe9b24cf8368039a1a4aef0cb6ebb5629",
-    "headline": "lint and test added",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T18:13:52Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "9fcb658db7fbc399ff03aef13518e41c68b02ccb",
-    "headline": "lint",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T17:17:15Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "96855c98ea404a4a77b45b4086a734429b043e80",
-    "headline": "cleanup",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T17:13:49Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "19815e6aa131a91ef12670503be1ee94b0ce873d",
-    "headline": "add arduino-cli flag option",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T17:06:11Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "66a68eee82e1e362de7067d86a51b87c39bbcfcc",
-    "headline": "fixed flash command",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T16:43:48Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "63560c6ca62075c93739b0e4772dff9e7fdfb6f8",
-    "headline": "[BugFix][LLVM] Fix the bug that the generated systemlib cannot regist\u2026",
-    "body": "\u2026er '__tvm_module_ctx' symbol sometimes.",
-    "author": "yanghaku",
-    "date": "2022-09-16T14:37:53Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12817/2/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068707925/jobs/4956495279"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068707926/jobs/4956495277"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068708029/jobs/4987625243"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068708029/jobs/4987625378"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068708029/jobs/4987625531"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068731568/jobs/4956546867"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068731576/jobs/4956546851"
-      }
-    ],
-    "pr": 12817,
-    "pr_title": "[BugFix][LLVM] Fix the bug that the generated systemlib cannot register ```__tvm_module_ctx``` symbol sometimes"
-  },
-  {
-    "sha": "310f74cb9d457106c06f9048c34533695eea4d8f",
-    "headline": "[TIR][Bugfix] Correct handling of buffer argument when scheduling",
-    "body": "Follow-up from https://github.com/apache/tvm/pull/11269, which allowed\nschedule arguments of the buffer to be transformed to be specified as\na string, or as a `tir::Buffer`.  The string handling worked\ncorrectly, but the `tir::Buffer` object was handled incorrectly.  This\ncommit corrects the handling of `tir::Buffer` arguments when\nscheduling, and adds a unit test to validate this behavior.",
-    "author": "Lunderberg",
-    "date": "2022-09-16T13:57:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12816/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068391156/jobs/4955797998"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068391160/jobs/4955798149"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068391205/jobs/4955798285"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068391205/jobs/4955798435"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3068391205/jobs/4955798668"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3084568582/jobs/4986866733"
-      }
-    ],
-    "pr": 12816,
-    "pr_title": "[TIR][Bugfix] Correct handling of buffer argument when scheduling"
-  },
-  {
-    "sha": "47685a34e64145964e4bf8caca409c1409bc8942",
-    "headline": "[TVMScript] IRBuilder methods for `Block`",
-    "body": "This PR introduces remaining IRBuilder methods for `Block`.\n\nCo-authored-by: yongwww <yongcale@gmail.com>",
-    "author": "cyx-6",
-    "date": "2022-09-16T12:05:07Z",
-    "jobs": [],
-    "pr": 12815,
-    "pr_title": "[TVMScript] IRBuilder methods for `Block`"
-  },
-  {
-    "sha": "19f43fa943659cafea6a13deeaba50f9f9fa0ae0",
-    "headline": "Fix random state fork in TuneContext Clone function.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-09-16T05:20:32Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12811/1/display/redirect"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3065584529/jobs/4949828212"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3065584530/jobs/4949828206"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3065584553/jobs/4949828331"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3065584553/jobs/4949828370"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3065584553/jobs/4949828427"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3065584907/jobs/4949829409"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3065584906/jobs/4949829211"
-      }
-    ],
-    "pr": 12811,
-    "pr_title": "[MetaSchedule][Minor]Fix Random State Fork in TuneContext Clone Function"
-  },
-  {
-    "sha": "6a599771f6db6859c4ebb3f30445a71ddc18c2b9",
-    "headline": "[ci] Fix docs push",
-    "body": "This was missing a repo checkout and failing as in\nhttps://ci.tlcpack.ai/blue/organizations/jenkins/tvm/detail/main/4302/pipeline.\nThis also adds in the changes from #12719:\n\nFixes #12600. The original solution there doesn't actually fix the\nissue, there would need to be some job queue that could make sure to\nreject old pushes. Since this case is pretty rare, generally the next\ncommit that comes along and builds will fix everything up so we can\nignore failures that happen on `push`es.",
-    "author": "driazati",
-    "date": "2022-09-16T04:31:48Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12810/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3069076115/jobs/4957298843"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3069076184/jobs/4957299106"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3069076184/jobs/4957299260"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3069076184/jobs/4957299383"
-      }
-    ],
-    "pr": 12810,
-    "pr_title": "[ci] Fix docs push"
-  },
-  {
     "sha": "dcfabb1b237cd08a4033c6112fa6dc94eb7fab5e",
     "headline": "[DOCKER][Adreno] Docker infra for Adreno target with CLML support",
     "body": "New docker for Adreno that inherits gpu docker and amends android-sdk.\n\nFor CLML, we need to specify ADRENO_OPENCL via environment variable. CLML SDK can be downlaoded\nfrom Qualcomm Developer Network by following\nhttps://developer.qualcomm.com/blog/accelerate-your-models-our-opencl-ml-sdk\nAdreno device is shared with host, hence networking is enabled for Adreno Docker.",
@@ -3846,97 +3781,6 @@
     ],
     "pr": 12833,
     "pr_title": "[DOCKER][Adreno]Docker infra for Adreno target with CLML support"
-  },
-  {
-    "sha": "e9cff724fcc7ceb331de9adda3c55adf0e4acb3a",
-    "headline": "add makefile for arduino",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-16T00:54:54Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "aaeb8841e2e1d44b560f6b3a5d97784e5d217b68",
-    "headline": "Fix for import requests and import caffe failures",
-    "body": "Recently virtual environments were introduced in the docker images.\nIn this fix, link to the caffe is created inside this virtual env\ninstead of being on the system path of python. This fix also removes\nimporting request package where not needed.\n\nChange-Id: Ibadced591f95b93f5bf9bab6faa7d0ddb759e2f7",
-    "author": "ashutosh-arm",
-    "date": "2022-09-15T13:27:06Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12813/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3067031668/jobs/4952876353"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3067031681/jobs/4952876346"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3067031734/jobs/4952876707"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3067031734/jobs/4952876826"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3067031734/jobs/4952876958"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3069091383/jobs/4957332617"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3069092994/jobs/4957336080"
-      }
-    ],
-    "pr": 12813,
-    "pr_title": "Fix for import requests and import caffe failures"
-  },
-  {
-    "sha": "3a185159baf8e2918231e3fe15f256c3b968495d",
-    "headline": "add more options",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-15T05:20:03Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "0906cfadc1ed8737e6ae2a2868fb551719643a1e",
-    "headline": "add updat",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-15T05:16:32Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
-  },
-  {
-    "sha": "ae5ef4ea8aef3b2d59718abbb2f4cc8a4ccb1b1c",
-    "headline": "add default options",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-09-15T00:11:41Z",
-    "jobs": [],
-    "pr": 12818,
-    "pr_title": "[microTVM] Use default Project Options in template projects and add Makefile for Arduino template project"
   },
   {
     "sha": "e621c68d8bd190b48e25bf113a74c9ef720471ed",
@@ -4003,5 +3847,56 @@
     ],
     "pr": 12821,
     "pr_title": "[Arith][TIR] IntSetAnalyzer, delay intersection of IntSet until use"
+  },
+  {
+    "sha": "81f2dcc13936a56a85d588bc4494d3962fdc5941",
+    "headline": "[TIR] Allow missing TensorIntrin in registry lookup",
+    "body": "",
+    "author": "vinx13",
+    "date": "2022-07-19T01:27:56Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12875/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107730845/jobs/5036160083"
+      },
+      {
+        "name": "comment-bot / run-comment-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107730848/jobs/5036160051"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107730886/jobs/5036160258"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107730886/jobs/5036160376"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3107730886/jobs/5036160509"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3107901898/jobs/5036512878"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3107903336/jobs/5036516446"
+      }
+    ],
+    "pr": 12875,
+    "pr_title": "[TIR] Allow missing TensorIntrin in registry lookup"
   }
 ]
