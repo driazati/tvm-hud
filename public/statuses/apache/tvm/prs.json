@@ -1,5 +1,99 @@
 [
   {
+    "sha": "6501fd4a34dce38b4889570310cbcab1ea6602c6",
+    "headline": "Prevent circular fixture references",
+    "body": "",
+    "author": "Lunderberg",
+    "date": "2022-09-28T15:50:36Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12920/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3145002890/jobs/5111741315"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3145002986/jobs/5111741789"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3145002986/jobs/5111742003"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3145002986/jobs/5111742177"
+      }
+    ],
+    "pr": 12920,
+    "pr_title": "[UnitTest][TIR] Support IRModule comparisons in CompareBeforeAfter",
+    "updated_at": 1664381681.108849
+  },
+  {
+    "sha": "e72c2fbe0dff4ea4d58b913c0537a49b527cf150",
+    "headline": "Asserting if sigmoid/vmin/vmax are not generated",
+    "body": "",
+    "author": "quic_rutkoor",
+    "date": "2022-09-28T15:25:35Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12919/3/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3144827929/jobs/5111337817"
+      }
+    ],
+    "pr": 12919,
+    "pr_title": "[HEXAGON][QHL] Clippling the inputs of HVX version of QHL Sigmoid operation"
+  },
+  {
+    "sha": "9154bf14c123c05aa3395ac9f0d8f5598ecc82f3",
+    "headline": "[Arith][IndexMap] Correct MapShape result for small vectorized dims",
+    "body": "Prior to this commit, `IndexMap::MapShape` could produce incorrect\nresults when the split factor is greater than the size of the\ndimension being split.  For example, a buffer of shape `[N]` mapped\ntransformed with `lambda i: [i//4, i%4]` should result in shape\n`[ceildiv(N,4), 4]`.  However, for `N<4`, the transformed shape was\ninstead `[1, N%4]`.  This results in unexpected shapes when attempting\nto prepare a buffer for vectorized access.\n\nThis commit preferentially uses the result of `arith::DetectIterMap`\nto determine the mapped buffer shape, similar to what is done when\ncomputing the inverse.  The old method of `MapShape`, which relied on\n`arith::EvalSet`, is maintained for transformations that aren't\nrecognized by `arith::DetectIterMap`.",
+    "author": "Lunderberg",
+    "date": "2022-09-28T15:21:14Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12927/1/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3144866687/jobs/5111425747"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3144866687/jobs/5111425995"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3144866687/jobs/5111426186"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3144866690/jobs/5111425748"
+      }
+    ],
+    "pr": 12927,
+    "pr_title": "[Arith][IndexMap] Correct MapShape result for small vectorized dims"
+  },
+  {
     "sha": "7ff7811c0360cbab0b44bc41106d62091180dcc7",
     "headline": "[TE] Raise error for non-bijective transformation",
     "body": "This is a fix for a bug introduced in\nhttps://github.com/apache/tvm/pull/12904.  Prior to then, an\nexception was raised when the transformation wouldn't be bijective\nover the transformed buffer's shape.  The PR replaced the bijective\ncheck done as part of `DetectIterMap` with a check done on the\nreturned `padding_predicate`.  However, this check was not equivalent,\nand some transformations could erroneously apply, rather than\nraising an exception as being non-bijective.\n\nThis commit re-enables the bijectivity check in `DetectIterMap`, and\nadds a test case for this behavior.",
@@ -18,23 +112,27 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3144269912/jobs/5110052948"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3144269912/jobs/5110053101"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3144269912/jobs/5110053265"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3145125500/jobs/5112015383"
       }
     ],
     "pr": 12926,
-    "pr_title": "[TE] Raise error for non-bijective transformation",
-    "updated_at": 1664377854.998151
+    "pr_title": "[TE] Raise error for non-bijective transformation"
   },
   {
     "sha": "d4afdbe666c85c95169c06244205d37657494a09",
@@ -45,7 +143,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12925/1/display/redirect"
       },
       {
@@ -55,12 +153,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3144074243/jobs/5109602845"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3144074243/jobs/5109602981"
       },
       {
@@ -510,6 +608,16 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "neutral",
         "url": "https://github.com/apache/tvm/actions/runs/3139252888/jobs/5099469373"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3145027321/jobs/5111795670"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3145064539/jobs/5111880479"
       }
     ],
     "pr": 12914,
@@ -836,6 +944,42 @@
     ],
     "pr": 12914,
     "pr_title": "Add a script to tune and benchmark models from TorchBench"
+  },
+  {
+    "sha": "e3d235ecf2ae92bffcf702eaf3781c0e6e7ab476",
+    "headline": "update resnet hash",
+    "body": "Change-Id: Ia3377b275639e71273fbfe5cfdb2fb5214335987",
+    "author": "lhutton1",
+    "date": "2022-09-27T14:30:33Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12887/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3145009593/jobs/5111755802"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3145009839/jobs/5111756426"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3145009839/jobs/5111756602"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3145009839/jobs/5111756821"
+      }
+    ],
+    "pr": 12887,
+    "pr_title": "[ETHOSN] Support conversion of add/mul to requantize where possible"
   },
   {
     "sha": "5f421fd12e3ecd6689967a8e25022242b18348ec",
@@ -2082,42 +2226,6 @@
     "pr_title": "Initial for lwc"
   },
   {
-    "sha": "1d39bb1eba268d4bfe16c048a23b995e5d2eca4d",
-    "headline": "Change to separate cleaning function.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-09-25T21:16:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12866/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3123705232/jobs/5066537249"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3123705306/jobs/5066537437"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3123705306/jobs/5066537515"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3123705306/jobs/5066537578"
-      }
-    ],
-    "pr": 12866,
-    "pr_title": "[MetaSchedule][UX] User Interface for Jupyter Notebook"
-  },
-  {
     "sha": "37ea43c8fa4e63f3d755870d9966eecfa32f177f",
     "headline": "Added label tags' placeholder",
     "body": "",
@@ -2541,53 +2649,12 @@
     "pr_title": "[Hexagon] [runtime] Add thread manager to resource management"
   },
   {
-    "sha": "e863dbd2af7528278cc6aab26b77142646f74a87",
+    "sha": "0b389e1c997e61aac2249436a3be88f2a68991fd",
     "headline": "[ETHOSN] Support conversion of add/mul to requantize where possible",
     "body": "Add/mul operations that correspond to identity operations can be\nconverted to a simple reinterpret quantize operation. This conversion\ntakes place in the convert equivalents pass similar to the depthwise\ncounter-part.\n\nIn addtion, an issue was noticed that would cause unsupported\noperations to raise an error rather than not being offloaded. This has\nbeen fixed by allowing the conversion to return Null when the conversion\nis not supported.\n\nChange-Id: I7747d499820fa3a9cf0ca72a6d3ff1060b000e9c",
     "author": "lhutton1",
     "date": "2022-09-23T13:11:20Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12887/1/display/redirect"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3113472021/jobs/5048144757"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3113472044/jobs/5048144766"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3113472094/jobs/5048145039"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3113472094/jobs/5048145211"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3113472094/jobs/5048145341"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3128388766/jobs/5076163213"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3134243151/jobs/5088550723"
-      }
-    ],
+    "jobs": [],
     "pr": 12887,
     "pr_title": "[ETHOSN] Support conversion of add/mul to requantize where possible"
   },
@@ -2679,77 +2746,6 @@
     "pr_title": "[Relay] Extend split for blocked ConvertLayout pass"
   },
   {
-    "sha": "10ed1f42af8f73914e2e2895808d35f682873ce1",
-    "headline": "Fix lint.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-09-23T09:05:26Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12866/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3111584497/jobs/5044035252"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3111584629/jobs/5044035597"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3111584629/jobs/5044035812"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3111584629/jobs/5044035998"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3114285161/jobs/5049948950"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3114289555/jobs/5049958573"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3115850278/jobs/5053150554"
-      }
-    ],
-    "pr": 12866,
-    "pr_title": "[MetaSchedule][UX] User Interface for Jupyter Notebook"
-  },
-  {
-    "sha": "6ce0e22dc8236e9b638c7bf15d5832fdf691b1f8",
-    "headline": "Fix test.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-09-23T09:03:09Z",
-    "jobs": [],
-    "pr": 12866,
-    "pr_title": "[MetaSchedule][UX] User Interface for Jupyter Notebook"
-  },
-  {
-    "sha": "1a3f07c14a0a028b318f1ea9a7978e5d79620d3f",
-    "headline": "Enable output clearing for cli.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-09-23T09:02:19Z",
-    "jobs": [],
-    "pr": 12866,
-    "pr_title": "[MetaSchedule][UX] User Interface for Jupyter Notebook"
-  },
-  {
     "sha": "869a8f9591f6b4efaa308c39ad810b5043021b71",
     "headline": "[CI] Add Zephyr-SDK binaries to PATH env. in ci_cortexm",
     "body": "In recent test rounds with updated images, it seems Zephyr-SDK\nbinaries such as various QEMU related files are missing from\n$PATH, which makes Zephyr tests to fail with, e.g.\n\"qemu-system-i386: command not found\".\n\nThis PR adds those missing binaries to $PATH.\n\nCo-Authored-By: Gustavo Romero <Gustavo.Romero@linaro.org>\nChange-Id: I7edf927156182ad3a2b349ae78eeb1243127f0b2",
@@ -2774,16 +2770,6 @@
     ],
     "pr": 12884,
     "pr_title": "[CI] Add Zephyr-SDK binaries to PATH env. in ci_cortexm"
-  },
-  {
-    "sha": "f76afab5fc85cf6d4d027aa9876aa2f5506da1bc",
-    "headline": "Fix workload import warnings.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-09-23T06:36:13Z",
-    "jobs": [],
-    "pr": 12866,
-    "pr_title": "[MetaSchedule][UX] User Interface for Jupyter Notebook"
   },
   {
     "sha": "98798c709efee7fc74c436115a828e14621a80e0",
@@ -3476,57 +3462,6 @@
     "jobs": [],
     "pr": 12867,
     "pr_title": "Lwc"
-  },
-  {
-    "sha": "f0fe41224662f5738cb969c00130f3a48b7dd84e",
-    "headline": "Add features for jupyter notebook.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-09-22T05:55:17Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-12866/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3103165617/jobs/5026196350"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3103165618/jobs/5026196351"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3103165638/jobs/5026196486"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3103165638/jobs/5026196546"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3103165638/jobs/5026196614"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3103197634/jobs/5026262729"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3103197636/jobs/5026262794"
-      }
-    ],
-    "pr": 12866,
-    "pr_title": "[MetaSchedule][UX] User Interface for Jupyter Notebook"
   },
   {
     "sha": "23a665838567c2cc62362bb1f829ba03c8e4bea5",
