@@ -1,5 +1,60 @@
 [
   {
+    "sha": "aedbe45b6aa4651619bc7e93f088e76d03e83cfa",
+    "headline": "[Node] Expose StructuralEqual/Hash handler implemenation to header (#\u2026",
+    "body": "\u202613001)\n\nWhen we use `StructuralEqual/Hash`, the actual equality testing / hashing work are deferred to `RemapVarSEqualHandler` and `VarCountingSHashHandler` class respectively, defined in `.cc` files. To customize equality / hash behavior, I want to be able to derive from these classes outside of `structural_equal.cc` or `structural_hash.cc`. This is the first step toward replacing my previous attempt https://github.com/apache/tvm/pull/12706 to allow ignoring NDArray raw data in `StructuralEqual/Hash`.\r\n\r\nSo I propose to expose them as the \"default\" handler, while still hiding their implementation details. This lets me define a custom hasher that ignores NDArray content simply by:\r\n\r\n```\r\nclass SHashHandlerIgnoreNDArray : public SHashHandlerDefault {\r\n protected:\r\n  void DispatchSHash(const ObjectRef& object, bool map_free_vars) override {\r\n    ICHECK(object.defined());\r\n    if (auto ndarray = object.as<runtime::NDArray::Container>()) {\r\n      SHashReducer hash_reduce(this, map_free_vars);\r\n      NDArrayHash(ndarray, &hash_reduce, false);\r\n    } else {\r\n      SHashHandlerDefault::DispatchSHash(object, map_free_vars);\r\n    }\r\n  }\r\n};\r\n```",
+    "author": "masahi",
+    "date": "2022-10-10T19:49:19Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4467/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3221953066/jobs/5270487889"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3221953066/jobs/5270488029"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3221953066/jobs/5270488161"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3221953588/jobs/5270488979"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3221961809/jobs/5270506688"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3222022131/jobs/5270631343"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3222046233/jobs/5270685754"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3222048147/jobs/5270689942"
+      }
+    ],
+    "updated_at": 1665432837.456244
+  },
+  {
     "sha": "f21b5ca4aedd1cc814f43076d3a5a4bf2c7b516a",
     "headline": "[TIR][Schedule] Add cache_inplace primitive to cache opaque buffer (#\u2026",
     "body": "\u202612939)",
@@ -440,9 +495,38 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3221752496/jobs/5270065019"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3221820909/jobs/5270210514"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3221832930/jobs/5270235281"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3221887331/jobs/5270345480"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3221906123/jobs/5270387475"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3221935931/jobs/5270452063"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3221947770/jobs/5270477037"
       }
-    ],
-    "updated_at": 1665429665.823828
+    ]
   },
   {
     "sha": "d92d47ad7ffcf47c7355cd3f83590b6e241b2420",
@@ -15148,290 +15232,6 @@
         "name": "comment-bot / run-comment-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3108480263/jobs/5037724213"
-      }
-    ]
-  },
-  {
-    "sha": "195ae72b5c6f0df68fac41f7808d125d155a6345",
-    "headline": "[TOPI] Fix dtype legalize logic for CPU dot product instruction (#12865)",
-    "body": "The logic in `python/tvm/topi/generic/conv2d.py#L480-L499` is supposed to legalize the input dtype to be able to apply target-specific intrinsics that only support one of int8 or uint8. For example, the x86 VNNI instruction only supports uint8 activation. \r\n\r\nBut the logic is incorrect (two cases are flipped) and leads to incorrect result in the following case:\r\n\r\n* The input activation is int8, and we want to use the x86 VNNI intrinsic which only supports uint8 activations.\r\n* The input activation is uint8, and we want to use the ARM `sdot` intrinsic which only supports int8 activations.\r\n\r\nThe first case also applies to the Hexagon `vrmpy` intrinsic. I found this bug while testing `vrmpy` conv2d on int8 input.\r\n\r\nTo test this on CI, we need to be running on a cascadelake or ARM v8.2 (with dot product support) instance. I cannot find a way to detect such cpu feature from a python script. `try / catch` doesn't work because the error is raised from LLVM (`LLVM ERROR: Do not know how to split the result of this operator`) that I don't know how to catch. So for now the test is skipped.",
-    "author": "masahi",
-    "date": "2022-09-22T18:26:05Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4356/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107826695/jobs/5036357763"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107826695/jobs/5036357855"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107826695/jobs/5036357995"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107829606/jobs/5036363264"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107830951/jobs/5036366446"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107831157/jobs/5036367065"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107831777/jobs/5036368176"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107834865/jobs/5036374710"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107835944/jobs/5076127240"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107836335/jobs/5036377378"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107837436/jobs/5036379912"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107838533/jobs/5036381856"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107838673/jobs/5036382092"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107838905/jobs/5036382943"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107839418/jobs/5036383958"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107839704/jobs/5036384450"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107840198/jobs/5036385421"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107840232/jobs/5036385875"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107840598/jobs/5036386374"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107840897/jobs/5036387050"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107841069/jobs/5036387721"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107841468/jobs/5036388548"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107841821/jobs/5036389190"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107842230/jobs/5036389805"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107842551/jobs/5036390515"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107842676/jobs/5036391038"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107843038/jobs/5036403777"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107900353/jobs/5036509812"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107900455/jobs/5036510060"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107908974/jobs/5036528705"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107909561/jobs/5036530132"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107911044/jobs/5036533376"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107911322/jobs/5036534005"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107912710/jobs/5036537380"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107915421/jobs/5036543166"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107915939/jobs/5036544033"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107917047/jobs/5036546416"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107917291/jobs/5036546952"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107917458/jobs/5036547452"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107919889/jobs/5036552708"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107920495/jobs/5036553723"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107920914/jobs/5036555009"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107921315/jobs/5036556361"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107924017/jobs/5036562229"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107924835/jobs/5036563661"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107948166/jobs/5036613584"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107957100/jobs/5036633247"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3107957121/jobs/5036633133"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107961871/jobs/5036643285"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107970441/jobs/5036661102"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3107987459/jobs/5036697359"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3107989386/jobs/5036701286"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3108001852/jobs/5036728110"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3108016216/jobs/5076127249"
       }
     ]
   }
