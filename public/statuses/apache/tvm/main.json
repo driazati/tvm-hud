@@ -1,5 +1,40 @@
 [
   {
+    "sha": "48829756e1394df7d3a05d312f0caf7dc322d50a",
+    "headline": "[TIR] Fix the stride calculation in InjectRollingBuffer (#13016)",
+    "body": "This commit modified the calculation of rolling_buffer stride in\r\nInjectRollingBuffer pass, so that the stride is calculated correctly\r\nwhen fractional strides exist.\r\n\r\nThe InjectRollingBuffer pass seems to miscalculate rolling_buffer strides when the bound overlap is large and fractional strides exist.\r\nThe original test case `test_upscale` does not expose this problem because there is no positive bound overlap in the intermediate buffer, so I modified the pass and the test case as well.\r\n\r\nTo demonstrate this change, here is an example:\r\n```\r\n    @T.prim_func\r\n    def pool_1d_upscale(a: T.handle, c: T.handle) -> None:\r\n        # function attr dict\r\n        T.func_attr({\"from_legacy_te_schedule\": True, \"global_symbol\": \"pool_1d_upscale\", \"tir.noalias\": True})\r\n\r\n        B = T.buffer_decl([1, 14], dtype=\"int8\")\r\n        # B = T.match_buffer(b,  [1, 14], dtype=\"int8\")\r\n        A = T.match_buffer(a,  [1, 14], dtype=\"int8\")\r\n        C = T.match_buffer(c,  [1, 24], dtype=\"int8\")\r\n        T.realize(C[0:1, 0:24], \"\")\r\n        for ax0_outer in T.serial(0, 5):\r\n            T.realize(B[0:1, T.floordiv(ax0_outer*5, 2): T.floordiv(ax0_outer*5, 2) + 5], \"\")\r\n            T.attr(B, \"rolling_buffer_scope\", True)\r\n            for ax0 in T.serial(0, 5):\r\n                if T.likely(((T.floordiv(ax0_outer * 5, 2) + ax0) < 14), dtype='bool'):\r\n                    B[0, (T.floordiv(ax0_outer * 5, 2) + ax0)] = A[0, (T.floordiv(ax0_outer * 5, 2) + ax0)]\r\n            for ax0_1 in T.serial(0, 5):\r\n                for rv0 in T.serial(0, 3):\r\n                    if T.likely(((ax0_outer * 5 + ax0_1) < 24), dtype='bool'):\r\n                        C[0, (ax0_outer * 5 + ax0_1)] = T.max(C[0, (ax0_outer * 5) + ax0_1], B[0, (T.floordiv((ax0_outer * 5) + ax0_1, 2) + rv0)])\r\n\r\n```\r\nThe rolling_buffer stride computed at `inject_rolling_buffer.cc:137` would always be overwritten by the assignment on `inject_rolling_buffer.cc:156`, leat to bound_overlaps to be computed as {0, 0}.\r\nAfter pass InjectRollingBuffer, the IR becomes as below, each overlapping element is recomputed.\r\n\r\n```\r\n    @T.prim_func\r\n    def pool_1d_upscale(A: T.Buffer[(1, 14), \"int8\"], C: T.Buffer[(1, 24), \"int8\"]) -> None:\r\n        # function attr dict\r\n        T.func_attr({\"from_legacy_te_schedule\": True, \"global_symbol\": \"pool_1d_upscale\", \"tir.noalias\": True})\r\n        # buffer definition\r\n        B = T.buffer_decl([1, 14], dtype=\"int8\")\r\n        # body\r\n        T.realize(C[0:1, 0:24], \"\")\r\n        T.realize(B[0:1, 0:5], \"\")\r\n        for ax0_outer in T.serial(5):\r\n            for ax0 in T.serial(5):\r\n                if T.likely(ax0_outer * 5 // 2 + ax0 < 14, dtype=\"bool\"):\r\n                    B[0, (ax0_outer * 5 // 2 + ax0) % 5] = A[0, ax0_outer * 5 // 2 + ax0]\r\n            for ax0_1, rv0 in T.grid(5, 3):\r\n                if T.likely(ax0_outer * 5 + ax0_1 < 24, dtype=\"bool\"):\r\n                    C[0, ax0_outer * 5 + ax0_1] = T.max(C[0, ax0_outer * 5 + ax0_1], B[0, ((ax0_outer * 5 + ax0_1) // 2 + rv0) % 5])\r\n```\r\n\r\nAfter my modifications , the bound_overlaps would be correctly computed as {0, 2}, the IR becomes as below, which avoids recomputing some elements.\r\n\r\n```\r\n    @T.prim_func\r\n    def pool_1d_upscale(A: T.Buffer[(1, 14), \"int8\"], C: T.Buffer[(1, 24), \"int8\"]) -> None:\r\n        # function attr dict\r\n        T.func_attr({\"from_legacy_te_schedule\": True, \"global_symbol\": \"pool_1d_upscale\", \"tir.noalias\": True})\r\n        # buffer definition\r\n        B = T.buffer_decl([1, 14], dtype=\"int8\")\r\n        # body\r\n        T.realize(C[0:1, 0:24], \"\")\r\n        T.realize(B[0:1, 0:5], \"\")\r\n        for ax0_outer in T.serial(5):\r\n            for ax0 in T.serial(5):\r\n                if T.likely(ax0_outer * 5 // 2 + ax0 < 14, dtype=\"bool\"):\r\n                    # Avoid recomputing some elements\r\n                    if T.likely(ax0_outer < 1 or ax0 >= 2, dtype=\"bool\"):\r\n                        B[0, (ax0_outer * 5 // 2 + ax0) % 5] = A[0, ax0_outer * 5 // 2 + ax0]\r\n            for ax0_1, rv0 in T.grid(5, 3):\r\n                if T.likely(ax0_outer * 5 + ax0_1 < 24, dtype=\"bool\"):\r\n                    C[0, ax0_outer * 5 + ax0_1] = T.max(C[0, ax0_outer * 5 + ax0_1], B[0, ((ax0_outer * 5 + ax0_1) // 2 + rv0) % 5])\r\n```",
+    "author": "liangW-intellif",
+    "date": "2022-10-12T07:08:39Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4480/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3232703950/jobs/5293637431"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3232703950/jobs/5293637573"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3232703950/jobs/5293637724"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232721674/jobs/5293676637"
+      }
+    ],
+    "updated_at": 1665559292.344524
+  },
+  {
     "sha": "a752b74956db5c9201e503d70ddf36977eafdf40",
     "headline": "[Conda] Specify python version in build-environment (#13047)",
     "body": "The current [build-environment.yaml](https://github.com/apache/tvm/blob/main/conda/build-environment.yaml) doesn't specify the python version for `tvm-build` conda environment and as a result, any python version might be selected depending on the available base conda. In my case, the base conda is 3.10 so tvm won't work given [tvm is unsupported for python >= 3.9](https://github.com/apache/tvm/issues/8577).\r\n\r\nTo validate run on `tvm-build` env \r\n\r\n```\r\nconda env update -f conda/build-environment.yaml\r\n```",
@@ -35,9 +70,28 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3232453261/jobs/5293087704"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232575479/jobs/5293357337"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232588461/jobs/5293385516"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232647857/jobs/5293516006"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232672321/jobs/5293569151"
       }
-    ],
-    "updated_at": 1665555952.264246
+    ]
   },
   {
     "sha": "cc235f88a4d1624933965d7b6512f21f4b1d48ef",
@@ -14633,40 +14687,6 @@
         "name": "comment-bot / run-comment-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3125515533/jobs/5069959818"
-      }
-    ]
-  },
-  {
-    "sha": "c8423a6843edec5e85003a33d260f2214fd16c42",
-    "headline": "[Meta Schedule][XGBoost] Update the custom callback function of xgboo\u2026",
-    "body": "\u2026st in meta schedule (#12141)\n\n* update the custom callback function of xgboost\r\n\r\n* fix lint\r\n\r\n* fix ci\r\n\r\n* fix lint\r\n\r\n* add unit test\r\n\r\n* remote unused code\r\n\r\n* fix lint\r\n\r\n* add decorator\r\n\r\n* address comment\r\n\r\n* fix lint\r\n\r\n* address comments\r\n\r\n* fix mypy\r\n\r\n* fix lint\r\n\r\n* remove unused comments\r\n\r\n* address comments\r\n\r\n* Fix xgboost unit test import.\r\n\r\nCo-authored-by: Xiyou Zhou <xiyou@octoml.ai>",
-    "author": "shingjan",
-    "date": "2022-09-26T05:50:20Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4369/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125369714/jobs/5069666947"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125369714/jobs/5069666992"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125369714/jobs/5069667047"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125371274/jobs/5069670204"
       }
     ]
   }
