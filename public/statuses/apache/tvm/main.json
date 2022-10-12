@@ -1,5 +1,50 @@
 [
   {
+    "sha": "b8cfc4ca8257bfb582e8d15ef27c70e53bb2816e",
+    "headline": "[CI] Update Compute Library to v22.08 (#13035)",
+    "body": "This updates Compute Library from v21.11 to v22.08.\r\n\r\nChangelog for this version can be found at:\r\nhttps://arm-software.github.io/ComputeLibrary/v22.08/",
+    "author": "leandron",
+    "date": "2022-10-12T07:58:00Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4481/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3232985307/jobs/5294252685"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3232985307/jobs/5294252869"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3232985307/jobs/5294253064"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232986835/jobs/5294255802"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3233009555/jobs/5294306119"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3233042921/jobs/5294383930"
+      }
+    ],
+    "updated_at": 1665562568.551572
+  },
+  {
     "sha": "48829756e1394df7d3a05d312f0caf7dc322d50a",
     "headline": "[TIR] Fix the stride calculation in InjectRollingBuffer (#13016)",
     "body": "This commit modified the calculation of rolling_buffer stride in\r\nInjectRollingBuffer pass, so that the stride is calculated correctly\r\nwhen fractional strides exist.\r\n\r\nThe InjectRollingBuffer pass seems to miscalculate rolling_buffer strides when the bound overlap is large and fractional strides exist.\r\nThe original test case `test_upscale` does not expose this problem because there is no positive bound overlap in the intermediate buffer, so I modified the pass and the test case as well.\r\n\r\nTo demonstrate this change, here is an example:\r\n```\r\n    @T.prim_func\r\n    def pool_1d_upscale(a: T.handle, c: T.handle) -> None:\r\n        # function attr dict\r\n        T.func_attr({\"from_legacy_te_schedule\": True, \"global_symbol\": \"pool_1d_upscale\", \"tir.noalias\": True})\r\n\r\n        B = T.buffer_decl([1, 14], dtype=\"int8\")\r\n        # B = T.match_buffer(b,  [1, 14], dtype=\"int8\")\r\n        A = T.match_buffer(a,  [1, 14], dtype=\"int8\")\r\n        C = T.match_buffer(c,  [1, 24], dtype=\"int8\")\r\n        T.realize(C[0:1, 0:24], \"\")\r\n        for ax0_outer in T.serial(0, 5):\r\n            T.realize(B[0:1, T.floordiv(ax0_outer*5, 2): T.floordiv(ax0_outer*5, 2) + 5], \"\")\r\n            T.attr(B, \"rolling_buffer_scope\", True)\r\n            for ax0 in T.serial(0, 5):\r\n                if T.likely(((T.floordiv(ax0_outer * 5, 2) + ax0) < 14), dtype='bool'):\r\n                    B[0, (T.floordiv(ax0_outer * 5, 2) + ax0)] = A[0, (T.floordiv(ax0_outer * 5, 2) + ax0)]\r\n            for ax0_1 in T.serial(0, 5):\r\n                for rv0 in T.serial(0, 3):\r\n                    if T.likely(((ax0_outer * 5 + ax0_1) < 24), dtype='bool'):\r\n                        C[0, (ax0_outer * 5 + ax0_1)] = T.max(C[0, (ax0_outer * 5) + ax0_1], B[0, (T.floordiv((ax0_outer * 5) + ax0_1, 2) + rv0)])\r\n\r\n```\r\nThe rolling_buffer stride computed at `inject_rolling_buffer.cc:137` would always be overwritten by the assignment on `inject_rolling_buffer.cc:156`, leat to bound_overlaps to be computed as {0, 0}.\r\nAfter pass InjectRollingBuffer, the IR becomes as below, each overlapping element is recomputed.\r\n\r\n```\r\n    @T.prim_func\r\n    def pool_1d_upscale(A: T.Buffer[(1, 14), \"int8\"], C: T.Buffer[(1, 24), \"int8\"]) -> None:\r\n        # function attr dict\r\n        T.func_attr({\"from_legacy_te_schedule\": True, \"global_symbol\": \"pool_1d_upscale\", \"tir.noalias\": True})\r\n        # buffer definition\r\n        B = T.buffer_decl([1, 14], dtype=\"int8\")\r\n        # body\r\n        T.realize(C[0:1, 0:24], \"\")\r\n        T.realize(B[0:1, 0:5], \"\")\r\n        for ax0_outer in T.serial(5):\r\n            for ax0 in T.serial(5):\r\n                if T.likely(ax0_outer * 5 // 2 + ax0 < 14, dtype=\"bool\"):\r\n                    B[0, (ax0_outer * 5 // 2 + ax0) % 5] = A[0, ax0_outer * 5 // 2 + ax0]\r\n            for ax0_1, rv0 in T.grid(5, 3):\r\n                if T.likely(ax0_outer * 5 + ax0_1 < 24, dtype=\"bool\"):\r\n                    C[0, ax0_outer * 5 + ax0_1] = T.max(C[0, ax0_outer * 5 + ax0_1], B[0, ((ax0_outer * 5 + ax0_1) // 2 + rv0) % 5])\r\n```\r\n\r\nAfter my modifications , the bound_overlaps would be correctly computed as {0, 2}, the IR becomes as below, which avoids recomputing some elements.\r\n\r\n```\r\n    @T.prim_func\r\n    def pool_1d_upscale(A: T.Buffer[(1, 14), \"int8\"], C: T.Buffer[(1, 24), \"int8\"]) -> None:\r\n        # function attr dict\r\n        T.func_attr({\"from_legacy_te_schedule\": True, \"global_symbol\": \"pool_1d_upscale\", \"tir.noalias\": True})\r\n        # buffer definition\r\n        B = T.buffer_decl([1, 14], dtype=\"int8\")\r\n        # body\r\n        T.realize(C[0:1, 0:24], \"\")\r\n        T.realize(B[0:1, 0:5], \"\")\r\n        for ax0_outer in T.serial(5):\r\n            for ax0 in T.serial(5):\r\n                if T.likely(ax0_outer * 5 // 2 + ax0 < 14, dtype=\"bool\"):\r\n                    # Avoid recomputing some elements\r\n                    if T.likely(ax0_outer < 1 or ax0 >= 2, dtype=\"bool\"):\r\n                        B[0, (ax0_outer * 5 // 2 + ax0) % 5] = A[0, ax0_outer * 5 // 2 + ax0]\r\n            for ax0_1, rv0 in T.grid(5, 3):\r\n                if T.likely(ax0_outer * 5 + ax0_1 < 24, dtype=\"bool\"):\r\n                    C[0, ax0_outer * 5 + ax0_1] = T.max(C[0, ax0_outer * 5 + ax0_1], B[0, ((ax0_outer * 5 + ax0_1) // 2 + rv0) % 5])\r\n```",
@@ -30,9 +75,38 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3232721674/jobs/5293676637"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232795162/jobs/5293830944"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232801803/jobs/5293845936"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232873554/jobs/5294005996"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232889799/jobs/5294041802"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232942097/jobs/5294159485"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3232959186/jobs/5294194830"
       }
-    ],
-    "updated_at": 1665559292.344524
+    ]
   },
   {
     "sha": "a752b74956db5c9201e503d70ddf36977eafdf40",
@@ -48,17 +122,17 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3232401383/jobs/5292972672"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3232401383/jobs/5292972761"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3232401383/jobs/5292972864"
       },
       {
@@ -14458,235 +14532,6 @@
         "name": "comment-bot / run-comment-bot",
         "status": "cancelled",
         "url": "https://github.com/apache/tvm/actions/runs/3126513998/jobs/5072098350"
-      }
-    ]
-  },
-  {
-    "sha": "46ea2ed42ee41225141c5ed522900d340b08944d",
-    "headline": "[MetaSchedule][UX] User Interface for Jupyter Notebook (#12866)",
-    "body": "* Add features for jupyter notebook.\r\n\r\n* Fix workload import warnings.\r\n\r\n* Enable output clearing for cli.\r\n\r\n* Fix test.\r\n\r\n* Fix lint.\r\n\r\n* Change to separate cleaning function.",
-    "author": "zxybazh",
-    "date": "2022-09-26T05:50:51Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4370/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125371854/jobs/5069671260"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125371854/jobs/5069671333"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125371854/jobs/5069671413"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125372729/jobs/5069673329"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125373050/jobs/5069674123"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125373741/jobs/5069675934"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125378245/jobs/5069685416"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125379713/jobs/5069688473"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125379989/jobs/5069689527"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125382502/jobs/5069694644"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125385261/jobs/5069700046"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125401540/jobs/5069731640"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125405747/jobs/5069739799"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125414211/jobs/5069758666"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125419888/jobs/5069769593"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125420158/jobs/5076037539"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125420214/jobs/5069770482"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125424819/jobs/5069779557"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125430042/jobs/5069789635"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125431317/jobs/5069792155"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125432327/jobs/5069794296"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125432440/jobs/5069794705"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125449565/jobs/5069828412"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125451185/jobs/5069831680"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125451331/jobs/5069832328"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125460191/jobs/5069849250"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125461807/jobs/5069852229"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125463469/jobs/5069855874"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125463526/jobs/5069856206"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125498322/jobs/5069923333"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125498501/jobs/5069923698"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125498623/jobs/5069924023"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125503776/jobs/5069934316"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125503990/jobs/5069934825"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125505367/jobs/5069937986"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125506409/jobs/5069940494"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125506567/jobs/5069940903"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125506641/jobs/5069941171"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125506794/jobs/5069941557"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125510584/jobs/5069949506"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125512179/jobs/5069952777"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3125513507/jobs/5069956366"
-      },
-      {
-        "name": "comment-bot / run-comment-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3125515533/jobs/5069959818"
       }
     ]
   }
