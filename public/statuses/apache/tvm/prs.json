@@ -1,5 +1,63 @@
 [
   {
+    "sha": "b76c70a51b3b53caea8c762673ff66efeab0354a",
+    "headline": "[TIR][Arith] Support negative coeff in ModularSet",
+    "body": "Prior to this commit, any use of negative coefficients in `ModularSet`\nwould result in an error.  This included cases where a constraint is\nbeing entered, such as `floormod(i, -2)==0` appearing as the condition\nof an if/else block.  These negative indices can also arise as\nintermediate simplification steps produced by `CanonicalSimplifier`,\nsuch as `floormod(-i,2)` being canonicalized to `floormod(i,-2)`.\n\nThis commit adds support for negative coefficients in `ModularSet`,\nusing the same sign convention as is used by `CanonicalSimplifier` for\nnegative denominators, and adds unit tests to verify that sign\nconvention.",
+    "author": "Lunderberg",
+    "date": "2022-10-14T13:58:59Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13081/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3250546977/jobs/5334365249"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3250547032/jobs/5334365490"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3250547032/jobs/5334365636"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3250547032/jobs/5334365787"
+      }
+    ],
+    "pr": 13081,
+    "pr_title": "[TIR][Arith] Support negative coeff in ModularSet",
+    "updated_at": 1665757686.888429
+  },
+  {
+    "sha": "f3aad25302109cb7359a06cb2690acb39c4f46d5",
+    "headline": "run clang-format to make lint pass",
+    "body": "",
+    "author": "TSCCompiler",
+    "date": "2022-10-14T13:56:52Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13079/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3250496961/jobs/5334253401"
+      }
+    ],
+    "pr": 13079,
+    "pr_title": "MinGW compiler Support Again"
+  },
+  {
     "sha": "92229c7cdb3efbc92c93415964a84b789716cff0",
     "headline": "fix broken hexagon test after onnx model update",
     "body": "",
@@ -33,8 +91,7 @@
       }
     ],
     "pr": 13067,
-    "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test",
-    "updated_at": 1665755298.392748
+    "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
   },
   {
     "sha": "1838a51fc1fde2590274c6ba5a87acd0339829d3",
@@ -71,6 +128,42 @@
     ],
     "pr": 13067,
     "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
+  },
+  {
+    "sha": "7f6104807acb5c67f14a18aac5c5648e83536f06",
+    "headline": "[Relay][Hexagon] Added per-channel FixedPointMultiply operation.",
+    "body": "Main goal of this commit is to improve performance for Hexagon target and\npreserve performance/accuracy for x86, GPU and etc. targets.\n\n\"qnn.requantize\" operation is lowered into the sequence of multiply, add, shift\nduring QNN canonicalization pass if scale quantization parameter is vector of\nscalars. This commit adds new Relay per-channel/per-axis FixedPointMultiply\noperation and is used in \"qnn.requantize\" operation lowering.\n\nper-channel/per-axis FixedPointMultiply is implemented through\ntir.q_multiply_shift_per_axis intrinsic. For Hexagon target it overrides default\nimplementation and generate HVX vmpye/vmpyo instruction (see\n_q_multiply_shift_per_axis_hexagon). For all other targets it uses default\nimplementation (64 bits arithmetic).\n\nPerformance/accuracy measurement:\n\n* CPU(x86) target: accuracy and performance are the same. For other targets should\nbe the same (otherwise it is bug).\n\n* Hexagon target: speedup of qnn.requantize 7x-9x times (Snapdragon 888, 4.4 ms -> 0.5 ms)\nUnfortunately, in some cases output of requantize can differ by \"1\" compared to\nreference output. We need to consider this tradeoff between performance and\naccuracy when we choose this optimized implementation.",
+    "author": "ibsidorenko",
+    "date": "2022-10-14T08:17:31Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13080/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3250438389/jobs/5334122036"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3250438440/jobs/5334122253"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3250438440/jobs/5334122388"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3250438440/jobs/5334122547"
+      }
+    ],
+    "pr": 13080,
+    "pr_title": "[Relay][Hexagon] Added per-channel FixedPointMultiply operation."
   },
   {
     "sha": "ee6096c268b407f9139e355116163d153a33fbab",
@@ -296,8 +389,8 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13041/2/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13041/3/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -2651,27 +2744,6 @@
     "pr_title": "Update to 0.11.dev0"
   },
   {
-    "sha": "a547bd6efe3f1cc1c5b6070f59ea0e71ccaacea9",
-    "headline": "Skip long tests in CI.",
-    "body": "",
-    "author": "nverke",
-    "date": "2022-10-11T16:16:25Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13005/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3228492805/jobs/5284660803"
-      }
-    ],
-    "pr": 13005,
-    "pr_title": "[Hexagon] Async DMA pipelining test suite"
-  },
-  {
     "sha": "0a507cbd8cfbf987d9798f7d9cf588ba021b2e60",
     "headline": "[CI] Update Compute Library to v22.08",
     "body": "This updates Compute Library from v21.11 to v22.08.\n\nChangelog for this version can be found at:\nhttps://arm-software.github.io/ComputeLibrary/v22.08/\n\nChange-Id: Ibfc6e9c8ed9b47bf52a2b28e096d9920fb0146ff",
@@ -3086,47 +3158,6 @@
     ],
     "pr": 13027,
     "pr_title": "[Hexagon] fix bug with async dma queue id tracking"
-  },
-  {
-    "sha": "7a49450a4f5a831ffc2726dc9e961e2fe76dcec6",
-    "headline": "Update comments and reformatting.",
-    "body": "",
-    "author": "nverke",
-    "date": "2022-10-10T22:57:16Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13005/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3222876528/jobs/5272392114"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3222876569/jobs/5276958554"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3222876569/jobs/5276958757"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3222876569/jobs/5276958925"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3222961993/jobs/5276958544"
-      }
-    ],
-    "pr": 13005,
-    "pr_title": "[Hexagon] Async DMA pipelining test suite"
   },
   {
     "sha": "27c75952e447787e95d42ef67dc81a9bca20203b",
@@ -3845,32 +3876,6 @@
     "pr_title": "[Frontend][ONNX] Replace `:` in input name with `_`"
   },
   {
-    "sha": "3f1fd1cda0ef620ee9ffa37b7c9bf9be0e521e7f",
-    "headline": "Formatting updates.",
-    "body": "",
-    "author": "nverke",
-    "date": "2022-10-07T15:56:09Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13005/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3206057224/jobs/5239326368"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3206121129/jobs/5239469377"
-      }
-    ],
-    "pr": 13005,
-    "pr_title": "[Hexagon] Async DMA pipelining test suite"
-  },
-  {
     "sha": "9cdeba24003da17354090a4a04eeb2a83ee7a2d9",
     "headline": "[docs] fixed codebase_walkthrough document bug",
     "body": "Bind the iteration axis to threads in the GPU.",
@@ -3961,93 +3966,6 @@
     "jobs": [],
     "pr": 13006,
     "pr_title": "[MetaSchedule][UX] Support Interactive Performance Table Printing in Notebook"
-  },
-  {
-    "sha": "85b127d3c202c39d85025722a20473460eb9bd0f",
-    "headline": "[Hexagon] disable cache_write schedule type from sw pipeline test",
-    "body": "",
-    "author": "adstraw",
-    "date": "2022-10-06T22:52:53Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13004/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201016189/jobs/5228567831"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201016585/jobs/5230736059"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201016585/jobs/5230736134"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201016585/jobs/5230736297"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3205002883/jobs/5236974482"
-      }
-    ],
-    "pr": 13004,
-    "pr_title": "[Hexagon] disable cache_write schedule type from sw pipeline test"
-  },
-  {
-    "sha": "35ae9bcb8432269caf8f22564c1d3a650c711cb7",
-    "headline": "[Hexagon] Add tests to show how to properly utilize async dma pipelin\u2026",
-    "body": "\u2026ing on hexagon.",
-    "author": "nverke",
-    "date": "2022-10-06T21:07:04Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13005/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201068747/jobs/5228671579"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201068865/jobs/5230735682"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201068865/jobs/5230735779"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201068865/jobs/5230735852"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3201070602/jobs/5228675421"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3206006855/jobs/5239219270"
-      }
-    ],
-    "pr": 13005,
-    "pr_title": "[Hexagon] Async DMA pipelining test suite"
   },
   {
     "sha": "014078593fc0db645ec489244221c1fd8775c5cd",
