@@ -1,5 +1,65 @@
 [
   {
+    "sha": "ec5c692148b77617105c6d18193c099429fcf42b",
+    "headline": "Add include directory for OpenBLAS on RedHat (#13087)",
+    "body": "RedHat distributions like Fedora and RHEL package the `cblas.h` header in /usr/include/openblas/cblas.h. Because `cblas.h` is included without the `openblas` directory, it is necessary to ensure that `/usr/include/openblas` is added to the include directory search paths.",
+    "author": "cottsay",
+    "date": "2022-10-15T04:21:18Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4498/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3254377380/jobs/5342552332"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3254377380/jobs/5342552347"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3254377380/jobs/5342552358"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3254400864/jobs/5342603425"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3254450187/jobs/5342716829"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3254491914/jobs/5342804707"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3254530939/jobs/5342893336"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3254552346/jobs/5342938410"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3254565403/jobs/5342968525"
+      }
+    ],
+    "updated_at": 1665812517.44218
+  },
+  {
     "sha": "71f32ca4e8e6f33da55cd6c39c5019caadcdc78e",
     "headline": "[MetaSchedule][UX] Support Interactive Performance Table Printing in \u2026",
     "body": "\u2026Notebook (#13006)\n\n* Support interactive table printing.\r\n\r\n* Rebase.\r\n\r\n* Fix jupyter outputs.\r\n\r\n* Fix CI.\r\n\r\n* fix CI.\r\n\r\n* Change file to filename.\r\n\r\n* Address issues.",
@@ -13,17 +73,17 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3254235352/jobs/5342254902"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3254235352/jobs/5342254931"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3254235352/jobs/5342254964"
       },
       {
@@ -41,8 +101,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3254339833/jobs/5342460534"
       }
-    ],
-    "updated_at": 1665806924.744333
+    ]
   },
   {
     "sha": "5ed94eefad23df17cc998f058fb2dede6ce9f7ae",
@@ -15538,35 +15597,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3137590638/jobs/5095932737"
-      }
-    ]
-  },
-  {
-    "sha": "77d8eef5148da6517e471b52fec61ab40ea2436d",
-    "headline": "[Runtime][Bugfix] Added type-checking for Array::insert (#12691)",
-    "body": "Prior to this commit, the following code would compile and run without\r\nerror.  This occurs because the typed `Array<T>::insert` calls the\r\nuntyped `ArrayNode::InitRange`, with no type-checking done before the\r\ncall.\r\n\r\n```c++\r\nVar x(\"x\");\r\nVar y(\"y\");\r\nArray<Var> var_arr{x, y};\r\nArray<PrimExpr> expr_arr{x + 1, y + 2};\r\n// Erroneously inserts static-type PrimExpr, runtime-type Add, even\r\n// though neither PrimExpr is a type of Var.\r\nvar_arr.insert(var_arr.begin(), expr_arr.begin(), expr_arr.end());\r\n```\r\n\r\nAfter this commit, a `static_assert` in `Array<T>::insert` and in\r\n`Array<T>::Array(IterType,IterTYpe)` restricts the iterators, such\r\nthat they must dereference to `T`, `Optional<T>`, a subclass of `T`,\r\nor `Optional<U>` where `U` is a subclass of `T`.\r\n\r\nThe public method `ArrayNode::SetItem` exposes a similar issue.  In\r\nthe future, we may want to make it be private, accessed only through\r\ntype-safe method in `Array<T>::Set`.",
-    "author": "Lunderberg",
-    "date": "2022-09-27T16:39:19Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4387/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137371502/jobs/5095458670"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137371502/jobs/5095458848"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137371502/jobs/5095459005"
       }
     ]
   }
