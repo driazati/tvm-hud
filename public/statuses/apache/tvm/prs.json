@@ -1,6 +1,6 @@
 [
   {
-    "sha": "2be47be23be87bcd12d489fd87ae762341d5e929",
+    "sha": "046af15b9605e1b1b4d99158388da02aa141b307",
     "headline": "Update iOS LogMessageImpl to accept explicit log level",
     "body": "",
     "author": "supersat",
@@ -8,21 +8,36 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13072/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13072/4/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3258239642/jobs/5350165278"
+        "url": "https://github.com/apache/tvm/actions/runs/3258343415/jobs/5350355088"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3258343434/jobs/5350355168"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3258343434/jobs/5350355206"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3258343434/jobs/5350355238"
       }
     ],
     "pr": 13072,
     "pr_title": "[Logging][Hexagon] Improve logging on Hexagon",
-    "updated_at": 1665896406.100842
+    "updated_at": 1665899090.938221
   },
   {
-    "sha": "f14e44f03e68f968268132f2487d50940624e61b",
+    "sha": "6dff260d9bd0c4ba292b58afb8009b81e11df042",
     "headline": "Move LogMessage::level_strings_ out of some ifdefs",
     "body": "",
     "author": "supersat",
@@ -422,7 +437,7 @@
     "pr_title": "[Node] Fix structural equal path tracing pointer usage"
   },
   {
-    "sha": "a0ff3bf3da440a4703f08475e8faf603f5e46412",
+    "sha": "50f8ec992160701cb565db982c5bfc85c203cc29",
     "headline": "Update Android LogMessageImpl to accept and forward explicit log level",
     "body": "",
     "author": "supersat",
@@ -976,38 +991,12 @@
     "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
   },
   {
-    "sha": "9df7ffaab588f292612b4b890b89c4985cc546eb",
+    "sha": "933d8a6e4dedf5fd612a8f1d25cd88e69aedab08",
     "headline": "Update WASM LogMessageImpl to accept explicit level",
     "body": "",
     "author": "supersat",
     "date": "2022-10-14T02:43:57Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13072/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3247088383/jobs/5326615072"
-      },
-      {
-        "name": "CI / Android",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/3247088402/jobs/5326615105"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/3247088402/jobs/5326615162"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/3247088402/jobs/5326615207"
-      }
-    ],
+    "jobs": [],
     "pr": 13072,
     "pr_title": "[Logging][Hexagon] Improve logging on Hexagon"
   },
@@ -1073,7 +1062,7 @@
     "pr_title": "[MetaSchedule] Remove Logging for Multithread Postproc Application"
   },
   {
-    "sha": "07c42e977805da36cde48b1006bf5e5debf4eccd",
+    "sha": "5e2b76d598a002fa05a24f15f1217d05578953de",
     "headline": "Update hexagon_api launcher script to omit DEBUG-level logs",
     "body": "",
     "author": "supersat",
@@ -1083,7 +1072,7 @@
     "pr_title": "[Logging][Hexagon] Improve logging on Hexagon"
   },
   {
-    "sha": "94e7831bf22365966d7ec0f67f85902a0f52e6d9",
+    "sha": "f01e34d14817d184c2828f2b5a38ff09791fa8a8",
     "headline": "Adjust Hexagon rpc_server logging to use the DEBUG level",
     "body": "",
     "author": "supersat",
@@ -1129,38 +1118,12 @@
     "pr_title": "[TIR] Fix handling of int64 extent in blockize and tensorize"
   },
   {
-    "sha": "6d4e6c76ac3b0089344495fbae5ca6b9845b3bf8",
+    "sha": "c3fc2a66b0fd09bec8d982affe991f54bbebfcab",
     "headline": "[Logging][Hexagon] Improve logging on Hexagon",
     "body": "Currently Hexagon logging is done with a custom LogMessageImpl in\nhexagon_common.cc. This ends up calling HexagonLog and HEXAGON_PRINT\nwhich uses the HAP FARF API. Unfortunately, the TVM log level is lost\nalong the way, with logs being produced at FARF\u2019s ALWAYS level. This\nbecomes especially noisy with RPC debug logging, which generates enough\nnoise to cause some log data to be dropped. It also introduces a lot of\nuseless noise, as the FARF API produces its own line number information,\nwhich only points to where hexagon_common.cc calls HEXAGON_PRINT. Using\nthe HAP_debug_v2 API lets us pass the log level and file line\ninformation directly, and enables runtime selection of logging levels.\n\nThis commit explicity passes the log level to LogMessage/LogMessageImpl\nand updates Hexagon's custom LogMessageImpl to use the HAP_debug_v2 API.",
     "author": "supersat",
     "date": "2022-10-13T22:51:18Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13072/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3246241841/jobs/5324762835"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/3246241895/jobs/5324762975"
-      },
-      {
-        "name": "CI / Android",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/3246241895/jobs/5324763112"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/3246241895/jobs/5324763245"
-      }
-    ],
+    "jobs": [],
     "pr": 13072,
     "pr_title": "[Logging][Hexagon] Improve logging on Hexagon"
   },
