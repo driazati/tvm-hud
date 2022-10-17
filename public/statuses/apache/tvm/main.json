@@ -1,5 +1,65 @@
 [
   {
+    "sha": "cbca28da003cf4791a19f0c4f9e0c930ecee522d",
+    "headline": "[MetaSchedule] Consolidate module hashing and equality testing (#13050)",
+    "body": "Currently, MS uses `StructuralEqual/Hash` in task extraction / evo search / database. Sometimes, we want to use different hashing and equality testing methods, for example (1) to ignore NDArray (https://github.com/apache/tvm/pull/12706) or (2) to enable anchor-op only tuning (identify `conv2d` and `conv2d -> add` subgraphs as equal). \r\n\r\nTo enable such flexibility, this PR consolidate raw calls to `StructuralEqual/Hash` into one place, which for now is named `ModuleEquality`. Since hashing is also done for equality testing, I think it is appropriate to call the component responsible for hashing / equality test that way. But other suggestions are welcome.\r\n\r\nImportantly, task extraction and database are now using the same hashing / equal method based on TIR mod, while previously task extraction was using a cache key-ed on relay mod.",
+    "author": "masahi",
+    "date": "2022-10-17T04:36:23Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4501/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3262404137/jobs/5359502198"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3262404137/jobs/5359502301"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3262404137/jobs/5359502390"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3262469737/jobs/5359647847"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3262491145/jobs/5359692573"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3262609034/jobs/5359962620"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3262654156/jobs/5360055794"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3262707598/jobs/5360248501"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3262737647/jobs/5360347613"
+      }
+    ],
+    "updated_at": 1665987065.087753
+  },
+  {
     "sha": "9299a29fd339b6b728487b32c0526f02a0181e3b",
     "headline": "[TVMScript] Evaluator, core parser, var table (#13088)",
     "body": "* [TVMScript] Evaluator, core parser, var table\r\n\r\nThis PR introduces Evaluator, core parser, var table as part of #12442\r\n\r\nCo-authored-by: yongwww <yongcale@gmail.com>\r\n\r\n* add module doc string\r\n\r\n* apply code review suggestion\r\n\r\nCo-authored-by: yongwww <yongcale@gmail.com>",
@@ -501,8 +561,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3260246996/jobs/5353670981"
       }
-    ],
-    "updated_at": 1665980751.47332
+    ]
   },
   {
     "sha": "5e862d4e41712d664883c4319464fdd45e10e52c",
@@ -16368,180 +16427,6 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3138970191/jobs/5098893880"
-      }
-    ]
-  },
-  {
-    "sha": "5a807e27c04a4dcb80ab35e8e601f5a9d5e78986",
-    "headline": "[Hexagon] [runtime] Add thread manager to resource management (#12905)",
-    "body": "* Add thread manager to Acquire/ReleaseResources\r\n\r\n* Change logging to debug logs\r\n\r\n* Fix lint\r\n\r\n* Increase pipe size",
-    "author": "janetsc",
-    "date": "2022-09-27T17:35:44Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4390/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137710121/jobs/5096195189"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137710121/jobs/5096195299"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137710121/jobs/5096195411"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137717907/jobs/5096212066"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137747864/jobs/5096278418"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137762154/jobs/5096309587"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137826089/jobs/5096452723"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137849685/jobs/5096505498"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137889241/jobs/5096587071"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3137987981/jobs/5096805712"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138008373/jobs/5096849049"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138107827/jobs/5097057939"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138129246/jobs/5097105935"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138188978/jobs/5097238211"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138254968/jobs/5097380236"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138268668/jobs/5097406794"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138343839/jobs/5097568853"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138361395/jobs/5097607900"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138383117/jobs/5097653673"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138427834/jobs/5097743918"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138442582/jobs/5097774818"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138500970/jobs/5097895903"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138515125/jobs/5097925775"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138582002/jobs/5098069842"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138607613/jobs/5098125493"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138608319/jobs/5098127071"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138700586/jobs/5098323281"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138722071/jobs/5098368481"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138793164/jobs/5098517686"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138806617/jobs/5098547099"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138864224/jobs/5098667846"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3138879082/jobs/5098696568"
       }
     ]
   }
