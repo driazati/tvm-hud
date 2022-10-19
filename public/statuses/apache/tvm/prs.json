@@ -1,5 +1,16 @@
 [
   {
+    "sha": "46d221278a3a0106f8825b76afca6dff343616e5",
+    "headline": "Recursive merge (a == b) || (a < b) into (a <= b)",
+    "body": "Necessary to attempt proof of (a <= b), even if neither (a==b) nor\n(a < b) can be proven.  This ends up being needed after a\ncombination of 13023 and 13024.  Whichever doesn't land first can have\nthis commit cherry-picked into it.",
+    "author": "Lunderberg",
+    "date": "2022-10-19T01:43:57Z",
+    "jobs": [],
+    "pr": 13130,
+    "pr_title": "[TIR][Arith] Implement basic data-flow analysis",
+    "updated_at": 1666150317.318451
+  },
+  {
     "sha": "a0e02b86194bb5b10f1a6339fee608c90a58626e",
     "headline": "Fix test.",
     "body": "",
@@ -8,7 +19,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13128/1/display/redirect"
       },
       {
@@ -18,17 +29,17 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3277914654/jobs/5395728375"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3277914654/jobs/5395728431"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3277914654/jobs/5395728469"
       },
       {
@@ -38,8 +49,7 @@
       }
     ],
     "pr": 13128,
-    "pr_title": "[MetaSchedule][Minor] Restore Relay Integration Unit Test",
-    "updated_at": 1666140438.816694
+    "pr_title": "[MetaSchedule][Minor] Restore Relay Integration Unit Test"
   },
   {
     "sha": "b27a18e8be31cb1a1c283e7a694f15969b504766",
@@ -50,7 +60,7 @@
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13127/3/display/redirect"
       },
       {
@@ -70,7 +80,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3277493958/jobs/5394844154"
       },
       {
@@ -82,6 +92,11 @@
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3277497101/jobs/5394850404"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3277982890/jobs/5395867593"
       }
     ],
     "pr": 13127,
@@ -118,6 +133,11 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3277140241/jobs/5394035895"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3278378607/jobs/5396699471"
       }
     ],
     "pr": 13085,
@@ -344,6 +364,52 @@
     "pr_title": "[Hexagon] [runtime] Use malloc/free for RPC buffers"
   },
   {
+    "sha": "19fc65bedc7421c08ec072da623ad96e05783518",
+    "headline": "PR-13129 [TIR][Arith] Implement kApplyConstraintsToBooleanBranches ex\u2026",
+    "body": "\u2026tension\n\nWhen simplifying a branch of a boolean AND or a boolean OR, the\nother branch may be assumed not to dominate the result of the\noperator.  For example, when simplifying `(A and B)`, `A` may be\nsimplified on the assumption that `B` is true.  Similarly, when\nsimplifying `(A or B)`, `A` may be simplified on the assumption\nthat `B` is false.\n\nPrior to this commit, these constraints were not used for\nsimplifications.  This commit introduced an optional extension,\n`kApplyConstraintsToBooleanBranches`, which exposes these\nconstraints for simplification.  This isn't enabled by default,\nas some cases require a second visit to each branch of a boolean\noperator.  (e.g. Simplifying the LHS of an operator, using a\nconstraint provided by the RHS, where the sub-analyzer that uses\nthe constraint expects it to already be simplified.)\n\nAs an implementation detail, this commit also refactors\n`RewriteSimplifier::Impl::VisitExpr_(const OrNode*)` to be in\nterms of the `AndNode*` visitor.  This reduces duplication\nbetween the two visitors, similar to how the visitor for\n`LENode` is implemented in terms of `LTNode`.  By placing the\nmain implementation in `AndNode` instead of `OrNode`, the number\nof rewrites are minimized.  The main implementation is in\n`AndNode`, because the known-true constraints for `AndNode`\nbranches do not require additional rewrites, where the\nknown-false constraints for `OrNode` would require a rewrite\nto produce a known-true constraint.",
+    "author": "Lunderberg",
+    "date": "2022-10-18T19:12:59Z",
+    "jobs": [],
+    "pr": 13130,
+    "pr_title": "[TIR][Arith] Implement basic data-flow analysis"
+  },
+  {
+    "sha": "01e4b27b73c414480e1f613ad941252617e8cb80",
+    "headline": "[TIR][Arith] Implement kApplyConstraintsToBooleanBranches extension",
+    "body": "When simplifying a branch of a boolean AND or a boolean OR, the\nother branch may be assumed not to dominate the result of the\noperator.  For example, when simplifying `(A and B)`, `A` may be\nsimplified on the assumption that `B` is true.  Similarly, when\nsimplifying `(A or B)`, `A` may be simplified on the assumption\nthat `B` is false.\n\nPrior to this commit, these constraints were not used for\nsimplifications.  This commit introduced an optional extension,\n`kApplyConstraintsToBooleanBranches`, which exposes these\nconstraints for simplification.  This isn't enabled by default,\nas some cases require a second visit to each branch of a boolean\noperator.  (e.g. Simplifying the LHS of an operator, using a\nconstraint provided by the RHS, where the sub-analyzer that uses\nthe constraint expects it to already be simplified.)",
+    "author": "Lunderberg",
+    "date": "2022-10-18T19:12:59Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13129/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3278420384/jobs/5396783709"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3278420565/jobs/5396783969"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3278420565/jobs/5396784064"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3278420565/jobs/5396784172"
+      }
+    ],
+    "pr": 13129,
+    "pr_title": "[TIR][Arith] Implement kApplyConstraintsToBooleanBranches extension"
+  },
+  {
     "sha": "d0961307cb9555d788f3aecf595f8b9b46396994",
     "headline": "[test][hexagon] Fix pytest fixture resolution bug",
     "body": "Fix a bug in `test_benchmark_maxpool2d.py` where pytest was unable\nto find a fixture defined in a different module.",
@@ -568,6 +634,42 @@
     ],
     "pr": 13121,
     "pr_title": "Skip stride check if shape is 1 in IsContiguous"
+  },
+  {
+    "sha": "3697a4570b49fa6aa094b0566785747ec6ce1799",
+    "headline": "[TIR][Arith] Implemented basic data-flow analysis",
+    "body": "",
+    "author": "Lunderberg",
+    "date": "2022-10-18T15:59:14Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13130/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3278439570/jobs/5396826546"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3278439672/jobs/5396826691"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3278439672/jobs/5396826755"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3278439672/jobs/5396826808"
+      }
+    ],
+    "pr": 13130,
+    "pr_title": "[TIR][Arith] Implement basic data-flow analysis"
   },
   {
     "sha": "52155319375b988307c7c08529c46dff881a6b98",
@@ -2406,42 +2508,6 @@
     "pr_title": "[Hexagon]Register fast softmax schedule with default schedule"
   },
   {
-    "sha": "d9a64fe280f634d4e8e58a8b1f8e8c7b7992504b",
-    "headline": "Merge branch 'apache:main' into fix/tvmscript-i64-loop",
-    "body": "",
-    "author": "vinx13",
-    "date": "2022-10-14T18:17:44Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13068/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3252071583/jobs/5337867169"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3252071717/jobs/5337873984"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3252071717/jobs/5337874110"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3252071717/jobs/5337874253"
-      }
-    ],
-    "pr": 13068,
-    "pr_title": "[TVMScript] Fix parsing int64 loop with optional loop start"
-  },
-  {
     "sha": "cdb06b31f7829a0ca6c9330863b5273f0c9fbb00",
     "headline": "[Node] Fix structural equal path tracing pointer usage",
     "body": "",
@@ -2483,42 +2549,6 @@
     "pr_title": "[Node] Fix structural equal path tracing pointer usage"
   },
   {
-    "sha": "c38cb8140040d34861fe4229034425e8d2e5659f",
-    "headline": "fix",
-    "body": "",
-    "author": "vinx13",
-    "date": "2022-10-14T17:29:42Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13068/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3251802507/jobs/5337277047"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3251802611/jobs/5337277249"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3251802611/jobs/5337277389"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3251802611/jobs/5337277526"
-      }
-    ],
-    "pr": 13068,
-    "pr_title": "[TVMScript] Fix parsing int64 loop with optional loop start"
-  },
-  {
     "sha": "9c42fe8bc30d5f1fd8b64e601f39a0eb3986dd35",
     "headline": "Slight refactor",
     "body": "",
@@ -2527,6 +2557,16 @@
     "jobs": [],
     "pr": 13111,
     "pr_title": "[Hexagon] [runtime] Create objects to manage thread hardware resources"
+  },
+  {
+    "sha": "23e6b7290c2347e0914accf59260b6f70df44f32",
+    "headline": "PR-13081 [TIR][Arith] Support negative coeff in ModularSet",
+    "body": "Prior to this commit, any use of negative coefficients in `ModularSet`\nwould result in an error.  This included cases where a constraint is\nbeing entered, such as `floormod(i, -2)==0` appearing as the condition\nof an if/else block.  These negative indices can also arise as\nintermediate simplification steps produced by `CanonicalSimplifier`,\nsuch as `floormod(-i,2)` being canonicalized to `floormod(i,-2)`.\n\nThis commit adds support for negative coefficients in `ModularSet`,\nusing the same sign convention as is used by `CanonicalSimplifier` for\nnegative denominators, and adds unit tests to verify that sign\nconvention.",
+    "author": "Lunderberg",
+    "date": "2022-10-14T13:58:59Z",
+    "jobs": [],
+    "pr": 13130,
+    "pr_title": "[TIR][Arith] Implement basic data-flow analysis"
   },
   {
     "sha": "297b3afe03d315e8753640020d8ef963b2552cb4",
@@ -2584,78 +2624,6 @@
     ],
     "pr": 13079,
     "pr_title": "MinGW compiler Support Again"
-  },
-  {
-    "sha": "92229c7cdb3efbc92c93415964a84b789716cff0",
-    "headline": "fix broken hexagon test after onnx model update",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-10-14T09:34:41Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13067/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3248932446/jobs/5330739436"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3248932594/jobs/5330807282"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3248932594/jobs/5330807430"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3248932594/jobs/5330807566"
-      }
-    ],
-    "pr": 13067,
-    "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
-  },
-  {
-    "sha": "1838a51fc1fde2590274c6ba5a87acd0339829d3",
-    "headline": "skip dp4a auto tensorize test since IS_IN_CI is not working",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-10-14T08:37:24Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13067/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3248571012/jobs/5329940615"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3248571044/jobs/5329940789"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3248571044/jobs/5329940919"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3248571044/jobs/5329941023"
-      }
-    ],
-    "pr": 13067,
-    "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
   },
   {
     "sha": "c0c66c8faaf2675d27fd9c090385fbbb3017758b",
@@ -2748,42 +2716,6 @@
     ],
     "pr": 13100,
     "pr_title": "[Adreno] Adapt reduction schedule for adreno"
-  },
-  {
-    "sha": "755964316ca7bd168213d049e423ac774fc696c3",
-    "headline": "tweaking to see why IS_IN_CI isn't working",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-10-14T06:13:20Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13067/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3247813723/jobs/5328266770"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3247813750/jobs/5328266833"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3247813750/jobs/5328266909"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3247813750/jobs/5328266980"
-      }
-    ],
-    "pr": 13067,
-    "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
   },
   {
     "sha": "933d8a6e4dedf5fd612a8f1d25cd88e69aedab08",
@@ -3025,195 +2957,6 @@
     "pr_title": "[TIR] Fix handling of int64 extent in blockize and tensorize"
   },
   {
-    "sha": "33b03c385947d8e36274e714d23491953b5a57f3",
-    "headline": "fix range",
-    "body": "",
-    "author": "vinx13",
-    "date": "2022-10-13T22:01:42Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13068/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245972612/jobs/5324170849"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245972800/jobs/5324187344"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245972800/jobs/5324187495"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245972800/jobs/5324187603"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3247399598/jobs/5327313780"
-      }
-    ],
-    "pr": 13068,
-    "pr_title": "[TVMScript] Fix parsing int64 loop with optional loop start"
-  },
-  {
-    "sha": "c799793c49e5acca199f3a3e920f0f519df99eeb",
-    "headline": "Update scope_handler.py",
-    "body": "",
-    "author": "vinx13",
-    "date": "2022-10-13T21:48:44Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13068/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245904549/jobs/5324022801"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3245904561/jobs/5324026686"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3245904561/jobs/5324026826"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3245904561/jobs/5324026955"
-      }
-    ],
-    "pr": 13068,
-    "pr_title": "[TVMScript] Fix parsing int64 loop with optional loop start"
-  },
-  {
-    "sha": "1a2b36e1b17d7bb6fd46e9d7a6c5b4c39652fcd2",
-    "headline": "[TVMScript] Fix parsing int64 loop with optional loop start",
-    "body": "",
-    "author": "vinx13",
-    "date": "2022-10-13T21:37:05Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13068/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3245851221/jobs/5323903434"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3245851241/jobs/5323903497"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3245851241/jobs/5323903574"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3245851241/jobs/5323903662"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245851743/jobs/5323905194"
-      }
-    ],
-    "pr": 13068,
-    "pr_title": "[TVMScript] Fix parsing int64 loop with optional loop start"
-  },
-  {
-    "sha": "866b786e4ed924325f89430fcb7bbb6046ca225c",
-    "headline": "fix rocm and vk auto-tensorize test",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-10-13T20:30:12Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13067/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245525210/jobs/5323172717"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245525243/jobs/5323172825"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245525243/jobs/5323172986"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245525243/jobs/5323173076"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3245530704/jobs/5323184305"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3245535200/jobs/5323194574"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3246882264/jobs/5326166496"
-      }
-    ],
-    "pr": 13067,
-    "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
-  },
-  {
-    "sha": "7fc1d6c85a22881149f0e17d5088d9c37f2db5d8",
-    "headline": "enable local testing of dp4a auto tensorize",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-10-13T20:18:48Z",
-    "jobs": [],
-    "pr": 13067,
-    "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
-  },
-  {
-    "sha": "72165fb9f0b556b9fc36104c1e8723d191121ca4",
-    "headline": "fixed MS vnni template-based tuning test",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-10-13T20:13:48Z",
-    "jobs": [],
-    "pr": 13067,
-    "pr_title": "[TEST] Fix the broken VNNI MetaSchedule test"
-  },
-  {
     "sha": "ea5cc20a6282a4090d9915e9422ef4eafc1cdfd0",
     "headline": "[CI] Update Docker Image tag to 20221013-060115-61c9742ea",
     "body": "Update all Docker image tags used in CI to tag 20221013-060115-61c9742ea\nin order to bring Compute Library to v22.08.",
@@ -3393,6 +3136,16 @@
     "pr_title": "[MetaSchedule] Introduce a variant of ModuleEquality to enable ignoring NDArray raw data"
   },
   {
+    "sha": "f6b37c15b2809c39794a0e595f59baab4fc6ae16",
+    "headline": "PR-13041 [Arith] Add internal NarrowPredicateExpression utility",
+    "body": "Implements `tvm::arith::NarrowPredicateExpression`, a utility that\nremoves free parameters from a boolean expression, such that the\nresulting expression being true implies that the original expression\nis true.  For example, the predicate `(0 <= i+f) && (i+f < 16)`, where\n`f` is a free parameter on the range `0 <= f < 2)`, can be narrowed to\nthe expression `(0 <= i+0) && (i+2 < 16)`.\n\nIn effect, `NarrowPredicateExpression` functions as a context-sentive\n`tvm::tir::Substitute`, where the value substituted is selected such\nthat the resulting expression errs on the side of being false.  This\nis an internal utility used as part of the simplifications for layout\ntransformations ([tracking issue\nlink](https://github.com/apache/tvm/issues/12261)).",
+    "author": "Lunderberg",
+    "date": "2022-10-11T18:04:15Z",
+    "jobs": [],
+    "pr": 13130,
+    "pr_title": "[TIR][Arith] Implement basic data-flow analysis"
+  },
+  {
     "sha": "b15089e99410a578fdc38f5b0b5840e1cd524016",
     "headline": "lint",
     "body": "",
@@ -3411,6 +3164,26 @@
     "jobs": [],
     "pr": 13107,
     "pr_title": "[Hexagon] Add feature to copy logcat to --hexagon-debug and add new --sysmon-profile option to run sysmon profiler during the test"
+  },
+  {
+    "sha": "9f97909c9c9c8089c82360f3035ed58088195583",
+    "headline": "PR-13023 [Arith][TIR] Check for constant offsets of known literal con\u2026",
+    "body": "\u2026straints\n\nPreviously, the checks for a literal constraint would find exact\nmatches for an inequality, but any alterations to the conditional\nwould break this exact matching.  This commit introduces checks for\nconstant offsets relative to a known value.  These checks are not\nalways expressible using the existing `ConstIntSetAnalyzer`, which\nrepresents allowed values using a single contiguous\nregion.  (e.g. `i!=5` is not representable, because it requires a\nregion for `i<5` and another for `i>5`.)\n\nThis implementation reuses the internal representation for\ninequalities introduced in https://github.com/apache/tvm/pull/12863,\nalong with much of its implementation.  However, the indirect\ncomparisons (e.g. using `a < b` and `b < c` to prove that `a < c`)\nintroduced in that PR still require an explicit flag to be used.",
+    "author": "Lunderberg",
+    "date": "2022-10-10T14:45:48Z",
+    "jobs": [],
+    "pr": 13130,
+    "pr_title": "[TIR][Arith] Implement basic data-flow analysis"
+  },
+  {
+    "sha": "4f34081d209616577a64fdaeab433bc7f783faac",
+    "headline": "PR-13024 [TIR][Arith] Use TryCompare to narrow inequalities if possible",
+    "body": "Prior to this commit, the result of TryCompare would only be used if\nit could definitively prove a conditional to be either true or false.\nFor example, if it is known that `0 <= i`, a conditional of `i <= 0`\nwould be left as-is.\n\nThis commit introduces rewrite rules to preferentially simplify\ninto more restrictive conditions.  Using the same example, if it is\nknown that `0 <= i`, a conditional of `i <= 0` would be simplified\ninto `i == 0`.  Similarly, if it is known that `0 <= i`, a\nconditional of `i != 0` would be simplified into `0 < i`.\n\nBecause this change does not introduce significant overhead, as the\nresults of `RewriteSimplifier::Impl::TryCompare` are already\navailable, this change is enabled for all use cases and does not\nrequire a call to `RewriteSimplifier::SetEnabledExtensions`.",
+    "author": "Lunderberg",
+    "date": "2022-10-07T20:23:23Z",
+    "jobs": [],
+    "pr": 13130,
+    "pr_title": "[TIR][Arith] Implement basic data-flow analysis"
   },
   {
     "sha": "544cfadfc5a737fcbc742d105c478c03757c6838",
