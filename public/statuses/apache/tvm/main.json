@@ -1,5 +1,50 @@
 [
   {
+    "sha": "90ed632280898dafeac40913d006993bc71a8409",
+    "headline": "[Relay] Add tensor rank check for `nn.instance_norm` (#13280)",
+    "body": "Add tensor rank check for `nn.instance_norm`.",
+    "author": "wzh99",
+    "date": "2022-11-03T20:42:07Z",
+    "jobs": [
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3389160315/jobs/5631948177"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3389160315/jobs/5631948276"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3389160315/jobs/5631948386"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3389182034/jobs/5631994607"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3389199090/jobs/5632031015"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3389275593/jobs/5632193732"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3389301063/jobs/5632249728"
+      }
+    ],
+    "updated_at": 1667509781.391916
+  },
+  {
     "sha": "b98b9f92daa8dc3694707ed536ef0262767df18b",
     "headline": "[MetaSchedule] Improve the script for TorchBench model tuning & bench\u2026",
     "body": "\u2026marking (#13255)\n\nThis PR adds features to the `python/tvm/meta_schedule/testing/torchbench/run.py`.\r\n\r\n- Integrate with the TVM PyTorch integration to handle boolean tensor and unaligned memory.\r\n- Deduplicate collected tuning tasks to prevent thousands of tasks created by hundreds of subgraphs with similar structure.\r\n- Add option to cast model to float32, which are more stable numerically than float16 and prevents inaccurate result from many models.\r\n- Add option to choose search strategy in MetaSchedule.\r\n- Inspect output error if the actual output doesn't match the expectation. Also save the actual output and expected output for further analysis if needed.\r\n- Save subgraphs and their example input for debug purpose.\r\n- Print MetaSchedule profiling information at the end of execution.\r\n- Detach PyTorch tensor before exporting to dlpack.\r\n- Fix the sys path to avoid conflict with the `benchmarks` package installed by TorchBench dependency.\r\n- Trim all command line args passed in, in order to prevent breaking some TorchBench model that depends on args.\r\n- Empty cuda cache before starting the actual benchmark.",
@@ -13,7 +58,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3388620743/jobs/5630818263"
       },
       {
@@ -85,9 +130,28 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3388922711/jobs/5631447598"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3389019726/jobs/5631652449"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3389034633/jobs/5631683288"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3389090514/jobs/5631800229"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3389108925/jobs/5631840686"
       }
-    ],
-    "updated_at": 1667506190.921038
+    ]
   },
   {
     "sha": "215f0e2fc2b13857d73c3d81e2638388d63207c5",
@@ -113,7 +177,7 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3388615572/jobs/5630807358"
       }
     ]
@@ -142,7 +206,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3388612831/jobs/5630801277"
       }
     ]
@@ -11702,231 +11766,61 @@
     ]
   },
   {
-    "sha": "3131cdc56a75a3730024e0e04967e19f9e99fe58",
-    "headline": "[Target] Replace utility functions with target.features (#12455)",
-    "body": "Following on from #12454 this patch removes the utility functions in favour of the centralised `target.features` property.",
-    "author": "Mousius",
-    "date": "2022-10-24T11:56:08Z",
+    "sha": "e42e4bba28499f28064ab8dd2ee6776402aeb5da",
+    "headline": "[Hexagon] Adjust Hexagon pytest port range (#13172)",
+    "body": "Adjust Hexagon pytest port range\r\n\r\nADB, the Android Debug Bridge, tries to determine if an emulator is present by\r\nlooking for port 5555 being open. Unfortunately, once adb thinks there's an\r\nemulator running, it will continously try to connect to it, adding an error\r\nto its log on every failed attempt. This log file quickly grows to hundreds\r\nof gigabytes before developers notice they are completely out of disk space.\r\nThis problem is further compounded by the Hexagon Launcher forwarding 10\r\ncontiguous ports from the randomly-chosen RPC base port, causing this failure\r\nto happen more often than you'd otherwise suspect.\r\n\r\nSee https://stackoverflow.com/questions/3152681/android-emulator-5554-offline/10356594#10356594",
+    "author": "supersat",
+    "date": "2022-10-21T23:23:21Z",
     "jobs": [
       {
         "name": "tvm-ci/branch",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4563/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312490513/jobs/5469219962"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312490513/jobs/5469220119"
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4559/display/redirect"
       },
       {
         "name": "CI / MacOS",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312490513/jobs/5469220243"
+        "url": "https://github.com/apache/tvm/actions/runs/3301050947/jobs/5446139903"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3301050947/jobs/5446139958"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3301050947/jobs/5446140018"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3301057212/jobs/5446150971"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3301109280/jobs/5446242872"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3301118171/jobs/5446261471"
       },
       {
         "name": "tvm-bot / run-tvm-bot",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312490908/jobs/5469220816"
+        "url": "https://github.com/apache/tvm/actions/runs/3301138202/jobs/5446297140"
       },
       {
         "name": "Ping Reviewers / ping",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312529216/jobs/5469305375"
+        "url": "https://github.com/apache/tvm/actions/runs/3301149271/jobs/5446316772"
       },
       {
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312578542/jobs/5469419113"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312664559/jobs/5469617614"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312689980/jobs/5469673572"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312806826/jobs/5469938338"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312848563/jobs/5470035046"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312860109/jobs/5470061483"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3312969541/jobs/5470311220"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313026691/jobs/5470445945"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313026700/jobs/5470445906"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313073317/jobs/5470556998"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313167509/jobs/5470776868"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313271576/jobs/5471024414"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313383152/jobs/5471287393"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313493373/jobs/5471547322"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313560800/jobs/5471707621"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313617610/jobs/5471838099"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313680760/jobs/5471985231"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313689496/jobs/5472005991"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313801700/jobs/5472263032"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313839900/jobs/5472347514"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313907144/jobs/5472499387"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313976806/jobs/5472661403"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3313993252/jobs/5472699948"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314026886/jobs/5472776483"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314109293/jobs/5472957589"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314153072/jobs/5473058365"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314157155/jobs/5473067722"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314202244/jobs/5473176487"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314288042/jobs/5473370789"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314293435/jobs/5473384020"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314326585/jobs/5473463364"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3314352838/jobs/5473527530"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3314385045/jobs/5473604241"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314414941/jobs/5473675526"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314437184/jobs/5473729008"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314543811/jobs/5473967120"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3314572567/jobs/5474029591"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3314609306/jobs/5474115317"
+        "url": "https://github.com/apache/tvm/actions/runs/3301160212/jobs/5446335338"
       }
     ]
   },
@@ -13527,90 +13421,6 @@
         "name": "CI / MacOS",
         "status": "cancelled",
         "url": "https://github.com/apache/tvm/actions/runs/3291430314/jobs/5425570515"
-      }
-    ]
-  },
-  {
-    "sha": "57b998892295deb47e07dbe063cc24fc15a95c22",
-    "headline": "[Hexagon] Add scripts for e2e MetaSchedule tuning demonstration (#13135)",
-    "body": "I've worked on a series of PRs to enable e2e MS tuning on Hexagon (mostly for supporting link-params = True in MS). Now that all the pieces have been upstreamed, I'm adding demo tuning scripts under test_hexagon/metaschedule_e2e.\r\n\r\nThey are not run on CI, and running it locally requires PyTorch to generate fp16 and int8 resnet50.\r\n\r\nThe scripts use a small number of tuning trials and replay-trace search strategy instead of the evolutionary search, to finish tuning quickly. Those interested in MS tuning can tweak these settings for better performance at the cost of more tuning times.\r\n\r\n* change dtype in tvmscript roundtrip test to avoid int printing error\r\n\r\n* allow printing non int8 array\r\n\r\n* Revert \"change dtype in tvmscript roundtrip test to avoid int printing error\"\r\n\r\n* add loose assert check on fp16 result",
-    "author": "masahi",
-    "date": "2022-10-20T15:48:45Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4543/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291036885/jobs/5424677877"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291036885/jobs/5424678092"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291036885/jobs/5424678257"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291058274/jobs/5424727957"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291087230/jobs/5424792945"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291147685/jobs/5424927260"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291189450/jobs/5425023702"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291271315/jobs/5425210649"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291297409/jobs/5425264554"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3291321012/jobs/5425319457"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291335952/jobs/5425354190"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291339863/jobs/5425363335"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291398135/jobs/5425497644"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3291429520/jobs/5425568149"
       }
     ]
   }
