@@ -1,5 +1,94 @@
 [
   {
+    "sha": "5ffcfd9327e24129b50ebb3c8c0456961e444999",
+    "headline": "[FQ2I] Add cast back to input data type after AvgPool2d (#13332)",
+    "body": "[FQ2I] Add cast back to output data type after AvgPool2d\r\n\r\nThis commit fixes the following issue:\r\nFor the sequence of qnn.dequantize -> avg_pool2d -> conv2d ->\r\nqnn.quantize FQ2I pass inserts qnn.requantize (or cast) to int32\r\nunconditionally before AvgPool2d. As a result fake quantized qnn.conv2d\r\ngets input as int32 dtype, but it is forbidden for qnn.conv2d (supports\r\nonly uint8/int8/int16).\r\n\r\nThis commit adds the following:\r\nAdd cast back to output data type after AvgPool2d. This preserve input\r\ndtype == output dtype for this op.",
+    "author": "ibsidorenko",
+    "date": "2022-11-11T07:49:24Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4706/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3443384475/jobs/5744857665"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3443384475/jobs/5744857731"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3443384475/jobs/5744857818"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3443395500/jobs/5744878932"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443395941/jobs/5744880175"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443444185/jobs/5744976693"
+      }
+    ],
+    "updated_at": 1668154562.940574
+  },
+  {
+    "sha": "ce0e9abea0ae19554b6b735691319a5f9e670058",
+    "headline": "[TIR] Make syntax of AST nodes different than ops (#13358)",
+    "body": "As part of effort of more formal TIR semantics, we want to more\r\nexplicitly differentiate TIR AST nodes (defined in `tir/expr.h`)\r\nand TIR ops (defined in `tir/op.h`).\r\n\r\nA naming convention is that:\r\n- Lowercased methods, for example, `tvm.tir.mul`, means an TIR op, which\r\n  will be eagerly constant-folded, i.e. `mul(1, 2)` returns `3`\r\n  immediately rather than creating an AST node.\r\n- Capitalized callable, for example, `Mul`, means creating an AST node\r\n  without constant folding.\r\n\r\nThis PR makes this behavior more explictly by printing `T.Mul(a, b)`\r\ndirectly when `a` and `b` are both constants, rather than sugaring it\r\ninto `mul(a. b)` or `a * b`, so that the difference between an op and\r\nan AST node is clarified.\r\n\r\nCo-authored-by: Yaxing Cai <caiyaxing666@gmail.com>\r\n\r\nCo-authored-by: Yaxing Cai <caiyaxing666@gmail.com>",
+    "author": "junrushao",
+    "date": "2022-11-11T07:33:01Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4705/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3443300666/jobs/5744701868"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3443300666/jobs/5744701969"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3443300666/jobs/5744702088"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443347932/jobs/5744787260"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443353825/jobs/5744798099"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443367593/jobs/5744825819"
+      }
+    ]
+  },
+  {
     "sha": "f9ed60aaef5399b0647aeeef68f86bda87653346",
     "headline": "[Relay] Refactor constant folding over expr into a utility function (\u2026",
     "body": "\u2026#13343)",
@@ -8,7 +97,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/4704/display/redirect"
       },
       {
@@ -18,7 +107,7 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3442711766/jobs/5743554596"
       },
       {
@@ -80,9 +169,28 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3443146662/jobs/5744399486"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443196640/jobs/5744501633"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443236002/jobs/5744578117"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443277243/jobs/5744657888"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3443298631/jobs/5744698072"
       }
-    ],
-    "updated_at": 1668150711.318432
+    ]
   },
   {
     "sha": "45327127d5d30819752d685d6ef06247a573552e",
@@ -93,7 +201,7 @@
     "jobs": [
       {
         "name": "tvm-ci/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm/job/main/4703/display/redirect"
       },
       {
@@ -13949,124 +14057,6 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3348443922/jobs/5547506351"
-      }
-    ]
-  },
-  {
-    "sha": "6cd1bb5e89e155d4809680ab28a3e57f33083eb6",
-    "headline": "[Hexagon] Update search pattern to find .so address for on device run\u2026",
-    "body": "\u2026s (#13230)\n\n* [Hexagon] Update search pattern to find .so address for on device runs\r\n\r\n* [Hexagon] Handle OperatorModule in hexagon_profiler",
-    "author": "jverma-quic",
-    "date": "2022-10-28T19:48:28Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/last-successful/33/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348116559/jobs/5546829377"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348116559/jobs/5546829477"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348116559/jobs/5546829554"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348117711/jobs/5546831499"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348186516/jobs/5546973696"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348208933/jobs/5547022512"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348291995/jobs/5547199305"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348308995/jobs/5547235507"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348368916/jobs/5547353204"
-      }
-    ]
-  },
-  {
-    "sha": "60e865a6fed6eeb5f9840bac005e31870d98e550",
-    "headline": "[CI] Enable iOS RPC tests (#13229)",
-    "body": "These tests were previously disabled (see https://github.com/apache/tvm/issues/13185). The error was related to updating `MacOS` to version `12.6` and `XCode` update.\r\nThis PR fixes the error and re-enables tests for `iOS RPC`.",
-    "author": "KJlaccHoeUM9l",
-    "date": "2022-10-28T19:23:58Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4603/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3347984329/jobs/5546556431"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3347984329/jobs/5546556552"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3347984329/jobs/5546556650"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3347994860/jobs/5546579626"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348000424/jobs/5546591363"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348024044/jobs/5546640167"
-      },
-      {
-        "name": "Update last-successful branch / update-last-successful-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348040953/jobs/5546675045"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348091953/jobs/5546778495"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3348103113/jobs/5546801944"
       }
     ]
   }
