@@ -1,5 +1,74 @@
 [
   {
+    "sha": "edfeba5c3a2caf133d2d045d1c4d99f5c34aeb69",
+    "headline": "[Roofline] Allow user choice of pass for saving lowered TIR (#13437)",
+    "body": "Useful if users what to use a different pass for TIR extraction.",
+    "author": "tkonolige",
+    "date": "2022-11-21T03:55:39Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4768/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511315066/jobs/5881968511"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511315066/jobs/5881968576"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511315066/jobs/5881968653"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3511319472/jobs/5881976786"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3511375409/jobs/5882088394"
+      }
+    ],
+    "updated_at": 1669004327.49598
+  },
+  {
+    "sha": "41b04007aa5a36f81d183721c23560d77b7b4c1d",
+    "headline": "[FIX][ONNX][Relay] onnx converter on matmul with scalar; bring back n\u2026",
+    "body": "\u2026n.matmul check (#13448)\n\nThis PR brings 2 bug fixes:\r\n1. ONNX converter for matmul: ONNX matmul follows NumPy [rules](https://numpy.org/doc/stable/reference/generated/numpy.matmul.html):\r\n> If the first argument is 1-D, it is promoted to a matrix by prepending a 1 to its dimensions. After matrix multiplication the prepended 1 is removed.\r\n> If the second argument is 1-D, it is promoted to a matrix by appending a 1 to its dimensions. After matrix multiplication the appended 1 is removed.\r\n\r\nThe (my) previous fix https://github.com/apache/tvm/pull/11174 did not consider the second rule (append 1 dimension for the rhs vector).\r\n\r\n2. Relay's `nn.matmul` takes 2-D matrices and the checker was removed in a recent PR https://github.com/apache/tvm/pull/13287. This PR puts the checker back to prevent process crashes (make it a readable TVMError) for readability (and also for that the CI in https://github.com/ise-uiuc/nnsmith/pull/64 won't be terminated while using TVM-10).",
+    "author": "ganler",
+    "date": "2022-11-21T03:55:06Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4767/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511312833/jobs/5881964190"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511312833/jobs/5881964273"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511312833/jobs/5881964340"
+      }
+    ]
+  },
+  {
     "sha": "d6632070a01e23270f9f480efc39d09fc38eb55f",
     "headline": "[Fix] Fix IndexDataTypeNormalizer to avoid redundant casting (#13449)",
     "body": "This PR fixes the behavior of IndexDataTypeNormalizer on CastNode.\r\n\r\n## Background\r\n\r\nConsider the following case,\r\n```python\r\nA = te.placeholder((tir.IntImm(\"int64\", 2), tir.IntImm(\"int64\", 4)), name=\"A\")\r\nB = topi.reshape(A, (4, 2))\r\nfunc = te.create_prim_func([A, B], index_dtype_override=None)\r\n```\r\nthe generated PrimFunc is\r\n```python\r\n@T.prim_func\r\ndef func(A: T.Buffer[(T.int64(2), T.int64(4)), \"float32\"], T_reshape: T.Buffer[(4, 2), \"float32\"]):\r\n    for i0, i1 in T.grid(4, 2):\r\n        with T.block(\"T_reshape\"):\r\n            ax0, ax1 = T.axis.remap(\"SS\", [i0, i1])\r\n            T.reads(A[(T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(8) // T.int64(4), (T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(4)])\r\n            T.writes(T_reshape[ax0, ax1])\r\n            T_reshape[ax0, ax1] = A[(T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(8) // T.int64(4), (T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(4)]\r\n```\r\nHere loop variables `ax0` and `ax1` have dtype int32, since the shape of the output buffer is in int32. Other other hand, the input buffer has shape in int64. So as the script above shows, CreatePrimFunc will cast the int32 variables to int64 first, and access the input buffer afterwards.\r\n\r\nNow if we use the option `index_dtype_override` to specify an index dtype as below,\r\n```python\r\nfunc = te.create_prim_func([A, B], index_dtype_override=\"int64\")\r\n```\r\nthe generated function will be\r\n```python\r\n@T.prim_func\r\ndef func(A: T.Buffer[(T.int64(2), T.int64(4)), \"float32\"], T_reshape: T.Buffer[(T.int64(4), T.int64(2)), \"float32\"]):\r\n    for i0, i1 in T.grid(T.int64(4), T.int64(2)):\r\n        with T.block(\"T_reshape\"):\r\n            ax0, ax1 = T.axis.remap(\"SS\", [i0, i1])\r\n            T.reads(A[(T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(8) // T.int64(4), (T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(4)])\r\n            T.writes(T_reshape[ax0, ax1])\r\n            T_reshape[ax0, ax1] = A[(T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(8) // T.int64(4), (T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(4)]\r\n```\r\nNote that though all variables and the buffer shapes have dtype int64, there are still CastNodes such as `T.Cast(\"int64\", ax0)` when `ax0` is already an int64 variable. We don\u2019t want such redundant casting.\r\n\r\n## Fix\r\n\r\nTo fix the issue above, this PR overrides the `VisitExpr_(const CastNode* cast)` method in IndexDataTypeNormalizer. When the `value` field of a CastNode already has the target dtype, we no longer cast it.",
@@ -26,8 +95,7 @@
         "status": "pending",
         "url": "https://github.com/apache/tvm/actions/runs/3511249037/jobs/5881845652"
       }
-    ],
-    "updated_at": 1669002293.907273
+    ]
   },
   {
     "sha": "26d9b5a7c60fa8f7fe600f569274319c70702631",
@@ -11494,224 +11562,6 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3416934538/jobs/5687557020"
-      }
-    ]
-  },
-  {
-    "sha": "e43841d2efec6eedaace0c9a53cd63c607b93c36",
-    "headline": "[microTVM] Fix RPC session close on runtime side (#13310)",
-    "body": "Currently, the RPC session on C/C++ side does not know if the session  \r\nwas closed on Python side which causes extra read/write on transport   \r\nwhile the session is already closed. This commit reuses the Hexagon    \r\napproach in microTVM to shutdown the RPC session.",
-    "author": "mehrdadh",
-    "date": "2022-11-08T03:02:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4668/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415993227/jobs/5685693505"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415993227/jobs/5685693602"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415993227/jobs/5685693703"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415997596/jobs/5685702411"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416003324/jobs/5685713445"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416009505/jobs/5685725644"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416011341/jobs/5685728769"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416012694/jobs/5685731237"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416015491/jobs/5685737003"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416026878/jobs/5685758087"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416029990/jobs/5685763268"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3416034033/jobs/5685770288"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416099613/jobs/5685897716"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416175067/jobs/5686055659"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3416183328/jobs/5686072233"
-      }
-    ]
-  },
-  {
-    "sha": "f8691180e044545bbd9582dfbc3d363e454029ad",
-    "headline": "[BugFix][Driver] Correctly propogate simple-mode flag in LowerSchedul\u2026",
-    "body": "\u2026e (#13311)\n\nCurrently one version of `tvm::LowerSchedule` doesn't pass along the input `simple_mode` flag, which causes it to default back to `false`. This commit fixes it by passing along the input flag.",
-    "author": "StrongerXi",
-    "date": "2022-11-08T00:27:31Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4667/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415262641/jobs/5684189927"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415262641/jobs/5684190098"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415262641/jobs/5684190218"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415268925/jobs/5684203852"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415373505/jobs/5684429564"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415391939/jobs/5684468924"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415444459/jobs/5684580192"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415449874/jobs/5684591282"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415495216/jobs/5684682916"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3415516459/jobs/5684725515"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3415538482/jobs/5684769643"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3415540992/jobs/5684775060"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415586494/jobs/5684868854"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415810240/jobs/5685320921"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415817459/jobs/5685334981"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415817860/jobs/5685335696"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415844106/jobs/5685390994"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415848643/jobs/5685399567"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415849750/jobs/5685402072"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415930836/jobs/5685573134"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415971873/jobs/5685652372"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415973783/jobs/5685655486"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415984277/jobs/5685676254"
       }
     ]
   }
