@@ -1,5 +1,35 @@
 [
   {
+    "sha": "d6632070a01e23270f9f480efc39d09fc38eb55f",
+    "headline": "[Fix] Fix IndexDataTypeNormalizer to avoid redundant casting (#13449)",
+    "body": "This PR fixes the behavior of IndexDataTypeNormalizer on CastNode.\r\n\r\n## Background\r\n\r\nConsider the following case,\r\n```python\r\nA = te.placeholder((tir.IntImm(\"int64\", 2), tir.IntImm(\"int64\", 4)), name=\"A\")\r\nB = topi.reshape(A, (4, 2))\r\nfunc = te.create_prim_func([A, B], index_dtype_override=None)\r\n```\r\nthe generated PrimFunc is\r\n```python\r\n@T.prim_func\r\ndef func(A: T.Buffer[(T.int64(2), T.int64(4)), \"float32\"], T_reshape: T.Buffer[(4, 2), \"float32\"]):\r\n    for i0, i1 in T.grid(4, 2):\r\n        with T.block(\"T_reshape\"):\r\n            ax0, ax1 = T.axis.remap(\"SS\", [i0, i1])\r\n            T.reads(A[(T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(8) // T.int64(4), (T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(4)])\r\n            T.writes(T_reshape[ax0, ax1])\r\n            T_reshape[ax0, ax1] = A[(T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(8) // T.int64(4), (T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(4)]\r\n```\r\nHere loop variables `ax0` and `ax1` have dtype int32, since the shape of the output buffer is in int32. Other other hand, the input buffer has shape in int64. So as the script above shows, CreatePrimFunc will cast the int32 variables to int64 first, and access the input buffer afterwards.\r\n\r\nNow if we use the option `index_dtype_override` to specify an index dtype as below,\r\n```python\r\nfunc = te.create_prim_func([A, B], index_dtype_override=\"int64\")\r\n```\r\nthe generated function will be\r\n```python\r\n@T.prim_func\r\ndef func(A: T.Buffer[(T.int64(2), T.int64(4)), \"float32\"], T_reshape: T.Buffer[(T.int64(4), T.int64(2)), \"float32\"]):\r\n    for i0, i1 in T.grid(T.int64(4), T.int64(2)):\r\n        with T.block(\"T_reshape\"):\r\n            ax0, ax1 = T.axis.remap(\"SS\", [i0, i1])\r\n            T.reads(A[(T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(8) // T.int64(4), (T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(4)])\r\n            T.writes(T_reshape[ax0, ax1])\r\n            T_reshape[ax0, ax1] = A[(T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(8) // T.int64(4), (T.Cast(\"int64\", ax0) * T.int64(2) + T.Cast(\"int64\", ax1)) % T.int64(4)]\r\n```\r\nNote that though all variables and the buffer shapes have dtype int64, there are still CastNodes such as `T.Cast(\"int64\", ax0)` when `ax0` is already an int64 variable. We don\u2019t want such redundant casting.\r\n\r\n## Fix\r\n\r\nTo fix the issue above, this PR overrides the `VisitExpr_(const CastNode* cast)` method in IndexDataTypeNormalizer. When the `value` field of a CastNode already has the target dtype, we no longer cast it.",
+    "author": "MasterJH5574",
+    "date": "2022-11-21T03:40:55Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4766/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511249037/jobs/5881845544"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511249037/jobs/5881845610"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3511249037/jobs/5881845652"
+      }
+    ],
+    "updated_at": 1669002293.907273
+  },
+  {
     "sha": "26d9b5a7c60fa8f7fe600f569274319c70702631",
     "headline": "[Hotfix] Skip Flaky Tests (Tracked in #13443) (#13444)",
     "body": "This PR skips a flaky test to unblock CI on main.",
@@ -501,8 +531,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3508590032/jobs/5877100571"
       }
-    ],
-    "updated_at": 1668999041.415567
+    ]
   },
   {
     "sha": "76a6e7141f01501b298ef08dc50a1d22fba1573b",
@@ -11683,35 +11712,6 @@
         "name": "Teams / tag-teams",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3415984277/jobs/5685676254"
-      }
-    ]
-  },
-  {
-    "sha": "904ae7748f2c1a6270fd2ab1337c8c7eb4ceae1b",
-    "headline": "[Frontend][PaddlePaddle] Add test case for interpolate op convert fun\u2026",
-    "body": "\u2026c\u2026 (#13277)\n\nAdd test case for interpolate op convert function #13247",
-    "author": "woobinw",
-    "date": "2022-11-08T00:26:53Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4666/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415258891/jobs/5684182640"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415258891/jobs/5684182780"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3415258891/jobs/5684182875"
       }
     ]
   }
