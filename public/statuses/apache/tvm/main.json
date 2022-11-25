@@ -1,5 +1,69 @@
 [
   {
+    "sha": "101e3a4ade226a2b9cdef6437a285af18aef9cf8",
+    "headline": "[TIR][Transform] Optional data-flow analysis in RemoveNoOp (#13217)",
+    "body": "* [TIR][Transform] Optional data-flow analysis in RemoveNoOp\r\n\r\nPreviously, `RemoveNoOp` would remove statements that could be locally\r\nanalyzed as having no effect (e.g. `For` with empty loop extents).\r\nThis commit adds opt-in use of data-flow analysis to identify\r\ntwo types of statements that are no-ops based on their context:\r\n\r\n* Buffer stores that are overwritten without ever being read.\r\n\r\n  ```python\r\n  buf[i] = 5 # Overwritten by next statement\r\n  buf[i] = 10\r\n  ```\r\n\r\n* Storing a value that is already known to be present.\r\n\r\n  ```python\r\n  buf[0:16] = T.ramp(0, 16, 1)\r\n  buf[5] = 5 # Previous load already stored this value\r\n  ```\r\n\r\n* Avoid dangling pointers in var_range_map_",
+    "author": "Lunderberg",
+    "date": "2022-11-25T22:05:37Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4794/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3550941718/jobs/5964757170"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3550941718/jobs/5964757228"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3550941718/jobs/5964757293"
+      }
+    ],
+    "updated_at": 1669414151.80833
+  },
+  {
+    "sha": "f5a102c83c9200cf9dba1250a7431f57e018f83c",
+    "headline": "[CMSIS-NN] Support for int16 in fully connected layer (#13484)",
+    "body": "* [CMSIS-NN] Support for int16 in fully connected layer\r\n\r\n-Pattern matching and RelatToTIR introduce int16 support\r\n-Added int16 variants to fully_connected tests",
+    "author": "neildhickey",
+    "date": "2022-11-25T21:49:18Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4793/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3550883163/jobs/5964646607"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3550883163/jobs/5964646634"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3550883163/jobs/5964646660"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3550921577/jobs/5964718189"
+      }
+    ]
+  },
+  {
     "sha": "2105b937cd6b4f426156813d6562f2845e5604f0",
     "headline": "[OpenCL][Adreno] Remove PrimFunc parameters annotation (#13483)",
     "body": "`DeviceAwareVisitExpr_` for `FunctionNode` had been modifying state of\r\nthe parameters and specified memory scope for virtual device.\r\n`VisitExpr` functions shouldn't modify state of the objects. This is why\r\nthis function was removed. After removing this function, the memory\r\nscope of the input tensors starts to be equal to empty line instead of\r\n\"global\".  But empty line and \"global\" will be transformed to the same\r\nmemory object. This is why there is no difference between empty line and\r\n\"global\".",
@@ -23,7 +87,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3550612776/jobs/5964149862"
       },
       {
@@ -35,9 +99,23 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3550688197/jobs/5964295129"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3550768345/jobs/5964439320"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3550814858/jobs/5964521396"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3550871826/jobs/5964625157"
       }
-    ],
-    "updated_at": 1669410539.566459
+    ]
   },
   {
     "sha": "fae4c5f1b3ad39bee5acd3e725a005a24db0ffbd",
@@ -12594,199 +12672,6 @@
         "name": "Teams / tag-teams",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3440278539/jobs/5738558429"
-      }
-    ]
-  },
-  {
-    "sha": "7cd203dc3e8dbcbc9a0400c163e3d696afb9ebb1",
-    "headline": "[TIR] Update ReductionIterNotIndexOutputBuffer to check BlockRealizeN\u2026",
-    "body": "\u2026\u2026 (#13301)\n\n* [TIR] Update ReductionIterNotIndexOutputBuffer to check BlockRealizeNodes match_buffer statements when validating writes\r\n\r\n* Add test to verify that tensorized blocks are properly validated\r\n\r\n* update to take into account all match buffer regions.\r\n\r\n* lint",
-    "author": "nverke",
-    "date": "2022-11-10T16:52:26Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4693/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438758446/jobs/5735232415"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438758446/jobs/5735232621"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438758446/jobs/5735232761"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438763300/jobs/5735243987"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438847373/jobs/5735435502"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438873155/jobs/5735488851"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438966016/jobs/5735692890"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438972531/jobs/5735708207"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439028917/jobs/5735831352"
-      }
-    ]
-  },
-  {
-    "sha": "23ade0c14b29c2c2710f6580035878f130eea52b",
-    "headline": "[TVMC] Global pass context for compile and tune (#13309)",
-    "body": "* [TVMC] Global pass context for compile and tune\r\n\r\nComes as a followup from conversations in #13216. By making the pass\r\ncontext a global value for both `compile` and `tune` commands, we can\r\nensure the pass context is exactly as the user expected and also\r\ntest components such as `convert_graph_layout` under a pass context\r\nsuitable for testing (e.g. add instruments). With this change, it\r\nbecomes the users responsibility to ensure the PassContext they\r\nselect is suitable for the passes that will be run. By default,\r\n`opt_level` remains as 3 so current workflows that do not alter the pass\r\ncontext from the command line / TVMC Python API should not be affected.\r\n\r\nChange-Id: I7a601daf6fbe664f77bce1b45efeb7ca29f621b3\r\n\r\n* fix vitis-ai test and typo\r\n\r\nChange-Id: I04f5bd031ae4717825f42e373bcb0e1e2c1c9d90",
-    "author": "lhutton1",
-    "date": "2022-11-10T13:49:20Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4692/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437346148/jobs/5731978329"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437346148/jobs/5731978515"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437346148/jobs/5731978665"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437347105/jobs/5731980949"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437418636/jobs/5732146120"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437532932/jobs/5732413244"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437723310/jobs/5732863511"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437788299/jobs/5733013104"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437812107/jobs/5733067284"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437896052/jobs/5733257362"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3437947930/jobs/5733377674"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438054277/jobs/5733620687"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438169887/jobs/5733884654"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438177982/jobs/5733902746"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438272679/jobs/5734116879"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438290440/jobs/5734154238"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438378658/jobs/5734357267"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438414143/jobs/5734434943"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438537833/jobs/5734725296"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438586673/jobs/5734832794"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438635099/jobs/5734945624"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438674722/jobs/5735035879"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438680949/jobs/5735050206"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3438696420/jobs/5735087035"
       }
     ]
   }
