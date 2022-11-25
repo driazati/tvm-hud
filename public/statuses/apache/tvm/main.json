@@ -1,5 +1,74 @@
 [
   {
+    "sha": "9098b497bbbe20fb6c3b3ea6e062d2372cb0c8c9",
+    "headline": "[TIR] Correct type annotation for `rfactor` (#13485)",
+    "body": "",
+    "author": "junrushao",
+    "date": "2022-11-25T22:49:09Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4796/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3551101332/jobs/5965035818"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3551101332/jobs/5965035885"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3551101332/jobs/5965035935"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3551137364/jobs/5965098111"
+      }
+    ],
+    "updated_at": 1669417769.642742
+  },
+  {
+    "sha": "fc606c09b223df445dd6bc6a33d3e3bfbd670535",
+    "headline": "[TIR][TVMScript] Cleaner printing of And/Or chains (#13432)",
+    "body": "Even though the operator precedence of `And` has a higher precedence\r\nthan `Or`, removing parentheses based on this precedence can harm\r\nreadability.  This commit adds an exception to the TVMScript rules for\r\nparentheses, to always insert parentheses between `And` and `Or`\r\noperators.\r\n\r\nIn addition, adding a rewrite rule to preferentially produce And/Or\r\nchains that may be expressed in a single left-associative chain of\r\noperators.\r\n\r\nBetween these two changes, the readability of boolean expressions can\r\nbe improved.  Below is the motivating example for this change.  In\r\neach case, the output had been passed through the `black` formatter.\r\nBoth expressions are equivalent, but the before-case was much more\r\ndifficult to read.\r\n\r\n```python\r\nx = (\r\n    AAA == 0\r\n    and BBB < 4\r\n    or AAA == 7\r\n    and 6 <= BBB\r\n    or (CCC == 0 and DDD < 4 or CCC == 7 and 6 <= DDD)\r\n)\r\n\r\nx = (\r\n    (AAA == 0 and BBB < 4)\r\n    or (AAA == 7 and 6 <= BBB)\r\n    or (CCC == 0 and DDD < 4)\r\n    or (CCC == 7 and 6 <= DDD)\r\n)\r\n```",
+    "author": "Lunderberg",
+    "date": "2022-11-25T22:37:45Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4795/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3551063914/jobs/5964971910"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3551063914/jobs/5964971939"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3551063914/jobs/5964971974"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3551091585/jobs/5965019477"
+      }
+    ]
+  },
+  {
     "sha": "101e3a4ade226a2b9cdef6437a285af18aef9cf8",
     "headline": "[TIR][Transform] Optional data-flow analysis in RemoveNoOp (#13217)",
     "body": "* [TIR][Transform] Optional data-flow analysis in RemoveNoOp\r\n\r\nPreviously, `RemoveNoOp` would remove statements that could be locally\r\nanalyzed as having no effect (e.g. `For` with empty loop extents).\r\nThis commit adds opt-in use of data-flow analysis to identify\r\ntwo types of statements that are no-ops based on their context:\r\n\r\n* Buffer stores that are overwritten without ever being read.\r\n\r\n  ```python\r\n  buf[i] = 5 # Overwritten by next statement\r\n  buf[i] = 10\r\n  ```\r\n\r\n* Storing a value that is already known to be present.\r\n\r\n  ```python\r\n  buf[0:16] = T.ramp(0, 16, 1)\r\n  buf[5] = 5 # Previous load already stored this value\r\n  ```\r\n\r\n* Avoid dangling pointers in var_range_map_",
@@ -25,9 +94,18 @@
         "name": "CI / Android",
         "status": "pending",
         "url": "https://github.com/apache/tvm/actions/runs/3550941718/jobs/5964757293"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3550997863/jobs/5964859469"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3551042969/jobs/5964936474"
       }
-    ],
-    "updated_at": 1669414151.80833
+    ]
   },
   {
     "sha": "f5a102c83c9200cf9dba1250a7431f57e018f83c",
@@ -77,12 +155,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3550612776/jobs/5964149734"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3550612776/jobs/5964149800"
       },
       {
@@ -12394,284 +12472,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3441402017/jobs/5740894424"
-      }
-    ]
-  },
-  {
-    "sha": "3a639a41a830ece914df10a98f807123e46cd750",
-    "headline": "[TIR][Arith] Fix divisor checking in `TryConstFold` (#13348)",
-    "body": "Fix denominator checking in `TryConstFold`.",
-    "author": "wzh99",
-    "date": "2022-11-10T20:43:38Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4695/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440279826/jobs/5738561013"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440279826/jobs/5738561138"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440279826/jobs/5738561248"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440283491/jobs/5738568376"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440289605/jobs/5738580830"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440301539/jobs/5738606647"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440386073/jobs/5738790345"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3440479694/jobs/5738993024"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440501174/jobs/5739038866"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440505333/jobs/5739047963"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440508248/jobs/5739054284"
-      }
-    ]
-  },
-  {
-    "sha": "c66bb00a48626d4c0b10c38c1069245548df0e99",
-    "headline": "[Docker]Refactor timezone script and NRF installation (#13342)",
-    "body": "This PR refactors timezone setup to a separate script that docker/install/ubuntu_install_core.sh\r\nAlso, it adds a script to install NRF and reused in both cortexm docker and RVM installation path.",
-    "author": "mehrdadh",
-    "date": "2022-11-10T17:35:40Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4694/display/redirect"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439072041/jobs/5735929519"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439072204/jobs/5735929904"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439072204/jobs/5735930062"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439072204/jobs/5735930229"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439152019/jobs/5736101688"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439243523/jobs/5736304158"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439347050/jobs/5736532964"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439380028/jobs/5736604673"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439416533/jobs/5736685938"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439481587/jobs/5736830309"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439515106/jobs/5736898632"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439518271/jobs/5736904936"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439519688/jobs/5736907934"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439537046/jobs/5736945038"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439560206/jobs/5736997722"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439612893/jobs/5737110895"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439638466/jobs/5737162914"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3439746794/jobs/5737393436"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439747128/jobs/5737395590"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439752148/jobs/5737404688"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439762087/jobs/5737426256"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439835669/jobs/5737583342"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439848209/jobs/5737609928"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439893632/jobs/5737706208"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439909573/jobs/5737739034"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439930126/jobs/5737785424"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3439986063/jobs/5737909955"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440014943/jobs/5737975389"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3440022362/jobs/5737992083"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440023031/jobs/5737993506"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440023607/jobs/5737995611"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440122376/jobs/5738219719"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440125816/jobs/5738227241"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440143689/jobs/5738267572"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440195682/jobs/5738383211"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440219381/jobs/5738435503"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440221193/jobs/5738439394"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440223830/jobs/5738445077"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3440278539/jobs/5738558429"
       }
     ]
   }
