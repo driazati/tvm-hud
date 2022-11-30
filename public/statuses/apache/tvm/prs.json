@@ -1,5 +1,119 @@
 [
   {
+    "sha": "5668dd1f4c6104e84cbda543612e868dc9dc2d65",
+    "headline": "[CI] Add `set -x` for demo scripts",
+    "body": "Previously, the `tests/scripts/task_demo_microtvm.sh` script prints\nthe commands as they are run, but the\n`apps/microtvm/ethosu/run_demo.sh` script did not.  As a result, it\ncould be difficult to tell which step stalled or failed during CI.",
+    "author": "Lunderberg",
+    "date": "2022-11-30T14:52:51Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13523/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3584423418/jobs/6031077103"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584423417/jobs/6031077124"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584423417/jobs/6031077358"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584423417/jobs/6031077571"
+      }
+    ],
+    "pr": 13523,
+    "pr_title": "[CI] Add `set -x` for demo scripts",
+    "updated_at": 1669820610.896488
+  },
+  {
+    "sha": "c4cb1e051b99f567e86db86103ea2afdfd9e48dd",
+    "headline": "fix misprinting",
+    "body": "",
+    "author": "Valery Chernov",
+    "date": "2022-11-30T14:36:21Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13469/5/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3584267001/jobs/6030718142"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584267172/jobs/6030718615"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584267172/jobs/6030718836"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584267172/jobs/6030719102"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3584276646/jobs/6030740376"
+      }
+    ],
+    "pr": 13469,
+    "pr_title": "[QNN] support zero points as variable scalar for QnnBatchMatMul op"
+  },
+  {
+    "sha": "a70c0649a895cf600e600bb3a1f49f6269aa71db",
+    "headline": "[CodegenC] Explicit forward function declarations",
+    "body": "armcland 6.19 does not support implicit function declarations.\nThis commit adds support for generating forward function\ndeclarations in the C file generated for __tvm_main__.\nAll the non-pure extern functions called from __tvm_main__\nwill be declared explicitly in this file.",
+    "author": "ashutosh-arm",
+    "date": "2022-11-30T14:20:23Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13522/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3584249250/jobs/6030676725"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584249302/jobs/6030677058"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584249302/jobs/6030677284"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3584249302/jobs/6030677481"
+      }
+    ],
+    "pr": 13522,
+    "pr_title": "[CodegenC] Explicit forward function declarations"
+  },
+  {
     "sha": "f83de4b574231ee6c30d9c8811edab0d162a0fed",
     "headline": "add test",
     "body": "",
@@ -38,8 +152,7 @@
       }
     ],
     "pr": 13519,
-    "pr_title": "[Relay] Optimize transform shape",
-    "updated_at": 1669810238.13645
+    "pr_title": "[Relay] Optimize transform shape"
   },
   {
     "sha": "9855e35db5d285be269d58f8ecd0be44dc3740f7",
@@ -847,21 +960,21 @@
     "pr_title": "[CMSIS-NN] Support int16 handling for pooling functions"
   },
   {
-    "sha": "946749b7ffb690d4e6f0d46991081f6a6786d42b",
-    "headline": "Add close method to RPC session",
-    "body": "",
+    "sha": "96c19d38ddbdd3bfd2b16f43179d7cc84da705bf",
+    "headline": "[RPC] Add close method to RPC session",
+    "body": "Add close method to RPCSession class. User should explicitly call close\nmethod when RPCSession is not needed anymore or use \"with\" clause.\n\nIf for some reason reference count does not reach 0 then the session\nwill not be shut down properly and the next session will have to wait\nfor the previous session to time out.\n\nFor example, on python 3.7 there was a bug introduced with bpo-34536\nthat leads to a circular reference inside getaddrinfo on Windows.\nBecause of this RPCSession will not be deleted until GC is invoked.\nMethods like autotvm.measure.measure_methods.check_remote would take\nmore than a minute to finish.",
     "author": "itmo153277",
     "date": "2022-11-28T15:25:43Z",
     "jobs": [
       {
         "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13500/1/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13500/2/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3567004271/jobs/5994166558"
+        "url": "https://github.com/apache/tvm/actions/runs/3584365233/jobs/6030938052"
       }
     ],
     "pr": 13500,
@@ -2794,93 +2907,6 @@
     "pr_title": "[TIR] Fix buffer shape and IndexMap indices dtype mismatch"
   },
   {
-    "sha": "e29a4df69fdfe508054c5e75039e6bd9d83b022c",
-    "headline": "Support local runner.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-22T02:19:26Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13459/7/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519781287/jobs/5900075502"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519781294/jobs/5900110307"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519781294/jobs/5900110391"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519781294/jobs/5900110463"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3525965763/jobs/5913321448"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3567350920/jobs/5994937701"
-      }
-    ],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "c5a963b4b888e8413c8647438494bbf26e4c2390",
-    "headline": "add options",
-    "body": "",
-    "author": "mehrdadh",
-    "date": "2022-11-22T01:03:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13460/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519495600/jobs/5899504926"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519495633/jobs/5899509356"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519495633/jobs/5899509426"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519495633/jobs/5899509487"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3520563099/jobs/5901591914"
-      }
-    ],
-    "pr": 13460,
-    "pr_title": "[Docker]Add privileged option for hardware with USB access testing"
-  },
-  {
     "sha": "5f30b93363db3d4ae8182b4152702cd263860993",
     "headline": "Fix typo.",
     "body": "",
@@ -2930,307 +2956,6 @@
     ],
     "pr": 13473,
     "pr_title": "[MetaSchedule][Minor] Unify Cuda-TensorCore Naming in Schedule Rule Kind"
-  },
-  {
-    "sha": "6e59a36ee9123b1a5fe78818bd6ef2010c7d46c2",
-    "headline": "Move function out of initializer.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-22T00:33:03Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13459/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519293668/jobs/5899093733"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519293852/jobs/5899101144"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519293852/jobs/5899101223"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519293852/jobs/5899101292"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3519412808/jobs/5899334673"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3519438587/jobs/5899387464"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3519491779/jobs/5899496606"
-      }
-    ],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "3bcafb0e62aaa3f3f9ee1a1af88dbc483fce48c1",
-    "headline": "Linting.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-22T00:16:13Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13459/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519204297/jobs/5898905372"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519204494/jobs/5898911284"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519204494/jobs/5898911367"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519204494/jobs/5898911467"
-      }
-    ],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "eb3702606245f486c4ee0f08a2809053671b33b2",
-    "headline": "Linting.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-22T00:07:50Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13459/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519161279/jobs/5898813571"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519161446/jobs/5898818456"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519161446/jobs/5898818605"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519161446/jobs/5898818720"
-      }
-    ],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "674a9e1f77a63d64a1692191e7bc58ef071c0b22",
-    "headline": "Avoid nullptr.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-21T23:57:28Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13459/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519104935/jobs/5898698762"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519105069/jobs/5898700487"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519105069/jobs/5898700547"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519105069/jobs/5898700626"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519108671/jobs/5898705955"
-      }
-    ],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "e3814d75f5ded9a6df5c2357b6aae2418c9ec30a",
-    "headline": "Resolve issues.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-21T23:53:47Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13459/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519089190/jobs/5898666744"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519089326/jobs/5898671966"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519089326/jobs/5898672034"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3519089326/jobs/5898672082"
-      }
-    ],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "0ad19f59369427a0a979295c0b2ab41a8749bdfc",
-    "headline": "Check point.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-21T23:00:07Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13459/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3518865173/jobs/5898224504"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3518865301/jobs/5898224806"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3518865301/jobs/5898224950"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3518865301/jobs/5898225115"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3519075928/jobs/5898640774"
-      }
-    ],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "5dcec8a914fe96cd8feecc2f95fab0d7d435e760",
-    "headline": "Check point.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-18T19:09:47Z",
-    "jobs": [],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "81b57612ddb4cc5686532471fe1ebbf2970c8d0e",
-    "headline": "Check point.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-16T01:05:24Z",
-    "jobs": [],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "af3523879cf2c5581dc5c9c80ce26a2b075a102e",
-    "headline": "Remove exception inputs in results.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-15T17:43:14Z",
-    "jobs": [],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "0b5014e8a6f951976f6ed7280f33eee571458a19",
-    "headline": "Fix issues.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-15T08:02:28Z",
-    "jobs": [],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "b4b1ba1ce7779fbde0deb1c2f1de49ebb9c9927d",
-    "headline": "Support reuse input & local mod results.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-15T07:29:39Z",
-    "jobs": [],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
-  },
-  {
-    "sha": "dc71ca535b469781727e600ac02eaa14f5b27cf4",
-    "headline": "Unify output function.",
-    "body": "",
-    "author": "zxybazh",
-    "date": "2022-11-15T06:30:07Z",
-    "jobs": [],
-    "pr": 13459,
-    "pr_title": "[MetaSchedule] Enhance Database Validation Script"
   },
   {
     "sha": "c8fba793e152e47bd4e998b1a6c740d4aa8f4527",
