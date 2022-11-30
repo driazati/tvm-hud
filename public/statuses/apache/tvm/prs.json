@@ -1,5 +1,42 @@
 [
   {
+    "sha": "6f3723f4d4a69880b3db1ea39e9376746a1ddc83",
+    "headline": "[TIR] Disable RewriteSimplifier extensions in RemoveNoOp",
+    "body": "During a `tir.Simplify` pass, these extensions were conditionally\nenabled based on the `PassContext`.  Prior to this commit, they were\nenabled by default in the `tir.RemoveNoOp` pass, as the simplified\nexpressions were only used to prove/disprove a no-op, and did not\nappear in the output TIR.  However, this caused performance issues for\nsome nested boolean expressions.\n\nThis PR disables the analyzer extensions for the analyzer used by\n`tir.RemoveNoOp`.  The extensions are still used internally by\n`ControlFlowGraph`, including during the data-flow analysis used if\n`tir.transform.RemoveNoOpConfig.use_dataflow_analysis` is enabled, so\nthe opt-in data-dependent no-op removals are unaffected.\n\nRelated to issue #13508.",
+    "author": "Lunderberg",
+    "date": "2022-11-30T14:57:20Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13524/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3584518620/jobs/6031298180"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3584518716/jobs/6031298571"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3584518716/jobs/6031298775"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3584518716/jobs/6031298931"
+      }
+    ],
+    "pr": 13524,
+    "pr_title": "[TIR] Disable RewriteSimplifier extensions in RemoveNoOp",
+    "updated_at": 1669827859.235876
+  },
+  {
     "sha": "5668dd1f4c6104e84cbda543612e868dc9dc2d65",
     "headline": "[CI] Add `set -x` for demo scripts",
     "body": "Previously, the `tests/scripts/task_demo_microtvm.sh` script prints\nthe commands as they are run, but the\n`apps/microtvm/ethosu/run_demo.sh` script did not.  As a result, it\ncould be difficult to tell which step stalled or failed during CI.",
@@ -18,23 +55,27 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584423417/jobs/6031077124"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584423417/jobs/6031077358"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584423417/jobs/6031077571"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3584614788/jobs/6031518510"
       }
     ],
     "pr": 13523,
-    "pr_title": "[CI] Add `set -x` for demo scripts",
-    "updated_at": 1669820610.896488
+    "pr_title": "[CI] Add `set -x` for demo scripts"
   },
   {
     "sha": "c4cb1e051b99f567e86db86103ea2afdfd9e48dd",
@@ -55,17 +96,17 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584267172/jobs/6030718615"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584267172/jobs/6030718836"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584267172/jobs/6030719102"
       },
       {
@@ -96,18 +137,33 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584249302/jobs/6030677058"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584249302/jobs/6030677284"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3584249302/jobs/6030677481"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3584807159/jobs/6031953229"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3584823935/jobs/6031993009"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/3584829535/jobs/6032005876"
       }
     ],
     "pr": 13522,
@@ -2451,62 +2507,6 @@
     "pr_title": "[tir]delete useless param in driver_api.cc"
   },
   {
-    "sha": "aa7f08ef973b1ce2924d402fa38ce7afb01c7387",
-    "headline": "massively simplify test case",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-11-22T21:02:17Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13463/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3527114101/jobs/5915812649"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3527114189/jobs/5915818473"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3527114189/jobs/5915818569"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3527114189/jobs/5915818691"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3565682544/jobs/5991154339"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3567344485/jobs/5994922252"
-      }
-    ],
-    "pr": 13463,
-    "pr_title": "[TIR] Fix buffer shape and IndexMap indices dtype mismatch"
-  },
-  {
-    "sha": "21d550710af89446cce3dbf3fff63466cdd5cbea",
-    "headline": "add missing const auto&, handle cases dtypes partially match",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-11-22T21:01:03Z",
-    "jobs": [],
-    "pr": 13463,
-    "pr_title": "[TIR] Fix buffer shape and IndexMap indices dtype mismatch"
-  },
-  {
     "sha": "25cd7987ce4bd22d05c9f2358eff55251dc9edcd",
     "headline": "fix issue #13466, add CI tests",
     "body": "",
@@ -2784,52 +2784,6 @@
     "pr_title": "[QNN] support zero points as variable scalar for QnnBatchMatMul op"
   },
   {
-    "sha": "b37bbb96fb44870668333ba0c8db97a22ba8516d",
-    "headline": "add comment",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-11-22T09:38:36Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13463/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3522141812/jobs/5904771103"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3522141861/jobs/5904780024"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3522141861/jobs/5904780158"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3522141861/jobs/5904780283"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3522150852/jobs/5904790050"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3526890244/jobs/5915326814"
-      }
-    ],
-    "pr": 13463,
-    "pr_title": "[TIR] Fix buffer shape and IndexMap indices dtype mismatch"
-  },
-  {
     "sha": "40572e13e759bb37adcff6b1efd5caf689896b77",
     "headline": "Bump pillow from 8.3.2 to 9.3.0 in /apps/microtvm/ethosu",
     "body": "Bumps [pillow](https://github.com/python-pillow/Pillow) from 8.3.2 to 9.3.0.\n- [Release notes](https://github.com/python-pillow/Pillow/releases)\n- [Changelog](https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst)\n- [Commits](https://github.com/python-pillow/Pillow/compare/8.3.2...9.3.0)\n\n---\nupdated-dependencies:\n- dependency-name: pillow\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
@@ -2854,57 +2808,6 @@
     ],
     "pr": 13464,
     "pr_title": "Bump pillow from 8.3.2 to 9.3.0 in /apps/microtvm/ethosu"
-  },
-  {
-    "sha": "9b9bac93ee3f73048f1226c706f811eda9dc5dec",
-    "headline": "turn off debug_mask to suppress flaky VerifySRefTree error",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-11-22T08:52:34Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/PR-13463/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3521810775/jobs/5904069986"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3521810840/jobs/5904070288"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3521810840/jobs/5904070414"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/3521810840/jobs/5904070522"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3522079803/jobs/5904638626"
-      }
-    ],
-    "pr": 13463,
-    "pr_title": "[TIR] Fix buffer shape and IndexMap indices dtype mismatch"
-  },
-  {
-    "sha": "697296ab4a928dd8a1397961f15a59ab82225bd0",
-    "headline": "[TIR] Fix buffer shape and IndexMap indices dtype mismatch",
-    "body": "",
-    "author": "masahi",
-    "date": "2022-11-22T08:33:03Z",
-    "jobs": [],
-    "pr": 13463,
-    "pr_title": "[TIR] Fix buffer shape and IndexMap indices dtype mismatch"
   },
   {
     "sha": "5f30b93363db3d4ae8182b4152702cd263860993",
