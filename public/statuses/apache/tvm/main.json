@@ -1,5 +1,45 @@
 [
   {
+    "sha": "7bc41ecca26204112f266d146371d0e867ec1240",
+    "headline": "[Logging] Mark LogFatal::~LogFatal as [[noreturn]] (#13542)",
+    "body": "Using `LOG(FATAL) << \"some error message\";` throws an exception when\r\nthe internal `LogFatal` object is constructed.  However, the gcc warning\r\n\"control reaches end of non-void function\" resulted in a common\r\npattern where a `LOG(FATAL)` statement was immediately followed by\r\nreturn of a default value, in order to suppress the warning.\r\n\r\nThis commit marks the `LogFatal::~LogFatal` destructor with the C++11\r\nattribute `[[noreturn]]`, indicating that calls into it will not\r\nresume the normal control flow.  This suppresses the warning without\r\nrequiring the extra `return` statement after `LOG(FATAL)`, as the\r\ncompiler knows that control flow will not resume after `LOG(FATAL)`.",
+    "author": "Lunderberg",
+    "date": "2022-12-04T19:40:33Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4834/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3614780308/jobs/6091442265"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3614780308/jobs/6091442308"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3614780308/jobs/6091442362"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3614795758/jobs/6091469697"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3614841405/jobs/6091548697"
+      }
+    ],
+    "updated_at": 1670184561.16646
+  },
+  {
     "sha": "d31a1fb0dbea484dec045c22ce2a756aa1071b38",
     "headline": "[ci] Dis-allow any non-S3 URLs in CI (#13283)",
     "body": "* [ci] Dis-allow any non-S3 URLs in CI\r\n\r\nThis PR makes it so any URLs accessed in tests in CI must be hosted in\r\nS3. This improves reliability as we've seen even files on GitHub\r\nsometimes serve 503s even when everything else is working fine. This\r\nraises an error if any unallowed URL is detected and adds the remaining\r\nfew.",
@@ -481,8 +521,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3610513580/jobs/6084356695"
       }
-    ],
-    "updated_at": 1670180817.516167
+    ]
   },
   {
     "sha": "72c3399207793ee9c28639995c88a64115f2193b",
@@ -13913,35 +13952,6 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3476271137/jobs/5811339145"
-      }
-    ]
-  },
-  {
-    "sha": "edc1bfd1052a125ef1feaa6db67b814c27be64b5",
-    "headline": "Add support for cast double to fp16 (#13395)",
-    "body": "__truncdfhf2 can be generated in codegen but the implementation was missing. Added the missing implementation.",
-    "author": "rkimball",
-    "date": "2022-11-16T03:48:15Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4732/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476207132/jobs/5811218970"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476207132/jobs/5811219054"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476207132/jobs/5811219123"
       }
     ]
   }
