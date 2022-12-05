@@ -1,5 +1,65 @@
 [
   {
+    "sha": "3a81aef40bca9479d4a691b3a80e42b01f3f8a0d",
+    "headline": "[Fix] Use proper target in VerifyGPUCode (#13548)",
+    "body": "Previously, the VerifyGPUCode post-processor uses hardcoded target `Target(\"cuda\")` for applying pass LowerIntrin. This is a bit problematic since the actual target can be other GPU target (e.g., Metal). Therefore, this PR changes the hardcoded target to be the actual target.",
+    "author": "MasterJH5574",
+    "date": "2022-12-04T23:22:38Z",
+    "jobs": [
+      {
+        "name": "tvm-ci/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4835/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3615558668/jobs/6092730585"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3615558668/jobs/6092730623"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3615558668/jobs/6092730662"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3615588977/jobs/6092779850"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3615640283/jobs/6092863018"
+      },
+      {
+        "name": "Nightly Docker Update / open_update_pr",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/3615679197/jobs/6092929048"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3615704033/jobs/6092975125"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3615793186/jobs/6093153301"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3615879898/jobs/6093324901"
+      }
+    ],
+    "updated_at": 1670201248.605321
+  },
+  {
     "sha": "7bc41ecca26204112f266d146371d0e867ec1240",
     "headline": "[Logging] Mark LogFatal::~LogFatal as [[noreturn]] (#13542)",
     "body": "Using `LOG(FATAL) << \"some error message\";` throws an exception when\r\nthe internal `LogFatal` object is constructed.  However, the gcc warning\r\n\"control reaches end of non-void function\" resulted in a common\r\npattern where a `LOG(FATAL)` statement was immediately followed by\r\nreturn of a default value, in order to suppress the warning.\r\n\r\nThis commit marks the `LogFatal::~LogFatal` destructor with the C++11\r\nattribute `[[noreturn]]`, indicating that calls into it will not\r\nresume the normal control flow.  This suppresses the warning without\r\nrequiring the extra `return` statement after `LOG(FATAL)`, as the\r\ncompiler knows that control flow will not resume after `LOG(FATAL)`.",
@@ -110,9 +170,13 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3615472007/jobs/6092592839"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3615547948/jobs/6092714247"
       }
-    ],
-    "updated_at": 1670195333.421281
+    ]
   },
   {
     "sha": "d31a1fb0dbea484dec045c22ce2a756aa1071b38",
@@ -13973,60 +14037,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3477060443/jobs/5812847859"
-      }
-    ]
-  },
-  {
-    "sha": "a042a93cd9e13038da2fcdc59d5b245df012eba0",
-    "headline": "[TIR] Add test to cover specific case of reducer match buffer checkin\u2026",
-    "body": "\u2026g (#13373)\n\nAdding in a test that covers another case that can happen when running a check in reducer.cc [here](https://github.com/apache/tvm/blob/main/src/tir/schedule/analysis/reducer.cc#L590).",
-    "author": "nverke",
-    "date": "2022-11-16T03:48:42Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4733/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476209260/jobs/5811223046"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476209260/jobs/5811223122"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476209260/jobs/5811223215"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476240271/jobs/5811280993"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3476240367/jobs/5811281066"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476242778/jobs/5811285892"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476245445/jobs/5811291173"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3476271137/jobs/5811339145"
       }
     ]
   }
