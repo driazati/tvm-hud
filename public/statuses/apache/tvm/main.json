@@ -1,5 +1,90 @@
 [
   {
+    "sha": "ce97138ebeb2cf2b5a5a3e916841a884e604d61d",
+    "headline": "[TVMScript] Fix print round-tripable multi thread env binding (#13622)",
+    "body": "* Fix print round-tripable multi thread env binding\r\n\r\n* add unittest",
+    "author": "wrongtest-intellif",
+    "date": "2022-12-15T18:57:35Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/46/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/46/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/46/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/46/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/46/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/46/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/46/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/46/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/46/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/45/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/46/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3707091493/jobs/6283090147"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3707091493/jobs/6283090264"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3707091493/jobs/6283090361"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3707113816/jobs/6283140863"
+      }
+    ],
+    "updated_at": 1671131240.327847
+  },
+  {
     "sha": "c5911a6f23f04a4d53f35990ef57153b111be2c9",
     "headline": "[ETHOSN] Add support for experimental compiler option (#13410)",
     "body": "* [ETHOSN] Add support for experimental compiler option\r\n\r\nThe support library currently supports enabling the experimental\r\ncascading compiler option via an environment variable\r\n`FORCE_EXPERIMENTAL_COMPILER`. This commit exposes the ability to\r\nenable this option through TVMC.",
@@ -250,9 +335,28 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3706723082/jobs/6282285268"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3706808204/jobs/6282473793"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3706841363/jobs/6282547395"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3706920018/jobs/6282717692"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3707019507/jobs/6282930873"
       }
-    ],
-    "updated_at": 1671127842.048003
+    ]
   },
   {
     "sha": "06be0b3b2681b86e0dfe7458f16de424df71230e",
@@ -16063,45 +16167,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3551091585/jobs/5965019477"
-      }
-    ]
-  },
-  {
-    "sha": "101e3a4ade226a2b9cdef6437a285af18aef9cf8",
-    "headline": "[TIR][Transform] Optional data-flow analysis in RemoveNoOp (#13217)",
-    "body": "* [TIR][Transform] Optional data-flow analysis in RemoveNoOp\r\n\r\nPreviously, `RemoveNoOp` would remove statements that could be locally\r\nanalyzed as having no effect (e.g. `For` with empty loop extents).\r\nThis commit adds opt-in use of data-flow analysis to identify\r\ntwo types of statements that are no-ops based on their context:\r\n\r\n* Buffer stores that are overwritten without ever being read.\r\n\r\n  ```python\r\n  buf[i] = 5 # Overwritten by next statement\r\n  buf[i] = 10\r\n  ```\r\n\r\n* Storing a value that is already known to be present.\r\n\r\n  ```python\r\n  buf[0:16] = T.ramp(0, 16, 1)\r\n  buf[5] = 5 # Previous load already stored this value\r\n  ```\r\n\r\n* Avoid dangling pointers in var_range_map_",
-    "author": "Lunderberg",
-    "date": "2022-11-25T22:05:37Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4794/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3550941718/jobs/5964757170"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3550941718/jobs/5964757228"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3550941718/jobs/5964757293"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3550997863/jobs/5964859469"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3551042969/jobs/5964936474"
       }
     ]
   }
