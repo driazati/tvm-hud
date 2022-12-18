@@ -1,5 +1,95 @@
 [
   {
+    "sha": "4096548d13cc8add8fe1f89d54f0968f89570461",
+    "headline": "[BugFix][TVMScript] Parser crash (#13630)",
+    "body": "This PR tries to fix the crash of parser when the old value of a var is an array but the new value is not. For example:\r\n\r\n```python\r\nfrom tvm.script import tir as T\r\ndef func_wrapper(shape, dtype):\r\n    @T.prim_func\r\n    def test_case():\r\n        a = T.alloc_buffer(shape, dtype=dtype)\r\n    \r\n    return test_case\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    a = np.zeros((10, 10), dtype=\"int8\")\r\n    print(func_wrapper((256, 256), dtype=\"int8\").script())\r\n```\r\n\r\nIn the above code, there are two assignment to var 'a'. In the global scope, its value is a numpy array. But it is a Buffer in the prim function. There is a table named 'name2value' to track the value of vars like 'a' here.\r\nWhen the parser wants to update its value, it will compare the value between the new and the old assignment. Here the problem comes. When we use '==' to compare an array with a value, the result is an array too, which can not be used as a condition of a if stmt directly. So, the code above will emit an error:\r\n\r\n```shell\r\nerror: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()\r\n --> /workspace/code_newest/tvm/private_test/test_meta_programming.py:16:9\r\n    |  \r\n 16 |          a = T.alloc_buffer(shape, dtype=dtype)\r\n    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n```\r\n\r\nThis PR fixes this by change \"==\" to \"is\".\r\n\r\nCo-authored-by: lightzhan-intellif <zhan.liang@intellif.com>",
+    "author": "lightzhan-intellif",
+    "date": "2022-12-18T01:44:49Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/56/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/56/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/56/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/56/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/56/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/57/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/56/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/56/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/56/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/56/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/55/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3722720093/jobs/6313774268"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3722720093/jobs/6313774303"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3722720093/jobs/6313774337"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3722720486/jobs/6313774980"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3722762432/jobs/6313838060"
+      }
+    ],
+    "updated_at": 1671329180.092891
+  },
+  {
     "sha": "564934d5eb7fd91b47e273274ec10c78a4216866",
     "headline": "[Relay][Runtime] Add `set_input/output_zero_copy` in python (#13623)",
     "body": "* add set_output and test for set_output_zero_copy in python\r\n\r\n* clean up\r\n\r\n* clean up test\r\n\r\n* test finished\r\n\r\n* remove set output\r\n\r\n* remove setoutput from header\r\n\r\n* use zero copy for params\r\n\r\n* fix typo\r\n\r\n* address comments\r\n\r\n* address comments\r\n\r\n* add second test for set_input params\r\n\r\n* add requires_torch\r\n\r\n* add requires torch\r\n\r\n* remove pytest\r\n\r\n* add error handling for c graph executor\r\n\r\n* better handling",
@@ -475,9 +565,13 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3722514218/jobs/6313404119"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3722665614/jobs/6313677009"
       }
-    ],
-    "updated_at": 1671324417.723764
+    ]
   },
   {
     "sha": "e3afc92818eab07fe3db2960294eaebcf1f765bc",
@@ -2968,8 +3062,8 @@
     "jobs": [
       {
         "name": "i386/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/39/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/56/display/redirect"
       },
       {
         "name": "arm/branch",
@@ -16763,35 +16857,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3565180268/jobs/5990015131"
-      }
-    ]
-  },
-  {
-    "sha": "a92a3dd84f8b3ae994e7a4bef9305dc00c425285",
-    "headline": "[ACL] Enable int8 data type in QNN CONV2D (#13496)",
-    "body": "This enables CONV2D int8 data type to be used in Compute Library\r\nfor the Arm(r) Architecture (ACL) BYOC integration.",
-    "author": "leandron",
-    "date": "2022-11-28T12:11:30Z",
-    "jobs": [
-      {
-        "name": "tvm-ci/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm/job/main/4804/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3564624264/jobs/5988811171"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3564624264/jobs/5988811327"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3564624264/jobs/5988811455"
       }
     ]
   }
