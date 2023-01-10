@@ -1,5 +1,130 @@
 [
   {
+    "sha": "92da138bcb18c76604763785d3177de3f9f9b296",
+    "headline": "[Profiler] Allow user to flush L2 cache in `time_evalutor` function f\u2026",
+    "body": "\u2026or profiling CUDA kernels (#13726)\n\nCurrently, our default profiler (time_evaluator) does not flush the L2 cache per execution, this might lead to incorrect time measurement because the input data last run might reside in L2 cache and reduce the data fetching time in the next run. Both Triton and nvbench consider this effect thus reporting more accurate measurements.\r\n\r\nSolution: time_evalutor has an argument f_preproc where user can specify a pre-processing function per execution of the kernel being evaluated. Currently, TVM supports cache_flush_cpu_non_first_arg which flushes CPU cache. But similar functionality for GPU is missing.\r\n\r\nThis PR completely borrows the design of nvbench's l2flush struct and allow the user to specify \"l2_cache_flush_cuda\" as a preprocessing function which flushes NVIDIA GPU's L2 cache. l2_cache_flush_cuda is not a default value so existing program's behavior would not be influenced.",
+    "author": "yzh119",
+    "date": "2023-01-10T18:17:24Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/131/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/131/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/131/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/132/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/131/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/132/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/131/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/131/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/131/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/131/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/130/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3886101835/jobs/6630803268"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3886101835/jobs/6630803461"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/3886101835/jobs/6630803615"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3886126243/jobs/6630855867"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/3886168791/jobs/6630947187"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3886170085/jobs/6630950811"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3886173274/jobs/6630957574"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3886196330/jobs/6631009102"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3886218561/jobs/6631057604"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3886307080/jobs/6631246484"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3886406253/jobs/6631471778"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/3886408910/jobs/6631477908"
+      }
+    ],
+    "updated_at": 1673377674.763737
+  },
+  {
     "sha": "68c917d9b46ea622131cbda690dd676368b068e8",
     "headline": "[Arith] Use ConstIntBound to remove negative numerator when lowering \u2026",
     "body": "\u2026(#13724)\n\n* [Arith] Use ConstIntBound to remove negative numerator when lowering\r\n\r\nNegative numerators to modulo/remainder operations are not supported\r\nby the Vulkan API.  While the SPIR-V instructions\r\n[`OpSRem`](https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#OpSRem)\r\nand\r\n[`OpSMod`](https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#OpSMod)\r\nhave identical semantics to `tir::Mod` and `tir::FloorMod`,\r\nrespectively, use of either instruction within Vulkan results in\r\nundefined behavior.  From the [Vulkan\r\nspec](https://registry.khronos.org/vulkan/specs/1.3/html/chap37.html#spirvenv-op-prec):\r\n\r\n> For the OpSRem and OpSMod instructions, if either operand is\r\n> negative the result is undefined.\r\n>\r\n> Note: While the OpSRem and OpSMod instructions are supported by the\r\n> Vulkan environment, they require non-negative values and thus do not\r\n> enable additional functionality beyond what OpUMod provides.\r\n\r\nThis issue was first noticed in\r\nhttps://github.com/apache/tvm/pull/13530, where use of integer\r\narithmetic resulted in negative numerators.  This hadn't caused issues\r\npreviously, because most use of div/mod use a denominator that is a\r\npower of two.  In these cases, `tir.LowerIntrin` implements floordiv\r\nand floormod using only bitwise operations.  When the denominator\r\nisn't a power of two, both `tir::FloorDiv` and `tir::FloorMod` are\r\nimplemented in terms of `tir::Mod`, which triggers the undefined\r\nbehavior for negative numerators.\r\n\r\nThis commit alters the lowering of FloorDiv/FloorMod to\r\nTruncDiv/TruncMod, in cases where the denominator is positive, the\r\nnumerator is sometimes negative, and the range of the numerator is\r\nknown.  In these cases, the FloorDiv/FloorMod is now implemented by\r\noffsetting the numerator such that it is always positive.\r\n\r\n* Add check to avoid -INT32_MIN\r\n\r\n* Updated to use `tvm::min_value(DataType)`\r\n\r\n* Added derivation for floordiv/floormod in terms of truncdiv/trundmod",
@@ -32,29 +157,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/130/display/redirect"
       },
       {
-        "name": "i386/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/131/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/130/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/130/display/redirect"
-      },
-      {
         "name": "docker/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/130/display/redirect"
       },
       {
+        "name": "i386/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/131/display/redirect"
+      },
+      {
         "name": "lint/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/130/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/130/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/130/display/redirect"
       },
       {
         "name": "wasm/branch",
@@ -86,8 +211,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3885976737/jobs/6630531133"
       }
-    ],
-    "updated_at": 1673374293.217046
+    ]
   },
   {
     "sha": "4cb75b97cda679321a2707d01f351de1cc1ff69a",
@@ -122,29 +246,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/129/display/redirect"
       },
       {
-        "name": "i386/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/130/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/129/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/129/display/redirect"
-      },
-      {
         "name": "docker/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/129/display/redirect"
       },
       {
+        "name": "i386/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/130/display/redirect"
+      },
+      {
         "name": "lint/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/129/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/129/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/129/display/redirect"
       },
       {
         "name": "wasm/branch",
@@ -163,7 +287,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3885876050/jobs/6630301037"
       },
       {
@@ -212,18 +336,18 @@
       },
       {
         "name": "i386/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/129/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/128/display/redirect"
       },
       {
         "name": "lint/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/128/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/128/display/redirect"
       },
       {
         "name": "riscv/branch",
@@ -21483,115 +21607,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3684755695/jobs/6234870863"
-      }
-    ]
-  },
-  {
-    "sha": "ec9fcc0dac9c09dcb5ef2c56f016c8433c978db6",
-    "headline": "[Relay] Fix `CombineParallelDense` slicing axis  (#13597)",
-    "body": "The current implementation of `CombineParallelDense` is hardcoded to slice along the last axis after the combined dense. I hit an error using this pass on the stable diffusion UNet, since it has a combined group where the dense is followed by `expand_dims` which changes the slicing axis (see https://github.com/masahi/torchscript-to-tvm/blob/master/stable-diffusion/compile.py for repro)\r\n\r\n```\r\n  %76 = concatenate(%74) /* ty=Tensor[(20160, 1280), float32] */;\r\n  %79 = concatenate(%77) /* ty=Tensor[(20160), float32] */;\r\n  %78 = nn.dense(%75, %76, units=20160) /* ty=Tensor[(2, 20160), float32] */;\r\n  %80 = nn.bias_add(%78, %79, axis=-1) /* ty=Tensor[(2, 20160), float32] */;\r\n  %81 = expand_dims(%80, axis=2) /* ty=Tensor[(2, 20160, 1), float32] */;\r\n  %82 = expand_dims(%81, axis=3) /* ty=Tensor[(2, 20160, 1, 1), float32] */;\r\n```\r\n\r\nThe correct way to generate `strided_slice`:\r\n```\r\n  %84 = strided_slice(%82, begin=[0, 0, 0, 0], end=[-1, 320, -1, -1], strides=[1, 1, 1, 1], slice_mode=\"size\", axes=None) /* ty=Tensor[(2, 320, 1, 1), float32] */;\r\n``` \r\n\r\nAs I documented in the code, this fix is probably not 100% fail-proof. I think this is a difficult problem, since it requires tracking how the original output-channel axis of the combined dense moves across shape-changing operations like `reshape /transpose / split`. But this is at least \"more correct\" than the current implementation, so I'm submitting this fix as is for now.\r\n\r\nWith this fix, `CombineParallelDense` works successfully on the stable diffusion UNet, and it reduces the number of `nn.dense` from 184 to 100.",
-    "author": "masahi",
-    "date": "2022-12-13T05:31:36Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/31/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/31/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/31/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/31/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/31/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/31/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/31/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/31/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/31/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/31/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/30/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3682595796/jobs/6230356890"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3682595796/jobs/6230356966"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3682595796/jobs/6230357040"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3682664090/jobs/6230482432"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3682734072/jobs/6230616619"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3682853079/jobs/6230861277"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3682925698/jobs/6231000534"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3682989056/jobs/6231120144"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3683065127/jobs/6231271628"
       }
     ]
   }
