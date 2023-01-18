@@ -4,6 +4,7 @@ import math
 import os
 import datetime
 import re
+
 # import boto3  # type: ignore
 import json
 import io
@@ -11,6 +12,7 @@ import argparse
 import gzip
 from pathlib import Path
 import os
+
 # from cryptography.hazmat.backends import default_backend
 # import jwt
 # import requests
@@ -373,7 +375,7 @@ class PRHandler(BranchHandler):
         fetch_size: int,
     ):
         super().__init__(gql, user, repo, "prs", history_size, None, fetch_size)
-    
+
     def query(self, offset: int) -> str:
         return f"""
         {{
@@ -437,11 +439,9 @@ class PRHandler(BranchHandler):
             try:
                 return await self.gql.query(query)
             except Exception as e:
-                print(
-                    f"Error: {e}\nFailed to fetch {self.user}/{self.repo} PRs"
-                )
+                print(f"Error: {e}\nFailed to fetch {self.user}/{self.repo} PRs")
                 return None
-        
+
         results = [await fetch(0)]
         # print(results)
         commits_to_prs = {}
@@ -453,15 +453,15 @@ class PRHandler(BranchHandler):
                     commit = commit["commit"]
                     commits_to_prs[commit["oid"]] = pr
                     commits.append(commit)
-        
+
         data = extract_jobs(commits)
         for item in data:
             pr = commits_to_prs[item["sha"]]
             item["pr"] = pr["number"]
             item["pr_title"] = pr["title"]
-    
+
         data = list(reversed(sorted(data, key=lambda x: x["date"])))
-    
+
         self.write_to_s3(data)
 
 
@@ -514,7 +514,12 @@ class GraphQL:
 
 
 async def main(
-    user: str, repo: str, branches: List[str], history_size: int, fetch_size: int, prs: bool,
+    user: str,
+    repo: str,
+    branches: List[str],
+    history_size: int,
+    fetch_size: int,
+    prs: bool,
 ) -> None:
     """
     Grab a list of all the head commits for each branch, then fetch all the jobs
@@ -525,9 +530,7 @@ async def main(
         # "Authorization": "token {}".format(user_token(user)),
         # "Accept": "application/vnd.github.machine-man-preview+json",
     }
-    async with aiohttp.ClientSession(
-        headers=headers
-    ) as aiosession:
+    async with aiohttp.ClientSession(headers=headers) as aiosession:
         gql = GraphQL(aiosession)
         handlers = []
         if prs:
@@ -540,7 +543,9 @@ async def main(
                 sha = head["ref"]["target"]["oid"]
                 branch = head["ref"]["name"]
                 handlers.append(
-                    BranchHandler(gql, user, repo, branch, sha, history_size, fetch_size)
+                    BranchHandler(
+                        gql, user, repo, branch, sha, history_size, fetch_size
+                    )
                 )
 
         await asyncio.gather(*[h.run() for h in handlers])
@@ -565,7 +570,7 @@ def lambda_handler(event: Any, context: Any) -> None:
             data[key] = os.environ[key]
         else:
             data[key] = event[key]
-    
+
     if event["prs"]:
         data["branches"] = "do not use"
 

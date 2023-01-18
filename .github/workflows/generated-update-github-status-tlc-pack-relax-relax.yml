@@ -1,0 +1,54 @@
+# @generated DO NOT EDIT MANUALLY
+# Generated from .github/templates/update_github_status.yml.j2
+# @generated DO NOT EDIT MANUALLY
+# Generated from .github/templates/deploy_lambda.yml.j2
+name: tlc-pack/relax/relax
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: tlc-pack/relax/relax
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: data
+      - name: Install dependencies
+        run: |
+          pip install \
+            aiohttp==3.7.4 \
+            requests==2.24.0
+      - name: Update
+        env:
+          GH_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -LO https://raw.githubusercontent.com/driazati/tvm-hud/main/scripts/update_github_status.py
+          mkdir temp
+          mv update_github_status.py temp
+          set -eux
+          python temp/update_github_status.py --repo 'relax' --user 'tlc-pack' --branch 'relax' --fetch_size 4 --history_size 100
+          rm -rf temp
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      - name: Upload data
+        run: |
+          set -eux
+          if git status | grep -q 'working tree clean'; then
+            echo no changes made
+            exit 0
+          fi
+
+          # Upload new changes
+          git add .
+          git config user.email "email@example.com"
+          git config user.name "robot"
+          git commit -m"Update commit status data"
+          git push
