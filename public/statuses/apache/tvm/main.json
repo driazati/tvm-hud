@@ -1,5 +1,115 @@
 [
   {
+    "sha": "f7dfef4cdea3a6ca96af7869e4457a4de0525eab",
+    "headline": "[ONNX] QGemm support (#13747)",
+    "body": "Co-authored-by: cheng.wen <wen.cheng@intellif.com>",
+    "author": "chengven027-intellif",
+    "date": "2023-01-26T18:25:46Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/207/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/207/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/207/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/42/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/208/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/207/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/208/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/207/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/212/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/207/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/206/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/205/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4018044871/jobs/6903167698"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4018044871/jobs/6903167842"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4018044871/jobs/6903168007"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4018095263/jobs/6903283651"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4018184023/jobs/6903482919"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4018190908/jobs/6903499144"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4018291309/jobs/6903733162"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4018302565/jobs/6903759268"
+      }
+    ],
+    "updated_at": 1674760049.825859
+  },
+  {
     "sha": "697fdb2cb7dc7ad07ed826f908390b88106cc98f",
     "headline": "[TVMScript] Comments and docstrings printing (#13839)",
     "body": "This PR introduces the `CommentDoc` for comments printing and `DocStringDoc` for docstring printing. It enables to add free comments and docstring as `stmt` in printing, e.g.\r\n```python\r\n# comment 1\r\n# comment 2\r\n\"\"\"\r\ndocstring 1\r\ndocstring 2\r\n\"\"\"\r\n```\r\nThe free here means to not be bound to any `stmt`, but acts as a single `stmt`, similar to `ExprStmtDoc` for `ExprDoc`. \r\n\r\nThis PR also introduces an example for the `CommentDoc`, as follow up of #13819.\r\nIn the old printer, we always print a `# with T.block(\"root\"):`, when there is an implicit root block skipped when printing. For example,\r\n```\r\n@T.prim_func\r\ndef main():\r\n  # with T.block(\"root\"):\r\n  a = T.alloc_buffer((128, 128))\r\n  for i, j in T.grid(128, 128):\r\n    with T.block(\"\"):\r\n      ...\r\n```\r\nWe bring this syntax reminder back in this PR.\r\nIn addition, we introduce a field of `ir_usage` and `print_headers` into the printer configuration, to support the printing of headers for `IRModule` and `PrimFunc`. For example,\r\n\r\n```python\r\n# from tvm.script import ir as I\r\n# from tvm.script import tir as T\r\n\r\n@I.ir_module\r\nclass Module():\r\n  @T.prim_func\r\n  def func():\r\n    ...\r\n```",
@@ -355,9 +465,18 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4017853407/jobs/6902743022"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4017940829/jobs/6902937802"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4018006311/jobs/6903083060"
       }
-    ],
-    "updated_at": 1674756668.396404
+    ]
   },
   {
     "sha": "239edb51583edebb6f2a11852ed8c241c74b71f3",
@@ -18948,110 +19067,6 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/3860741298/jobs/6581256112"
-      }
-    ]
-  },
-  {
-    "sha": "843310b03c601bc5324932bdce7ba0195f9e94dc",
-    "headline": "[Fix,AutoScheduler] Handle 0-dim buffers in featurization (#13718)",
-    "body": "0-dim buffers get lowered to a 0-dim buffer and a 1-dim buffer decl. We\r\nexplicitly check for this case and return a stride of 1.",
-    "author": "tkonolige",
-    "date": "2023-01-07T05:15:38Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/107/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/107/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/107/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/107/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/107/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/107/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/108/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/107/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/107/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/107/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/106/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3860620873/jobs/6581069078"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3860620873/jobs/6581069125"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3860620873/jobs/6581069170"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3860633872/jobs/6581088425"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/3860640738/jobs/6581098659"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3860674891/jobs/6581151807"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3860705884/jobs/6581199166"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/3860721568/jobs/6581224957"
       }
     ]
   }
