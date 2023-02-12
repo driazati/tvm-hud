@@ -1,5 +1,102 @@
 [
   {
+    "sha": "8caf4804d24cb8bddd1a34c2fb7d2305af8298fd",
+    "headline": "[Relay][Pass] Separate out the graph partitioning code from fuse_ops.cc",
+    "body": "The current `fuse_ops.cc` contains the following parts:\n1. `IndexedForwardGraph` and `DominatorTree` which are used for graph partitioning\n2. A Relay Expr visitor to create the `DominatorTree`\n3. A Relay Expr mutator to fuse the ops\n\nThis PR separates the graph partitioning code from `fuse_ops.cc` and moves it to the analysis folder, for:\n1. Better code organization and readability as the graph partitioning code is quite long and not directly related to the fusion mutator\n2. Possible reuse opportunities for other fusion passes in Relax\n\nNOTE: we won't bring relax fusion in `main` branch for now, but this pr is still reasonable for `main`.",
+    "author": "Hzfengsy",
+    "date": "2023-02-12T06:31:50Z",
+    "jobs": [
+      {
+        "name": "lint/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-13964/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4155111351/jobs/7187964755"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4155111397/jobs/7187964810"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4155111397/jobs/7187964860"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4155111397/jobs/7187964897"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4155111397/jobs/7187964944"
+      }
+    ],
+    "pr": 13964,
+    "pr_title": "[Relay][Pass] Separate out the graph partitioning code from fuse_ops.cc",
+    "updated_at": 1676185309.358323
+  },
+  {
     "sha": "e2d19ebd099e6756340fc4b80de61b9b4d16bdc9",
     "headline": "[Fix][MetaSchedule] RPCRunner timeout when queueing up",
     "body": "This PR fixes the timeout rule of MetaSchedule RPCRunner.\n\nPrior to this PR, the RPCRunner sets a timeout threshold for jobs\nsubmitted to popen pool. As a result, the jobs are timed since the\ntime that they are sent to the remote side.\n\nConsider the case where there is only a single device for measurement.\nIn this case, all jobs can only be executed serially and jobs must\nqueue up. Therefore, the previous timeout configuration means the\ntime spent on queueing will also be counted. This causes some jobs,\nin the worst cases, gets timeout without even started to execute,\nand has negative impacts on RPC MetaSchedule tuning, from the\nperspectives of both efficiency and result performance.\n\nCo-authored-by: Bohan Hou <32121147+spectrometerHBH@users.noreply.github.com>",
@@ -98,8 +195,7 @@
       }
     ],
     "pr": 13963,
-    "pr_title": "[Fix][MetaSchedule] RPCRunner timeout when queueing up",
-    "updated_at": 1676182001.324779
+    "pr_title": "[Fix][MetaSchedule] RPCRunner timeout when queueing up"
   },
   {
     "sha": "8ddf6c12c01b7153cb7e2e0db236e4594393a900",
@@ -8693,107 +8789,6 @@
     ],
     "pr": 13910,
     "pr_title": "[Unity][CI] Unity specific jenkins setup (do not upstream to main)"
-  },
-  {
-    "sha": "2035a7ef152d9a63bee70fd1ae9a25f3f564a38f",
-    "headline": "[tir] fix buffer_decl buffer allocation",
-    "body": "- Fix a bug where `buffer_decl`, combined with certain\n  usage patterns of the resulting buffer, cause an TVM-internal\n  assert failure during TIR-compilation.",
-    "author": "cconvey",
-    "date": "2023-01-31T21:06:00Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-13906/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4077146946/jobs/7025795079"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4077147010/jobs/7025798411"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4077147010/jobs/7025798585"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4077147010/jobs/7025798748"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/4077162392/jobs/7025831735"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/4081073008/jobs/7034141516"
-      }
-    ],
-    "pr": 13906,
-    "pr_title": "[tir] fix buffer_decl buffer allocation"
   },
   {
     "sha": "554359c9141bb28f1f2a85b7d34678b999710554",
