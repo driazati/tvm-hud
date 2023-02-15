@@ -1,5 +1,100 @@
 [
   {
+    "sha": "e516eaaea182f21c202ba6a8d60afe8ec969d1a9",
+    "headline": "[testing][py_converter] Enhance py_converter to better support entire\u2026",
+    "body": "\u2026 modules (#13769)\n\nThis PR makes a few improvements to py_converter to make it more useful for fuzz testing, especially when running larger modules.\r\n\r\nIn particular, these changes are to support returning the definition of a global var directly (e.g., if you do run_as_python(main_var, mod=mod), the result will be a function corresponding to mod[\"main\"]) and to correct two bugs in the previous implementation:\r\n\r\nPreviously, it was not possible to insert a function into a runtime container object like an ADT. This was because the converter was simply compiling Relay functions into Python functions. This change solves this problem by registering the functions into PackedFuncs. However, another fix was also needed: Even though PackedFunc is an ObjectRef in C++, the Python bindings do not recognize PackedFuncs as Objects, so the code now calls the FFI API tuple constructor directly.\r\nThe implementation relied on IRModule.from_expr to wrap passed in expressions in a module. However, from_expr will not overwrite the main function if one is passed in via the functions argument. Thus, if the user passed in a module that already had a main function defined, the wrapping would be done incorrectly and result in the main being copied many times. This PR corrects this error by not assuming that the name main will be available and instead constructing a new module with a reserved name for the target.\r\nNone of the cases above had been tested before (there are now tests included)",
+    "author": "slyubomirsky",
+    "date": "2023-02-15T03:06:08Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/299/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/298/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/298/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/133/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/299/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/298/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/299/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/298/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/298/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/298/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/296/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/303/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4180196676/jobs/7240941087"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4180196676/jobs/7240941225"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4180196676/jobs/7240941339"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4180196676/jobs/7240941445"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4180215564/jobs/7240979509"
+      }
+    ],
+    "updated_at": 1676430924.481438
+  },
+  {
     "sha": "f6cebb5d6020b74e294ff6293d45a50e3a2f68a3",
     "headline": "[microTVM] additional refactoring for enabling USE_MICRO in more buil\u2026",
     "body": "\u2026ds (#13909)\n\nAdditional changes that make it possible to enable USE_MICRO across nearly all builds except for hexagon or when USE_RPC is disabled. This mainly standardizes how the microTVM RPC common files are built across all platforms. There will be a follow-up PR that will enable USE_MICRO for nearly all build types once the best mechanism and behaviors for doing so is determined.",
@@ -7,19 +102,14 @@
     "date": "2023-02-14T23:10:54Z",
     "jobs": [
       {
-        "name": "cortexm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/297/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/297/display/redirect"
-      },
-      {
         "name": "arm/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/298/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/297/display/redirect"
       },
       {
         "name": "cpu/branch",
@@ -40,6 +130,11 @@
         "name": "gpu/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/298/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/297/display/redirect"
       },
       {
         "name": "i386/branch",
@@ -140,9 +235,18 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4179878620/jobs/7240307140"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4180041924/jobs/7240632196"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4180149262/jobs/7240850321"
       }
-    ],
-    "updated_at": 1676427564.642013
+    ]
   },
   {
     "sha": "c6ce283fde1d530a9730af106296db68a76f5d7c",
@@ -20493,145 +20597,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4003116495/jobs/6870939778"
-      }
-    ]
-  },
-  {
-    "sha": "fd3f8035c94b31dbdbcce97864b1362ad254e4d1",
-    "headline": "[docker][microTVM]Fix Zephyr 0.15.2 SDK installation and separate Zep\u2026",
-    "body": "\u2026hyr python environment (#13829)\n\nThis PR fixes the SDK installation and separates SDK installation from ZephyrProject installation.\r\nAlso it separates the Zephyr python environment to 3.8 which is the required version and it is different than tvm virtual env.",
-    "author": "mehrdadh",
-    "date": "2023-01-24T23:29:42Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/200/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/200/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/200/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/35/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/205/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/201/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/200/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/201/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/200/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/200/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/199/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/198/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001354872/jobs/6867498323"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001354872/jobs/6867498464"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001354872/jobs/6867498556"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001363117/jobs/6867514739"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/4001440847/jobs/6867668257"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001441274/jobs/6867669223"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001443137/jobs/6867672788"
-      },
-      {
-        "name": "Nightly Docker Update / open_update_pr",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/4001505688/jobs/6867802041"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001539999/jobs/6867868648"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001666233/jobs/6868133588"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001783433/jobs/6868374876"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001950568/jobs/6868708252"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001953696/jobs/6868715079"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4001956282/jobs/6868720453"
       }
     ]
   }
