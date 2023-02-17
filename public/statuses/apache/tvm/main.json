@@ -1,16 +1,116 @@
 [
   {
+    "sha": "a543f6bebfc546b56c37b68c4ef6484535be65b9",
+    "headline": "[Arith] Implemented PMatchesOneOf and matches_one_of (#13933)",
+    "body": "* [Arith] Implemented PMatchesOneOf and matches_one_of\r\n\r\nFrequently, several related rewrite rules will have identical output\r\npatterns and preconditions, differing only by the form of the input\r\npattern.  For example, both `(x + y) - y` and `(y + x) - y` can be\r\nsimplified to `x`.  Previously, these would be written as separate\r\nrewrite rules, which required duplicating the output and\r\npreconditions.\r\n\r\nThis commit introduces `PMatchesOneOf`, which attempts a series of\r\npattern matches, stopping after the first successful match.  The\r\n`PMatchesOneOf` instance can be used as the input pattern for rewrite\r\nrules.  A helper function `matches_one_of` is also added, which\r\nreturns an instance of `PMatchesOneOf`.\r\n\r\n```c++\r\n// Before\r\nTVM_TRY_REWRITE( (x + y) - y, x);\r\nTVM_TRY_REWRITE( (y + x) - y, x);\r\n\r\n// After\r\nTVM_TRY_REWRITE( matches_one_of( (x + y) - y,\r\n                                 (y + x) - y),\r\n                 x);\r\n```",
+    "author": "Lunderberg",
+    "date": "2023-02-17T21:23:42Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/311/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/310/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/310/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/145/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/311/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/310/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/311/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/310/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/315/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/310/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/310/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/308/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4207673435/jobs/7302757841"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4207673435/jobs/7302757949"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4207673435/jobs/7302758044"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4207673435/jobs/7302758163"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4207715549/jobs/7302853945"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4207804832/jobs/7303055419"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4207891978/jobs/7303265210"
+      }
+    ],
+    "updated_at": 1676671744.96119
+  },
+  {
     "sha": "b1397367fce35b6196ab2b22df63e83b959aac7c",
     "headline": "[FIX][RUNTIME] Convert container with function value type (#14024)",
     "body": "Prior to this PR, though the `convert` function is capable of\r\nconverting a single Python function/lambda to TVM func, it is not able\r\nto convert a container whose values inside are functions to TVM\r\nobject.\r\n\r\nThis PR adds function conversion to `convert_to_object` and redirects\r\n`convert` to `convert_to_object`, so that now the conversion is always\r\nrecursive, and therefore will work well on function container value\r\ntype.\r\n\r\nCo-authored-by: Chaofan Lin <1713833595@qq.com>",
     "author": "MasterJH5574",
     "date": "2023-02-17T20:16:59Z",
     "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/310/display/redirect"
-      },
       {
         "name": "cortexm/branch",
         "status": "pending",
@@ -27,19 +127,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/144/display/redirect"
       },
       {
-        "name": "gpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/310/display/redirect"
-      },
-      {
         "name": "hexagon/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/309/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/310/display/redirect"
       },
       {
         "name": "minimal/branch",
@@ -47,9 +137,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/309/display/redirect"
       },
       {
+        "name": "arm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/310/display/redirect"
+      },
+      {
         "name": "docker/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/314/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/310/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/310/display/redirect"
       },
       {
         "name": "lint/branch",
@@ -73,17 +178,17 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4207238844/jobs/7301778497"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4207238844/jobs/7301778663"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4207238844/jobs/7301778759"
       },
       {
@@ -125,9 +230,13 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4207509774/jobs/7302396597"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4207640905/jobs/7302684967"
       }
-    ],
-    "updated_at": 1676668101.666922
+    ]
   },
   {
     "sha": "d12a63689795059524aa96cd7dd6e01d039dae1a",
@@ -20978,95 +21087,6 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "neutral",
         "url": "https://github.com/apache/tvm/actions/runs/4027326541/jobs/6922916612"
-      }
-    ]
-  },
-  {
-    "sha": "2bfdcbe07ab55ff5bb9d4296543591434d4601e9",
-    "headline": "[Relay] Convert negative axes to positive when importing ONNX Unsquee\u2026",
-    "body": "\u2026ze (#13846)",
-    "author": "balaram-cadence",
-    "date": "2023-01-27T09:09:56Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/212/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/212/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/212/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/47/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/217/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/213/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/212/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/213/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/212/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/212/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/211/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/210/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4023066459/jobs/6913498608"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4023066459/jobs/6913498771"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4023066459/jobs/6913498912"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4023137920/jobs/6913646973"
       }
     ]
   }
