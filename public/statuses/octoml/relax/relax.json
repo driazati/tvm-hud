@@ -1,5 +1,30 @@
 [
   {
+    "sha": "36b9196af7457ea4bdfd926aa04155bf03d4ecb5",
+    "headline": "[TUZ-201] Support for end to end SpaceV5 (#58)",
+    "body": "Change to octo utility so that it will autopopulate available external\r\nlibs, so far we only check for `thrust`.\r\n\r\nI also disable epilogue fusion of matmul for now since it restricts\r\nbatch size to 1.",
+    "author": "jwfromm",
+    "date": "2023-03-21T02:11:11Z",
+    "jobs": [
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/octoml-relax-unity/job/relax/30/display/redirect"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4474907000/jobs/7863819466"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4474907089/jobs/7863819633"
+      }
+    ],
+    "updated_at": 1679365898.70936
+  },
+  {
     "sha": "f4f8bbec26a37ed6f008d1e8eb820a8852e867bd",
     "headline": "[TUZ-200] Change Slice to Relax Op (#57)",
     "body": "This PR follows up previous effort to changing operators into relax op\r\nimplementation so that relax layout planning could be unblocked. This\r\none specifically changes slice into strided_slice relax op.\r\n\r\nCC @sunggg @jwfromm",
@@ -215,9 +240,28 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "neutral",
         "url": "https://github.com/octoml/relax/actions/runs/4474506674/jobs/7863042086"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4474677505/jobs/7863385350"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4474678755/jobs/7863387979"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4474813422/jobs/7863637155"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4474814772/jobs/7863639319"
       }
-    ],
-    "updated_at": 1679361702.475562
+    ]
   },
   {
     "sha": "c068f89a4f33438950fce155305fffc738f2aed6",
@@ -3236,14 +3280,6 @@
     "body": "The current FoldConstant pass does not support removing unused bindings\r\nin the post-folding function. Therefore, for large real-world models,\r\nthe built executable will be overlarge because of the redundant unused\r\nconstants.\r\n\r\nThis PR removes the redundant unused constant bindings in FoldConstant\r\nby using the analysis function \"RemoveAllUnused\".\r\n\r\nNote that \"RemoveAllUnused\" only works at dataflow block level.\r\nTherefore FoldConstant will not remove unused bindings outside of\r\ndataflow block as well.",
     "author": "MasterJH5574",
     "date": "2023-02-22T19:44:00Z",
-    "jobs": []
-  },
-  {
-    "sha": "9a2ea3991c643b0a7c5ccbf3305507285deda6b9",
-    "headline": "[Unity][Analysis] TIR pattern kind analysis for multi-buffer write bl\u2026",
-    "body": "\u2026ock (#14075)\n\nThis PR supports TIR pattern kind analysis for TIR blocks which write\r\nto multiple buffers, which is helpful for normalization operators like\r\nlayernorm, groupnorm, etc.\r\n\r\nPrior to this PR, the analyzer does not support a blocks which write to\r\nmultiple buffers. On seeing such a block, the analyzer simply sets the\r\nanalysis result to \"opaque\". With this PR, on seeing a block which\r\nwrites multiple buffers, the analyzer will check if all the BufferStores\r\nhave the same indices. And it will only set the result to \"opaque\" when\r\nthe BufferStores have different indices.\r\n\r\nBy doing this, the analysis works for common cases where a block may\r\nwrite to multiple buffers, like layernorm or groupnorm.\r\n\r\nBesides the unit test for the analysis itself, this PR also adds a unit\r\ntest for FuseOps pass, make sure that a \"layernorm + relu\" pattern can\r\nbe fused together.",
-    "author": "MasterJH5574",
-    "date": "2023-02-22T12:56:45Z",
     "jobs": []
   }
 ]
