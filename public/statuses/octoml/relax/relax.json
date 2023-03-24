@@ -1,5 +1,20 @@
 [
   {
+    "sha": "6dfc22e5113b8f26aa92c6fcd5ee0ef1bb3f5ceb",
+    "headline": "[Tuning] Skip Thread-Binded Tasks (#66)",
+    "body": "For tasks like `cumsum` where it has been scheduled before tuning pass,\r\nwe need to skip this task instead of triggering a failure for lack of\r\nsupport. This PR introduced a similar check as in `DefaultGPUSchedule`\r\npass to skip such tasks.\r\n\r\nCC: @sunggg @jwfromm",
+    "author": "zxybazh",
+    "date": "2023-03-24T20:11:37Z",
+    "jobs": [
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/octoml-relax-unity/job/relax/39/display/redirect"
+      }
+    ],
+    "updated_at": 1679689084.66899
+  },
+  {
     "sha": "2830cfb07a54f9c40028291f51cea69114887087",
     "headline": "[Frontend] Add attach_span to a few of the new operators (#64)",
     "body": "Some of the recently added new operators didn't include `attach_span`,\r\nthis quick PR adds it so they pass all tests.",
@@ -501,8 +516,7 @@
         "status": "neutral",
         "url": "https://github.com/octoml/relax/actions/runs/4508408660/jobs/7937085533"
       }
-    ],
-    "updated_at": 1679685210.297575
+    ]
   },
   {
     "sha": "bf715ddcf7aeeb013c3f284716cb0f5c04059e8d",
@@ -3326,14 +3340,6 @@
     "body": "`BindParam` replace function params to constant nodes. However, it will\r\ndrop the shape information of the params, considering the following case:\r\n\r\n```python\r\n@R.function\r\ndef main(\r\n    x: R.Tensor((\"batch\", \"m\"), dtype=\"float32\"),\r\n    w0: R.Tensor((\"n\", \"m\"), dtype=\"float32\"),\r\n    b0: R.Tensor((\"n\",), dtype=\"float32\"),\r\n    w1: R.Tensor((\"k\", \"n\"), dtype=\"float32\"),\r\n    b1: R.Tensor((\"k\",), dtype=\"float32\"),\r\n) -> R.Tensor((\"batch\", \"k\"), dtype=\"float32\"):\r\n    batch = T.Var(\"batch\", \"int64\")\r\n    k = T.Var(\"k\", \"int64\")\r\n    m = T.Var(\"m\", \"int64\")\r\n    n = T.Var(\"n\", \"int64\")\r\n    with R.dataflow():\r\n        lv0 = R.call_tir(\"linear0\", (x, w0, b0), out_sinfo=R.Tensor((batch, n), dtype=\"float32\"))\r\n        out = R.call_tir(\"linear1\", (lv0, w1, b1), out_sinfo=R.Tensor((batch, k), dtype=\"float32\"))\r\n        R.output(out)\r\n    return out\r\n```\r\n\r\nThe current pass will simply drop the symbolic var `n`, `k` and cause\r\nundefined vars during build as\r\n```python\r\n@R.function\r\ndef main(x: R.Tensor((1, \"m\"), dtype=\"float32\")) -> R.Tensor(dtype=\"float32\", ndim=2):\r\n    m = T.Var(\"m\", \"int64\")\r\n    n = T.Var(\"n\", \"int64\")\r\n    k = T.Var(\"k\", \"int64\")\r\n    with R.dataflow():\r\n        lv0 = R.call_tir(\"linear0\", (x, metadata[\"relax.expr.Constant\"][0], metadata[\"relax.expr.Constant\"][1]), out_sinfo=R.Tensor((1, n), dtype=\"float32\"))\r\n        out = R.call_tir(\"linear1\", (lv0, metadata[\"relax.expr.Constant\"][2], metadata[\"relax.expr.Constant\"][3]), out_sinfo=R.Tensor((1, k), dtype=\"float32\"))\r\n        R.output(out)\r\n    return out\r\n```\r\n\r\nThis PR updates the pass to bind the symbolic shape during binding.",
     "author": "Hzfengsy",
     "date": "2023-03-01T13:46:11Z",
-    "jobs": []
-  },
-  {
-    "sha": "82bfc57772f85b61a9105ef71979c2d1be122010",
-    "headline": "[Unity][Debugging] AST printer (#14152)",
-    "body": "This PR transfers over the AST printer from tlc-pack/relax. The AST printer is a debugging tool that prints out a Relax AST in a precise and human-readable format, which can be helpful for debugging the parser or various passes.\r\n\r\nCo-authored-by: Yuchen Jin <yuchenj@cs.washington.edu>\r\nCo-authored-by: Lesheng Jin <34279105+LeshengJin@users.noreply.github.com>\r\nCo-authored-by: Siyuan Feng <Hzfengsy@sjtu.edu.cn>\r\nCo-authored-by: Ruihang Lai <ruihangl@cd.cmu.edu>\r\nCo-authored-by: Tianqi Chen <tqchen@users.noreply.github.com>",
-    "author": "slyubomirsky",
-    "date": "2023-03-01T04:24:02Z",
     "jobs": []
   }
 ]
