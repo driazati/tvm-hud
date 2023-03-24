@@ -1,5 +1,16 @@
 [
   {
+    "sha": "5ce6c7b5e22f8480f5d32aaa6419b6b223de29f2",
+    "headline": "[OpenCL][Textures] Always use SSA for texture loading",
+    "body": "In some cases we must use SSA for textures loading but we didn't do\nthat. Example of such cases:\n1. Storing texture (NCHW4c) directly (w/o temporary buffer) to the\n   output buffer (NCHW). In this case we have to use SSA because we\n   need to get only one channel from the pixel. In case of storing to\n   the local buffer the SSA was used because the buffer was allocated\n   in kernel and the logic was written that if the buffer was allocated\n   then we should use SSA. But if we store the same texture directly to\n   the output buffer then SSA wasn't used and this OpenCL code wasn't\n   compiled.\n2. Casting texture (NCHW4c) to another data type and then storing it to\n   the buffer (NCHW). The SSA for textures was disabled in case of cast\n   operation. As a result it was necessary to take an channel from the\n   pixel but we got the vector data type (e.g. float4) and then we\n   tried to cast it to scalar data type. This code also wasn't\n   compiled.\n\nIn this PR SSA form was enabled for all cases when `texture2d_load` is\nused. The relevant tests cases were added.",
+    "author": "echuraev",
+    "date": "2023-03-24T06:30:29Z",
+    "jobs": [],
+    "pr": 14397,
+    "pr_title": "[OpenCL][Textures] Always use SSA for texture loading ",
+    "updated_at": 1679641330.063358
+  },
+  {
     "sha": "4e5ba62b18234f8468660187b1a41cb30b2f7cac",
     "headline": "Update tests/python/unittest/test_tir_schedule_read_write_at.py",
     "body": "Co-authored-by: Siyuan Feng <Hzfengsy@sjtu.edu.cn>",
@@ -37,11 +48,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14395/3/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14395/3/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14395/3/display/redirect"
@@ -50,6 +56,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14395/3/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14395/3/display/redirect"
       },
       {
         "name": "lint/pr-head",
@@ -73,12 +84,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4507909629/jobs/7936152185"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4507909629/jobs/7936152278"
       },
       {
@@ -88,7 +99,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4507909629/jobs/7936152420"
       },
       {
@@ -98,11 +109,10 @@
       }
     ],
     "pr": 14395,
-    "pr_title": "[TIR][Schedule] Add unittest for read_write_at",
-    "updated_at": 1679638015.764743
+    "pr_title": "[TIR][Schedule] Add unittest for read_write_at"
   },
   {
-    "sha": "348fed2aed43c6a2cff2c41a493f50275d9e850c",
+    "sha": "464645632b19767bac3f9be5f6eb91dcd76c1554",
     "headline": "[Unity] Support simple dynamic-shape-aware fusion",
     "body": "This PR adds support for simple dynamic-shape-aware fusion, which is the first step towards supporting dynamic shapes. The main changes are as follows:\n\n- Fix FuncStructInfo in well-formed checks\n- Renew symbolic var defs in fuse_ops to prevent malformed functions",
     "author": "Hzfengsy",
@@ -110,73 +120,73 @@
     "jobs": [
       {
         "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14396/1/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14396/2/display/redirect"
       },
       {
         "name": "arm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14396/2/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14396/2/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14396/2/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14396/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14396/2/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14396/2/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14396/2/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14396/2/display/redirect"
       },
       {
         "name": "lint/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14396/2/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14396/2/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14396/2/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14396/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14396/2/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4507853205/jobs/7936018771"
+        "url": "https://github.com/apache/tvm/actions/runs/4508549296/jobs/7937348046"
       }
     ],
     "pr": 14396,
@@ -8120,102 +8130,6 @@
     "pr_title": "[TIR] [Analysis] Expose IsOutputBlock to python"
   },
   {
-    "sha": "4f5890d62e1174726f4b0f6ae3929d6a4d658dc5",
-    "headline": "fix data race of batch multibox detection",
-    "body": "",
-    "author": "wrongtest-intellif",
-    "date": "2023-03-20T10:21:21Z",
-    "jobs": [
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14343/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4467137424/jobs/7846212613"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4467137592/jobs/7846212784"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4467137592/jobs/7846212951"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4467137592/jobs/7846213138"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4467137592/jobs/7846213345"
-      }
-    ],
-    "pr": 14343,
-    "pr_title": "[TOPI] Fix data race of batch multibox detection"
-  },
-  {
     "sha": "b35ed687119315268ff6097edff623d2802f3d74",
     "headline": "more tf fix",
     "body": "",
@@ -8355,5 +8269,101 @@
     ],
     "pr": 14345,
     "pr_title": "[Hexagon] Adapt some intrinsics for high vector lanes"
+  },
+  {
+    "sha": "9ff60e11380faa9314e23919203e9fd17ab0d37f",
+    "headline": "Add regression test on injective",
+    "body": "",
+    "author": "elvin-n",
+    "date": "2023-01-13T21:43:29Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14397/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14397/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14397/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14397/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14397/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14397/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14397/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14397/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14397/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14397/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14397/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14397/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4508635426/jobs/7937521279"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4508635507/jobs/7937521291"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4508635507/jobs/7937521466"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4508635507/jobs/7937521660"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4508635507/jobs/7937521831"
+      }
+    ],
+    "pr": 14397,
+    "pr_title": "[OpenCL][Textures] Always use SSA for texture loading "
   }
 ]
