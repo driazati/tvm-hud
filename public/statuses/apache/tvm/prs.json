@@ -1,11 +1,219 @@
 [
   {
+    "sha": "0bd53ec3669d05f4f3d206d843e110a2058e2b4d",
+    "headline": "Use the ObjectRef to Optional<ObjectRefSubclass> where possible",
+    "body": "This commit looked for cases where `ObjectRef::as<ObjectSubclass>()`\nwas used to convert to a `const ObjectSubclass*` followed immediately\nby a call to `GetRef<ObjectRefSubclass>()`, and replaced them with a\nsingle call to `ObjectRef::as<ObjectRefSubclass>()`.",
+    "author": "Lunderberg",
+    "date": "2023-04-06T19:49:19Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14522/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14522/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14522/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4632582118/jobs/8196817912"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4632582219/jobs/8196817983"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4632582219/jobs/8196818196"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4632582219/jobs/8196818395"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4632582219/jobs/8196818592"
+      }
+    ],
+    "pr": 14522,
+    "pr_title": "[Object] Implemented .as<T> for ObjectRef param, returns Optional<T>",
+    "updated_at": 1680811311.18191
+  },
+  {
+    "sha": "a0bf4e13d830d7d70f992a5857636821fe839a4d",
+    "headline": "[Object] Implemented .as<T> for ObjectRef param, returns Optional<T>",
+    "body": "Prior to this commit, the `ObjectRef::as<T>()` method could be used\nfor any `T` that inherits from `tvm::Object`, and would return a\n`const T*` if the class could be cast to the specified type, or\n`nullptr` otherwise.  However, if the\ncaller needed a `ObjectRef`, they would then need to call\n`GetRef<MyObjRef>` to convert from a `const T*`.\n\nThis commit extends `ObjectRef::as<T>` to operate on a `T` that\ninherits from `tvm::ObjectRef` as well.  In this case, the return type\nis `Optional<T>`, returning either an instance of the specified\nsubclass, or `NullOpt` if the object was not an instance of the\nspecified subclass.  Example usage of this new conversion, along with\nhow it relates to existing functionality, is shown below.\n\n```c++\n// Unconditionally convert, throwing an exception if the object isn't\n// of the specified type.  In contexts where the type of the object is\n// unknown, this shouldn't be used.\nPrimExpr expr = Downcast<PrimExpr>(obj);\n\n// Protect the Downcast from throwing an exception using IsInstance.\n// This avoids the error, but performs the type-checking twice.  In\n// addition, it requires the caller to specify both the ObjectRef\n// subclass and the Object subclass, even though these usually have a\n// 1:1 correspondence.\nif (obj->IsInstance<PrimExprNode>()) {\n  PrimExpr expr = Downcast<PrimExpr>(obj);\n}\n\n// Perform both type-checking and downcasting with the ObjectRef::as()\n// method, then use GetRef to convert to an ObjectRef.  This avoids\n// double-checking the type, but still requires the caller to\nif (const PrimExprNode* ptr = obj.as<PrimExprNode>()) {\n  PrimExpr expr = GetRef<PrimExpr>(ptr);\n}\n\n// New method introduced by this PR.  The type-checking is only\n// performed once, and the Object subclass is inferred from the\n// ObjectRef subclass.\nif (Optional<PrimExpr> opt = obj.as<PrimExpr>()) {\n  PrimExpr expr = opt.value();\n}\n```",
+    "author": "Lunderberg",
+    "date": "2023-04-06T19:26:57Z",
+    "jobs": [],
+    "pr": 14522,
+    "pr_title": "[Object] Implemented .as<T> for ObjectRef param, returns Optional<T>"
+  },
+  {
+    "sha": "6da0b0fb09905a1cbac8c1a706dc3546fb2704ed",
+    "headline": "[TOPI] Support symbolic shape in einsum",
+    "body": "",
+    "author": "vinx13",
+    "date": "2023-04-06T19:23:14Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14521/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4632343065/jobs/8196292519"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4632343228/jobs/8196292785"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4632343228/jobs/8196292917"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4632343228/jobs/8196293029"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4632343228/jobs/8196293152"
+      }
+    ],
+    "pr": 14521,
+    "pr_title": "[TOPI] Support symbolic shape in einsum"
+  },
+  {
     "sha": "2274329c57b341c5229ac88fced7ff41412bfa62",
     "headline": "Update build status stamp to include all builds.",
     "body": "",
     "author": "areusch",
     "date": "2023-04-06T17:57:57Z",
     "jobs": [
+      {
+        "name": "lint/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14520/1/display/redirect"
+      },
       {
         "name": "arm/pr-head",
         "status": "pending",
@@ -42,29 +250,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14520/1/display/redirect"
       },
       {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14520/1/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14520/1/display/redirect"
       },
       {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14520/1/display/redirect"
+      },
+      {
         "name": "riscv/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14520/1/display/redirect"
       },
       {
         "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14520/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14520/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14520/1/display/redirect"
       },
       {
         "name": "CI / Linux-Static-Runtime",
@@ -98,8 +301,7 @@
       }
     ],
     "pr": 14520,
-    "pr_title": "Update build status stamp to include all builds",
-    "updated_at": 1680807686.900993
+    "pr_title": "Update build status stamp to include all builds"
   },
   {
     "sha": "1021ba8c99b19c04beb025d2a16c44ddbaee29ad",
@@ -109,29 +311,9 @@
     "date": "2023-04-06T15:57:57Z",
     "jobs": [
       {
-        "name": "arm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14477/10/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
-      },
-      {
         "name": "cortexm/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14477/11/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
       },
       {
         "name": "cpu/pr-head",
@@ -169,19 +351,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14477/10/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14477/10/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14477/10/display/redirect"
+      },
+      {
+        "name": "arm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14477/10/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -199,6 +391,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
       },
       {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14477/10/display/redirect"
+      },
+      {
         "name": "lint/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
@@ -207,6 +404,11 @@
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14477/10/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/feat%252Fuse-spot-instances-for-ci/3/display/redirect"
       },
       {
         "name": "riscv/branch",
@@ -270,6 +472,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14492/5/display/redirect"
       },
       {
+        "name": "hexagon/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14492/5/display/redirect"
+      },
+      {
         "name": "i386/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14492/5/display/redirect"
@@ -288,11 +495,6 @@
         "name": "wasm/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14492/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14492/5/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -2239,7 +2441,7 @@
     "pr_title": "[Unity] handle bf16 in dump_ndarray_cache and load_ndarray_cache"
   },
   {
-    "sha": "84e1f27b21872918446e2404a29945b3c80e9e8e",
+    "sha": "cda60f40e39c8691bc1bdc1c01d69be19c29c762",
     "headline": "[Unity] Add rewriting for CUDA graph capturing",
     "body": "",
     "author": "vinx13",
@@ -2248,72 +2450,72 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14513/9/display/redirect"
       },
       {
         "name": "arm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14513/9/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14513/9/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14513/9/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14513/9/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14513/9/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14513/9/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14513/9/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14513/9/display/redirect"
       },
       {
         "name": "lint/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14513/9/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14513/9/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14513/9/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14513/8/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14513/9/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4631690394/jobs/8194866099"
+        "url": "https://github.com/apache/tvm/actions/runs/4632262030/jobs/8196114435"
       }
     ],
     "pr": 14513,
@@ -4610,11 +4812,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14480/9/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14480/9/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14480/9/display/redirect"
@@ -4623,6 +4820,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14480/9/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14480/9/display/redirect"
       },
       {
         "name": "lint/pr-head",
@@ -8081,208 +8283,6 @@
     "jobs": [],
     "pr": 14486,
     "pr_title": "[Draft][TVMScript][Unittest] Validate round-trip for each TIR lowering step"
-  },
-  {
-    "sha": "1b79a446d96e3f7e4cc87c286c63257faf43c27a",
-    "headline": "[LLVM] Add missing `override` to GetFormat and GetPropertyMask",
-    "body": "These functions are virtual, and some of the overrides were not marked\nas either `final` or `override` causing compilation warnings.",
-    "author": "kparzysz-quic",
-    "date": "2023-04-03T15:34:20Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14470/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600416711/jobs/8126979422"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600416785/jobs/8126979597"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600416785/jobs/8126979766"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600416785/jobs/8126980014"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600416785/jobs/8126980211"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/4619421302/jobs/8168146888"
-      }
-    ],
-    "pr": 14470,
-    "pr_title": "[LLVM] Add missing `override` to GetFormat and GetPropertyMask"
-  },
-  {
-    "sha": "e33f0631d8dcabe65cea4b14b2774123c7da1be9",
-    "headline": "[LLVM] Add guard for #include <llvm/Transforms/IPO/PassManagerBuilder.h>",
-    "body": "The file llvm/Transforms/IPO/PassManagerBuilder.h has been removed in\nLLVM 17, as a part of the transition to the new pass manager. Add a LLVM\nversion guard around the #include.",
-    "author": "kparzysz-quic",
-    "date": "2023-04-03T14:54:32Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14469/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600414096/jobs/8126973956"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600414148/jobs/8126974056"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600414148/jobs/8126976045"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600414148/jobs/8126976246"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4600414148/jobs/8126976401"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/4601365988/jobs/8129133552"
-      }
-    ],
-    "pr": 14469,
-    "pr_title": "[LLVM] Add guard for #include <llvm/Transforms/IPO/PassManagerBuilder.h>"
   },
   {
     "sha": "1527bfba0453d0f375c8c200fa3ee668680e2e56",
