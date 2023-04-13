@@ -1,5 +1,49 @@
 [
   {
+    "sha": "3b8bab5c6e5dd94ac7ea8dc090f60e59c8958324",
+    "headline": "[scorecard][TUZ-213] Add tracking for hardware and git info (#83)",
+    "body": "",
+    "author": "driazati",
+    "date": "2023-04-13T21:58:11Z",
+    "jobs": [
+      {
+        "name": "ci/gitlab/gitlab.com",
+        "status": "pending",
+        "url": "https://gitlab.com/octoml/relax-scorecard-ci2/-/pipelines/836811947"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/octoml-relax-unity/job/relax/66/display/redirect"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4694173872/jobs/8322054476"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4694174944/jobs/8322057011"
+      }
+    ],
+    "updated_at": 1681424123.650372
+  },
+  {
+    "sha": "9ff4b6bffb5a42d82887e48dce201175902edc91",
+    "headline": "[ci] Don't cancel builds on `relax` (#93)",
+    "body": "PR builds cancel previous, still running PR builds but we don't want\r\nthat behavior on our main branch (which is `relax` here, not `main`)",
+    "author": "driazati",
+    "date": "2023-04-13T21:56:10Z",
+    "jobs": [
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/octoml-relax-unity/job/relax/65/display/redirect"
+      }
+    ]
+  },
+  {
     "sha": "57be16304ef7db853f91105448592c666123c029",
     "headline": "[scorecard] Skip stable-diffusion tests (#94)",
     "body": "These are both currently failing in CI:\r\nhttps://gitlab.com/octoml/relax-scorecard-ci2/-/pipelines/835704862\r\n\r\nThis also bumps the timeout to 2 hours (from 1 hour) to account for\r\nincreased runtime due to tuning",
@@ -8,7 +52,7 @@
     "jobs": [
       {
         "name": "ci/gitlab/gitlab.com",
-        "status": "pending",
+        "status": "success",
         "url": "https://gitlab.com/octoml/relax-scorecard-ci2/-/pipelines/836756835"
       },
       {
@@ -45,9 +89,38 @@
         "name": "Update last-successful branch / update-last-successful-branch",
         "status": "neutral",
         "url": "https://github.com/octoml/relax/actions/runs/4693760007/jobs/8321153237"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4693896955/jobs/8321448947"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4693897215/jobs/8321449316"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4693985203/jobs/8321646860"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4693985516/jobs/8321647259"
+      },
+      {
+        "name": "Update last-successful branch / update-last-successful-branch",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4694083878/jobs/8321855817"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "neutral",
+        "url": "https://github.com/octoml/relax/actions/runs/4694084456/jobs/8321856726"
       }
-    ],
-    "updated_at": 1681420447.258406
+    ]
   },
   {
     "sha": "f692ea013c861042e93019810243f29cb333c593",
@@ -8546,22 +8619,6 @@
     "body": "Readonly detection can cause the kernel arg order\r\nto be different from other shaders, add options to\r\noptionally skip it.\r\n\r\nAlso makes export auto use emcc for wasm target.",
     "author": "tqchen",
     "date": "2023-03-06T20:25:15Z",
-    "jobs": []
-  },
-  {
-    "sha": "c4225052e91a32019725604c8f36cf87eec186b3",
-    "headline": "[Unity][Frontend] FX translator supports unwrapping unit return tuple\u2026",
-    "body": "\u2026 (#14212)\n\nPreviously we found that the FX GraphModule captured by torch.dynamo\r\nwill always return a tuple at the end, even if the Module being traced\r\nreturns a single object. Unwrapping the unit tuple in that case can\r\nhelp and ease model deployment. Therefore, this PR introduces an option\r\n\"unwrap_return_unit_tuple\" to `from_fx`, to indicate if we caller wants\r\nto unwrap the returned unit tuple.\r\n\r\n`dynamo_subgraph_capture` now will always use True on this option.",
-    "author": "MasterJH5574",
-    "date": "2023-03-06T19:23:29Z",
-    "jobs": []
-  },
-  {
-    "sha": "399d9daf71cea6cf4abd804a684220a2908ee58b",
-    "headline": "[Unity][Frontend] Attach imported model weights, deprecate ImporterOu\u2026",
-    "body": "\u2026tput (#14211)\n\nThe class ImporterOutput introduced by #14197 turns out introducing\r\ninconvenience for use, as it is a wrapper of IRModule and the\r\nparameters, and prevents good composability when we want to combine\r\nmultiple ImporterOutput together.\r\n\r\nFrom the perspective of easy use, we would like to return IRModule only.\r\nTherefore, as another approach, we can make the imported parameters as\r\none function attribute, and detach the parameters later.\r\n\r\nThis PR implements this and provides the param detachment function. With\r\nonly IRModule being manipulated, we can easily combine the results from\r\nmultiple imports.",
-    "author": "MasterJH5574",
-    "date": "2023-03-06T18:48:17Z",
     "jobs": []
   }
 ]
