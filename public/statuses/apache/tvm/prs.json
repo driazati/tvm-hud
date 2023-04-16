@@ -1,6 +1,93 @@
 [
   {
-    "sha": "7cbcb0d1233b12ebfc9f1630fa002518c813647d",
+    "sha": "612a6c833288f5d9dd9b96b7cb522f1c73d434f8",
+    "headline": "[Unity] `enable_warning` option for LegalizeOps and MSApplyDatabase",
+    "body": "This PR introduces the `enable_warning` argument for the LegalizeOps\npass and the MetaScheduleApplyDatabase pass. These two passes now will\nemit warnings only when the `enable_warning` argument is true.\n\nWe introduce this because in our recent development of [Web LLM](https://github.com/mlc-ai/web-llm),\nwe leverage three passes to generate the GPU code for the TIR functions\nin a given IRModule. The passes are MetaScheduleDatabaseApply,\nDispatchTIROperator (one pass that substitutes a TIR func with another\nhandmade one or hand-scheduled one), and DefaultGPUSchedule, in order.\n\nIn this case (and most of the cases), we always have the\nDefaultGPUSchedule pass as a safe guard, and it is common and often that\none TIR function does not exist in the MetaSchedule database. For this\nreason, always printing warning is not ideal and can be too much and\nannoying for both users and developers.\n\nThe same reason applies to LegalizeOps as well. In our practice of\nWebLLM, we bring in some high-level operator that is not intended to be\nlegalized (of course, it does not have a legalization function). Always\nprinting the warnings is also not expected as well.\n\nAccording to these experiences, we try to introduce a new argument for\nconfiguring the behavior of if emitting warnings or not.",
+    "author": "MasterJH5574",
+    "date": "2023-04-16T01:05:18Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14634/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14634/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4710728273/jobs/8354614898"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4710733787/jobs/8354624941"
+      }
+    ],
+    "pr": 14634,
+    "pr_title": "[Unity] `enable_warning` option for LegalizeOps and MSApplyDatabase",
+    "updated_at": 1681610545.184946
+  },
+  {
+    "sha": "9c682a215f831fdb21e11d3c0e5dcf5a2b410c34",
     "headline": "[Unity] BlockBuilder assigning unique tensor names in call_te",
     "body": "This PR changes the naming behavior of call_te. With this PR, all\ntensors created by call_te will be named in alphabetical order (`A`,\n`B`, `C`...). When the number of tensors exceeds 26, the trailing\ntensors will be named as `input26`, `input27` and so on so forth.\n\n ### Background\n\nPrior to this PR, call_te uses the default name \"rxplaceholder\" for\nevery tensor. On one hand, this name is too long and doesn't look clean\nin the printed TVMScript. On the other hand, using this name for every\ntensor is problematic from the perspective of TIR and will lead to\nscheduling error. For example, previously, the following code snippet\nwill print the TIR function where two cache-read blocks having the same\nname, which is not a legal TIR function.\n```python\nbb = relax.BlockBuilder()\nx = relax.Var(\"x\", R.Tensor((2, 3), \"float32\"))\ny = relax.Var(\"y\", R.Tensor((3, 4), \"float32\"))\nwith bb.function(\"main\", [x, y]):\n    gv = bb.emit_te(topi.nn.matmul, x, y)\n    bb.emit_func_output(gv)\n\nsch = tir.Schedule(bb.get())\nsch.work_on(\"matmul\")\nsch.cache_read(\"T_matmul_NN\", 0, \"global\")\nsch.cache_read(\"T_matmul_NN\", 1, \"global\")\nprint(sch.mod[\"matmul\"].script())\n\n ## Output:\n@T.prim_func\ndef matmul(rxplaceholder: T.Buffer((T.int64(2), T.int64(3)), \"float32\"), rxplaceholder_1: T.Buffer((T.int64(3), T.int64(4)), \"float32\"), T_matmul_NN: T.Buffer((T.int64(2), T.int64(4)), \"float32\")):\n    T.func_attr({\"layout_free_buffers\": [1], \"tir.noalias\": T.bool(True)})\n    # with T.block(\"root\"):\n    rxplaceholder_global = T.alloc_buffer((T.int64(2), T.int64(3)))\n    rxplaceholder_global_1 = T.alloc_buffer((T.int64(3), T.int64(4)))\n    for ax0, ax1 in T.grid(T.int64(3), T.int64(4)):\n        with T.block(\"rxplaceholder_global\"):\n            v0, v1 = T.axis.remap(\"SS\", [ax0, ax1])\n            T.reads(rxplaceholder_1[v0, v1])\n            T.writes(rxplaceholder_global_1[v0, v1])\n            rxplaceholder_global_1[v0, v1] = rxplaceholder_1[v0, v1]\n    for ax0, ax1 in T.grid(T.int64(2), T.int64(3)):\n        with T.block(\"rxplaceholder_global\"):\n            v0, v1 = T.axis.remap(\"SS\", [ax0, ax1])\n            T.reads(rxplaceholder[v0, v1])\n            T.writes(rxplaceholder_global[v0, v1])\n            rxplaceholder_global[v0, v1] = rxplaceholder[v0, v1]\n    for i, j, k in T.grid(T.int64(2), T.int64(4), T.int64(3)):\n        with T.block(\"T_matmul_NN\"):\n            v_i, v_j, v_k = T.axis.remap(\"SSR\", [i, j, k])\n            T.reads(rxplaceholder_global[v_i, v_k], rxplaceholder_global_1[v_k, v_j])\n            T.writes(T_matmul_NN[v_i, v_j])\n            with T.init():\n                T_matmul_NN[v_i, v_j] = T.float32(0)\n            T_matmul_NN[v_i, v_j] = T_matmul_NN[v_i, v_j] + rxplaceholder_global[v_i, v_k] * rxplaceholder_global_1[v_k, v_j]\n```",
     "author": "MasterJH5574",
@@ -14,82 +101,71 @@
       {
         "name": "arm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14632/3/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14632/3/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14632/3/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14632/3/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14632/3/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14632/3/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14632/3/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14632/3/display/redirect"
       },
       {
         "name": "lint/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14632/3/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14632/3/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14632/3/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14632/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14632/3/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4709974035/jobs/8353360214"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4709975677/jobs/8353362924"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/4710377913/jobs/8353971097"
+        "url": "https://github.com/apache/tvm/actions/runs/4710650505/jobs/8354473733"
       }
     ],
     "pr": 14632,
-    "pr_title": "[Unity] BlockBuilder assigning unique tensor names in call_te",
-    "updated_at": 1681604916.768411
+    "pr_title": "[Unity] BlockBuilder assigning unique tensor names in call_te"
   },
   {
     "sha": "b4576598950f293ecc54a573b8ab4e8ba0def38e",
@@ -3227,168 +3303,6 @@
     "pr_title": "[Unity][PyTorch] Disable gradient during dynamo subgraph capture to save RAM"
   },
   {
-    "sha": "d27eb8532937c5474a21ff63f0ae47c812e86c75",
-    "headline": "fix lint",
-    "body": "",
-    "author": "shengxinhu",
-    "date": "2023-04-12T08:43:17Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14576/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4676373707/jobs/8282599834"
-      }
-    ],
-    "pr": 14576,
-    "pr_title": "[TOPI] Enhance ConfigSpace to support dynamic shape for schedules"
-  },
-  {
-    "sha": "b20de924105c5f3a7f23d6db24403b3df06c3c52",
-    "headline": "Merge branch 'dynamic_schedule' of github.com:shengxinhu/tvm into dyn\u2026",
-    "body": "\u2026amic_schedule",
-    "author": "shengxinhu",
-    "date": "2023-04-12T07:50:56Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14576/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4675919341/jobs/8281587377"
-      }
-    ],
-    "pr": 14576,
-    "pr_title": "[TOPI] Enhance ConfigSpace to support dynamic shape for schedules"
-  },
-  {
-    "sha": "e7048c9fdd8b14c7b19aa944a32741f3fbc870c8",
-    "headline": "fix iter.dom is none",
-    "body": "",
-    "author": "shengxinhu",
-    "date": "2023-04-12T07:48:52Z",
-    "jobs": [],
-    "pr": 14576,
-    "pr_title": "[TOPI] Enhance ConfigSpace to support dynamic shape for schedules"
-  },
-  {
     "sha": "9b9dab254bc2b8f218b93ff211c2fb0da38e1a3d",
     "headline": "fix lint",
     "body": "",
@@ -5804,158 +5718,6 @@
     "pr_title": "[Unity] Add pass for combining parallel matmul"
   },
   {
-    "sha": "e2c91184920ad2ac4983f01be435540409d182e6",
-    "headline": "Merge branch 'apache:main' into dynamic_schedule",
-    "body": "",
-    "author": "shengxinhu",
-    "date": "2023-04-11T08:08:45Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14576/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4665308331/jobs/8258524075"
-      }
-    ],
-    "pr": 14576,
-    "pr_title": "[TOPI] Enhance ConfigSpace to support dynamic shape for schedules"
-  },
-  {
-    "sha": "124a77089b2f26e7ddd1cf168a3f21e576a27231",
-    "headline": "fix a bug",
-    "body": "",
-    "author": "shengxinhu",
-    "date": "2023-04-11T08:07:25Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14576/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4665301306/jobs/8258508000"
-      }
-    ],
-    "pr": 14576,
-    "pr_title": "[TOPI] Enhance ConfigSpace to support dynamic shape for schedules"
-  },
-  {
     "sha": "7e68852818ddc48660635892f3234bea039f7329",
     "headline": "[COMMUNITY] Zihao Ye -> Committer",
     "body": "Please join me in welcoming Zihao Ye (@yzh119) as a new committer in TVM.\n\nZihao has made significant improvements on TensorIR, TVMScript and CUDA backends,\nIncluding but not limited to:\n\n- Introduce new features and improve performance on the CUDA backend.\n- Enable L2 cache flush during CUDA evaluation\n- Robustify TensorIR schedule primitive\n- Add new TensorIR primitive: `set_dtype`\n\nAdditionally, Zihao extend the TensorIR to the sparse area in his new work (https://arxiv.org/pdf/2207.04606.pdf), which is accepted by ASPLOS 2023.\nThe RFC is here (https://github.com/apache/tvm-rfcs/pull/100).\n\nHis activities:\n- [Commits History](https://github.com/apache/tvm/commits?author=yzh119)\n- [Code Review](https://github.com/apache/tvm/pulls?q=reviewed-by%3Ayzh119)\n- [Community Forum Summary](https://discuss.tvm.apache.org/u/yzh119/summary)",
@@ -6055,82 +5817,6 @@
     ],
     "pr": 14578,
     "pr_title": "[skip ci][COMMUNITY] Zihao Ye -> Committer"
-  },
-  {
-    "sha": "18840f90072c7d6804a5ef41484a538e9e317530",
-    "headline": "[TOPI] Enhance ConfigSpace to support dynamic shape for schedule",
-    "body": "",
-    "author": "shengxinhu",
-    "date": "2023-04-11T06:59:35Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14576/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4665053856/jobs/8257965332"
-      }
-    ],
-    "pr": 14576,
-    "pr_title": "[TOPI] Enhance ConfigSpace to support dynamic shape for schedules"
   },
   {
     "sha": "ee7bd2d23080d02bde7048ca69d3a04ecd5bca75",
