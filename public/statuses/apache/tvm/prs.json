@@ -37,11 +37,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14642/1/display/redirect"
       },
       {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14642/1/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14642/1/display/redirect"
@@ -55,6 +50,11 @@
         "name": "i386/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14642/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14642/1/display/redirect"
       },
       {
         "name": "riscv/pr-head",
@@ -73,12 +73,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4716331036/jobs/8363959555"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4716331036/jobs/8363959706"
       },
       {
@@ -88,13 +88,13 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4716331036/jobs/8363959937"
       }
     ],
     "pr": 14642,
     "pr_title": "[MetaSchedule] PostProc not rewriting unroll for purely spatial block",
-    "updated_at": 1681698451.3224
+    "updated_at": 1681700598.308627
   },
   {
     "sha": "02f81e111924082653a16f07c2b1df05bad0787a",
@@ -106,7 +106,7 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14641/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14641/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -197,7 +197,7 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14640/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14640/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -856,7 +856,7 @@
     "pr_title": "[Unity] `enable_warning` option for LegalizeOps and MSApplyDatabase"
   },
   {
-    "sha": "9c682a215f831fdb21e11d3c0e5dcf5a2b410c34",
+    "sha": "873ce1a10cb9026f94e2f4b4fdb633f743edf275",
     "headline": "[Unity] BlockBuilder assigning unique tensor names in call_te",
     "body": "This PR changes the naming behavior of call_te. With this PR, all\ntensors created by call_te will be named in alphabetical order (`A`,\n`B`, `C`...). When the number of tensors exceeds 26, the trailing\ntensors will be named as `input26`, `input27` and so on so forth.\n\n ### Background\n\nPrior to this PR, call_te uses the default name \"rxplaceholder\" for\nevery tensor. On one hand, this name is too long and doesn't look clean\nin the printed TVMScript. On the other hand, using this name for every\ntensor is problematic from the perspective of TIR and will lead to\nscheduling error. For example, previously, the following code snippet\nwill print the TIR function where two cache-read blocks having the same\nname, which is not a legal TIR function.\n```python\nbb = relax.BlockBuilder()\nx = relax.Var(\"x\", R.Tensor((2, 3), \"float32\"))\ny = relax.Var(\"y\", R.Tensor((3, 4), \"float32\"))\nwith bb.function(\"main\", [x, y]):\n    gv = bb.emit_te(topi.nn.matmul, x, y)\n    bb.emit_func_output(gv)\n\nsch = tir.Schedule(bb.get())\nsch.work_on(\"matmul\")\nsch.cache_read(\"T_matmul_NN\", 0, \"global\")\nsch.cache_read(\"T_matmul_NN\", 1, \"global\")\nprint(sch.mod[\"matmul\"].script())\n\n ## Output:\n@T.prim_func\ndef matmul(rxplaceholder: T.Buffer((T.int64(2), T.int64(3)), \"float32\"), rxplaceholder_1: T.Buffer((T.int64(3), T.int64(4)), \"float32\"), T_matmul_NN: T.Buffer((T.int64(2), T.int64(4)), \"float32\")):\n    T.func_attr({\"layout_free_buffers\": [1], \"tir.noalias\": T.bool(True)})\n    # with T.block(\"root\"):\n    rxplaceholder_global = T.alloc_buffer((T.int64(2), T.int64(3)))\n    rxplaceholder_global_1 = T.alloc_buffer((T.int64(3), T.int64(4)))\n    for ax0, ax1 in T.grid(T.int64(3), T.int64(4)):\n        with T.block(\"rxplaceholder_global\"):\n            v0, v1 = T.axis.remap(\"SS\", [ax0, ax1])\n            T.reads(rxplaceholder_1[v0, v1])\n            T.writes(rxplaceholder_global_1[v0, v1])\n            rxplaceholder_global_1[v0, v1] = rxplaceholder_1[v0, v1]\n    for ax0, ax1 in T.grid(T.int64(2), T.int64(3)):\n        with T.block(\"rxplaceholder_global\"):\n            v0, v1 = T.axis.remap(\"SS\", [ax0, ax1])\n            T.reads(rxplaceholder[v0, v1])\n            T.writes(rxplaceholder_global[v0, v1])\n            rxplaceholder_global[v0, v1] = rxplaceholder[v0, v1]\n    for i, j, k in T.grid(T.int64(2), T.int64(4), T.int64(3)):\n        with T.block(\"T_matmul_NN\"):\n            v_i, v_j, v_k = T.axis.remap(\"SSR\", [i, j, k])\n            T.reads(rxplaceholder_global[v_i, v_k], rxplaceholder_global_1[v_k, v_j])\n            T.writes(T_matmul_NN[v_i, v_j])\n            with T.init():\n                T_matmul_NN[v_i, v_j] = T.float32(0)\n            T_matmul_NN[v_i, v_j] = T_matmul_NN[v_i, v_j] + rxplaceholder_global[v_i, v_k] * rxplaceholder_global_1[v_k, v_j]\n```",
     "author": "MasterJH5574",
@@ -864,73 +864,73 @@
     "jobs": [
       {
         "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14632/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14632/display/redirect"
       },
       {
         "name": "arm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14632/4/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14632/4/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14632/4/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14632/4/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14632/4/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14632/4/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14632/4/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14632/4/display/redirect"
       },
       {
         "name": "lint/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14632/4/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14632/4/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14632/4/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14632/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14632/4/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4710650505/jobs/8354473733"
+        "url": "https://github.com/apache/tvm/actions/runs/4716863869/jobs/8364970574"
       }
     ],
     "pr": 14632,
@@ -2575,6 +2575,11 @@
         "name": "CI / Linux-Static-Runtime",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4687363893/jobs/8341993102"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/4716908213/jobs/8365049858"
       }
     ],
     "pr": 14601,
