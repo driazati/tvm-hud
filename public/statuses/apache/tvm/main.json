@@ -1,5 +1,105 @@
 [
   {
+    "sha": "1d145f112115ca20a0cd2e37a726b1d1519cac4b",
+    "headline": "[cherry-pick][ARITH][BUGFIX] Fix a bug of iter map floormod(x,2) simp\u2026",
+    "body": "\u2026lify (#14704)\n\ncherry-pick #14571 to v0.12.0",
+    "author": "ysh329",
+    "date": "2023-04-23T15:40:07Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/597/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/597/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/597/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/429/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/596/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/594/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/596/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/595/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/594/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/600/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/594/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/592/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4779137519/jobs/8496016443"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4779137519/jobs/8496016504"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4779137519/jobs/8496016549"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4779137519/jobs/8496016604"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4779155956/jobs/8496048818"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4779208294/jobs/8496139957"
+      }
+    ],
+    "updated_at": 1682266209.809743
+  },
+  {
     "sha": "d27837ac29fcf492266c4ed6b0931a2804498352",
     "headline": "unify search path approach to various libs (#14694)",
     "body": "",
@@ -561,8 +661,7 @@
         "status": "neutral",
         "url": "https://github.com/apache/tvm/actions/runs/4777031209/jobs/8492457758"
       }
-    ],
-    "updated_at": 1682262473.46459
+    ]
   },
   {
     "sha": "af17cfeb4c71fdfb7f062238859abdf1479fa48f",
@@ -21866,100 +21965,6 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4594337312/jobs/8113250388"
-      }
-    ]
-  },
-  {
-    "sha": "6006d25f4332a8b024d75cfea5baa325c61798e9",
-    "headline": "[TensorIR][Schedule] New primitive `reorder_block_itervar` (#14448)",
-    "body": "# Motivation\r\nCurrently the `reorder` primitive only changes the loops, and block iterable variables order would not be changed.\r\n`transform_block_layout` can change the block iterable variables, but it requires the loops outside the given block to have no branches, which limited its usage.\r\n\r\nThis schedule primitive changes the block iterable variable order directly, with API like:\r\n```python\r\ndef reorder_block_iter_var(self, block: BlockRV, new_order: List[int]) -> None:\r\n    \"\"\"Reorder the itervars inside a given block.\r\n    Parameters\r\n    ----------\r\n    block : BlockRV\r\n        The block to be transformed. \r\n    new_order : List[int]\r\n        The new block itervar order.\r\n    \"\"\"\r\n```\r\nwhere the `new_order` is a permutation of [0, 1, ..., n-1] if n is the number of itervars in the block.\r\n\r\n# Example\r\n\r\nSuppose we need to change the block itervar order in block \"C\":\r\n```python\r\n@T.prim_func\r\ndef matmul(A: T.Buffer[(128, 128), \"float32\"], B: T.Buffer[(128, 128), \"float32\"], C: T.Buffer[(128, 128), \"float32\"]) -> None:\r\n    for i, j, k in T.grid(128, 128, 128):\r\n        with T.block(\"C\"):\r\n            vi, vj, vk = T.axis.remap(\"SSR\", [i, j, k])\r\n            with T.init():\r\n                C[vi, vj] = 0.0\r\n            C[vi, vj] = C[vi, vj] + A[vi, vk] * B[vj, vk]\r\n```\r\n\r\nafter applying:\r\n```python\r\nsch = tir.Schedule(matmul, debug_mask=\"all\")\r\nC = sch.get_block(\"C\")\r\nsch.reorder_block_iter_var(C, [2, 1, 0])\r\n```\r\n\r\nthe block itervar order would be changed to `vk, vj, vi`.\r\n```python\r\n@T.prim_func\r\ndef matmul_after_reorder_block_iter_var(A: T.Buffer[(128, 128), \"float32\"], B: T.Buffer[(128, 128), \"float32\"], C: T.Buffer[(128, 128), \"float32\"]):\r\n    for i, j, k in T.grid(128, 128, 128):\r\n        with T.block(\"C\"):\r\n            vk, vj, vi = T.axis.remap(\"RSS\", [k, j, i])\r\n            T.reads(A[vi, vk], B[vj, vk])\r\n            T.writes(C[vi, vj])\r\n            with T.init():\r\n                C[vi, vj] = T.float32(0)\r\n            C[vi, vj] = C[vi, vj] + A[vi, vk] * B[vj, vk]\r\n```",
-    "author": "yzh119",
-    "date": "2023-04-03T03:23:54Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/499/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/498/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/499/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/331/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/502/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/498/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/496/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/497/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/497/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/496/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/497/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/495/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4592583133/jobs/8109740617"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4592583133/jobs/8109740712"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4592583133/jobs/8109740786"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4592583133/jobs/8109740871"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4592615995/jobs/8109800635"
       }
     ]
   }
