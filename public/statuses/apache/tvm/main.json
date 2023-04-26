@@ -1,5 +1,95 @@
 [
   {
+    "sha": "d32dea800baeda14d144d0524a5da435c9cb160b",
+    "headline": "[METAL] Update metal runtime to directly store kernel map (#14727)",
+    "body": "This PR updates the metal runtime storage format to\r\ndirectly store the kernel map.\r\n\r\nThis will enable more robust support to\r\nleverage metallib binary format which may not\r\nbe compatible with previous string split.\r\n\r\nIt changes the binary format of the metal module.\r\nWe also added a version to enable easier future update.",
+    "author": "tqchen",
+    "date": "2023-04-26T23:04:19Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/603/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/603/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/603/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/435/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/602/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/600/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/602/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/601/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/600/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/600/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/598/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/606/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4814157341/jobs/8571528251"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4814157341/jobs/8571528372"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4814157341/jobs/8571528521"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/4814157341/jobs/8571528635"
+      }
+    ],
+    "updated_at": 1682550530.391201
+  },
+  {
     "sha": "1a70083711d0f3a315485e9618b0553c31bec864",
     "headline": "[microNPU][ETHOSU] Softmax int8 legalization support (#14629)",
     "body": "Add support for legalizing Softmax int8 to list NPU operations as implemented in Vela.",
@@ -440,9 +530,28 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4813753828/jobs/8570681111"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4813887672/jobs/8570966076"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4813968870/jobs/8571131634"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4814053472/jobs/8571309410"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/4814135363/jobs/8571484894"
       }
-    ],
-    "updated_at": 1682546893.564883
+    ]
   },
   {
     "sha": "486c49895dab63c28e44227b18ae51cca45593d0",
@@ -22696,210 +22805,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4606733460/jobs/8140396101"
-      }
-    ]
-  },
-  {
-    "sha": "44dd6445efdcd955d41e5ae2b21e73da55b7a738",
-    "headline": "[TensorIR] Support for L2 prefetch async copy and pred_guard enabled \u2026",
-    "body": "\u2026async in vectorized if_then_else (#14329)\n\nThis pull request adds support for the L2 prefetch option in the cp.async instruction, which is supported in CUDA 11.4 and later, with the support method referencing Cutlass. Additionally, this pull request adds support for asynchronous copying of if_then_else under vectorization, and fixes some bugs.\r\n\r\nfor example, the original async cp can not support vectorized if_then_else, for a given template:\r\n\r\n```python\r\nfor ax0_ax1_0_fused_1 in T.thread_binding(2, thread=\"threadIdx.z\"):\r\n    for ax0_ax1_0_fused_2 in T.thread_binding(2, thread=\"threadIdx.y\"):\r\n        for ax0_ax1_0_fused_3 in T.thread_binding(32, thread=\"threadIdx.x\"):\r\n            with T.block(\"data_im2col_reindex_shared.dyn_o\"):\r\n                v0 = T.axis.spatial(512, x_0_0 * 64 + (ax0_ax1_0_fused_0 * 128 + ax0_ax1_0_fused_1 * 64 + ax0_ax1_0_fused_2 * 32 + ax0_ax1_0_fused_3) // 8)\r\n                v1_o = T.axis.spatial(1440, k_0_0 * 8 + (ax0_ax1_0_fused_0 * 128 + ax0_ax1_0_fused_1 * 64 + ax0_ax1_0_fused_2 * 32 + ax0_ax1_0_fused_3) % 8)\r\n                T.reads(A[v0 // 256, v1_o // 480 + v0 % 256 // 16 - 1, v1_o % 480 // 160 + v0 % 16 - 1, v1_o % 160 * 8:v1_o % 160 * 8 + 8])\r\n                T.writes(data_im2col_reindex_shared_dyn[v0, v1_o * 8:v1_o * 8 + 8])\r\n                for ax1_1 in T.vectorized(8):\r\n                    with T.block(\"data_im2col_reindex_shared.dyn\"):\r\n                        v1_i = T.axis.spatial(8, ax1_1)\r\n                        T.reads(A[v0 // 256, v1_o // 480 + v0 % 256 // 16 - 1, v1_o % 480 // 160 + v0 % 16 - 1, v1_o % 160 * 8 + v1_i])\r\n                        T.writes(data_im2col_reindex_shared_dyn[v0, v1_o * 8 + v1_i])\r\n                        T.block_attr({\"buffer_dim_align\": [[0, 0, 32, 8]]})\r\n                        data_im2col_reindex_shared_dyn[v0, v1_o * 8 + v1_i] = T.if_then_else(1 <= v1_o // 480 + v0 % 256 // 16 and v1_o // 480 + v0 % 256 // 16 < 17 and 1 <= v1_o % 480 // 160 + v0 % 16 and v1_o % 480 // 160 + v0 % 16 < 17, A[v0 // 256, v1_o // 480 + v0 % 256 // 16 - 1, v1_o % 480 // 160 + v0 % 16 - 1, v1_o % 160 * 8 + v1_i], T.float16(0))\r\n```\r\n\r\nthis pr will make the code into:\r\n\r\n```c++\r\n  {\r\n    unsigned int addr;\r\n    __asm__ __volatile__(\r\n      \"{ .reg .u64 addr; cvta.to.shared.u64 addr, %1; cvt.u32.u64 %0, addr; }\"\r\n      : \"=r\"(addr)\r\n      : \"l\"((void *)(buf_dyn_shmem + (((((ax0_ax1_0_fused_0 * 2304) + (((int)threadIdx.z) * 1152)) + (((int)threadIdx.y) * 576)) + ((((int)threadIdx.x) >> 3) * 144)) + ((((int)threadIdx.x) & 7) * 16))))\r\n    );\r\n    int pred_guard = (int)((((1 <= ((((((int)blockIdx.y) & 3) * 4) + (k_0_0 / 60)) + ax0_ax1_0_fused_0)) && (((((((int)blockIdx.y) & 3) * 4) + (k_0_0 / 60)) + ax0_ax1_0_fused_0) < 17)) && (1 <= ((((((int)threadIdx.z) * 8) + (((int)threadIdx.y) * 4)) + ((k_0_0 % 60) / 20)) + (((int)threadIdx.x) >> 3)))) && (((((((int)threadIdx.z) * 8) + (((int)threadIdx.y) * 4)) + ((k_0_0 % 60) / 20)) + (((int)threadIdx.x) >> 3)) < 17));\r\n    __asm__ __volatile__(\r\n        \"{  .reg .pred p;\"\r\n        \"  setp.ne.b32 p, %0, 0;\"\r\n      #if TVM_ENABLE_L2_PREFETCH\r\n        \" @p cp.async.ca.shared.global.L2::128B [%1], [%2], %3;\"\r\n      #else\r\n        \" @p cp.async.ca.shared.global [%1], [%2], %3;\"\r\n      #endif\r\n      \"  @!p st.shared.v4.u32 [%1], {%4, %5, %6, %7};}\"\r\n        :: \"r\"(pred_guard), \"r\"(addr), \"l\"((void*)(A + (((((((((((int)blockIdx.y) * 81920) + ((k_0_0 / 60) * 20480)) + (ax0_ax1_0_fused_0 * 20480)) + (((int)threadIdx.z) * 10240)) + (((int)threadIdx.y) * 5120)) + ((((int)threadIdx.x) >> 3) * 1280)) + ((k_0_0 % 60) * 64)) + ((((int)threadIdx.x) & 7) * 8)) - 21760))), \"n\"(16), \"r\"(0), \"r\"(0), \"r\"(0),\"r\"(0)\r\n    );\r\n  }\r\n```\r\n\r\nwhile the original injectptxasync pass can only support for a serial, 4 bytes aligned assignment of if_then_else, and the current code also has some bugs:\r\n\r\n```c++\r\n  std::string predicated_asm_code = R\"(\r\n  {\r\n    unsigned int addr;\r\n    __asm__ __volatile__(\r\n      \"{ .reg .u64 addr; cvta.to.shared.u64 addr, %1; cvt.u32.u64 %0, addr; }\\n\"\r\n      : \"=r\"(addr)\r\n      : \"l\"((void *)({smem_addr}))\r\n    );\r\n    int src_bytes = {pred_guard} ? {bytes} : 0;\r\n    __asm__ __volatile__(\r\n      \"cp.async.{cg_or_ca}.shared.global [%0], [%1], %2, %3;\"\r\n       :: \"r\"(addr), \"l\"((void*)({global_ptr})), \"n\"({bytes}), \"r\"(src_bytes)\r\n    );\r\n  }\r\n)\";\r\n```\r\n\r\nif the condition is false, the code above will do nothing, however the right way is to assign zero to the shared memory address, or the value of memory is unpredictable, which will make the result uncorrected. we fixed by native shared memory copy asm:\r\n\r\n```c++\r\n    int pred_guard = (int){pred_guard};\r\n    __asm__ __volatile__(\r\n        \"{  .reg .pred p;\"\r\n        \"  setp.ne.b32 p, %0, 0;\"\r\n      #if TVM_ENABLE_L2_PREFETCH\r\n        \" @p cp.async.{cg_or_ca}.shared.global.L2::128B [%1], [%2], %3;\"\r\n      #else\r\n        \" @p cp.async.{cg_or_ca}.shared.global [%1], [%2], %3;\"\r\n      #endif\r\n      \"  @!p st.shared.v4.u32 [%1], {%4, %5, %6, %7};}\"\r\n        :: \"r\"(pred_guard), \"r\"(addr), \"l\"((void*)({global_ptr})), \"n\"({bytes}), \"r\"(0), \"r\"(0), \"r\"(0),\"r\"(0)\r\n    );\r\n```\r\n\r\nCo-authored-by: leiwang1999 <leiwang1999@outlook.com>",
-    "author": "LeiWang1999",
-    "date": "2023-04-04T04:20:33Z",
-    "jobs": [
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/nightly/73/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/nightly/109/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4603937620/jobs/8134407678"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4603937620/jobs/8134407751"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4603937620/jobs/8134407837"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4603937620/jobs/8134407914"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4603994989/jobs/8134517499"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604070492/jobs/8134658305"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604143811/jobs/8134804855"
-      },
-      {
-        "name": "Update nightly branch / update-nightly-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604151673/jobs/8134822836"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604257126/jobs/8135017827"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/4604273144/jobs/8135046210"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604333068/jobs/8135159100"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/4604346050/jobs/8135183153"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604411994/jobs/8135312006"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604493364/jobs/8135474780"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604638984/jobs/8135762270"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604717236/jobs/8135921934"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604813035/jobs/8136120571"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4604917810/jobs/8136341045"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605056042/jobs/8136630696"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605157965/jobs/8136854622"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605272213/jobs/8137098784"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605391958/jobs/8137370466"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605566774/jobs/8137763489"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605667790/jobs/8137987927"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605791755/jobs/8138277610"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605923056/jobs/8138588467"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4605947616/jobs/8138643365"
       }
     ]
   }
