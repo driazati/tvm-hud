@@ -1,5 +1,110 @@
 [
   {
+    "sha": "dbcd19867093879c4eb2e078eb0678fd57ffb162",
+    "headline": "[BUILD] Enable log before throw message in windows (#14937)",
+    "body": "This PR enables log before throw in windows.\r\nThe error handling in windows sometimes can be tricky\r\nand it is helpful to be able to get as many information as possible.\r\nTurning this option on can help us detect possible errors here.",
+    "author": "tqchen",
+    "date": "2023-05-25T02:30:09Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/715/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/700/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/702/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/534/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/702/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/697/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/698/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/695/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/695/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/693/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/703/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/697/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5075454769/jobs/9116688769"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5075454769/jobs/9116688872"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5075454769/jobs/9116688980"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5075454769/jobs/9116689091"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5075498817/jobs/9116782792"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5075551568/jobs/9116883170"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5075621834/jobs/9117022933"
+      }
+    ],
+    "updated_at": 1684984147.980165
+  },
+  {
     "sha": "1b9678cee08ec508b4255d4d689cdde74576da25",
     "headline": "[TVMScript] Allow T.target(\"device\", host=\"host\") to specify host (#1\u2026",
     "body": "\u20264915)\n\n[TVMScript] Allow T.target(\"device\", host=\"host\") in TVMScript\r\n\r\nPrior to this commit, the `TargetNode::host` could be specified in\r\nTVMScript as part of the config dictionary, under the key `\"host\"`.\r\nHowever, this required all other device parameters to be explicitly\r\nspecified, rather than using any of the short-hand string\r\nrepresentations.  This commit forwards the `host` argument from TVMScript's\r\n`T.target` method to `tvm.target.Target`, allowing both the device and\r\nhost to be specified using the shorthand string representation.\r\n\r\n```python\r\n@T.prim_func\r\ndef before_this_commit():\r\n    T.func_attr(\r\n        {\r\n            \"target\": T.target(\r\n                {\r\n                    \"arch\": \"sm_86\",\r\n                    \"host\": {\"keys\": [\"cpu\"], \"kind\": \"llvm\", \"tag\": \"\"},\r\n                    \"keys\": [\"cuda\", \"gpu\"],\r\n                    \"kind\": \"cuda\",\r\n                    \"max_num_threads\": 1024,\r\n                    \"tag\": \"\",\r\n                    \"thread_warp_size\": 32,\r\n                }\r\n            )\r\n        }\r\n    )\r\n    T.evaluate(0)\r\n\r\n@T.prim_func\r\ndef after_this_commit():\r\n    T.func_attr({\"target\": T.target(\"cuda\", host=\"llvm\")})\r\n    T.evaluate(0)\r\n```",
@@ -37,24 +142,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/697/display/redirect"
       },
       {
-        "name": "lint/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/696/display/redirect"
-      },
-      {
         "name": "minimal/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/694/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/694/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/692/display/redirect"
       },
       {
         "name": "arm/branch",
@@ -65,6 +155,21 @@
         "name": "docker/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/702/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/696/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/694/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/692/display/redirect"
       },
       {
         "name": "CI / Linux-Static-Runtime",
@@ -145,9 +250,13 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5075240448/jobs/9116264717"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5075369795/jobs/9116508823"
       }
-    ],
-    "updated_at": 1684980075.690279
+    ]
   },
   {
     "sha": "d9c1ba60f446b0363a2ff3b65b63481898ec2221",
@@ -23498,200 +23607,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4806848822/jobs/8554884759"
-      }
-    ]
-  },
-  {
-    "sha": "6314b256cd94775c19ad05c665cadc2965e0ba73",
-    "headline": "[ci] Add PLATFORM env var to builds (#14713)",
-    "body": "This exposes the env var `PLATFORM` during builds so we can use it to\r\ndifferentiate builds at runtime.",
-    "author": "driazati",
-    "date": "2023-04-25T22:56:15Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/600/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/600/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/600/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/432/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/603/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/599/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/597/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/599/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/598/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/597/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/597/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/595/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4802947097/jobs/8546962139"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4802947097/jobs/8546962211"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4802947097/jobs/8546962294"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4802947097/jobs/8546962364"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4802983312/jobs/8547027864"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4803078803/jobs/8547218545"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/4803083539/jobs/8547227470"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4803104201/jobs/8547268227"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4803174232/jobs/8547410665"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4803251808/jobs/8547566635"
-      },
-      {
-        "name": "Nightly Docker Update / open_update_pr",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/4803328670/jobs/8547706177"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4803367622/jobs/8547778179"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4803507727/jobs/8548059848"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4803629287/jobs/8548310711"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4803884871/jobs/8548834196"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804029107/jobs/8549128465"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804162065/jobs/8549371583"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804243846/jobs/8549542016"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804296857/jobs/8549650580"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804349553/jobs/8549747532"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804357521/jobs/8549762403"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804418981/jobs/8549882581"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804533564/jobs/8550104296"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804591812/jobs/8550219402"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4804663149/jobs/8550356392"
       }
     ]
   }
