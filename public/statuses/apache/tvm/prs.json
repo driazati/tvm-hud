@@ -1,5 +1,92 @@
 [
   {
+    "sha": "e7944b61b87479d48fbfa7fac2bc62e24bb3740d",
+    "headline": "Add relax onnx importer and tests",
+    "body": "",
+    "author": "jwfromm",
+    "date": "2023-05-31T19:57:30Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14999/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14999/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5137137845/jobs/9244831766"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5137145712/jobs/9244849366"
+      }
+    ],
+    "pr": 14999,
+    "pr_title": "[Unity][Frontend] Add relax onnx importer and tests",
+    "updated_at": 1685563326.740381
+  },
+  {
     "sha": "0f3a4232a3daadb5dcd53c7b97ca2b7d9be35b5d",
     "headline": "[OpenCL][Adreno] Fix conv2d when output channels < 4",
     "body": "When the number of output channels is less than 4, then we cannot pack\nsuch convolution to textures, although we can repack and extend tensors\nfrom 4d to 5d in runtime.\n\nIt is happened because function `PropBoundToInputs` is invoked for all\nstages in when InferBound pass or LowerSchedule function is called.\n\n`PropBoundToInputs` has a logic in it that helps to developer to avoid\nout of bound access. And based on the output shape, it propagates it to\ninputs.\n\nImagine that we want to transform a 4d tensor with 3 channels to 5d,\nextend its number of channels to 4 and then transform it back to 4d\ntensor with number of channels equal to 3. Example below:\n```\n[1, 3, 6, 6] -> [1, 1, 6, 6, 4] -> [1, 3, 6, 6]\n```\nIn this case, we might write a boundary check in the repacking and\nextending compute function to handle the case when the iterator by the\nchannels is out of bounds for the intermediate tensor.\n\nTo avoid such problem, `PropBoundToInputs` has a logic which propagates\na bounds from output tensor to input. In case when it is a possible\nsituation that the compute has out of bounds access, then the range is\ndecreased to value when such situation cannot be achieved. That means\nthat for the example above the loop by channels which should filling\nintermediate tensor will iterate in range [0, 2] instead of [0, 3].\n\nAs it was mentioned, to avoid such problem we use buffers and cuda\nschedules instead of textures for cases when number of output channels\nis less than 4 and we cannot pack such tensor to texture. I evaluated\nperformance of such approach and it doesn't introduce any performance\ndegradation. For such small convolutions performance with buffers even a\nbit better than with textures.",
@@ -98,8 +185,7 @@
       }
     ],
     "pr": 14996,
-    "pr_title": "[OpenCL][Adreno] Fix conv2d when output channels < 4",
-    "updated_at": 1685559693.885005
+    "pr_title": "[OpenCL][Adreno] Fix conv2d when output channels < 4"
   },
   {
     "sha": "d7b1f90fd5971f986af7f18b5ae1449c8d0b9a6d",
@@ -291,11 +377,6 @@
     "date": "2023-05-31T08:48:09Z",
     "jobs": [
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14995/2/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14995/2/display/redirect"
@@ -319,6 +400,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14995/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14995/2/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
@@ -374,6 +460,16 @@
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5132128596/jobs/9233030827"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5136890672/jobs/9244516174"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5137042624/jobs/9244594395"
       }
     ],
     "pr": 14995,
@@ -978,29 +1074,9 @@
     "date": "2023-05-30T23:13:18Z",
     "jobs": [
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14997/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14997/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14997/1/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14997/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14997/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -1008,9 +1084,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14997/1/display/redirect"
       },
       {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14997/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14997/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14997/1/display/redirect"
+      },
+      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14997/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14997/1/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -6503,112 +6599,6 @@
     "pr_title": "[Codegen][LLVM] Allow void return type from PackedFunc "
   },
   {
-    "sha": "65ac46a66cd3f350db4dae04d0e8c93431266ed4",
-    "headline": "[Bugfix] Avoid symbol conflicts in MakePackedAPI/MakeUnpackedAPI",
-    "body": "PRs https://github.com/apache/tvm/pull/14913 and\nhttps://github.com/apache/tvm/pull/14914 made analogous changes to\n`MakePackedAPI` and `MakeUnpackedAPI` to handle subroutine calls.\nBoth PRs introduced the same symbol,\n`tvm::tir::SubroutineCallRewriter`, a local utility to update internal\ncalls to a modified function.  While each PR passed CI individually,\nand was therefore able to merge, having both changes caused a\nduplicate symbol.\n\nThis commit updates `MakePackedAPI` and `MakeUnpackedAPI` to place\ntheir local utilities into anonymous namespaces, avoiding the\nconflict.",
-    "author": "Lunderberg",
-    "date": "2023-05-25T14:36:51Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14950/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081304276/jobs/9129466981"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081304345/jobs/9129467231"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081304345/jobs/9129467402"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081304345/jobs/9129467605"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081304345/jobs/9129467826"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5084807249/jobs/9137556986"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5085206199/jobs/9138416984"
-      }
-    ],
-    "pr": 14958,
-    "pr_title": "[Codegen][LLVM] Allow void return type from PackedFunc "
-  },
-  {
     "sha": "62c7e66634f227c7bbc47552ecb5acf4bb92d833",
     "headline": "[Hexagon] Update instructions to compile hexagon runtime",
     "body": "Also, added include path of dlfcn.h which is applicable from Hexagon SDK 5.3.0.0",
@@ -7436,16 +7426,6 @@
     "pr_title": "[MetaSchedule] Filtering of Ineffective Loop Splits"
   },
   {
-    "sha": "6867e6787b93df218e4fe6718edc6da8baec2c42",
-    "headline": "[Target] Added WithoutHost method",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2023-03-29T18:48:31Z",
-    "jobs": [],
-    "pr": 14942,
-    "pr_title": "[TIR] Preserve existing kTarget function attribute in BindTarget"
-  },
-  {
     "sha": "e7bfa2dd92588a34bb738748e6e79c6a249f931b",
     "headline": "[Driver] Single-module lowering flow in driver_api.cc",
     "body": "Prior to this commit, a build that used multiple targets needed to\nprovide `tvm::build` with a `Map<Target, IRModule>` specifying which\ntarget should be used to compile each `IRModule`.  As a result,\nlowering passes could not introduce new targets based on a PrimFunc's\ncontent (e.g. a `with T.target()` frame to delegate out to another\ndevice), nor simplify based on cross-device subroutines (e.g. simplify\na host-side conditional based on the known output of a device-side\ninternal subroutine).\n\nThis commit makes the `tvm::attr::kTarget` attribute (`\"target\"`) be\nthe single source of truth for where a `PrimFunc` will be executed.\nOther existing methods for specifying the target (the `target`\nparameter for `tvm.build`, the keys in a `Map<Target,IRModule>`, the\nparameter to the pass `tir::transform::BindTarget`) are still accepted\nas inputs, and may provide a default value for `tvm::attr::kTarget` if\nthe attribute is missing, but may not overwrite the target attribute.\n\nThis is part of a series of commits to simplify the handling of\nmulti-target builds.",
@@ -7560,102 +7540,6 @@
     "jobs": [],
     "pr": 14985,
     "pr_title": "[Driver] Single-module lowering flow in driver_api.cc"
-  },
-  {
-    "sha": "a328c1b81eb341c9b437ac721c6ce99fc490aee2",
-    "headline": "[TIR] Preserve existing kTarget function attribute in BindTarget",
-    "body": "Previously, if a function already has a `tvm::attr::kTarget`\nattribute, it will be overwritten by the `tir.BindTarget` transform.\nThis commit updates the behavior such that `tir.BindTarget` adds\nannotations to functions that are missing a target annotation, but\npreserves any existing target annotations.\n\nThis is part of a series of commits to simplify the handling of\nmulti-target builds.",
-    "author": "Lunderberg",
-    "date": "2023-03-24T19:49:05Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14942/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081899726/jobs/9130900621"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081899845/jobs/9130900783"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081899845/jobs/9130900937"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081899845/jobs/9130901087"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5081899845/jobs/9130901236"
-      }
-    ],
-    "pr": 14942,
-    "pr_title": "[TIR] Preserve existing kTarget function attribute in BindTarget"
   },
   {
     "sha": "7b47f29f49be3ad61db876238eda26787be51b3b",
