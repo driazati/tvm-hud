@@ -1,5 +1,102 @@
 [
   {
+    "sha": "0f3a4232a3daadb5dcd53c7b97ca2b7d9be35b5d",
+    "headline": "[OpenCL][Adreno] Fix conv2d when output channels < 4",
+    "body": "When the number of output channels is less than 4, then we cannot pack\nsuch convolution to textures, although we can repack and extend tensors\nfrom 4d to 5d in runtime.\n\nIt is happened because function `PropBoundToInputs` is invoked for all\nstages in when InferBound pass or LowerSchedule function is called.\n\n`PropBoundToInputs` has a logic in it that helps to developer to avoid\nout of bound access. And based on the output shape, it propagates it to\ninputs.\n\nImagine that we want to transform a 4d tensor with 3 channels to 5d,\nextend its number of channels to 4 and then transform it back to 4d\ntensor with number of channels equal to 3. Example below:\n```\n[1, 3, 6, 6] -> [1, 1, 6, 6, 4] -> [1, 3, 6, 6]\n```\nIn this case, we might write a boundary check in the repacking and\nextending compute function to handle the case when the iterator by the\nchannels is out of bounds for the intermediate tensor.\n\nTo avoid such problem, `PropBoundToInputs` has a logic which propagates\na bounds from output tensor to input. In case when it is a possible\nsituation that the compute has out of bounds access, then the range is\ndecreased to value when such situation cannot be achieved. That means\nthat for the example above the loop by channels which should filling\nintermediate tensor will iterate in range [0, 2] instead of [0, 3].\n\nAs it was mentioned, to avoid such problem we use buffers and cuda\nschedules instead of textures for cases when number of output channels\nis less than 4 and we cannot pack such tensor to texture. I evaluated\nperformance of such approach and it doesn't introduce any performance\ndegradation. For such small convolutions performance with buffers even a\nbit better than with textures.",
+    "author": "echuraev",
+    "date": "2023-05-31T12:17:34Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14996/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5133011545/jobs/9235046814"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5133011778/jobs/9235047190"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5133011778/jobs/9235047386"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5133011778/jobs/9235047575"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5133011778/jobs/9235047759"
+      }
+    ],
+    "pr": 14996,
+    "pr_title": "[OpenCL][Adreno] Fix conv2d when output channels < 4",
+    "updated_at": 1685538528.416557
+  },
+  {
     "sha": "d7b1f90fd5971f986af7f18b5ae1449c8d0b9a6d",
     "headline": "reset gelu",
     "body": "",
@@ -52,11 +149,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14973/2/display/redirect"
       },
       {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14973/2/display/redirect"
-      },
-      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14973/2/display/redirect"
@@ -65,6 +157,11 @@
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14973/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14973/2/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -83,8 +180,7 @@
       }
     ],
     "pr": 14973,
-    "pr_title": "[Frontend][Paddle] [PaddlePaddle Hackathon 4] add convert support for tanhshrink/pool3d/set_value ops for paddle frontend ",
-    "updated_at": 1685534957.929663
+    "pr_title": "[Frontend][Paddle] [PaddlePaddle Hackathon 4] add convert support for tanhshrink/pool3d/set_value ops for paddle frontend "
   },
   {
     "sha": "cce615509fe788c8b03f85bb0e51f5ef28d5a031",
@@ -154,16 +250,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14994/2/display/redirect"
       },
       {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14994/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14994/2/display/redirect"
-      },
-      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14994/2/display/redirect"
@@ -172,6 +258,16 @@
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14994/2/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14994/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14994/2/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -235,11 +331,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14995/2/display/redirect"
       },
       {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14995/2/display/redirect"
-      },
-      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14995/2/display/redirect"
@@ -250,8 +341,13 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14995/2/display/redirect"
       },
       {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14995/2/display/redirect"
+      },
+      {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5132128591/jobs/9233030790"
       },
       {
@@ -261,7 +357,7 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5132128591/jobs/9233031140"
       },
       {
@@ -392,11 +488,6 @@
     "date": "2023-05-31T06:02:58Z",
     "jobs": [
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14948/6/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14948/7/display/redirect"
@@ -420,6 +511,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14948/6/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14948/6/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
@@ -2243,63 +2339,63 @@
     "jobs": [
       {
         "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14979/4/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14979/4/display/redirect"
       },
       {
         "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14979/4/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14979/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14979/4/display/redirect"
       },
       {
         "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14979/4/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14979/4/display/redirect"
       },
       {
         "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14979/4/display/redirect"
       },
       {
         "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14979/4/display/redirect"
       },
       {
         "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14979/4/display/redirect"
       },
       {
         "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14979/4/display/redirect"
       },
       {
         "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14979/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14979/4/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14979/4/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -6836,92 +6932,6 @@
     "pr_title": "[TVMScript] Prevent bool to int conversion in T.Assert condition"
   },
   {
-    "sha": "ac8ec2dc67ae38c271e051b4dc24d3729c7f981e",
-    "headline": "[Unity] Improve caching logic in webruntime",
-    "body": "This PR consolidate and exposes the artifact\ncache in the web runtime.",
-    "author": "tqchen",
-    "date": "2023-05-24T19:35:43Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-14940/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5072744194/jobs/9110842528"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5073581773/jobs/9112775366"
-      }
-    ],
-    "pr": 14940,
-    "pr_title": "[Unity] Improve caching logic in webruntime"
-  },
-  {
     "sha": "4dfceb17838aa69b1de1d3ec7f3a7116a7c40cfe",
     "headline": "pass current bindings to rewriter",
     "body": "",
@@ -7414,8 +7424,13 @@
     "jobs": [
       {
         "name": "arm/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-14981/4/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14981/3/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
@@ -7443,19 +7458,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-14981/3/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-14981/3/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-14981/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14981/3/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -7466,6 +7471,11 @@
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-14981/3/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-14981/3/display/redirect"
       },
       {
         "name": "wasm/pr-head",
