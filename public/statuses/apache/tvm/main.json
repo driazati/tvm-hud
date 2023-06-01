@@ -1,5 +1,105 @@
 [
   {
+    "sha": "b13be936a056c8c58f96dc63ad1fcfaf51f02768",
+    "headline": "[DataType] Initial support of fp8 (e4m3/e5m2) (#14863)",
+    "body": "Recently NVIDIA announced official support of the fp8 data type: e4m3 and e5m2, the first one has 4 bits for exponent and 3 bits for mantissa while the second one has 5 bits for exponent and 2 bits for mantissa, and NVIDIA encourages using e4m3 for forward and e5m2 (larger dynamic range) for backward. Currently, TVM has no support for these data types, as the first step to support fp8, this PR adds new type codes for `e4m3_float8` and `e5m2_float8`, and implement legalization passes `FP8ComputeLegalize` and `FP8StorageLegalize` so that we can use them for backends that do not have native fp8 support.",
+    "author": "yzh119",
+    "date": "2023-06-01T13:47:06Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/746/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/729/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/731/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/561/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/732/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/732/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/726/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/727/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/724/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/722/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/722/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/720/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5145146025/jobs/9262380812"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5145146025/jobs/9262381056"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5145146025/jobs/9262385212"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5145146025/jobs/9262385440"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5145158804/jobs/9262413351"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5145294434/jobs/9262747144"
+      }
+    ],
+    "updated_at": 1685628476.929055
+  },
+  {
     "sha": "8543cec1334945f2d807d405e03ecf1eff2667d6",
     "headline": "[Hexagon] Remove \"c\" as aot_host_target tvm/contrib/hexagon/pytest_pl\u2026",
     "body": "\u2026\u2026 (#14997)\n\n[Hexagon] Remove \"c\" as aot_host_target tvm/contrib/hexagon/pytest_plugin.py\r\n\r\nAfter PR#14918 (changes to SplitHostDevice), LowerIntrin code generates\r\nfma, which then becomes the LLVM intrinsic fmuladd. Problem is, the code\r\nthen goes to the C codegen, which knows nothing about LLVM intrinsics.\r\nThe result is an abort at compile-time:\r\n```\r\nE     File \".../src/target/source/codegen_c.cc\", line 611\r\nE   TVMError: Unresolved call Op(tir.call_llvm_pure_intrin)\r\n```\r\n\r\nWhy this didn't happen before is unclear at the moment, but using C\r\ncodegen with Hexagon code doesn't sound like a winning combination.\r\nHexagon-related code assumes LLVM codegen, and the above crash is the\r\nresult of that.",
@@ -300,9 +400,23 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5144685735/jobs/9261290130"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5144873952/jobs/9261724811"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5144990867/jobs/9262005542"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5145134675/jobs/9262351303"
       }
-    ],
-    "updated_at": 1685625139.925938
+    ]
   },
   {
     "sha": "9da026194f3220a76c1e0be6ab53d477133fde0b",
@@ -311,11 +425,6 @@
     "author": "echuraev",
     "date": "2023-06-01T05:45:38Z",
     "jobs": [
-      {
-        "name": "gpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/730/display/redirect"
-      },
       {
         "name": "arm/branch",
         "status": "success",
@@ -340,6 +449,11 @@
         "name": "docker/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/730/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/730/display/redirect"
       },
       {
         "name": "hexagon/branch",
@@ -22198,130 +22312,6 @@
         "name": "Update nightly branch / update-nightly-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/4905423374/jobs/8759195779"
-      }
-    ]
-  },
-  {
-    "sha": "f9890335da1beeb0b1fe4678934b5731a371d8d1",
-    "headline": "More clear ref of thirdparty license (#14790)",
-    "body": "This PR improves ref of liceneses of thirdparty we depend on.\r\nNot a blocker for anything as previous state was fine, just to\r\nimprove overall clarity.",
-    "author": "tqchen",
-    "date": "2023-05-06T23:47:40Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/644/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/630/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/630/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/465/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/633/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/629/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/627/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/629/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/628/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/626/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/626/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/624/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904203722/jobs/8757072474"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904203722/jobs/8757072500"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904203722/jobs/8757072531"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904203722/jobs/8757072557"
-      },
-      {
-        "name": "Nightly Docker Update / open_update_pr",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/4904236227/jobs/8757123780"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904260828/jobs/8757169806"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904359418/jobs/8757364479"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904444108/jobs/8757522056"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904616375/jobs/8757834452"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904736615/jobs/8758042065"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/4904841170/jobs/8758223754"
       }
     ]
   }
