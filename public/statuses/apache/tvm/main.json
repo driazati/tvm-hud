@@ -1,5 +1,100 @@
 [
   {
+    "sha": "0ed6fd6e8cc6b476e301ccbf0e9f5d7b1873690e",
+    "headline": "[TIR] Handle DeclBuffer in RemoveNoOp (#15096)",
+    "body": "When `RemoveNoOp` removes an unused allocation, it should also remove\r\nall `DeclBuffer` nodes that refer to that allocation.  This is a\r\nsubset of changes, being split out from\r\nhttps://github.com/apache/tvm/pull/14778 into independent portions.",
+    "author": "Lunderberg",
+    "date": "2023-06-16T20:56:49Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1086/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/792/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/792/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/620/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/792/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/785/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/786/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/783/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/781/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/781/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/778/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/791/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5294129650/jobs/9583126512"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5294129650/jobs/9583126628"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5294129650/jobs/9583126744"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5294129650/jobs/9583126881"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5294161027/jobs/9583195163"
+      }
+    ],
+    "updated_at": 1686949655.290479
+  },
+  {
     "sha": "2e441ca7ecde0fc966730b0d3f7d10ad1ae85a1c",
     "headline": "[Bugfix][Relay][Keras] Fix a wrong variable name in keras frontend (#\u2026",
     "body": "\u202615107)\n\nfix the error message\r\n\r\nFix the wrong variable name.",
@@ -240,9 +335,23 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5293781912/jobs/9582352291"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5293886276/jobs/9582580769"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5293965855/jobs/9582758540"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5294065633/jobs/9582976119"
       }
-    ],
-    "updated_at": 1686946141.969505
+    ]
   },
   {
     "sha": "7767de9c39a724df6ca4f2bf028630d99f3ee746",
@@ -21293,155 +21402,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5048720425/jobs/9057251690"
-      }
-    ]
-  },
-  {
-    "sha": "53cee4bca3743a2e26bcb1bfe7aa2aeb3956040d",
-    "headline": "[TVMScript] Round-trip DeclBuffer with undefined data pointer (#14900)",
-    "body": "Previously, a `DeclBuffer` object in which `decl_buffer->buffer->data`\r\nhad not been defined would be printed without the `data` argument.\r\nThis was the same representation as the `Allocate`/`DeclBuffer`\r\npattern (e.g. `buf = T.decl_buffer(shape,dtype)`), and so the\r\n`Allocate` node would be inserted when parsing.\r\n\r\nThis commit updates the printing of buffers to be aware of which\r\nvariables are implicitly declared in the process of declaring a\r\nbuffer.  (e.g. A buffer that occurs in `BlockNode::alloc_buffers`\r\ndefines both the buffer and the data pointer, while a `DeclBuffer`\r\nonly defines the buffer.)  This is used to produce a different\r\nrepresentation for the undefined data pointer, removing the ambiguity\r\nwith the `Allocate`/`DeclBuffer` sugar.\r\n\r\nBecause this change only affects malformed TIR in which a `DeclBuffer`\r\nnode references an undefined data pointer, it is intended primarily\r\nfor debugging purposes.",
-    "author": "Lunderberg",
-    "date": "2023-05-22T03:15:51Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/nightly/154/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/nightly/117/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/nightly/154/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/nightly/153/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041427730/jobs/9041115824"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041427730/jobs/9041115964"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041427730/jobs/9041116150"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041427730/jobs/9041116259"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041450818/jobs/9041160322"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041506555/jobs/9041264687"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041572522/jobs/9041384513"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041645714/jobs/9041517844"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041770857/jobs/9041762554"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041828034/jobs/9041873377"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041898194/jobs/9042005679"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041976758/jobs/9042154423"
-      },
-      {
-        "name": "Update nightly branch / update-nightly-branch",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5041984253/jobs/9042169069"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5042102207/jobs/9042404297"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5042114384/jobs/9042426545"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5042179938/jobs/9042553457"
       }
     ]
   }
