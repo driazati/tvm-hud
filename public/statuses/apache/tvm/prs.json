@@ -1,16 +1,98 @@
 [
   {
+    "sha": "531d0d520b832cee731f777179778f1ef2c81674",
+    "headline": "[Unity][Pass] FuseOps with partially accessed Tuple param",
+    "body": "This PR enhances the FuseOps pass to better support parameters in fused\nsubfunctions where the parameter\n* denotes a Tuple, and\n* is accessed only by TupleGetItem in the fused subfunction.\n\nWe now name the property above as \"a Tuple param being partially used\".\nFor example, in the following Relax function, parameter `x` is partially\nused, as it has 6 fields while only `x[0]` is effectively used in the\nfunction.\n\n```python\n@R.function\ndef fused_add_divide(\n    x: R.Tuple(\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n    ),\n    param_0: R.Tensor((), dtype=\"float32\"),\n    param_1: R.Tensor((), dtype=\"float32\"),\n) -> R.Tensor((2,), dtype=\"float32\"):\n    R.func_attr({\"Primitive\": 1})\n    cls = Module\n    with R.dataflow():\n        x0: R.Tensor((2,), dtype=\"float32\") = x[0]\n        y0 = R.call_tir(cls.add, (x0, param_0), out_sinfo=R.Tensor((2,), dtype=\"float32\"))\n        gv = R.call_tir(cls.divide, (y0, param_1), out_sinfo=R.Tensor((2,), dtype=\"float32\"))\n        R.output(gv)\n    return gv\n```\n\nPrior to this PR, the FuseOps pass generates fused functions as above.\nAs we can see, it frequently happens that an entire Tuple is passed into\nthe function as input, while only few of its fields are effectively used\nin the function.\n\nThis behavior here lead to over-consumption of memory for the runtime\nkernel(s) that the fused subfunction will eventually become, which is a\ndisaster when the Tuple length is very long. And this case indeed\nhappens during our iteration of vertical applications (e.g., MLC-LLM),\nwhere if the model parameters are given as a Tuple of the main Relax\nfunction, the Tuple will have length of hundreds or even larger. In this\ncase, even running compilation of the model takes much longer, and the\ndumped IRModule TVMScript has tens of MB in size, which is unaffordable.\n\nTherefore, we hereby update the FuseOps pass with better support on the\npartially accessed Tuple parameters. With the enhancement, when a Tuple\nparameter is partially accessed, we will replace the Tuple parameter\nwith the list of new parameters, one for each of its field that is\naccessed in the function. You can check the added unit test as a best\nillustrative example.",
+    "author": "MasterJH5574",
+    "date": "2023-06-24T08:20:33Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15152/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15152/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5363474330/jobs/9731079106"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5363497114/jobs/9731115984"
+      }
+    ],
+    "pr": 15152,
+    "pr_title": "[Unity][Pass] FuseOps with partially accessed Tuple param",
+    "updated_at": 1687597344.176362
+  },
+  {
     "sha": "84f607d5cddfc1e29eca33d6d9b21b779cd6b532",
     "headline": "notes to note",
     "body": "",
     "author": "yzh119",
     "date": "2023-06-24T01:04:21Z",
     "jobs": [
-      {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15144/5/display/redirect"
-      },
       {
         "name": "arm/pr-head",
         "status": "success",
@@ -35,6 +117,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15144/5/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15144/5/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
@@ -98,8 +185,7 @@
       }
     ],
     "pr": 15144,
-    "pr_title": "[TensorIR][Schedule] New schedule primitive `unsafe_hide_buffer_access`",
-    "updated_at": 1687594028.252732
+    "pr_title": "[TensorIR][Schedule] New schedule primitive `unsafe_hide_buffer_access`"
   },
   {
     "sha": "b762d859ef856b9255d23a1d22328050dcd6a7e5",
@@ -1127,6 +1213,11 @@
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5357306962/jobs/9718006454"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5363462681/jobs/9731058275"
       }
     ],
     "pr": 15146,
@@ -2404,16 +2495,6 @@
     "date": "2023-06-22T05:01:56Z",
     "jobs": [
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15142/11/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15142/11/display/redirect"
-      },
-      {
         "name": "cross-isa-minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15142/10/display/redirect"
@@ -2424,19 +2505,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15142/10/display/redirect"
       },
       {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15142/10/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15142/10/display/redirect"
       },
       {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15142/11/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15142/11/display/redirect"
+      },
+      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15142/10/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15142/10/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -2487,6 +2578,21 @@
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5362767803/jobs/9729875827"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5363446248/jobs/9731025477"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5363517753/jobs/9731151976"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5363525899/jobs/9731165024"
       }
     ],
     "pr": 15142,
@@ -10043,117 +10149,6 @@
     ],
     "pr": 15096,
     "pr_title": "[TIR] Handle DeclBuffer in RemoveNoOp"
-  },
-  {
-    "sha": "7517ba42b90d25db65c0adb4cb83c846d7f7feca",
-    "headline": "Add build.sh environment variables",
-    "body": "Change to build.sh to be able to pass environment variables to a\ncontainer in a similar fashion to bash.sh.",
-    "author": "Liam-Sturge",
-    "date": "2023-06-13T16:22:50Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15095/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5258021323/jobs/9501676129"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5258021474/jobs/9501971538"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5258021474/jobs/9501971710"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5258021474/jobs/9501971932"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5258021474/jobs/9501972128"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5258187325/jobs/9502060472"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5265275925/jobs/9517688715"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5266166505/jobs/9521688829"
-      }
-    ],
-    "pr": 15095,
-    "pr_title": "[Docker] Add build.sh environment variables"
   },
   {
     "sha": "c01a5c0fcb7051d7a5a02dbe94f8142d42b0e51a",
