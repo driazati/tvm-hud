@@ -1,5 +1,112 @@
 [
   {
+    "sha": "5fd4aa50cd13afa75390106ca41962826d7f3dc9",
+    "headline": "upd",
+    "body": "",
+    "author": "yzh119",
+    "date": "2023-06-24T09:20:18Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15153/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5363630829/jobs/9731334719"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5363630845/jobs/9731334740"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5363630845/jobs/9731334799"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5363630845/jobs/9731334856"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5363630845/jobs/9731334908"
+      }
+    ],
+    "pr": 15153,
+    "pr_title": "[TensorIR][Visitor] Visit buffer members in `match_buffer`'s in block visitor functions.",
+    "updated_at": 1687600949.249438
+  },
+  {
+    "sha": "9de3a7ebb3c6a93dcb08dffa895bfcc5bfe072bb",
+    "headline": "upd",
+    "body": "",
+    "author": "yzh119",
+    "date": "2023-06-24T09:17:46Z",
+    "jobs": [],
+    "pr": 15153,
+    "pr_title": "[TensorIR][Visitor] Visit buffer members in `match_buffer`'s in block visitor functions."
+  },
+  {
     "sha": "531d0d520b832cee731f777179778f1ef2c81674",
     "headline": "[Unity][Pass] FuseOps with partially accessed Tuple param",
     "body": "This PR enhances the FuseOps pass to better support parameters in fused\nsubfunctions where the parameter\n* denotes a Tuple, and\n* is accessed only by TupleGetItem in the fused subfunction.\n\nWe now name the property above as \"a Tuple param being partially used\".\nFor example, in the following Relax function, parameter `x` is partially\nused, as it has 6 fields while only `x[0]` is effectively used in the\nfunction.\n\n```python\n@R.function\ndef fused_add_divide(\n    x: R.Tuple(\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n        R.Tensor((2,), dtype=\"float32\"),\n    ),\n    param_0: R.Tensor((), dtype=\"float32\"),\n    param_1: R.Tensor((), dtype=\"float32\"),\n) -> R.Tensor((2,), dtype=\"float32\"):\n    R.func_attr({\"Primitive\": 1})\n    cls = Module\n    with R.dataflow():\n        x0: R.Tensor((2,), dtype=\"float32\") = x[0]\n        y0 = R.call_tir(cls.add, (x0, param_0), out_sinfo=R.Tensor((2,), dtype=\"float32\"))\n        gv = R.call_tir(cls.divide, (y0, param_1), out_sinfo=R.Tensor((2,), dtype=\"float32\"))\n        R.output(gv)\n    return gv\n```\n\nPrior to this PR, the FuseOps pass generates fused functions as above.\nAs we can see, it frequently happens that an entire Tuple is passed into\nthe function as input, while only few of its fields are effectively used\nin the function.\n\nThis behavior here lead to over-consumption of memory for the runtime\nkernel(s) that the fused subfunction will eventually become, which is a\ndisaster when the Tuple length is very long. And this case indeed\nhappens during our iteration of vertical applications (e.g., MLC-LLM),\nwhere if the model parameters are given as a Tuple of the main Relax\nfunction, the Tuple will have length of hundreds or even larger. In this\ncase, even running compilation of the model takes much longer, and the\ndumped IRModule TVMScript has tens of MB in size, which is unaffordable.\n\nTherefore, we hereby update the FuseOps pass with better support on the\npartially accessed Tuple parameters. With the enhancement, when a Tuple\nparameter is partially accessed, we will replace the Tuple parameter\nwith the list of new parameters, one for each of its field that is\naccessed in the function. You can check the added unit test as a best\nillustrative example.",
@@ -9,7 +116,7 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15152/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15152/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -83,8 +190,7 @@
       }
     ],
     "pr": 15152,
-    "pr_title": "[Unity][Pass] FuseOps with partially accessed Tuple param",
-    "updated_at": 1687597344.176362
+    "pr_title": "[Unity][Pass] FuseOps with partially accessed Tuple param"
   },
   {
     "sha": "84f607d5cddfc1e29eca33d6d9b21b779cd6b532",
@@ -368,6 +474,16 @@
     ],
     "pr": 15140,
     "pr_title": "[Unity][IR][UX] Privacy annotation in Relax"
+  },
+  {
+    "sha": "cfabaee7a1c59ee862717ec6a114aef5da3b09d9",
+    "headline": "[wip] debug",
+    "body": "",
+    "author": "yzh119",
+    "date": "2023-06-23T23:00:04Z",
+    "jobs": [],
+    "pr": 15153,
+    "pr_title": "[TensorIR][Visitor] Visit buffer members in `match_buffer`'s in block visitor functions."
   },
   {
     "sha": "8064cfe26e585a93de44eeb674a3dbb3b64812c7",
@@ -1578,6 +1694,16 @@
     "pr_title": "[TensorIR][Schedule] New schedule primitive `unsafe_hide_buffer_access`"
   },
   {
+    "sha": "dbc3cfe854fd9c9efe5a4402b4e7aa2470ad35cc",
+    "headline": "unittest",
+    "body": "",
+    "author": "yzh119",
+    "date": "2023-06-23T07:48:53Z",
+    "jobs": [],
+    "pr": 15153,
+    "pr_title": "[TensorIR][Visitor] Visit buffer members in `match_buffer`'s in block visitor functions."
+  },
+  {
     "sha": "a330242a1dca3c6774fec5cb1641e0734428a23c",
     "headline": "fix lint",
     "body": "",
@@ -2495,11 +2621,6 @@
     "date": "2023-06-22T05:01:56Z",
     "jobs": [
       {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15142/10/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15142/10/display/redirect"
@@ -2518,6 +2639,11 @@
         "name": "cpu/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15142/11/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15142/10/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -10048,107 +10174,6 @@
     ],
     "pr": 15097,
     "pr_title": "[Unity] Fix FewShotTuning Failure When Missing Global Symbol"
-  },
-  {
-    "sha": "e6b9122a99839808aa4ae29b823c64436c6cbdb4",
-    "headline": "[TIR] Handle DeclBuffer in RemoveNoOp",
-    "body": "When `RemoveNoOp` removes an unused allocation, it should also remove\nall `DeclBuffer` nodes that refer to that allocation.  This is a\nsubset of changes, being split out from\nhttps://github.com/apache/tvm/pull/14778 into independent portions.",
-    "author": "Lunderberg",
-    "date": "2023-06-13T16:23:45Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15096/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15096/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5266699211/jobs/9520968386"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5266699262/jobs/9520968459"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5266699262/jobs/9520968669"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5266699262/jobs/9520968878"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5266699262/jobs/9520969074"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5294128880/jobs/9583124889"
-      }
-    ],
-    "pr": 15096,
-    "pr_title": "[TIR] Handle DeclBuffer in RemoveNoOp"
   },
   {
     "sha": "c01a5c0fcb7051d7a5a02dbe94f8142d42b0e51a",
