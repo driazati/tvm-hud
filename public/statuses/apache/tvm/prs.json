@@ -1,5 +1,117 @@
 [
   {
+    "sha": "a1395ca3b22582bf27e400beb930f4d6dbc02619",
+    "headline": "[Testing] Utility method to run TVM on remote device",
+    "body": "This PR introduces `tvm.testing.rpc_run`, a utility method that allows a\n`runtime.Module` to run on a remote device via TVM RPC.\n\nExample:\n\n```python\nimport numpy as np\nimport tvm\nfrom tvm.script import tir as T\nfrom tvm.testnig import rpc_run\n\n@T.prim_func\ndef cuda_kernel(\n    A: T.Buffer((128,), \"float32\"),\n    B: T.Buffer((128,), \"float32\"),\n):\n    for bx in T.thread_binding(4, thread=\"blockIdx.x\"):\n        for tx in T.thread_binding(32, thread=\"threadIdx.x\"):\n            x = bx * 32 + tx\n            B[x] = A[x] + 1.0\n\ndef main():\n    np_a = np.random.randn(128).astype(\"float32\")\n    np_b = np_a + 1.0\n\n    rt_mod = tvm.build(cuda_kernel, target=\"nvidia/geforce-rtx-3090-ti\")\n    tvm_a, tvm_b = rpc_run(\n        rt_mod,\n        \"cuda\",\n        [np_a, np_b],\n    )\n\n    assert np.allclose(tvm_b, np_b)\n```\n\nResult:\n\n```\nExecution time summary:\n mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)\n   0.0023       0.0023       0.0023       0.0023       0.0000\n```",
+    "author": "junrushao",
+    "date": "2023-06-29T04:12:19Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15179/3/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/5408482392/jobs/9827593397"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5408482414/jobs/9827598303"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5408482414/jobs/9827598373"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5408482414/jobs/9827598431"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5408482414/jobs/9827598500"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/5408484988/jobs/9827599530"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5408485625/jobs/9827600198"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5408627000/jobs/9827887355"
+      }
+    ],
+    "pr": 15179,
+    "pr_title": "[Testing] Utility method to run TVM on remote device",
+    "updated_at": 1688015002.23881
+  },
+  {
     "sha": "2474882c7019c9e2ff81dd21c90def6a16026657",
     "headline": "Update keras.py",
     "body": "",
@@ -42,29 +154,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15175/9/display/redirect"
       },
       {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15175/9/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15175/9/display/redirect"
       },
       {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15175/9/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15175/9/display/redirect"
+      },
+      {
         "name": "riscv/pr-head",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15175/9/display/redirect"
       },
       {
         "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15175/9/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15175/9/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15175/9/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -73,8 +185,7 @@
       }
     ],
     "pr": 15175,
-    "pr_title": "[Frontend][Relay][Keras] Fix concatenate convert function in axis parsing",
-    "updated_at": 1688008546.683604
+    "pr_title": "[Frontend][Relay][Keras] Fix concatenate convert function in axis parsing"
   },
   {
     "sha": "052f36d86bab79978202ead83989ffeb2eeb2d68",
@@ -160,6 +271,11 @@
     "date": "2023-06-29T02:28:30Z",
     "jobs": [
       {
+        "name": "arm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15175/7/display/redirect"
+      },
+      {
         "name": "docker/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15175/7/display/redirect"
@@ -170,9 +286,14 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15175/7/display/redirect"
       },
       {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15175/7/display/redirect"
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15175/7/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15175/7/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
@@ -210,16 +331,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15175/7/display/redirect"
       },
       {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15175/7/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15175/7/display/redirect"
-      },
-      {
         "name": "PR / cc-reviewers",
         "status": "cancelled",
         "url": "https://github.com/apache/tvm/actions/runs/5407837396/jobs/9826280105"
@@ -237,7 +348,7 @@
     "jobs": [
       {
         "name": "unity/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15171/7/display/redirect"
       },
       {
@@ -748,7 +859,7 @@
     "jobs": [
       {
         "name": "unity/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15178/1/display/redirect"
       },
       {
@@ -9768,102 +9879,6 @@
     "pr_title": "[ARITH] NormalizeToIterSum"
   },
   {
-    "sha": "060206e0271a9afa71ccb2f638e8303cfe4a11d9",
-    "headline": "Allocate workspace for all functions",
-    "body": "",
-    "author": "yelite",
-    "date": "2023-06-15T19:35:28Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15118/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5291894031/jobs/9578061301"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5291895193/jobs/9578065252"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5291895921/jobs/9578066375"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5315433974/jobs/9623790218"
-      }
-    ],
-    "pr": 15118,
-    "pr_title": "[Unity] Allocate workspace for all functions"
-  },
-  {
     "sha": "1edb7d2cc0b61e1b1a8bca61a6eba69f0911df86",
     "headline": "[Test] Improve check for TVMError exception in test_cast",
     "body": "The original code has\n```\nwith pytest.raises(tvm.error.TVMError):\n    s.astype(\"int\")\n    assert \"Can't cast a handle to other types\" in str(e)\n```\nThe `astype` is expected to throw a TVMError exception, but if it does,\nthe following assertion never gets executed.\n\nAdd try/except to the test to verify that the expected exception is\nthrown.",
@@ -10068,11 +10083,6 @@
     "date": "2023-05-19T01:10:36Z",
     "jobs": [
       {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15172/2/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15172/2/display/redirect"
@@ -10126,6 +10136,11 @@
         "name": "riscv/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15172/2/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15172/2/display/redirect"
       },
       {
         "name": "wasm/pr-head",
