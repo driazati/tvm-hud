@@ -1,5 +1,105 @@
 [
   {
+    "sha": "5931cf10eb98b628ccb719e6beed7a154faa280d",
+    "headline": "[TIR][Transform] Add LiftThreadBinding Pass (#15207)",
+    "body": "This PR adds a pass LiftThreadBinding to TIR.\r\n\r\nPreviously, during GPU cross-thread reduction, a temporary local buffer\r\nwill be created in the RF buffer, as a concrete example:\r\n\r\n```python\r\nrf_local = T.alloc_buffer(..., scope=\"local\")\r\n\r\n// Step 1. Data parallel RF block\r\nfor tx in T.thread_binding(..., thread=\"threadIdx.x\")\r\n  rf_local[tx, ...] =\r\n\r\n// Step 2. Cross-thread reduction to accumuate rf_local\r\nfor ...:\r\n  for tx' in T.thread_binding(..., thread=\"threadIdx.x\"):\r\n    ... += rf_local[tx', ...]\r\n```\r\n\r\nIn this case, the buffer `rf_local` will only be accessed by a single\r\npoint `tx` or `tx'`, but during the pass `CompactBuffeRegion`, the two\r\nvariables as thread bindings are treated as two separate variables, i.e.\r\nthe information that `tx` and `tx'` are always identical to each other\r\nis discarded, which means the accessed region on `rf_local` are\r\nestimated as `Union({tx}, {tx'})` as opposed to `{tx}`, leading over\r\nallocation of local registers.\r\n\r\nThis pass is introduced to address this issue by lifting thread bindings\r\nto their LCAs.",
+    "author": "junrushao",
+    "date": "2023-07-03T04:52:56Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/nightly/199/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/nightly/191/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/nightly/191/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/nightly/155/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/nightly/192/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/nightly/192/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/nightly/191/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/nightly/191/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/nightly/191/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/nightly/191/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/nightly/191/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/nightly/191/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5440707351/jobs/9893903323"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5440707351/jobs/9893903398"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5440707351/jobs/9893903473"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5440707351/jobs/9893903533"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5440748562/jobs/9893988213"
+      },
+      {
+        "name": "Update nightly branch / update-nightly-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5440756900/jobs/9894006137"
+      }
+    ],
+    "updated_at": 1688360985.639252
+  },
+  {
     "sha": "fb64be3f7807df18c2df6ebf5e68178e564ab0b4",
     "headline": "[ARITH] Allow Analyzer to MarkGlobalNonNegValue (#15193)",
     "body": "This PR introduces an utility function MarkGlobalNonNegValue.\r\nThis function allows analyzer to mark buffer shapes in function arguments\r\nas positive globally and opens doors for more symbolic simplification.",
@@ -47,16 +147,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/835/display/redirect"
       },
       {
-        "name": "riscv/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/835/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/832/display/redirect"
-      },
-      {
         "name": "docker/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/845/display/redirect"
@@ -67,8 +157,18 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/837/display/redirect"
       },
       {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/835/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/832/display/redirect"
+      },
+      {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5440115465/jobs/9892728874"
       },
       {
@@ -78,12 +178,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5440115465/jobs/9892729036"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5440115465/jobs/9892729115"
       },
       {
@@ -125,9 +225,23 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5440425657/jobs/9893331018"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5440537862/jobs/9893562408"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5440605424/jobs/9893696595"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5440673816/jobs/9893832944"
       }
-    ],
-    "updated_at": 1688357503.22763
+    ]
   },
   {
     "sha": "683dfb0c04d9f2296940e89c60c2277aca095ccd",
@@ -22858,60 +22972,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5180867022/jobs/9335620277"
-      }
-    ]
-  },
-  {
-    "sha": "7b367da281a36692584beac7826fb387d9acbaf6",
-    "headline": "[Frontend][Paddle] [PaddlePaddle Hackathon 4] add convert support for\u2026",
-    "body": "\u2026 tanhshrink/pool3d/set_value ops for paddle frontend  (#14973)\n\n* add more parameter for softplus/gelu paddle op\r\n\r\n* merge\r\n\r\n* merge\r\n\r\n* add tanhshrink op\r\n\r\n* add pool3d and set_value\r\n\r\n* reset gelu",
-    "author": "AndPuQing",
-    "date": "2023-06-05T12:26:28Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/762/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/746/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/747/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/746/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/746/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5177084782/jobs/9326742295"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5177084782/jobs/9326742476"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5177084782/jobs/9326742663"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5177084782/jobs/9326742915"
       }
     ]
   }
