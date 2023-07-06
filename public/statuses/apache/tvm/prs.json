@@ -1,5 +1,97 @@
 [
   {
+    "sha": "bbaa988013bade5232d18df56d1c3144f4eb8265",
+    "headline": "[Unity][Dlight] Handle Epilogue Broadcasting",
+    "body": "This PR improves the Decode-GEMV scheduling by further analyzing its\nepilogue pattern.\n\nThe existing behavior assumes that the outcome of cross-thread reduction\nstays in register files local to each thread, which is further used to\ncalculate the epilogue in the same thread.\n\nThis strategy means the cross-thread reduction outcome is stored only on\nthread 0, while the other threads cannot participate in subsequent\ncomputation (i.e. epilogue). Related: https://github.com/apache/tvm/pull/15192.\n\nWhen the epilogue is relatively lightweight, i.e. elementwise add,\ncasting on scalars, this strategy is optimal. However, once the outcome\nneeds to be broadcasted to compute over a non-trivial region, for\nexample, act as a normalizer of `np.mean`, it would become much slower\nbecause only one thread in a thread block is effectively used.\n\nIn this case, we will need to broadcast the cross-thread reduction\noutcome in shared memory, making it visible to other threads, and then\nbind the compute region to all threads in the threadblock.",
+    "author": "junrushao",
+    "date": "2023-07-06T05:24:41Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15252/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15252/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/5472000701/jobs/9963693711"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5472001023/jobs/9963695133"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/5472293769/jobs/9964319173"
+      }
+    ],
+    "pr": 15252,
+    "pr_title": "[Unity][Dlight] Handle Epilogue Broadcasting",
+    "updated_at": 1688627016.673947
+  },
+  {
     "sha": "82a2f6edb86bf6c9b808fc6e99419dfa128caa9a",
     "headline": "Bump django from 4.1.7 to 4.1.10 in /apps/microtvm",
     "body": "Bumps [django](https://github.com/django/django) from 4.1.7 to 4.1.10.\n- [Commits](https://github.com/django/django/compare/4.1.7...4.1.10)\n\n---\nupdated-dependencies:\n- dependency-name: django\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
@@ -93,8 +185,7 @@
       }
     ],
     "pr": 15250,
-    "pr_title": "Bump django from 4.1.7 to 4.1.10 in /apps/microtvm",
-    "updated_at": 1688619825.635215
+    "pr_title": "Bump django from 4.1.7 to 4.1.10 in /apps/microtvm"
   },
   {
     "sha": "f271dcf9814f8b16f8168e348a5022236e482d6b",
@@ -796,14 +887,14 @@
     "date": "2023-07-05T17:16:54Z",
     "jobs": [
       {
+        "name": "gpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15244/1/display/redirect"
+      },
+      {
         "name": "lint/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15244/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15244/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -6615,107 +6706,6 @@
     "pr_title": "[RPC] Disable socket SO_REUSEADDR for Windows"
   },
   {
-    "sha": "5f04cfc1cc4c8b63bd04278d1faaa8a3d68a83b0",
-    "headline": "[RPC] Report RPC Session Timeout to Client Instead of \"kShutdown\"",
-    "body": "",
-    "author": "Johnson9009",
-    "date": "2023-06-30T07:11:36Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15187/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5422284876/jobs/9858739090"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5422284881/jobs/9871092346"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5422284881/jobs/9871092411"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5422284881/jobs/9871092470"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5422284881/jobs/9871092528"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5433928172/jobs/9881963686"
-      }
-    ],
-    "pr": 15187,
-    "pr_title": "[RPC] Report RPC Session Timeout to Client Instead of \"kShutdown\""
-  },
-  {
     "sha": "c33423ac397dd4acd19d6d37b3ef15c4c6d76270",
     "headline": "use ml_dtypes for llvm codegen test",
     "body": "",
@@ -8176,6 +8166,16 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15251/2/display/redirect"
       },
       {
+        "name": "cpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15251/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15251/2/display/redirect"
+      },
+      {
         "name": "i386/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15251/2/display/redirect"
@@ -8186,39 +8186,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15251/2/display/redirect"
       },
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15251/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15251/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15251/2/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15251/2/display/redirect"
       },
       {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15251/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15251/2/display/redirect"
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15251/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15251/2/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15251/2/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15251/2/display/redirect"
       },
       {
         "name": "riscv/pr-head",
