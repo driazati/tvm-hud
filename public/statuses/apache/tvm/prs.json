@@ -42,11 +42,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15258/4/display/redirect"
       },
       {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15258/4/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15258/4/display/redirect"
@@ -57,14 +52,19 @@
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15258/4/display/redirect"
       },
       {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15258/4/display/redirect"
-      },
-      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15258/4/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15258/4/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15258/4/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -74,7 +74,7 @@
     ],
     "pr": 15258,
     "pr_title": "[Hexagon] Propagate QNN Concat Quantization Params to Inputs",
-    "updated_at": 1688731863.33582
+    "updated_at": 1688735675.965204
   },
   {
     "sha": "faf5854cbc14990baa28eaf2df1925e839b5afa0",
@@ -170,11 +170,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15259/2/display/redirect"
       },
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15259/2/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15259/2/display/redirect"
@@ -198,6 +193,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15259/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15259/2/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
@@ -3200,6 +3200,102 @@
     "pr_title": "[Unity][TIR][Transform] Support no spatial axes cases for DefaultGPUSchedule"
   },
   {
+    "sha": "338fc25c405ffb29eed90eea93c63f85499a621b",
+    "headline": "[TIR] Implement TIR macros",
+    "body": "This patch introduces two new symbols: `T.macro` and `T.insert`.\n`T.macro` is a decorator that, when applied to a function, turns the\nbody of that function into a piece of TIR that can be inserted via\n`T.insert` into a PrimFunc.\n\nFor example:\n\n```python\n@T.macro\ndef copy_backwards(dst, src, size):\n    with T.block(\"backwards\"):\n        for i in T.serial(size):\n            ai = T.axis.remap(\"S\", [i])\n            T.reads(src[0:size])\n            T.writes(dst[0:size])\n            dst[ai] = src[size - ai - 1]\n\n@T.prim_func\ndef foo_int32(A: T.Buffer((128,), \"int32\"), B: T.Buffer((128,), \"int32\")):\n    T.insert(copy_backwards, A, B, 128)\n\n@T.prim_func\ndef foo_int8(A: T.Buffer((128,), \"int8\"), B: T.Buffer((128,), \"int8\")):\n    T.insert(copy_backwards, A, B, 128)\n```\n\nThe above will generate two PrimFuncs that do the same backwards copy,\nbut applied to buffers with different data types.\n\nSemantics:\n- Function that is decorated with @T.macro can have any parameters that\n  follow Python syntax, i.e. positional, keyword, etc. Type annotations\n  are not required, but are allowed.\n- The arguments to `T.insert` are macro name followed by the argument\n  list.\n  For `T.insert(arg1, arg2, arg3, ...)`, the values are substituted into\n  the body of the macro as in the call `arg1(arg2, arg3, ...)`.\n  The body with the substituted values is then inserted at the point\n  where the `T.insert` is located.",
+    "author": "kparzysz-quic",
+    "date": "2023-07-05T00:07:25Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5486629512/jobs/9996973033"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5486629603/jobs/9996973297"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5486629603/jobs/9996973482"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5486629603/jobs/9996973655"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5486629603/jobs/9996973824"
+      }
+    ],
+    "pr": 15260,
+    "pr_title": "[TIR] Implement TIR macros"
+  },
+  {
     "sha": "dee463ea9c463e3ca4b39e0cbd071d6b82268633",
     "headline": "[DRAFT][TIR] Prototype of T.macro",
     "body": "",
@@ -5427,97 +5523,6 @@
     ],
     "pr": 15211,
     "pr_title": "[RELAY] Fix bug in MergeCompilerRegions pass"
-  },
-  {
-    "sha": "b25bd0b9d9c50863dc7598ab1a7d3db4e5f30e9c",
-    "headline": "[Dlight] Enhance Decode-GEMV Rules",
-    "body": "This PR enhances Decode-GEMV rule with the following changes:\n- Normalize the GEMV iter domain to S-R-C via transform-block-layout.\n  This would help with further analysis and scheduling, in cases for\n  example, when there was no spatial loop in the original reduction\n  block.\n- Get rid of the ad hoc iter type analysis, including the logic calling\n  into a TVM packed func `tir.schedule.GetLoopIterType` using\n  `tvm._ffi.get_global_func`.\n- Split out the logic for two separate cases of scheduling, where the\n  innermost dimension is spatial or reduction.\n- Introduces `suggest_threads_per_block` to guess the threads to be\n  allocated each threadblock. This helps avoid the previous case where\n  dlight allocates 256 threads for a workload whose degree of parallelism\n  is only 128.\n- Misc improvements.\n\nThis rest of the changes are split out to separate PRs that are already\nmerged to main.\n- [x] Pass the hints to arithmetic analyzer that shape variables should\nbe positive ones (#15210)\n- [x] Eliminate unnecessary block predicate generation - should be\nprovable via affine analysis (#15193)\n- [x] Shrink local memory allocation if only one element `X[threadIdx.x]`\nis used (#15207)",
-    "author": "junrushao",
-    "date": "2023-07-03T04:52:10Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15195/16/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5459406017/jobs/9935379838"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5460588693/jobs/9937723493"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5466950987/jobs/9952619694"
-      }
-    ],
-    "pr": 15195,
-    "pr_title": "[Dlight] Enhance Decode-GEMV Schedule"
   },
   {
     "sha": "17faf25f1f68703440b6e210c26a2fedef73fc18",
