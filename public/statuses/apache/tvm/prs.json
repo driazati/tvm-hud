@@ -1,5 +1,198 @@
 [
   {
+    "sha": "3b5d135def5d5f46ca2186487a014dc0bda2877c",
+    "headline": "[AOT] Avoid call_extern() with incorrect argument count",
+    "body": "Prior to this commit, if device initialization is required, the AOT\nmain function produced a `call_extern()` that included the device\ncontext as input.  This commit updates the AOT main function to\nprovide the device context only if the function being called accepts a\ndevice context as input.\n\nIf an extra device context argument is included at the call site, the\nC codegen would produce a function signature that includes the device\ncontext for the caller's compilation unit, but a signature without the\ndevice context for the callee's compilation unit.  While this can\ncompile and run in some cases, it is undefined behavior for the\nsignature to vary between compilation units, and should be avoided.\n\nThis was initially discovered while debugging\nhttps://github.com/apache/tvm/pull/14985, in which changes to the\nlowering flow resulted in the caller and callee being within the same\ncompilation unit.",
+    "author": "Lunderberg",
+    "date": "2023-07-12T14:36:48Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15301/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5533064867/jobs/10096036884"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5533065097/jobs/10096037576"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5533065097/jobs/10096037849"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5533065097/jobs/10096038109"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5533065097/jobs/10096038385"
+      }
+    ],
+    "pr": 15301,
+    "pr_title": "[AOT] Avoid call_extern() with incorrect argument count",
+    "updated_at": 1689178015.637016
+  },
+  {
+    "sha": "35ddc1a7fc1e07172ba01ae259016c083da56435",
+    "headline": "[Ethos-U] Replace ethos-u.constants with AllocateConst",
+    "body": "Previously, constants for ethos-u were tracked using a function\nattribute `\"ethos-u.constants\"`.  This predates the introduction of\n`AllocateConst`, and had comments indicating that it should be\nreplaced with `AllocateConst` when possible.\n\nTo minimize impact to existing passes, this commit preserves the\n`\"ethos-u.constants\"` attribute during ethosu-specific lowering\npasses.  The attribute is converted to `AllocateConst` at the end of\nthe `lower_ethosu` pass, just prior to lowering with the usual TIR\npasses.",
+    "author": "Lunderberg",
+    "date": "2023-07-12T14:10:48Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15300/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5533486458/jobs/10097083108"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5533486523/jobs/10097096396"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5533486523/jobs/10097096702"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5533486523/jobs/10097096972"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5533486523/jobs/10097097250"
+      }
+    ],
+    "pr": 15300,
+    "pr_title": "[Ethos-U] Replace ethos-u.constants with AllocateConst"
+  },
+  {
     "sha": "c1b2a4bf634570b72e4305d618b1fdc92177ce10",
     "headline": "[unity] [onnx frontend] [op] add support for trilu operator",
     "body": "",
@@ -78,8 +271,7 @@
       }
     ],
     "pr": 15299,
-    "pr_title": "[Unity] [Relax] [ONNX frontend] [op] Add support for Trilu operator",
-    "updated_at": 1689170559.210933
+    "pr_title": "[Unity] [Relax] [ONNX frontend] [op] Add support for Trilu operator"
   },
   {
     "sha": "cb849cc2667268f6b1957e48fbc550dbd9c55208",
@@ -124,11 +316,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15274/3/display/redirect"
       },
       {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15274/3/display/redirect"
-      },
-      {
         "name": "cortexm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15274/3/display/redirect"
@@ -137,6 +324,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15274/3/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15274/3/display/redirect"
       },
       {
         "name": "riscv/pr-head",
@@ -753,8 +945,8 @@
     "jobs": [
       {
         "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15290/3/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15290/4/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -7000,102 +7192,6 @@
     "pr_title": "[Unity][Dlight] Minor performance improvement for gemm and gemv"
   },
   {
-    "sha": "1d432c53aae50ff01761d16d0c371170fc2e378e",
-    "headline": "[TIR][Schedule] Scoped CacheRead/Write producing compact region",
-    "body": "This PR enhances CacheRead/Write so that when a cache operation is\nperformed under an inner block, the generated cache buffer will have\nthe shape as compact as possible, by region consumption analysis.\n\nThe motivation of this change comes from the needs of dynamic shape TIR\nscheduling, in which case we may isolate a \"static shape\" internal block\nusing blockize, and do further scheduling inside the internal block. For\nsuch cases, the current CacheRead/Write inside the static-shape block\nwill still produce dynamic-shape cache buffers, which is not ideal for\nanalysis and subsequent scheduling.\n\nOne thing that worths noting is that, to ensure the IR correctness after\ninserting the cache block, we will only compact the cache buffer when\nall the consumer blocks of the read buffer (for CacheRead) or the write\nbuffer (for CacheWrite) are children blocks of the cache block insertion\nlocation. Otherwise we will insist allocating the full-size cache\nbuffer.\n\nCo-authored-by: Bohan Hou <spectrometerh@gmail.com>",
-    "author": "MasterJH5574",
-    "date": "2023-07-05T01:54:31Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15236/5/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15236/5/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15236/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15236/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5470257523/jobs/9960131385"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5470257548/jobs/9960131388"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5470257548/jobs/9960131483"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5470257548/jobs/9960131570"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5470257548/jobs/9960131668"
-      }
-    ],
-    "pr": 15236,
-    "pr_title": "[TIR][Schedule] Scoped CacheRead/Write producing compact region"
-  },
-  {
     "sha": "338fc25c405ffb29eed90eea93c63f85499a621b",
     "headline": "[TIR] Implement TIR macros",
     "body": "This patch introduces two new symbols: `T.macro` and `T.insert`.\n`T.macro` is a decorator that, when applied to a function, turns the\nbody of that function into a piece of TIR that can be inserted via\n`T.insert` into a PrimFunc.\n\nFor example:\n\n```python\n@T.macro\ndef copy_backwards(dst, src, size):\n    with T.block(\"backwards\"):\n        for i in T.serial(size):\n            ai = T.axis.remap(\"S\", [i])\n            T.reads(src[0:size])\n            T.writes(dst[0:size])\n            dst[ai] = src[size - ai - 1]\n\n@T.prim_func\ndef foo_int32(A: T.Buffer((128,), \"int32\"), B: T.Buffer((128,), \"int32\")):\n    T.insert(copy_backwards, A, B, 128)\n\n@T.prim_func\ndef foo_int8(A: T.Buffer((128,), \"int8\"), B: T.Buffer((128,), \"int8\")):\n    T.insert(copy_backwards, A, B, 128)\n```\n\nThe above will generate two PrimFuncs that do the same backwards copy,\nbut applied to buffers with different data types.\n\nSemantics:\n- Function that is decorated with @T.macro can have any parameters that\n  follow Python syntax, i.e. positional, keyword, etc. Type annotations\n  are not required, but are allowed.\n- The arguments to `T.insert` are macro name followed by the argument\n  list.\n  For `T.insert(arg1, arg2, arg3, ...)`, the values are substituted into\n  the body of the macro as in the call `arg1(arg2, arg3, ...)`.\n  The body with the substituted values is then inserted at the point\n  where the `T.insert` is located.",
@@ -8341,106 +8437,5 @@
     "jobs": [],
     "pr": 15289,
     "pr_title": "[Unity] [DistIR] Introducing DistIR"
-  },
-  {
-    "sha": "31d6dd0f086df4b9b64c37165988a1642cfaf1ea",
-    "headline": "[Relay] ExprMutator Return Origin Expr When All Fields Isn't Changed",
-    "body": "",
-    "author": "Qiang Zhang",
-    "date": "2023-02-20T07:54:31Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15237/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5462219063/jobs/9941276307"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5462219156/jobs/9988110236"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5462219156/jobs/9988110308"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5462219156/jobs/9988110360"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5462219156/jobs/9988110410"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5486818021/jobs/9997409973"
-      }
-    ],
-    "pr": 15237,
-    "pr_title": "[Relay] ExprMutator Return Origin Expr When All Fields Isn't Changed"
   }
 ]
