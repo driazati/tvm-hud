@@ -1,5 +1,102 @@
 [
   {
+    "sha": "63cedb640d78392363c1879d03c7b022a50d7541",
+    "headline": "remove cutlass media/docs inside cutlass_fpA_intB_gemm",
+    "body": "",
+    "author": "yzh119",
+    "date": "2023-07-15T23:08:28Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15328/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5564649335/jobs/10164374755"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5564649345/jobs/10164374748"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5564649345/jobs/10164374807"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5564649345/jobs/10164374848"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5564649345/jobs/10164374889"
+      }
+    ],
+    "pr": 15328,
+    "pr_title": "[Package] Remove cutlass media/docs inside cutlass_fpA_intB_gemm",
+    "updated_at": 1689467994.25634
+  },
+  {
     "sha": "0d58998594cf0b06f4f4703db3e3b4b51d7a7872",
     "headline": "[TIR] ThreadAllreduce warp-level primitive support with multi-warp",
     "body": "This PR enhances the implementation of the LowerThreadAllreduce pass.\n\nPrior to this PR, for CUDA backend we will leverage warp-level\nprimitives only when\n* the reducing threads are a sub-warp (i.e., size 16, 8, 4, 2), or\n* the number of reducing threads is less then 32, and equals the\nreduction extent.\n\nUnder the requirement above, for reductions that have large number\nof reducing threads (e.g., reducing over 128, 256 or larger number\nor threads), the generated code is inefficient.\n\nThis PR improves the LowerThreadAllreduce pass, so that we now generate\nmore efficient CUDA code in such cases, when the number of reducing\nthreads is a multiple of warp size, with the help of warp-level\nprimitives.\n\nSpecifically, in such cases, we first reducing 32 elements within\neach warp, getting the results of each warp stored in shared memory.\nWe then trigger a second round of warp-level primitive reduction\nwithin the first warp, and get the final reduction results.\n\nIn addition to using warp-level primitives, by doing this we also\nreduce the size of the shared memory. For example, even when reducing\nover 1024 threads, we now only require shared memory of size 32,\ncompared with 1024 prior to this PR.\n\nTests are added to ensure correctness.",
@@ -7,19 +104,9 @@
     "date": "2023-07-15T18:51:56Z",
     "jobs": [
       {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15327/5/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15327/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15327/5/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -37,9 +124,19 @@
         "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15327/5/display/redirect"
       },
       {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15327/5/display/redirect"
+      },
+      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15327/5/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15327/5/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -98,8 +195,7 @@
       }
     ],
     "pr": 15327,
-    "pr_title": "[TIR] ThreadAllreduce warp-level primitive support with multi-warp",
-    "updated_at": 1689462138.281953
+    "pr_title": "[TIR] ThreadAllreduce warp-level primitive support with multi-warp"
   },
   {
     "sha": "1dbb0b1f95dce4970ae3bb61020de69ea3a0dd70",
@@ -108,11 +204,6 @@
     "author": "cyx-6",
     "date": "2023-07-15T10:14:53Z",
     "jobs": [
-      {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15326/1/display/redirect"
-      },
       {
         "name": "arm/pr-head",
         "status": "success",
@@ -137,6 +228,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15326/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15326/1/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
@@ -5818,203 +5914,6 @@
     "pr_title": "[Release] Fix version number on branch v0.13.0"
   },
   {
-    "sha": "cdb04b4b9303ca2cd0166dd374550f8c14fabd0c",
-    "headline": "Remove stale testcase",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-09T15:37:06Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/11/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500665450/jobs/10023721668"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500665505/jobs/10023721715"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500665505/jobs/10023721769"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500665505/jobs/10023721820"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500665505/jobs/10023721859"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5522175425/jobs/10071368429"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
-    "sha": "5a637dc436dd4940c08f9682cad4a774bcdeebb1",
-    "headline": "One more typo...",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-09T13:06:45Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/10/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500026434/jobs/10022659367"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500026498/jobs/10022659392"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500026498/jobs/10022659489"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500026498/jobs/10022659588"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5500026498/jobs/10022659693"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
     "sha": "d20ddd44b456caa9c1f97d961de2240d435660e7",
     "headline": "fix in prepare groovy",
     "body": "",
@@ -6283,294 +6182,6 @@
     "pr_title": "Bump tough-cookie from 4.1.2 to 4.1.3 in /web"
   },
   {
-    "sha": "bf9f03825f0910d3711df9e0bde2bdd6fc6af369",
-    "headline": "Add import pytest",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-09T01:32:09Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/9/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5497356724/jobs/10018020273"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5497356751/jobs/10018020355"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5497356751/jobs/10018020418"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5497356751/jobs/10018020506"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5497356751/jobs/10018020561"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
-    "sha": "0c057b5eeef7adb1a0ac2cf03819bd1772ba5292",
-    "headline": "Edit comment: insertion -> expansion",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-08T22:26:21Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/8/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5496693379/jobs/10016865088"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5496693419/jobs/10016867274"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5496693419/jobs/10016867332"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5496693419/jobs/10016867375"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5496693419/jobs/10016867419"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
-    "sha": "d2180fe323715f62d5775f0d378ea2c2c30f6294",
-    "headline": "Make T.macro work same as T.macro()",
-    "body": "The previous commit inadvertently made T.macro (without parentheses)\nillegal, only abbreviated form allowed was T.macro(). Restore T.macro\nas a valid decorator use.",
-    "author": "kparzysz-quic",
-    "date": "2023-07-08T22:18:36Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/7/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5496670059/jobs/10016832667"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5496670138/jobs/10016832770"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5496670138/jobs/10016832834"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5496670138/jobs/10016832884"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5496670138/jobs/10016832934"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
     "sha": "f8cbc0fac3c112fb591f063903e51b627c3affd7",
     "headline": "[Testing] Add tvm.testing.local_run",
     "body": "This PR introduces `tvm.testing.local_run`, which serves as a convenient\nnumpy-in numpy-out interface to quickly run a `runtime.Module` in TVM\nand obtain its running time and outputs.\n\nExample:\n\n```python\n\n@I.ir_module\nclass Module:\n  ...\n\nn = 128\nnp_a = np.random.uniform(-1, 1, [1, 32, 1, 128]).astype(np.float16)\nnp_b = np.random.uniform(-1, 1, [1, 32, n, 128]).astype(np.float16)\nnp_c = np.random.uniform(-1, 1, [1, 1, 1, n]).astype(np.float16)\nnp_d = np.random.uniform(-1, 1, [1, 32, 1, n]).astype(np.float32)\n\n_, _, _, np_d = local_run(\n    tvm.build(Module, target=\"llvm\"),\n    device_type=\"cpu\",\n    args=[np_a, np_b, np_c, np_d],\n)\n```",
@@ -6675,102 +6286,6 @@
     ],
     "pr": 15268,
     "pr_title": "[Testing] Add tvm.testing.local_run"
-  },
-  {
-    "sha": "4a67795a9e181d80b413edda610cfe06c0cf5b7f",
-    "headline": "Fix linter",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-08T16:40:34Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/6/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5495432835/jobs/10014822576"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5495432850/jobs/10014822590"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5495432850/jobs/10014822621"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5495432850/jobs/10014822656"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5495432850/jobs/10014822698"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
   },
   {
     "sha": "169880c61a17d2faf77841b2e6c2fa51d1720b39",
@@ -6933,127 +6448,6 @@
     ],
     "pr": 15266,
     "pr_title": "[release] Bump version numbers to 0.13.0"
-  },
-  {
-    "sha": "de6e34cbb6465bbea1df395e31441e0ba42b7293",
-    "headline": "Implement macro hygiene",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-08T14:29:41Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5494936448/jobs/10014010089"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5494936470/jobs/10014010159"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5494936470/jobs/10014010195"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5494936470/jobs/10014010239"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5494936470/jobs/10014010278"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5494937291/jobs/10014011400"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5494949008/jobs/10014030562"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5494954665/jobs/10014039396"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
-    "sha": "53c718abd04a5b94fdc33f3709b5e4119715aa3d",
-    "headline": "Simplify `expand_macro`, capture environment variables",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-08T13:15:54Z",
-    "jobs": [],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
   },
   {
     "sha": "52e2480a3e71759cc4d02c444597d6539915b4b8",
@@ -7284,36 +6678,6 @@
     "pr_title": "Fix keras version problem"
   },
   {
-    "sha": "152dea9f5319f5b5c9d80d2760ee0ee88326df6f",
-    "headline": "ast.parse always returns ast.Module, hence doc is doc.Module",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-08T00:17:05Z",
-    "jobs": [],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
-    "sha": "295777829e50eaf9add283292937b124eb6b4e85",
-    "headline": "Store closure vars in TIRMacro",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-08T00:16:01Z",
-    "jobs": [],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
-    "sha": "a1bb8b3d61712bbb2a67617ed36889beaa621305",
-    "headline": "Get rid of T.insert, apply macro via function-call syntax",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-08T00:09:03Z",
-    "jobs": [],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
     "sha": "75002859ad5dbbc8552faeb5223feb74349512ac",
     "headline": "[TIR] Allow symbolic bounds in IndexMap analysis",
     "body": "This PR adds the bounds of shape variables to the arithmetic analyzer\nso that it is possible to simplify certain expressions.",
@@ -7516,117 +6880,6 @@
     "pr_title": "[bugfix][frontend][keras] Fix go_backwards attribute of LSTM in keras frontend"
   },
   {
-    "sha": "3b1a26ae5d9c18c9c52bfc8cf9e95e3bd77af9a7",
-    "headline": "Fix linter again",
-    "body": "One linter suggested something that the other didn't like...",
-    "author": "kparzysz-quic",
-    "date": "2023-07-07T15:30:10Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/4/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5488068704/jobs/10000392423"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5488068800/jobs/10000403562"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5488068800/jobs/10000403844"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5488068800/jobs/10000404091"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5488068800/jobs/10000404313"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5490542551/jobs/10006116269"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5490644798/jobs/10006339597"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5491507532/jobs/10008087795"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
-  },
-  {
     "sha": "f44ca49fd245f55ae2d53039be52fa244d2026ac",
     "headline": "fix go_backwards of lstm in keras.py",
     "body": "",
@@ -7645,102 +6898,6 @@
     "jobs": [],
     "pr": 15303,
     "pr_title": "[ETHOSU][microTVM] MicroTVM tutorial for ALIF EthosU NPU"
-  },
-  {
-    "sha": "64e99ab4c452fc51210689184a8c1d180aa4d8fc",
-    "headline": "Fix linter",
-    "body": "",
-    "author": "kparzysz-quic",
-    "date": "2023-07-07T13:40:38Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5487060953/jobs/9997983004"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5487061022/jobs/9997995334"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5487061022/jobs/9997995582"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5487061022/jobs/9997995756"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5487061022/jobs/9997995948"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
   },
   {
     "sha": "89364cb9dd91b6482e37829a4f72b7544841f330",
@@ -7948,102 +7105,6 @@
     ],
     "pr": 15278,
     "pr_title": "[Unity][Dlight] Minor performance improvement for gemm and gemv"
-  },
-  {
-    "sha": "338fc25c405ffb29eed90eea93c63f85499a621b",
-    "headline": "[TIR] Implement TIR macros",
-    "body": "This patch introduces two new symbols: `T.macro` and `T.insert`.\n`T.macro` is a decorator that, when applied to a function, turns the\nbody of that function into a piece of TIR that can be inserted via\n`T.insert` into a PrimFunc.\n\nFor example:\n\n```python\n@T.macro\ndef copy_backwards(dst, src, size):\n    with T.block(\"backwards\"):\n        for i in T.serial(size):\n            ai = T.axis.remap(\"S\", [i])\n            T.reads(src[0:size])\n            T.writes(dst[0:size])\n            dst[ai] = src[size - ai - 1]\n\n@T.prim_func\ndef foo_int32(A: T.Buffer((128,), \"int32\"), B: T.Buffer((128,), \"int32\")):\n    T.insert(copy_backwards, A, B, 128)\n\n@T.prim_func\ndef foo_int8(A: T.Buffer((128,), \"int8\"), B: T.Buffer((128,), \"int8\")):\n    T.insert(copy_backwards, A, B, 128)\n```\n\nThe above will generate two PrimFuncs that do the same backwards copy,\nbut applied to buffers with different data types.\n\nSemantics:\n- Function that is decorated with @T.macro can have any parameters that\n  follow Python syntax, i.e. positional, keyword, etc. Type annotations\n  are not required, but are allowed.\n- The arguments to `T.insert` are macro name followed by the argument\n  list.\n  For `T.insert(arg1, arg2, arg3, ...)`, the values are substituted into\n  the body of the macro as in the call `arg1(arg2, arg3, ...)`.\n  The body with the substituted values is then inserted at the point\n  where the `T.insert` is located.",
-    "author": "kparzysz-quic",
-    "date": "2023-07-05T00:07:25Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15260/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5486629512/jobs/9996973033"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5486629603/jobs/9996973297"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5486629603/jobs/9996973482"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5486629603/jobs/9996973655"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5486629603/jobs/9996973824"
-      }
-    ],
-    "pr": 15260,
-    "pr_title": "[TIR] Implement TIR macros"
   },
   {
     "sha": "7043bcebc2b174d18229faa6f6ee9ef2b92ccec6",
