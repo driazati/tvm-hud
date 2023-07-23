@@ -1,5 +1,115 @@
 [
   {
+    "sha": "8c8b51f02b144f0ad97a2fa6ba1a622dc99cbaf7",
+    "headline": "[Bugfix] Work around \"Internal Compiler Error\" in MSVC (#15385)",
+    "body": "[Bugfix] Work around \"Internal Compiler Error\" in MSVC (#271)\r\n\r\nThis PR found a workaround that prevents the nigthly windows pypi\r\npackage of TVM Unity to be released. Basically it splits out a deeply\r\nnested method into several smaller ones so that MSVC's internal handling\r\nis supposed to be slightly simpler and less error prone.",
+    "author": "junrushao",
+    "date": "2023-07-22T23:56:45Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1218/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/919/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/919/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/746/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/957/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/913/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/912/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/909/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/908/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/906/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/903/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/918/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5633358504/job/15262133428"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5633358504/job/15262133459"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5633358504/job/15262133482"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5633358504/job/15262133507"
+      },
+      {
+        "name": "Nightly Docker Update / open_update_pr",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/5633368108/job/15262153001"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5633394363/job/15262216856"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5633506964/job/15262475043"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5633600323/job/15262681063"
+      }
+    ],
+    "updated_at": 1690073657.658044
+  },
+  {
     "sha": "3f69ed43a8723e91abdbbc928a5826aa9461a953",
     "headline": "[TIR] Finer predicate handling in cross-thread reduction (#15374)",
     "body": "This PR fixes the predicate handling logic of the cross-thread\r\nreduction lowering pass.\r\n\r\nFor the cross-thread reduction write-back block, prior to this PR, its\r\npredicate is the conjunction of `t == 0` for each reduction thread dim\r\nof the cross-thread reduction. This is problematic when the write-back\r\nbuffer is stored in local memory, where each thread is supposed to\r\nhave a copy of the final value, while the final value is only stored\r\nby the first thread. In this PR, the predicate is changed to be the\r\nconjunction of the clauses from the two parts:\r\n\r\n* the clause of the original reduction block's predicate which contains\r\nspatial loop var,\r\n* `t == 0` for each reduction thread dim **only when the write-back\r\nbuffer is global or shared**.\r\n\r\nSo the first part ensures that the write-back will not go out of bound,\r\nand the second part ensures that when the write-back buffer is local,\r\nevery thread gets a value and when the write-back buffer is non-local,\r\nonly one thread writes the value out.\r\n\r\nMeanwhile, this PR fixes the cross-thread broadcasting detection with\r\nthe awareness of the storage scope of the write buffer of the\r\nbroadcasting block. Specifically, for each consumer block of a buffer\r\nproduced by cross-thread reduction under the same kernel (i.e., same\r\nset of `blockIdx`) of the cross-thread reduction block, when the\r\nwrite buffer of this consumer block is in local memory, we do not treat\r\nit as broadcasting, and will not add a predicate to it. Otherwise,\r\nwe will add the predicate according to the broadcasting handling\r\nintroduced by #15192.",
@@ -300,9 +410,23 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5633157374/job/15261764983"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5633234922/job/15261903185"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5633278225/job/15261985233"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5633328842/job/15262077167"
       }
-    ],
-    "updated_at": 1690067260.780529
+    ]
   },
   {
     "sha": "e4af30220f34a42cc3f0a9f4a564bb72c31de3c4",
@@ -24833,105 +24957,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5363492276/job/14521292824"
-      }
-    ]
-  },
-  {
-    "sha": "d26dc445bba5d6dea3396d53b0d1415b6afb39bc",
-    "headline": "[TIR] Block dependence analysis without schedules (#15146)",
-    "body": "* [TIR] Block dependence analysis without schedules\r\n\r\nThis work introduces a new object called `BlockDependenceInfo` that\r\ncomputes and returns block dependences. The idea is to be able to expose\r\nblock level dependences to TIR passes without having to create an\r\nexplicit schedules.\r\n\r\nThe patch introduces 2 main classes:\r\n1. `SRefTreeCreator` - This creates and returns a new SRefTree and\r\n   returns a map from original statements to corresponding srefs\r\n2. `BlockDependenceInfo` - This object computes the actual dependences\r\n   between blocks within a block scope and returns it for access in TIR\r\npasses\r\n\r\nThis is a continuation to\r\n[PR #15034](https://github.com/apache/tvm/pull/15034) and completes the work\r\nstarted there to expose block level dependences to TIR passes\r\n\r\nNote: One major difference between the SRef Tree created for dependence\r\nanalysis here versus the one already present in schedules is that this\r\nSRef tree only contains block nodes and not loops. This makes it easier\r\nto find the parent blocks (by just accessing `parent` member)\r\n\r\n* Fix lint",
-    "author": "quic-sanirudh",
-    "date": "2023-06-24T08:37:45Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1114/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/818/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/818/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/646/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/817/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/818/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/811/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/812/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/809/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/807/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/807/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/804/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5363463807/job/14521235408"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5363463807/job/14521235480"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5363463807/job/14521235562"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5363463807/job/14521235625"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/5363474499/job/14521258068"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5363474530/job/14521258218"
       }
     ]
   }
