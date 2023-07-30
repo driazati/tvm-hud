@@ -1,5 +1,102 @@
 [
   {
+    "sha": "523669f984f752dd96a4a53a019638c2fead77d2",
+    "headline": "add spirv shuffle support",
+    "body": "",
+    "author": "masahi",
+    "date": "2023-07-29T18:14:04Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15439/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5704098948/job/15457370982"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5704098960/job/15457370993"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5704098960/job/15457371042"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5704098960/job/15457371078"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5704098960/job/15457371110"
+      }
+    ],
+    "pr": 15439,
+    "pr_title": "[Vulkan] Add spirv shuffle instruction support",
+    "updated_at": 1690689759.44679
+  },
+  {
     "sha": "d41bb0b708ab16a9ea0d27bd7cc3d453d73460f0",
     "headline": "fix",
     "body": "",
@@ -8,8 +105,8 @@
     "jobs": [
       {
         "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15437/1/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15437/2/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -93,8 +190,7 @@
       }
     ],
     "pr": 15437,
-    "pr_title": "[MetaSchedule] Fix mma default rule and disable tuning abort",
-    "updated_at": 1690686143.910285
+    "pr_title": "[MetaSchedule] Fix mma default rule and disable tuning abort"
   },
   {
     "sha": "ecaea77b9685295d664ffd44faf70e100adb8472",
@@ -8527,102 +8623,6 @@
     ],
     "pr": 15375,
     "pr_title": "[Relay] Generate reduced testcase for compilation failure"
-  },
-  {
-    "sha": "38062eb0835dd14946d8c65b283b2eb5f4d59925",
-    "headline": "[TIR] Allreduce broadcast result to each thread in multi-warp case",
-    "body": "PR #15327 introduces the warp-level primitive support in multi-warp\nallreduce. However, due to the specialty of the two-stage\nshuffle-down reduction implementation of the allreduce in multi-warp\nscenarios, PR #15327 did not broadcast the allreduce result to each\nreduction thread. This behavior does not align with the semantics\nof allreduce and is not ideal for many use cases. Therefore, this\nPR completes the implementation by inserting a stage of writing the\nreduction results to shared memory, so that each reduction thread\nacross all the reduction warps can access the reduction results.\n\nThis shared memory write-back stage will only be inserted in\nmulti-warp allreduce cases. In single-warp allreduce, a `shfl_sync`\nis used to broadcast the reduction results across reduction threads.\nSince in multi-warp settings we cannot leverage warp-level primitives\nto broadcast the value, we can only make use of shared memory.\n\nThe numerical correctness are verified locally.",
-    "author": "MasterJH5574",
-    "date": "2023-07-21T05:41:31Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15373/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5624477782/job/15241377224"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5624477854/job/15241377355"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5624477854/job/15241377634"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5624477854/job/15241377812"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5624477854/job/15241377998"
-      }
-    ],
-    "pr": 15373,
-    "pr_title": "[TIR] Allreduce broadcast result to each thread in multi-warp case"
   },
   {
     "sha": "8a2dd01fd48ff7cc0de6243e57cf68e8aa7d26f0",
