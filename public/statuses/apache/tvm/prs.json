@@ -79,7 +79,7 @@
     ],
     "pr": 15462,
     "pr_title": "[Relax] CuDNN Fallback Support through BYOC.",
-    "updated_at": 1691078513.832812
+    "updated_at": 1691082094.647537
   },
   {
     "sha": "9f4495038895229eb4f432eda73271872f207dff",
@@ -88,11 +88,6 @@
     "author": "tqchen",
     "date": "2023-08-03T14:59:00Z",
     "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15469/1/display/redirect"
-      },
       {
         "name": "cortexm/pr-head",
         "status": "pending",
@@ -134,14 +129,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15469/1/display/redirect"
       },
       {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15469/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15469/1/display/redirect"
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15469/1/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -149,13 +139,23 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15469/1/display/redirect"
       },
       {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15469/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15469/1/display/redirect"
+      },
+      {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5752467962/job/15593527289"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5752467962/job/15593527580"
       },
       {
@@ -268,7 +268,7 @@
       {
         "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15468/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15468/2/display/redirect"
       },
       {
         "name": "cpu/pr-head",
@@ -291,19 +291,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15468/1/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15468/1/display/redirect"
-      },
-      {
         "name": "lint/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15468/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15468/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -314,6 +304,16 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15468/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15468/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15468/1/display/redirect"
       },
       {
         "name": "riscv/pr-head",
@@ -439,6 +439,102 @@
     ],
     "pr": 15462,
     "pr_title": "[Relax] CuDNN Fallback Support through BYOC."
+  },
+  {
+    "sha": "052f208f66f10d9d10e95ccf0dd2581cbe2de18c",
+    "headline": "[ARITH] Enhance Canonical Simplify for LE",
+    "body": "This PR enhances the canonical simplifier to support the following patterns:\n\nx0 * s0 + x1 * s1 + ... + xn + c < 0, let d = gcd(s0, s1, ..., s{n-1}, c)\n\n1. if can prove -d < xn < d, then we can simplify\n   the expression to x0 * (s0/d) + x1 * (s1/d) + ... + x{n-1} * (s{n-1}/d) < c/d,\n   e.g. `x * 8 + y < 16` where `y` \\in [0, 8), we can simplify it to `x < 2`\n2. if xn is in pattern of yn % m, where m % d == 0, convert it to yn // d % (m/d)\n   e.g. `x1 * 64 + (x2 * 8 + x3) % 64 < 120`, `x3` \\in [0, 8), we can simplify it to\n   `x1 * 8 + (x2 * 8 + x3) // 8 % 8 < 15` ==> `x1 * 8 + x2 % 8 < 15`",
+    "author": "Hzfengsy",
+    "date": "2023-08-03T10:03:41Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15471/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5753571050/job/15597075389"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5753571078/job/15597075437"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5753571078/job/15597075713"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5753571078/job/15597075935"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5753571078/job/15597076135"
+      }
+    ],
+    "pr": 15471,
+    "pr_title": "[ARITH] Enhance Canonical Simplify for LE"
   },
   {
     "sha": "b82e1fb4d6f31f66f3d78a531a2b45bbf619f8a7",
@@ -1920,6 +2016,102 @@
     "jobs": [],
     "pr": 15462,
     "pr_title": "[Relax] CuDNN Fallback Support through BYOC."
+  },
+  {
+    "sha": "b70c6621a3dd2d1c5aac9d321b2b00aacb75decc",
+    "headline": "[Relay][Strategy] Use x86 dense schedules for arm_cpu",
+    "body": "Currently the fallback used when compiling a dense operation with\ntargets such as `llvm -device=arm_cpu` is `dense.generic`. This results\nvery poor performance. Although https://github.com/apache/tvm/pull/13775\nmeant that x86 schedules are used in cases where no strategy is provided\nby arm_cpu, the dense strategy is registered due to the existance of\nspecialized schedules for arm_cpu e.g. a schedule for embedded devices.\nThis commit ensures x86 schedules are used inplace of a generic\nschedule which yeilds much better performance.\n\nThe commit also follows the same approach for the `dense.generic`\nschedule as the x86 strategy. This will only be used when autoscheduler\nis enabled.\n\nA test has been added to check the intended schedules are picked when\ncompiling with `arm_cpu`.\n\nChange-Id: I8697f630d4acfab71a9626cf9e0dc3086987f163",
+    "author": "lhutton1",
+    "date": "2023-08-02T14:41:01Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15470/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5753500790/job/15596837230"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5753500825/job/15596837169"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5753500825/job/15596837420"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5753500825/job/15596837707"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5753500825/job/15596837947"
+      }
+    ],
+    "pr": 15470,
+    "pr_title": "[Relay][Strategy] Use x86 dense schedules for arm_cpu"
   },
   {
     "sha": "ef4253b807c76d9224b055d0d85181ce88792ff0",
@@ -8110,198 +8302,6 @@
     ],
     "pr": 15412,
     "pr_title": "[Unity][DLight] Fix Reduction Rule"
-  },
-  {
-    "sha": "f78d506670137663bd3a59946008f78eaa79b66d",
-    "headline": "Bump certifi from 2022.5.18.1 to 2023.7.22 in /docker/python",
-    "body": "Bumps [certifi](https://github.com/certifi/python-certifi) from 2022.5.18.1 to 2023.7.22.\n- [Commits](https://github.com/certifi/python-certifi/compare/2022.05.18.1...2023.07.22)\n\n---\nupdated-dependencies:\n- dependency-name: certifi\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
-    "author": "dependabot[bot]",
-    "date": "2023-07-25T22:01:33Z",
-    "jobs": [
-      {
-        "name": "docker/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15409/1/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5662220949/job/15341752384"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5662220949/job/15341752553"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5662220949/job/15341752667"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5662220949/job/15341752797"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5662220953/job/15341752412"
-      }
-    ],
-    "pr": 15409,
-    "pr_title": "Bump certifi from 2022.5.18.1 to 2023.7.22 in /docker/python"
-  },
-  {
-    "sha": "c9409fba25c4e3d8e421dfcb462bec557ee60f72",
-    "headline": "Bump certifi from 2022.12.7 to 2023.7.22 in /apps/microtvm",
-    "body": "Bumps [certifi](https://github.com/certifi/python-certifi) from 2022.12.7 to 2023.7.22.\n- [Commits](https://github.com/certifi/python-certifi/compare/2022.12.07...2023.07.22)\n\n---\nupdated-dependencies:\n- dependency-name: certifi\n  dependency-type: indirect\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
-    "author": "dependabot[bot]",
-    "date": "2023-07-25T21:26:58Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15408/1/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5661972895/job/15340974400"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5661972895/job/15340974634"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5661972895/job/15340974775"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5661972895/job/15340974946"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5661972903/job/15340974368"
-      }
-    ],
-    "pr": 15408,
-    "pr_title": "Bump certifi from 2022.12.7 to 2023.7.22 in /apps/microtvm"
   },
   {
     "sha": "b18a8f715219ca3f32ac85ef917cfd9f5a16a8f3",
