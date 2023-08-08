@@ -1,5 +1,95 @@
 [
   {
+    "sha": "8cadd1fbc52c66b67fa90022e8c65e79e181b2bf",
+    "headline": "[ARITH] Enhance Canonical Simplify for LE (#15471)",
+    "body": "* [ARITH] Enhance Canonical Simplify for LE\r\n\r\nThis PR enhances the canonical simplifier to support the following patterns:\r\n\r\nx0 * s0 + x1 * s1 + ... + xn + c < 0, let d = gcd(s0, s1, ..., s{n-1}, c)\r\n\r\n1. if can prove -d < xn < d, then we can simplify\r\n   the expression to x0 * (s0/d) + x1 * (s1/d) + ... + x{n-1} * (s{n-1}/d) < c/d,\r\n   e.g. `x * 8 + y < 16` where `y` \\in [0, 8), we can simplify it to `x < 2`\r\n2. if xn is in pattern of yn % m, where m % d == 0, convert it to yn // d % (m/d)\r\n   e.g. `x1 * 64 + (x2 * 8 + x3) % 64 < 120`, `x3` \\in [0, 8), we can simplify it to\r\n   `x1 * 8 + (x2 * 8 + x3) // 8 % 8 < 15` ==> `x1 * 8 + x2 % 8 < 15`",
+    "author": "Hzfengsy",
+    "date": "2023-08-08T00:33:26Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1256/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/960/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/959/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/784/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1005/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/951/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/951/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/947/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/946/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/944/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/941/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/956/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5791301659/job/15695900759"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5791301659/job/15695900912"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5791301659/job/15695901073"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/5791301659/job/15695901276"
+      }
+    ],
+    "updated_at": 1691455505.303135
+  },
+  {
     "sha": "ae45b04772830d7c7b09b89bb9434e0b0a52f9e6",
     "headline": "[Relay][Strategy] Use x86 dense schedules for arm_cpu (#15470)",
     "body": "Currently the fallback used when compiling a dense operation with\r\ntargets such as `llvm -device=arm_cpu` is `dense.generic`. This results\r\nvery poor performance. Although https://github.com/apache/tvm/pull/13775\r\nmeant that x86 schedules are used in cases where no strategy is provided\r\nby arm_cpu, the dense strategy is registered due to the existance of\r\nspecialized schedules for arm_cpu e.g. a schedule for embedded devices.\r\nThis commit ensures x86 schedules are used inplace of a generic\r\nschedule which yeilds much better performance.\r\n\r\nThe commit also follows the same approach for the `dense.generic`\r\nschedule as the x86 strategy. This will only be used when autoscheduler\r\nis enabled.\r\n\r\nA test has been added to check the intended schedules are picked when\r\ncompiling with `arm_cpu`.\r\n\r\nChange-Id: I8697f630d4acfab71a9626cf9e0dc3086987f163",
@@ -350,9 +440,43 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5790710767/job/15694278925"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5790834778/job/15694594924"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5790914092/job/15694810654"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5790994867/job/15695033245"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5790998499/job/15695042867"
+      },
+      {
+        "name": "Nightly Docker Update / open_update_pr",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/5791069522/job/15695249696"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5791103614/job/15695349613"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5791252132/job/15695765492"
       }
-    ],
-    "updated_at": 1691449674.439362
+    ]
   },
   {
     "sha": "40bac5717ad976094ecd31a3ba52806f7cc2dab5",
@@ -26748,110 +26872,6 @@
         "name": "CI / Android",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5461091933/job/14783950848"
-      }
-    ]
-  },
-  {
-    "sha": "23fb56852122919a2ea896000d87be163e2b1bb5",
-    "headline": "[CMAKE] Add Vulkan header for Android (#15229)",
-    "body": "This PR enhances the Vulkan search for Android NDK, so that we can\r\nfind the Vulkan header for Android builds.\r\n\r\nCo-authored-by: tqchen <tqchenml@gmail.com>",
-    "author": "MasterJH5574",
-    "date": "2023-07-05T05:41:42Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1154/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/856/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/856/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/684/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/855/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/863/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/849/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/850/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/847/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/845/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/845/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/842/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5460863744/job/14783375080"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5460863744/job/14783375158"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5460863744/job/14783375261"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5460863744/job/14783375352"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5460881570/job/14783420221"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5460956089/job/14783608410"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5461078662/job/14783917477"
       }
     ]
   }
