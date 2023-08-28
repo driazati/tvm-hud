@@ -1,5 +1,92 @@
 [
   {
+    "sha": "04d6541208438c66436a2b5b33bb47c0f6fd0f25",
+    "headline": "[Disco][Test] MultiHeadAttention Testcase",
+    "body": "",
+    "author": "LeshengJin",
+    "date": "2023-08-28T04:09:27Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15632/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15632/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/5995569888/job/16258790830"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5995570868/job/16258794457"
+      }
+    ],
+    "pr": 15632,
+    "pr_title": "[Disco][Test] MultiHeadAttention Testcase",
+    "updated_at": 1693198950.385423
+  },
+  {
     "sha": "605c7292063f6d333ba77eace8376467913fc4a1",
     "headline": "[Unity] Disco: A Framework-Agnostic SPMD Runtime for Distributed Infe\u2026",
     "body": "\u2026rence/Training\n\nDisco is a distributed runtime that consists of a controler and a cluster of workers. The\ncontroler is responsible for managing the workers by broadcasting commands to all the workers\ntogether, and the workers are responsible for executing the commands and. The controler and\nworkers communicate with each other through a bi-directional channel.\n\nDifferent from a generic system, Disco is designed to as \"single-program-multiple-data\" (SPMD)\nruntime, which means that all the workers execute the same instruction at the same time, but the\ndata they are working on may be different. For example, in data parallelism, each worker may\nwork on a different batches of the data, but they all execute the same set of instructions.\nTherefore, imagine there is a virtual machine that executes the program, the structures of\nworkers' register files could be considered as \"identical\" (single program) although the values\nmay differ (multiple data).\n\n**DRef.** Following the design above, consider the program in SPMD in a virtual ISA, then each\nworker is a virtual machine instance to execute the ISA maintaining its own register file.\nThe controler denotes each of their register files with a unique integer \"register id\",\nand the workers use this id to refer to the register file that resides on itself.\nDRef is a control-side object backed by such a register id. The data it contains is not assumed\nto be directly accessible by the controler, with an exception for worker-0, which is a special\nworker that is always co-located with the controler.\n\n**Worker-0.** Worker-0 is a special worker that is always co-located with the controler.\nIt is assumed that the controler can synchronize with and access the registers of worker-0.\nThe Disco session provides multiple APIs to interact specifically with the worker-0.\nTo shared data with other workers, a common paradigm in Disco is to copy data from the\ncontroler-side NDArray to the worker-0, and then copy it to other workers using primitives on\nthe data plane, for example, `broadcast` and `send`.\n\n**Control plane.** The controler broadcasts commands to all the workers as control signals.\nFor example, the control may ask all workers to load a library or call a function respectively.\nCommon control signals include: shutdown, retrievel a global PackedFunc, call packed function,\netc. The controler is assumed to keep a message channel to each worker to implement the broadcast\nbehavior, and the message channel may vary depends on usecases.\n\n**Data plane.** The data channel is usually used to exchange data between workers, especially for\ntensor data which is usually large. For example, performing an allreduce operator for sharded\nmatrix multiplication, or broadcasting for an input tensor. For efficiency, the data channel is\nusually backed by NCCL on NVIDIA GPUs, RCCL on AMD GPUs, or MPI on CPUs.\n\n**Session.** A Disco session is a primary interface to interact with the Disco runtime, serving\nas a global context that manages the control and workers. It could be implemented as a\nmulti-threaded with a pool of workers for single-node multi-gpu scenarios, or TCP sockets for\nworkloads that span over a cluster of nodes.\n\n**Channel.** Disco channel is a bi-directional communication channel between the controler and\nworkers for exchanging control signals. It is no different from a generic RPC channel, but\nadopts TVM's PackedFunc calling convention to support polymorphic and variadic arguments.\n\nCo-Authored-by: Lesheng Jin <34279105+LeshengJin@users.noreply.github.com>",
@@ -78,8 +165,7 @@
       }
     ],
     "pr": 15622,
-    "pr_title": "[Unity] Disco: A Framework-Agnostic SPMD Runtime for Distributed Inference/Training",
-    "updated_at": 1693195498.64548
+    "pr_title": "[Unity] Disco: A Framework-Agnostic SPMD Runtime for Distributed Inference/Training"
   },
   {
     "sha": "25e6c1228650e422793b489ce30de8d4b61959c7",
@@ -207,12 +293,7 @@
       {
         "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15630/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15630/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15630/3/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
@@ -230,19 +311,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15630/2/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15630/2/display/redirect"
-      },
-      {
         "name": "lint/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15630/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15630/2/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -250,9 +321,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15630/2/display/redirect"
       },
       {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15630/2/display/redirect"
+      },
+      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15630/2/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15630/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15630/2/display/redirect"
       },
       {
         "name": "riscv/pr-head",
@@ -721,6 +807,87 @@
     ],
     "pr": 15596,
     "pr_title": "[FFI] Propagate Python errors across FFI boundaries"
+  },
+  {
+    "sha": "588345943aac2ef7d0dcc8c6507daead20d2eb48",
+    "headline": "[Disco][Op] broadcast_from_worker0",
+    "body": "",
+    "author": "LeshengJin",
+    "date": "2023-08-27T03:28:29Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15633/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15633/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/5995751796/job/16259247394"
+      }
+    ],
+    "pr": 15633,
+    "pr_title": "[Disco][Op] broadcast_from_zero"
   },
   {
     "sha": "4ffd48441fc1e76f01ad3d39ad57bd5d52ce651a",
@@ -4882,102 +5049,6 @@
     "pr_title": "[FFI] Propagate Python errors across FFI boundaries"
   },
   {
-    "sha": "146a9de8a4b69169cc66259f09b2c6ed999cebb1",
-    "headline": "Merge branch 'apache:main' into main",
-    "body": "",
-    "author": "leiwen83",
-    "date": "2023-08-21T01:28:53Z",
-    "jobs": [
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15576/3/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15576/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5920893912/job/16052749522"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5920893963/job/16052839275"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5920893963/job/16052839360"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5920893963/job/16052839439"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5920893963/job/16052839522"
-      }
-    ],
-    "pr": 15576,
-    "pr_title": "don't do actual profile when input is dynamic shape"
-  },
-  {
     "sha": "7f34c1b0aa8b8699fdc73f7de1200abeb834233f",
     "headline": "[Runtime] Re-organize BacktraceFullCallback",
     "body": "Prior to this commit, the `BacktraceFullCallback` function returned\nzero for frames that should be excluded from the stack trace, even if\nthey were the `\"TVMFuncCall\"` that should terminate the stack trace.\n\nThis commit re-organized `BacktraceFullCallback`, moving the\nterminating checks to occur prior to the suppression checks, and\nadding comments to indicate why each suppression is present.",
@@ -7358,92 +7429,6 @@
     "pr_title": "[Unity] Added known tir.Expr to relax.PrimValue"
   },
   {
-    "sha": "d952bc53ae9ae92fe4523ca2daa22269d3693c83",
-    "headline": "[WEB] Fix WebGPU runtime build",
-    "body": "This PR fixes webgpu runtime build by removing the lib preset that\ncan conflict with the webgpu types",
-    "author": "tqchen",
-    "date": "2023-08-16T11:41:34Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15575/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5878353101/job/15940252400"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5882619609/job/15953505904"
-      }
-    ],
-    "pr": 15575,
-    "pr_title": "[WEB] Fix WebGPU runtime build"
-  },
-  {
     "sha": "717cadfec0b1e19bb127f3234d18c82047ba32a6",
     "headline": "skip profiling all conv2d output alignments when possible",
     "body": "",
@@ -7528,82 +7513,6 @@
     ],
     "pr": 15583,
     "pr_title": "[Unity][CUTLASS][Cherry-pick] Skip profiling all conv2d output alignments when possible"
-  },
-  {
-    "sha": "d9e9fc772b91d859c89bd776b9bb6e5b49677948",
-    "headline": "don't do actual profile when input is dynamic shape",
-    "body": "Since current relax not support value range binding for dynamic shape.\nIt is meaningless to do the real profile, as the result would be\nalways inf.\n\nSigned-off-by: Lei Wen <wenlei03@qiyi.com>",
-    "author": "Lei Wen",
-    "date": "2023-08-16T02:09:37Z",
-    "jobs": [
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15576/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5878598152/job/15940993645"
-      }
-    ],
-    "pr": 15576,
-    "pr_title": "don't do actual profile when input is dynamic shape"
   },
   {
     "sha": "3827ac13ed14cfa086f04293a172de1bdcaaacc4",
