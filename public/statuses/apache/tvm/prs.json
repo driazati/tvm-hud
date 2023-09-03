@@ -9,7 +9,7 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15626/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15626/4/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -79,7 +79,7 @@
     ],
     "pr": 15626,
     "pr_title": "[Unity] Implement relax.Function.bind_params",
-    "updated_at": 1693717287.379488
+    "updated_at": 1693721086.924665
   },
   {
     "sha": "24a06206d3e6268e6a6e4637802fdc8253f9af0c",
@@ -91,7 +91,7 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15660/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15660/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -168,6 +168,87 @@
     "pr_title": "[Unity][Disco] Correct document for CopyFromWorker0 and CopyToWorker0"
   },
   {
+    "sha": "bf5a3b8b1ac7cb2c769073e4457c6b0db7615120",
+    "headline": "[Unity][DLight] Improve the performance of matmul on Adreno GPU",
+    "body": "The current matmul implementation is targeted for NVIDIA GPU, which\nis not optimized for Adreno GPU (also other edge devices).\nThis patch improves the performance, improving performance from\n7170.14ms to 554.57ms for a very large kernel",
+    "author": "Hzfengsy",
+    "date": "2023-09-02T09:01:38Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15661/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15661/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6062758480/job/16449320873"
+      }
+    ],
+    "pr": 15661,
+    "pr_title": "[Unity][DLight] Improve the performance of matmul on Adreno GPU"
+  },
+  {
     "sha": "146ed0250a9d52a6effe9bdbe4d94456547c768c",
     "headline": "[Disco] Introduce ShardLoader",
     "body": "This PR introduces `ShardLoader`, an object that allows convenient\nsharding of each parameter, assuming there is a single shard dimension\nand the sharding strategy is even. The sharding can be performed\nefficiently on device (e.g. CUDA) and scattered to each worker with\nNCCL support.\n\nThe shard loading process could be further compiled to Relax IRModule\nto be executed by each worker with the function signature below:\n\n```python\n@R.function\ndef main(loader: R.Object) -> R.Tuple(\n  R.Tensor((64, 64), \"float32\"),\n  R.Tensor((16, 128), \"float32\"),\n):\n  R.func_attr({\"global_symbol\": \"main\"})\n  with R.dataflow():\n    lv0 = R.call_pure_packed(\n      \"runtime.disco.ShardLoaderLoad\",\n      loader,\n      R.shape([0]),\n      sinfo_args=R.Tensor((64, 64), \"float32\"),\n    )\n    lv1 = R.call_pure_packed(\n      \"runtime.disco.ShardLoaderLoad\",\n      loader,\n      R.shape([1]),\n      sinfo_args=R.Tensor((16, 128), \"float32\"),\n    )\n    lv2 = R.tuple(lv0, lv1)\n    R.output(lv2)\n  return lv2\n```",
@@ -177,7 +258,7 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15655/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15655/7/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -6350,87 +6431,6 @@
     "pr_title": "[Unity][Frontend][NN] Add diffusers style Attention layer"
   },
   {
-    "sha": "0fcd9bab55d2e6642ccae0c3ef69c16f51a2ebd9",
-    "headline": "fix",
-    "body": "",
-    "author": "LeshengJin",
-    "date": "2023-08-22T23:35:40Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15604/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15604/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5945126707/job/16123639858"
-      }
-    ],
-    "pr": 15604,
-    "pr_title": "[Unity][Frontend][NN] Op print_ "
-  },
-  {
     "sha": "5cf315725b869a3ba1c2835fdc99ab17e99418d5",
     "headline": "[Unity] Implemented BundleModelParams transform",
     "body": "Implemented `relax.transform.BundleModelParams`, which groups\nparameters into user-provided runtime parameters, and a tuple of\ncompile-time model weights.  This functionality was previously part of\n`LiftTransformParams`, but is being separated to allow for composible\nfunctions which each mutate the parameters.",
@@ -6853,92 +6853,6 @@
     ],
     "pr": 15605,
     "pr_title": "[CMake] Add NCCL to TVM and TVM Runtime"
-  },
-  {
-    "sha": "50c5d055375744112719894ae702f08e8ea66f79",
-    "headline": "print done",
-    "body": "",
-    "author": "LeshengJin",
-    "date": "2023-08-22T00:31:17Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15604/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5932982161/job/16087726486"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/5933038368/job/16087867908"
-      }
-    ],
-    "pr": 15604,
-    "pr_title": "[Unity][Frontend][NN] Op print_ "
   },
   {
     "sha": "5544691f682fd50387db1444d31614e0cc71dfe1",
