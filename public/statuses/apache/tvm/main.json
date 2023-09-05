@@ -1,5 +1,115 @@
 [
   {
+    "sha": "04ee895d8d102ea5aedd6480e7d5f4093c54d27d",
+    "headline": "[IR] Use structural equal for Range equality (#15664)",
+    "body": "This PR adds a small change to verify equality of `tvm.ir.Range` as a\r\nstructural equal. This assumes that in most cases, comparing two\r\n`Range`s means to compare its `min` and `extent` as opposed to the\r\nactual Range object handle.",
+    "author": "quic-sanirudh",
+    "date": "2023-09-05T17:29:11Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1314/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1022/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1017/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/842/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1069/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1011/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1012/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1005/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1004/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1003/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/999/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1014/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6087844538/job/16517232941"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6087844538/job/16517233145"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6087844538/job/16517233351"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6087844538/job/16517233570"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6087861281/job/16517290217"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6087996854/job/16517711327"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6088129578/job/16518153456"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/6088158195/job/16518239181"
+      }
+    ],
+    "updated_at": 1693937428.628183
+  },
+  {
     "sha": "476d9d1d41980ad35cd6a4d044c17fea2210f352",
     "headline": "Add output_data_sec section in corstone300.ld (#15649)",
     "body": "",
@@ -556,8 +666,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/6084689738/job/16507146256"
       }
-    ],
-    "updated_at": 1693933656.28998
+    ]
   },
   {
     "sha": "d75083cd97ede706338ab413dbc964009456d01b",
@@ -30363,160 +30472,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5627617681/job/15250410553"
-      }
-    ]
-  },
-  {
-    "sha": "7ebc802d38a446b7f7bf626d37dc7328f8c8db2c",
-    "headline": "[Relay] Introduce arguments limit to FuseOps pass (#15137)",
-    "body": "* [Relay] Introduce arguments limit to FuseOps pass\r\n\r\nIn PR #8313 a parameter `max_function_args` was introduced. It leads to\r\nlimit number of function argument and in case when this value is\r\nexceeded then concatenation layer is split to a several concat\r\noperations.\r\n\r\nI faced a problem on Adreno GPU that for kernel with big number of\r\narguments the enqueueNDRange was crashed without any errors. The\r\nproblem appeared because of the huge number of arguments. But in this\r\ncase not only concat layer was a root cause of the problem. Also after\r\nfusing several operations the final functions had a big number of\r\narguments.\r\n\r\nAs it was discussed in #8313, adding a limitation on the number of\r\nfunction arguments to the FuseOps pass might be a good improvement. In\r\nthis PR I introduced such mechanism for limitation number of function\r\narguments for FuseOps pass and add an arguments limit to OpenCL devices\r\nat 128 parameters.\r\n\r\nThe idea of current approach is calculate the number of arguments for\r\neach node in fusing algorithm and in case then the number of function\r\narguments exceeds the limit, specified by `max_function_args`, then the\r\nfusing should be stopped. In case when node has several inputs and for\r\nsome of the inputs the number of arguments wasn't computed, then we\r\npostpone fusing for this node and will try fuse this node later when\r\nthe number of arguments will be computed for all inputs. This approach\r\nwith postponed fusing helps to avoid additional computations during\r\ncompilation.\r\n\r\nAdditionally, case of dynamic shapes should be handled.  In case of\r\ndynamic shape, function arguments also included sizes of dynamic\r\ndimension and strides. The number of strides can be computed by\r\ncalculating number of tensor dimensions (the number of strides equals\r\nto the rank of the tensor). The number of additional parameters with\r\nsizes of dynamic dimensions can be calculated by computing number of\r\ndynamic dimensions.\r\n\r\n* Fix memory_scope order in test\r\n\r\n* Apply code review comments\r\n\r\n* Apply comments",
-    "author": "echuraev",
-    "date": "2023-07-21T21:01:25Z",
-    "jobs": [
-      {
-        "name": "gpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/952/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1214/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/915/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/915/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/742/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/914/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/908/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/908/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/905/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/904/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/902/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/899/display/redirect"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626558325/job/15247605010"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626558487/job/15247605494"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626558487/job/15247605673"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626558487/job/15247605855"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626558487/job/15247606018"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626681466/job/15247940197"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626765476/job/15248191353"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626837555/job/15248396876"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626855918/job/15248452823"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5626942774/job/15248705214"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5627064243/job/15249008384"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5627143780/job/15249206584"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5627226314/job/15249422262"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5627297682/job/15249619597"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5627403018/job/15249870025"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5627465146/job/15250029282"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5627537280/job/15250197688"
       }
     ]
   }
