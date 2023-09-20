@@ -1,16 +1,121 @@
 [
   {
+    "sha": "9613385fd0470153676a37c8420ca22219a07973",
+    "headline": "[Codegen][ROCm] Mismatched Dtype of Workgroup/Workitem (#15777)",
+    "body": "This PR fixes a ROCm codegen error that the dtype of\r\n`@llvm.amdgcn.workgroup.id*` and `@llvm.amdgcn.workitem.id.*` are\r\nalways i32 when generating LLVM IR, even if it's marked as T.int64 in\r\nTIR.\r\n\r\nAn example that triggers this issue:\r\n\r\n```python\r\n@T.prim_func\r\ndef encode_kernel(A: T.handle(\"float16\", \"global\"), max_abs_value: T.handle(\"float16\", \"global\"), v: T.int64):\r\n    T.func_attr({\"calling_conv\": 2, \"target\": T.target({\"host\": {\"keys\": [\"cpu\"], \"kind\": \"llvm\", \"tag\": \"\"}, \"keys\": [\"rocm\", \"gpu\"], \"kind\": \"rocm\", \"max_num_threads\": 256, \"max_shared_memory_per_block\": 65536, \"max_threads_per_block\": 1024, \"mcpu\": \"gfx1100\", \"mtriple\": \"amdgcn-amd-amdhsa-hcc\", \"tag\": \"\", \"thread_warp_size\": 32}), \"tir.is_global_func\": T.bool(True), \"tir.kernel_launch_params\": [\"blockIdx.x\", \"threadIdx.x\"], \"tir.noalias\": T.bool(True)})\r\n    A_1 = T.decl_buffer((v * T.int64(8192),), \"float16\", data=A)\r\n    max_abs_value_1 = T.decl_buffer((T.min(v, (v * T.int64(256) + T.int64(65535)) // T.int64(65536) * T.int64(256)) * T.int64(256),), \"float16\", data=max_abs_value)\r\n    blockIdx_x = T.launch_thread(\"blockIdx.x\", T.int64(256))\r\n    threadIdx_x = T.launch_thread(\"threadIdx.x\", T.int64(256))\r\n    for i_j_fused_0, k in T.grid(T.shift_right(v + T.int64(255), T.int64(8)), T.int64(32)):\r\n        if i_j_fused_0 * T.int64(256) + blockIdx_x - v < T.int64(0):\r\n            if k == T.int64(0):\r\n                max_abs_value_1[i_j_fused_0 * T.int64(65536) + blockIdx_x * T.int64(256) + threadIdx_x] = T.float16(-65504)\r\n            max_abs_value_1[i_j_fused_0 * T.int64(65536) + blockIdx_x * T.int64(256) + threadIdx_x] = T.max(max_abs_value_1[i_j_fused_0 * T.int64(65536) + blockIdx_x * T.int64(256) + threadIdx_x], T.call_pure_extern(\"float16\", \"__ocml_fabs_f16\", A_1[i_j_fused_0 * T.int64(2097152) + blockIdx_x * T.int64(8192) + threadIdx_x * T.int64(32) + k]))\r\n```",
+    "author": "junrushao",
+    "date": "2023-09-20T03:23:51Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1349/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1057/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1052/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/876/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1114/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1045/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1047/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1039/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1037/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1033/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1048/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1039/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6243607796/job/16949261035"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6243607796/job/16949261140"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6243607796/job/16949261252"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6243607796/job/16949261336"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6243616615/job/16949284387"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6243645340/job/16949360708"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6243732425/job/16949576613"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6243814296/job/16949787067"
+      }
+    ],
+    "updated_at": 1695183018.363815
+  },
+  {
     "sha": "d60fb7295edd4b360996ce2366c3447563f475d9",
     "headline": "[TFLite][Frontend] Support quantized NOT_EQUAL (#15769)",
     "body": "* make not_equal quantized\r\n\r\n* add tests to quantized not_equal\r\n\r\n* add quantized not_equal",
     "author": "tlopex",
     "date": "2023-09-18T08:51:37Z",
     "jobs": [
-      {
-        "name": "gpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1113/display/redirect"
-      },
       {
         "name": "arm/branch",
         "status": "success",
@@ -35,6 +140,11 @@
         "name": "docker/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/nightly/260/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/nightly/269/display/redirect"
       },
       {
         "name": "hexagon/branch",
@@ -566,8 +676,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/6232645173/job/16916225727"
       }
-    ],
-    "updated_at": 1695179346.642236
+    ]
   },
   {
     "sha": "47826e4d5ef7dc1298cada61fc94c5135b82cfb4",
@@ -29878,75 +29987,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/5767677557/job/15637736037"
-      }
-    ]
-  },
-  {
-    "sha": "ac99367aa4f4ad05ba9926c614159e7430936502",
-    "headline": "[Relay] [Bugfix] Fix some bugs of dominator pattern (#15473)",
-    "body": "* fix some bugs\r\n\r\n* add test",
-    "author": "kfeng123",
-    "date": "2023-08-04T22:27:33Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1249/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/953/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/951/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/949/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/998/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/944/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/944/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/940/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5767076830/job/15636168397"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5767076830/job/15636168537"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5767076830/job/15636168641"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/5767076830/job/15636168771"
       }
     ]
   }
