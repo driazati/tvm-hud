@@ -1,11 +1,209 @@
 [
   {
+    "sha": "368a8ac3cd988ba799838fbd65f676faf830a431",
+    "headline": "[Unity] Include last kernel launch in captured CudaGraph",
+    "body": "Prior to this commit, the last kernel launch would not be included in\na captured CUDA graph.  This commit updates `RewriteCUDAGraph` to\ninclude the last kernel launch.\n\nThe previous implementation assumed that any calls to\n`R.builtin.alloc_tensor` that remain after `StaticPlanBlockMemory` are\ndynamic allocations.  This is not the case, as the allocation of a\nstatic-shaped output tensor may still use `R.builtin.alloc_tensor`.\nThe primary change of this commit was to update `RewriteCUDAGraph` to\ncheck for static allocations directly, rather than inferring a static\nallocation based on the operation being used.\n\nThis change triggered an additional bug, in which the previous\nimplementation only checked for output variables if they occurred as\npart of a `VarBinding`, and not if they occurred as the body of a\n`SeqExpr`.  As a result, a captured CUDA graph whose output was\nimmediately used as the output of the containing Relax function would\ncontain an undefined variable.  This commit updates `RewriteCUDAGraph`\nto operate on a `SeqExpr` rather than a `BindingBlock`, so that the\n`SeqExprNode::body` may be inspected for output variables.",
+    "author": "Lunderberg",
+    "date": "2023-09-28T17:30:40Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15839/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15839/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6342311876/job/17227766780"
+      }
+    ],
+    "pr": 15839,
+    "pr_title": "[Unity] Include last kernel launch in captured CudaGraph",
+    "updated_at": 1695924153.912558
+  },
+  {
+    "sha": "fb9cf3f005baf7f7f139919201b06153025d9c70",
+    "headline": "* review comments",
+    "body": "",
+    "author": "srkreddy1238",
+    "date": "2023-09-28T17:10:08Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15833/10/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15833/9/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15833/8/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6342084476/job/17227110287"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6342084569/job/17227110364"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6342084569/job/17227110617"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6342084569/job/17227110863"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6342084569/job/17227111033"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/6342203193/job/17227436490"
+      }
+    ],
+    "pr": 15833,
+    "pr_title": "[VM] Memory Manager moved up to runtime"
+  },
+  {
+    "sha": "f2b8a9f106bf69f40cae73e63cfbf840981cb3ba",
+    "headline": "[Unity] Remove end-of-life handling from StaticPlanBlockMemory",
+    "body": "The catch-all in `relax.transform.KillAfterLastUse` can be used for\nreleasing tensor/storage, not just those that were not previously\nhandled.  This simplifies the `StaticPlanBlockMemory` pass, as it does\nnot need to track the location at which `R.memory.kill_storage` and\n`R.memory.kill_tensor` should be inserted.",
+    "author": "Lunderberg",
+    "date": "2023-09-28T15:02:24Z",
+    "jobs": [],
+    "pr": 15839,
+    "pr_title": "[Unity] Include last kernel launch in captured CudaGraph"
+  },
+  {
     "sha": "1ced648b36f8bb48e8e8c760f9852b44d81825ed",
     "headline": "Added codegen metal CI debug print",
     "body": "",
     "author": "Lunderberg",
     "date": "2023-09-28T14:04:31Z",
     "jobs": [
+      {
+        "name": "hexagon/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15835/2/display/redirect"
+      },
       {
         "name": "lint/pr-head",
         "status": "error",
@@ -17,29 +215,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15835/3/display/redirect"
       },
       {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15835/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15835/2/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15835/2/display/redirect"
       },
       {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15835/2/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15835/2/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15835/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15835/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -93,8 +286,7 @@
       }
     ],
     "pr": 15835,
-    "pr_title": "[Draft][CodeGenC][Redo] Handle GlobalVar callee as internal function call",
-    "updated_at": 1695920502.31752
+    "pr_title": "[Draft][CodeGenC][Redo] Handle GlobalVar callee as internal function call"
   },
   {
     "sha": "de9370341feb9f7d5a08aa98b8834de6fdb13557",
@@ -363,43 +555,38 @@
     "jobs": [
       {
         "name": "cortexm/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15833/7/display/redirect"
       },
       {
         "name": "cpu/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15833/7/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15833/7/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15833/9/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15833/7/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15833/7/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15833/7/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15833/9/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15833/7/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15833/7/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15833/7/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -410,6 +597,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15833/7/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15833/7/display/redirect"
       },
       {
         "name": "riscv/pr-head",
@@ -433,7 +625,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/6340698520/job/17222705078"
       },
       {
@@ -473,11 +665,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15838/2/display/redirect"
       },
       {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15838/2/display/redirect"
-      },
-      {
         "name": "cross-isa-minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15838/2/display/redirect"
@@ -493,19 +680,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15838/2/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15838/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15838/2/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15838/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15838/3/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -513,9 +690,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15838/2/display/redirect"
       },
       {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15838/2/display/redirect"
+      },
+      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15838/2/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15838/2/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15838/2/display/redirect"
       },
       {
         "name": "riscv/pr-head",
@@ -539,7 +731,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/6340742385/job/17222831275"
       },
       {
@@ -551,6 +743,11 @@
         "name": "CI / Linux-Static-Runtime",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/6340742385/job/17222831943"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/6342175801/job/17227361809"
       }
     ],
     "pr": 15838,
@@ -4341,92 +4538,6 @@
     "pr_title": "[CLI TOOLS][RTVM] Improve rtvm tool with new options to measure native performance"
   },
   {
-    "sha": "a5ddb1cb0676d7d729faf0075be78e0d051c752c",
-    "headline": "pass ci",
-    "body": "",
-    "author": "jinhongyii",
-    "date": "2023-09-25T16:37:57Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15781/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6302278511/job/17109114155"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/6306519458/job/17121789140"
-      }
-    ],
-    "pr": 15781,
-    "pr_title": "[Unity][Dlight] Fix inline consumer in matmul tensorize rule"
-  },
-  {
     "sha": "92318253da9b20f1596268cf3e1f1dbfa8450ba8",
     "headline": "Fix formatting",
     "body": "",
@@ -5452,7 +5563,7 @@
       {
         "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15798/19/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15798/20/display/redirect"
       },
       {
         "name": "cpu/pr-head",
@@ -5480,11 +5591,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15798/18/display/redirect"
       },
       {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15798/15/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15798/15/display/redirect"
@@ -5497,12 +5603,17 @@
       {
         "name": "wasm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15798/15/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15798/16/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15798/15/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15798/15/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -5830,87 +5941,6 @@
     ],
     "pr": 15811,
     "pr_title": "[Unity][Frontend][NN] Switch to always using fp32 for timestep embedding calculation"
-  },
-  {
-    "sha": "8afbec3a491888e191d5909734733ac483de4038",
-    "headline": "format",
-    "body": "",
-    "author": "jinhongyii",
-    "date": "2023-09-22T18:54:53Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15781/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6278069571/job/17051072289"
-      }
-    ],
-    "pr": 15781,
-    "pr_title": "[Unity][Dlight] Fix inline consumer in matmul tensorize rule"
   },
   {
     "sha": "6b9ca52e2fb81261ba165bfc66fb80e921a27b74",
@@ -8601,97 +8631,6 @@
     ],
     "pr": 15782,
     "pr_title": "[Unity][BugFix] FuseTIR not keeping ExternFunc in IRModule"
-  },
-  {
-    "sha": "d08432d0324fa7549bfbac62d1b39e4effb3acbe",
-    "headline": "fix",
-    "body": "",
-    "author": "jinhongyii",
-    "date": "2023-09-19T19:24:51Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15781/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6240056930/job/16939303780"
-      }
-    ],
-    "pr": 15781,
-    "pr_title": "[Unity][Dlight] Fix inline consumer in matmul tensorize rule"
-  },
-  {
-    "sha": "38dca2080bae22680d374fc6e47ab9a1711c51a4",
-    "headline": "fix dlight",
-    "body": "",
-    "author": "jinhongyii",
-    "date": "2023-09-19T18:35:27Z",
-    "jobs": [],
-    "pr": 15781,
-    "pr_title": "[Unity][Dlight] Fix inline consumer in matmul tensorize rule"
   },
   {
     "sha": "ae74fae566ccbef48f2cc8680c48ceb8b243ac61",
