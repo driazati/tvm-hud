@@ -1,5 +1,87 @@
 [
   {
+    "sha": "54b8193bad58b0c35cb668c2bb207b8fb7e3d778",
+    "headline": "Maintain binding block type for nested SeqExpr",
+    "body": "",
+    "author": "Lunderberg",
+    "date": "2023-10-02T14:41:48Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15842/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15842/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6381648097/job/17318544429"
+      }
+    ],
+    "pr": 15842,
+    "pr_title": "[Unity] Allow FLegalize to produce Relax operations",
+    "updated_at": 1696258958.448957
+  },
+  {
     "sha": "93dc34679c61e9f884bdf765f98b21db481477cc",
     "headline": "Revert \"[Unity] Implement relax.transform.KillAfterLastUse (#15810)\"",
     "body": "This reverts commit aa4587feb5103927d95e5e931149debd0a0aeafc.\n\nUnfortunately, this PR broke MLC LLM's build pipeline, more specifically, the command below\n\n```python\npython3 -m mlc_llm.build --model dist/models/llama-2-13b-chat-hf/ --quantization q4f16_1\n```\n\nleads to the the following error message:\n\n<details>\n\n```\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/opt/scratch/junrushao/mlc-llm/mlc_llm/build.py\", line 13, in <module>\n    main()\n  File \"/opt/scratch/junrushao/mlc-llm/mlc_llm/build.py\", line 10, in main\n    core.build_model_from_args(parsed_args)\n  File \"/opt/scratch/junrushao/mlc-llm/mlc_llm/core.py\", line 616, in build_model_from_args\n    new_params = utils.convert_weights(param_manager, params, args)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/scratch/junrushao/mlc-llm/mlc_llm/utils.py\", line 258, in convert_weights\n    vm[\"transform_params\"]()\n  File \"/opt/scratch/junrushao/tvm-dev/python/tvm/_ffi/_ctypes/packed_func.py\", line 239, in __call__\n    raise_last_ffi_error()\n  File \"/opt/scratch/junrushao/tvm-dev/python/tvm/_ffi/base.py\", line 476, in raise_last_ffi_error\n    raise py_err\n  File \"/opt/scratch/junrushao/tvm-dev/src/runtime/relax_vm/vm.cc\", line 634, in tvm::runtime::relax_vm::VirtualMachineImpl::InvokeClosurePacked(tvm::runtime::ObjectRef const&, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)\n    clo->impl.CallPacked(TVMArgs(values.data(), tcodes.data(), args.size() + 1), rv);\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/scratch/junrushao/tvm-dev/src/runtime/relax_vm/vm.cc\", line 708, in operator()\n    *rv = static_cast<VirtualMachineImpl*>(ctx_ptr)->InvokeBytecode(gf_idx, inputs);\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/scratch/junrushao/tvm-dev/src/runtime/relax_vm/vm.cc\", line 765, in tvm::runtime::relax_vm::VirtualMachineImpl::InvokeBytecode(long, std::vector<tvm::runtime::TVMRetValue, std::allocator<tvm::runtime::TVMRetValue> > const&)\n    RunLoop();\n\n  File \"/opt/scratch/junrushao/tvm-dev/src/runtime/relax_vm/vm.cc\", line 890, in tvm::runtime::relax_vm::VirtualMachineImpl::RunLoop()\n    this->RunInstrCall(curr_frame, instr);\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/scratch/junrushao/tvm-dev/src/runtime/relax_vm/vm.cc\", line 843, in tvm::runtime::relax_vm::VirtualMachineImpl::RunInstrCall(tvm::runtime::relax_vm::VMFrame*, tvm::runtime::relax_vm::Instruction)\n    this->InvokeClosurePacked(func_pool_[instr.func_idx], args, &ret);\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/scratch/junrushao/mlc-llm/mlc_llm/relax_model/param_manager.py\", line 579, in set_item\n    loaded_params[i] = tvm.nd.array(computed_param, device=device_cpu)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/scratch/junrushao/tvm-dev/python/tvm/runtime/ndarray.py\", line 635, in array\n    return empty(arr.shape, arr.dtype, device, mem_scope).copyfrom(arr)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/scratch/junrushao/tvm-dev/python/tvm/runtime/ndarray.py\", line 390, in empty\n    dtype = DataType(dtype)\n            ^^^^^^^^^^^^^^^\n  File \"/opt/scratch/junrushao/tvm-dev/python/tvm/_ffi/runtime_ctypes.py\", line 174, in __init__\n    raise ValueError(\"Do not know how to handle type %s\" % type_str)\nValueError: Do not know how to handle type object\n```\n\n</details>\n\nTo briefly explain the root cause of this issue, `set_item` method, as defined [here](https://github.com/mlc-ai/mlc-llm/blob/4f4a93f03fed3d900605c02de575d7d5f429ed79/mlc_llm/relax_model/param_manager.py#L576-L579), gets `computed_param=None` after this commit.\n\nAs a temporary solution, I'd love to propose that we revert this commit for now to quickly unblock us from building any LLM model, but I'm happy to get it back immediately as soon as the issue is fixed.",
@@ -83,8 +165,7 @@
       }
     ],
     "pr": 15852,
-    "pr_title": "Revert \"[Unity] Implement relax.transform.KillAfterLastUse (#15810)\"",
-    "updated_at": 1696255298.083588
+    "pr_title": "Revert \"[Unity] Implement relax.transform.KillAfterLastUse (#15810)\""
   },
   {
     "sha": "d30e8bbb8af7d42ab9163823f0821a75fcec1812",
