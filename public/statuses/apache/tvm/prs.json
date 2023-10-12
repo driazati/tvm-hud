@@ -1,80 +1,161 @@
 [
   {
-    "sha": "cd0e1e5cb6c076438e8e28b6a0098638d91a7abc",
+    "sha": "087868f7344c2673e9ad8ae7314fe1dc756d04df",
     "headline": "[TOPI][TIR][TE][x86] Extend x86 SIMD (u)int8 coverage for dense & conv2d",
     "body": "",
     "author": "cbalint13",
-    "date": "2023-10-12T20:02:36Z",
+    "date": "2023-10-12T23:00:49Z",
     "jobs": [
       {
         "name": "arm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15918/11/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15918/14/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15918/11/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15918/14/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15918/10/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15918/13/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15918/10/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15918/13/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15918/10/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15918/13/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15918/11/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15918/14/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15918/10/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15918/13/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15918/13/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15918/10/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15918/13/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15918/11/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15918/14/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15918/10/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15918/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15918/10/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15918/10/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15918/13/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6500356919/job/17655574808"
+        "url": "https://github.com/apache/tvm/actions/runs/6501820371/job/17659803437"
       }
     ],
     "pr": 15918,
     "pr_title": "[TOPI][TIR][TE][x86] Extend x86 SIMD (u)int8 coverage for dense & conv2d",
-    "updated_at": 1697144475.811578
+    "updated_at": 1697151741.870872
+  },
+  {
+    "sha": "2df09c17604e46aac7de00b0ec37cb20675866a8",
+    "headline": "[Unity][TVMScript] Avoid dangling reference when printing Call attrs",
+    "body": "Prior to this commit, the `tvm::script::printer::AttrPrinter` class\ntook the attribute path as a `const ObjectPath&`.  In both places\nwhere an `AttrPrinter` is called, the temporary object\n`n_p->Attr(\"attrs\")` is passed for this argument.  While binding a\ntemporary object to a const reference can extend the lifetime of the\ntemporary, this requires the const reference to be in the same scope\nas the temporary, and does not apply in this case (see [this\nstackoverflow post](https://stackoverflow.com/a/2784304)).  Therefore,\nthis reference is only valid through the construction of `AttrPrinter\nprinter`, and is invalid during its usage on the following line.\n\nThis dangling reference has caused segfaults in CI for unrelated\nchanges ([example](https://ci.tlcpack.ai/blue/organizations/jenkins/tvm-unity/detail/PR-15904/3/pipeline)),\nand can be reproduced with the following test case.\n\n```python\nimport pytest\n\nfrom tvm.script import relax as R\n\n@pytest.mark.parametrize(\"iter\", range(10000))\ndef test_argmax_without_specified_axis(iter):\n    @R.function\n    def func(x: R.Tensor((1, 2, 3, 4), \"float32\")):\n        return R.argmax(x)\n\n    func.script(show_meta=True)\n```\n\nThis test case is not included in this commit, as the reproduction is\nnot consistent, with failure requiring on the order of 10k iterations\nto trigger.  In addition, reproduction was sensitive to the following\nconditions.\n\n* The function being printed must contain at least one `relax::Call`\n  node, with an operation that has attributes.\n\n* TVM must be built with optimization enabled.  In gcc, the\n  `-ftree-dse` optimization, which is part of `-O1`, is required to\n  trigger the bug.\n\n* Python's default allocation must be used.  If `PYTHONMALLOC=malloc`\n  is set to instead use the system's `malloc`, the segfault was no\n  longer triggered.\n\nThis commit updates `AttrPrinter` to accept the `ObjectPath` by value.\nWith the change applied, the above test ran 100k times without error.",
+    "author": "Lunderberg",
+    "date": "2023-10-12T20:05:51Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15923/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15923/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6501086814/job/17657727222"
+      }
+    ],
+    "pr": 15923,
+    "pr_title": "[Unity][TVMScript] Avoid dangling reference when printing Call attrs"
   },
   {
     "sha": "87fab6bb3f0d8743d95d8fbb97a7264596bcc8c2",
@@ -94,14 +175,14 @@
         "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15922/2/display/redirect"
       },
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15922/3/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15922/2/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15922/3/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
@@ -241,11 +322,6 @@
     "date": "2023-10-12T13:23:52Z",
     "jobs": [
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15921/1/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15921/1/display/redirect"
@@ -269,6 +345,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15921/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15921/1/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
@@ -2188,11 +2269,6 @@
     "date": "2023-10-10T19:10:03Z",
     "jobs": [
       {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15910/4/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15910/4/display/redirect"
@@ -2246,6 +2322,11 @@
         "name": "riscv/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15910/4/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15910/4/display/redirect"
       },
       {
         "name": "wasm/pr-head",
@@ -7627,157 +7708,6 @@
     ],
     "pr": 15864,
     "pr_title": "[Unity] Include LegalizeOps in the default relax.build lowering flow"
-  },
-  {
-    "sha": "6e0e4f47d5979f4d0f26f3e2b0c9bb6c0a341448",
-    "headline": "[Fix] Fix Build with RCCL",
-    "body": "This PR contains a minor fix for RCCL integration.",
-    "author": "junrushao",
-    "date": "2023-10-03T16:18:26Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/feature%252F2023-10-03%252Ffix-rccl-build/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15863/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/6395676477/job/17359865840"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6395677219/job/17359871223"
-      }
-    ],
-    "pr": 15863,
-    "pr_title": "[Fix] Fix Build with RCCL"
   },
   {
     "sha": "77e3f030bc5010c01538d654fb85e45339272201",
