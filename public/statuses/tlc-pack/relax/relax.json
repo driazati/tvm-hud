@@ -502,7 +502,7 @@
         "url": "https://github.com/tlc-pack/relax/actions/runs/4258729968/job/11566097330"
       }
     ],
-    "updated_at": 1698200369.938287
+    "updated_at": 1698203599.273287
   },
   {
     "sha": "9b34d043cb54377acc5a50427ae5c54e00e426ba",
@@ -8498,6 +8498,38 @@
     "body": "",
     "author": "MasterJH5574",
     "date": "2023-01-09T22:20:05Z",
+    "jobs": []
+  },
+  {
+    "sha": "0b1b11d4eeacbc20ac08ff16192db2f9febecb35",
+    "headline": "[VM] Supporting \"compiled\" exec mode. (#331)",
+    "body": "* [VM] Supporting \"compiled\" exec mode.\r\n\r\nThis PR adds support of \"compiled\" mode to the VM.\r\nThe compiled mode translate the relax function into TIR function\r\nand drive it through the TIR function.\r\n\r\nIt is different from the micro AOT codegen, which generate TIR code\r\nthat targets the micro C runtime environment and useful for resource\r\nlimited settings with smaller set of features. Both leverages the\r\nlow-level TIR build that is also shared with TensorIR.\r\n\r\nThe current implementation targets full TVM (VM) runtime, that\r\ncomes with PackedFunc, object, tuple, closure and all kinds of rich structure\r\nsupport. This also mean that we can leverage the full runtime support\r\nto handle things like allocation, dynamic shape, easy plugins and python\r\ninteraction, which are not available in more limited runtime.\r\n\r\nThe user directly use the same API to load the generated code regardless\r\nof compiled mode or bytecode. And just need to change one line\r\n\r\n```python\r\nex = relax.vm.build(mod, target, exec_mode=\"compiled\")\r\n```\r\n\r\nMost of the codegen features are lifted before the codegen phase,\r\nso the overall implementation would be around 500 loc for each exec mode\r\nand can be further cut down with future introduction of PrimValue.\r\n\r\nThe simplicity is thanks to the TVM runtime archiecture that allows us\r\nto compose things together in objects. The only difference is how\r\nthe PackedFunc of high-level driving is being provided.\r\nIn the case of bytecode it is normal interpretation and in the\r\ncase of compiled mode it is TIR.\r\n\r\nIt is a complete implementation Unit-testcases are added. All codegen\r\nbuild tests are updated to include two exec_modes and have passed locally.\r\nThe only exception that we skipped some special packedfunc handling(printing)\r\nbecause can be further simplified after we introduce PrimValue.\r\n\r\nCo-authored-by: Junru Shao <junrushao1994@gmail.com>\r\n\r\n* Address review comments\r\n\r\nCo-authored-by: Junru Shao <junrushao1994@gmail.com>",
+    "author": "tqchen",
+    "date": "2023-01-09T19:59:26Z",
+    "jobs": []
+  },
+  {
+    "sha": "882cfa8c9189fa377b932a1b966378a2f21a2a55",
+    "headline": "[Op][O2d] Manipulation operators (#337)",
+    "body": "As tracked by #332, this PR is the O2d milestone of the high-level operator introduction plan.\r\n\r\nThis PR introduces a few manipulation operators:\r\n* broadcast_to\r\n* concat\r\n* expand_dims\r\n* flatten\r\n* permute_dims\r\n* reshape\r\n* split\r\n* squeeze\r\nThese operators are all well-tested.",
+    "author": "MasterJH5574",
+    "date": "2023-01-09T18:45:14Z",
+    "jobs": []
+  },
+  {
+    "sha": "3dcdd9768cdead72f25ac00acceee5a39deaaf69",
+    "headline": "[O2h] Neural network and linear algebra operators (#343)",
+    "body": "",
+    "author": "MasterJH5574",
+    "date": "2023-01-09T15:57:19Z",
+    "jobs": []
+  },
+  {
+    "sha": "38778ca6d43edbf218e7cd7148fa4d1e58fe48ac",
+    "headline": "[O2g] Convolution, pooling and image operators (#341)",
+    "body": "",
+    "author": "MasterJH5574",
+    "date": "2023-01-09T01:21:50Z",
     "jobs": []
   },
   {
