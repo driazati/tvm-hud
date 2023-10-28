@@ -502,7 +502,7 @@
         "url": "https://github.com/tlc-pack/relax/actions/runs/4258729968/job/11566097330"
       }
     ],
-    "updated_at": 1698459417.188722
+    "updated_at": 1698462762.112159
   },
   {
     "sha": "9b34d043cb54377acc5a50427ae5c54e00e426ba",
@@ -8242,6 +8242,38 @@
     "body": "This PR is the last part of the `sinfo_args` switch tracked by #377,\r\nwhich adds the StructInfo check in well-formed check, to ensure that\r\nthe StructInfo in `sinfo_args` does not refer to any undefined\r\nsymbolic variables.",
     "author": "MasterJH5574",
     "date": "2023-01-28T16:01:58Z",
+    "jobs": []
+  },
+  {
+    "sha": "7228f487580e24411631dfe9fd8f8244319cea66",
+    "headline": "[Refactor][AST] `sinfo_args` A1: Update API of call_tir, call_packed,\u2026",
+    "body": "\u2026 etc. (#386)\n\n* [Refactor][AST] `sinfo_args` A1: Update API of call_tir, call_packed, etc\r\n\r\nFollowing #377 and #379, this PR followups to update the API of `call_tir`,\r\n`call_packed`, `call_builtin` and `invoke_closure`.\r\n\r\n* The API of `call_tir` is changed to\r\n  ```python\r\n  def call_tir(\r\n      func: Union[str, Expr],\r\n      args: Expr,\r\n      out_sinfo: Union[TensorStructInfo, TupleStructInfo],\r\n      tir_vars: Optional[Union[ShapeExpr, Tuple[PrimExpr], List[PrimExpr]]] = None,\r\n  ) -> Call:\r\n      ...\r\n  ```\r\n  where we combine the `shape` and `dtype` parameters into `out_sinfo`. In\r\n  the concrete CallNode of `call_tir`, the output shape is no longer passed\r\n  as an CallNode argument and passed in the `sinfo_args` instead.\r\n\r\n* For `call_packed`, `call_builtin` and `invoke_closure`, we change the\r\n  `type_args` parameter to `sinfo_args`. For example, the API of `call_packed`\r\n  is updated to\r\n  ```python\r\n  def call_packed(\r\n      func: str,\r\n      *args: Expr,\r\n      sinfo_args: Union[StructInfo, List[StructInfo]],\r\n      **kwargs: Any,\r\n  ) -> Call:\r\n      ...\r\n  ```\r\n\r\n---\r\n\r\nOne thing specific to note is about our existing dataflow pattern language.\r\nPreviously we have a sugar function for `call_tir`:\r\n```python\r\ndef is_call_tir(\r\n    func_name: str,\r\n    args: Union[List, Tuple, TuplePattern] = None,\r\n    shape: Union[Tuple, List[tvm.ir.PrimExpr], DFPattern] = None,\r\n) -> CallPattern:\r\n    ...\r\n```\r\nSince we changed the API of `call_tir` - the CallNode does not contain the\r\nshape as one argument, - together with the fact that the dataflow pattern\r\nlanguage does not yet support matching StructInfo, we have no approach to\r\nmatch the shape anymore. Therefore, the `shape` parameter is removed from\r\n`is_call_tir`. I left some Todo items there for future `sinfo_args` matching\r\nsupport.\r\n\r\n* Update call_tir API and address comments\r\n\r\nNow the expected type of `out_sinfo` is:\r\n```python\r\nout_sinfo: Union[TensorStructInfo, List[TensorStructInfo]]\r\n```",
+    "author": "MasterJH5574",
+    "date": "2023-01-28T09:39:33Z",
+    "jobs": []
+  },
+  {
+    "sha": "68314b9e3ca194042c5a21eb70691ada5fcc309a",
+    "headline": "[Refactor][AST] `sinfo_args` A2: Remove VisitType (#387)",
+    "body": "This PR is part of the `sinfo_args` switch, as tracked by #377.\r\n\r\nThis PR removes VisitType from ExprFunctor in Relax, as Type is no\r\nlonger a standalone construct in any Relax AST, with the switch of\r\n`sinfo_args` introduced by #379.",
+    "author": "MasterJH5574",
+    "date": "2023-01-28T03:51:14Z",
+    "jobs": []
+  },
+  {
+    "sha": "942cf28010837d2bcd17ef1b654a44fad73b2499",
+    "headline": "[Utils] Introduce Auto Arg Converter for Relax Ops and Functions (#381)",
+    "body": "This PR introduce a new decorator to automatically convert the arguments\r\nto the expr according to the Relax Expr, including:\r\n\r\n1. convert `PrimExpr` to `relax.PrimValue`;\r\n2. convert `tvm.String` or `str` to `relax.StringImm`;\r\n3. convert tuple/list of `PrimExpr` to `relax.ShapeExpr`;\r\n4. convert tuple/list of `Expr` to `relax.Tuple`.",
+    "author": "Hzfengsy",
+    "date": "2023-01-27T17:30:34Z",
+    "jobs": []
+  },
+  {
+    "sha": "fc2aa92342eba9262cf5caa15937ab61e79a3761",
+    "headline": "[Refacror][AST] `sinfo_args` A0: Introduce `sinfo_args` (#379)",
+    "body": "This PR is the kickoff action of our switch towards `sinfo_args` in\r\nCallNode, as discussed in #356 and tracked by #377.\r\n\r\n* CallNode field `type_args` is changed to `sinfo_args`, with type\r\n`Array<StructInfo>`.\r\n\r\n* For intrinsic ops like `call_tir`/`call_packed`, this PR keeps the\r\n`sinfo_args` value as **the plain StructInfo generated from the static\r\ntype**, even if those op calls were provided with richer StructInfo at\r\nthe time of creation. The API changes, creations and structure info\r\ndeductions of these intrinsic ops will be left to the next PR, as the\r\ntracking issue #377. Since that PR, our APIs and structure info\r\ndeductions of these ops will no longer rely on types.",
+    "author": "MasterJH5574",
+    "date": "2023-01-27T02:24:57Z",
     "jobs": []
   },
   {
