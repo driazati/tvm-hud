@@ -1,5 +1,97 @@
 [
   {
+    "sha": "d7c4431afebe093c431db6cc7c5128a2e7f44150",
+    "headline": "[Unity] Deterministic Ordering when Iterating IRModule::functions",
+    "body": "Prior to this PR, visiting order of the following for-loop is\nnon-deterministic:\n\n```python\nmod: tvm.ir.IRModule\nfor gv, func in mod.functions.items():\n  ...\n```\n\nThis is because `IRModule` stores those functions inside a hash map\n`Map<GlobalVar, BaseFunc>`, which is based on pointer equality.\nThis behavior is usually innocent and harmless given many previous\nworkloads only have one \"main\" function as the primary entry point, e.g.\na single Relax Function and a bunch of TIR functions. However, it is not\ntrue in LLM usecases where `prefill`, `decoding` are both equally\nimportant entrypoints, and in those cases, it is possible that the\nnames of generated TIR functions from LegalizeOps are essentially\ndifferent from each run, which is, again, harmless in basic usecases,\nbut it does make debugging more challenging.\n\nThis PR corrects this behavior by sorting the functions alphabetically\nby their names.",
+    "author": "junrushao",
+    "date": "2023-10-31T00:06:05Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16020/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16020/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/6700226076/job/18205801335"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6700226291/job/18205802863"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/6700240089/job/18205838716"
+      }
+    ],
+    "pr": 16020,
+    "pr_title": "[Unity] Deterministic Ordering when Iterating IRModule::functions",
+    "updated_at": 1698711970.083465
+  },
+  {
     "sha": "01372f190c8f20176cf2597bb9ba6e18ad3370da",
     "headline": "Correct conversion of python bool to PrimValue",
     "body": "Because `isinstance(bool_value, int)` returns True, boolean values\nwere being converted to `T.int64`, instead of to `T.bool`.",
@@ -8,7 +100,7 @@
     "jobs": [
       {
         "name": "unity/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16002/4/display/redirect"
       },
       {
@@ -78,8 +170,7 @@
       }
     ],
     "pr": 16002,
-    "pr_title": "[Draft][Unity] Allow dynamic indices to TupleGetItem",
-    "updated_at": 1698699688.960961
+    "pr_title": "[Draft][Unity] Allow dynamic indices to TupleGetItem"
   },
   {
     "sha": "636ad7110d5f5e81914f7d1152e0b2148cb8517c",
@@ -1288,11 +1379,6 @@
     "date": "2023-10-29T03:05:14Z",
     "jobs": [
       {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16007/11/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16007/11/display/redirect"
@@ -1348,6 +1434,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16007/11/display/redirect"
       },
       {
+        "name": "unity/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16007/11/display/redirect"
+      },
+      {
         "name": "wasm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16007/11/display/redirect"
@@ -1360,16 +1451,6 @@
     ],
     "pr": 16007,
     "pr_title": "[Unity][nn.Module] Support Parameter Packing"
-  },
-  {
-    "sha": "729411b1c350d4d306c531f7c2f489e6653cb717",
-    "headline": "[Unity][nn.Module] Support Parameter Packing",
-    "body": "This PR introduces support for parameter/effect packing.\n\n**What is parameter packing?* There are two ways to represent weights\nas input(s) of Relax functions.\n\n- Unpacked: each weight is passed in as a separate parameter:\n\n```python\n@R.function\ndef f(\n  ...,\n  weight_0: R.Tensor(...),\n  weight_1: R.Tensor(...),\n  ...,\n)\n```\n- Packed: all weights are packed together as a Relax Tuple and passed in\n  as a single parameter:\n\n```python\n@R.function\ndef f(\n  ...,\n  weights: R.Tuple((R.Tensor(...), R.Tensor(...))),\n  ...,\n)\n```\n\n**Why support parameter packing?** First of all, currently MLC LLM uses\npacked parameter as the default format in its runtime. To align the new\n`nn.Module` frontend with the existing behavior, we allow packing as a\nnon-default option to be turned on.\n\nSecond, having a calling convention where the last argument being\npacked parameters and the second last being packed effects could help\nsimplify many runtime behavior, for example, instructing the generated\ncode to skip type checking, etc.\n\n**How to enable parameter/effect packing?** We allow an extra argument\n`$` when creating `nn.spec.MethodSpec`, which is effectively\nfine-grained configuration of exported Relax function:\n\n```python\nmodel.export_tvm(\n    spec={\n        \"forward\": {\n            \"x\": nn.spec.Tensor([1, model.in_features], \"float32\"),\n            \"$\": {\n                \"param_mode\": \"packed\", // Configure parameter packing\n                \"effect_mode\": \"none\", // Configure effect packing\n            },\n        }\n    }\n)\n```",
-    "author": "junrushao",
-    "date": "2023-10-29T03:05:14Z",
-    "jobs": [],
-    "pr": 16006,
-    "pr_title": "[Unity][nn.Module] Support `nn.SourceModule`"
   },
   {
     "sha": "9595c68c9ea5be5075499b47cb8f29fe2fc9f37b",
@@ -1600,7 +1681,7 @@
     "pr_title": "[WebGPU] Add shuffle support for webgpu"
   },
   {
-    "sha": "f4658bfe876f5ad3c79cfa66bb5340f127851beb",
+    "sha": "51fc8730fd8b9c70bdd9d037b88d8cb7334c23d9",
     "headline": "[Unity][nn.Module] Support `nn.SourceModule`",
     "body": "Following #15487, this PR introduces `nn.SourceModule` as a subclass of\n`nn.ExternModule` to more convenient handling of externally implemented\noperators, subgraphs and other components.\n\n**What is `nn.ExternModule` designed for?** It is a generic design that\naccepts any object file (`.o` in Linux) and combines the symbols within\ninto TVM-generated shared/static library. This way, TVM-generated\nlibrary will be able to call into the symbols in the object files\nprovided. For example, calling into `cutlass_fmha` in TVM Relax.\n\n**What is `nn.SourceModule`?** It is a subclass that builds on top of\n`nn.ExternModule`, which helps with a specific case where the external\nimplementation is provided as C++/CUDA source code and `SourceModule`\ncould conveniently take care of applying a C++/CUDA compiler to convert\nit to convert them into object files.\n\n**C++/CUDA Calling Convention.** An exported symbol should be explicitly\ndeclared with macro `TVM_DLL_EXPORT_TYPED_FUNC($SYMBOL, $CPP_FUNC)`,\nwhile it is recommended to always hide the symbols that we don't wish to\nexport. Multiple files should never define the same symbol, otherwise it\nis considered as UB.\n\n**Marks on `nn.Module`.** It is required to define the input/output\nshapes and dtypes using `nn.spec.ExternFunctionSpec`. Symbolic/dynamic\nshapes are supported, but there are a few limitations to note:\n\n1) Multi-output is currently not supported, meaning the return value has\nto be a single `nn.Tensor`. There is no technical challenge we are aware\nof, and we could extend the interface to get it supported in the future\nif there's any need.\n2) Symbolic dtype is not supported. It means one has to export multiple\nsymbols for multiple dtypes even if the compute is mathematically\nidentical, e.g. `matmul_f16_f16_f16`, `matmul_f32_f32_f32`. I imagine it\ncould be alleviated if customization of dtype deduction is introduced.\n\n**Example.** Take the C++ code below as an example:\n\n```C++\n\\#include <dlpack/dlpack.h>\n\\#include <tvm/runtime/packed_func.h>\n\\#include <tvm/runtime/data_type.h>\n\nnamespace {\n\nint _scalar_add(DLTensor* a, DLTensor* b, DLTensor* c) {\n  using namespace tvm::runtime;\n  ICHECK(a->ndim == 0);\n  ICHECK(b->ndim == 0);\n  ICHECK(c->ndim == 0);\n  ICHECK(DataType(a->dtype) == DataType::Float(32));\n  ICHECK(DataType(b->dtype) == DataType::Float(32));\n  ICHECK(DataType(c->dtype) == DataType::Float(32));\n  float* a_data = static_cast<float*>(a->data);\n  float* b_data = static_cast<float*>(b->data);\n  float* c_data = static_cast<float*>(c->data);\n  *c_data = *a_data + *b_data;\n  return 0;\n}\n\nint _test_sym(DLTensor* a, DLTensor* b, DLTensor* c) {\n  using namespace tvm::runtime;\n  ICHECK(a->ndim == 3);\n  ICHECK(b->ndim == 3);\n  ICHECK(c->ndim == 4);\n  ICHECK(DataType(a->dtype) == DataType::Float(32));\n  ICHECK(DataType(b->dtype) == DataType::Float(32));\n  ICHECK(DataType(c->dtype) == DataType::Float(32));\n  int x = a->shape[0];\n  int y = a->shape[1];\n  int z = b->shape[1];\n  ICHECK(a->shape[0] == x);\n  ICHECK(a->shape[1] == y);\n  ICHECK(a->shape[2] == 1);\n  ICHECK(b->shape[0] == y);\n  ICHECK(b->shape[1] == z);\n  ICHECK(b->shape[2] == 5);\n  ICHECK(c->shape[0] == x);\n  ICHECK(c->shape[1] == y);\n  ICHECK(c->shape[2] == z);\n  ICHECK(c->shape[3] == 9);\n  return 0;\n}\n\n}\nTVM_DLL_EXPORT_TYPED_FUNC(ext_scalar_add, _scalar_add);\nTVM_DLL_EXPORT_TYPED_FUNC(ext_test_sym, _test_sym);\n```\n\nIt exposes two symbols `ext_scalar_add` and `ext_test_sym`. In\n`nn.Module`, their shape/dtype deduction rules could be described as:\n\n```python\ndtype = \"float32\"\nfunctions = {\n  \"ext_scalar_add\": spec.ExternFunctionSpec(\n    args=[\n      spec.Tensor((), dtype),\n      spec.Tensor((), dtype),\n    ],\n    ret=spec.Tensor((), dtype),\n  ),\n  \"ext_test_sym\": spec.ExternFunctionSpec(\n    args=[\n      spec.Tensor((\"x\", \"y\", 1), dtype),\n      spec.Tensor((\"y\", \"z\", 5), dtype),\n    ],\n    ret=spec.Tensor((\"x\", \"y\", \"z\", 9), dtype),\n  ),\n}\n```\n\nand thus the external module could be defined as:\n\n```python\nclass MyExtMod(nn.SourceModule):\n    def __init__(self):\n        super().__init__(\n            source_code=SOURCE_CODE,\n            source_format=\"cpp\",\n            functions=functions,\n        )\n    def scalar_add(self, a: nn.Tensor, b: nn.Tensor):  # pylint: disable=invalid-name\n        return self.get_extern_func(\"ext_scalar_add\")(a, b)\n    def test_sym(self, a: nn.Tensor, b: nn.Tensor):  # pylint: disable=invalid-name\n        return self.get_extern_func(\"ext_test_sym\")(a, b)\n```\n\nAny `nn.Module` could use this `nn.SourceModule` as part of the computation\nand export them into TVM IRModule:\n\n```python\nmy_ext_mod = MyExtMod()\n\nclass TestModule(nn.Module):\n    def __init__(self) -> None:\n        self.extern_matmul = my_ext_mod\n\n    def scalar_add(self, a: nn.Tensor, b: nn.Tensor):  # pylint: disable=invalid-name\n        return self.extern_matmul.scalar_add(a, b)\n\n    def test_sym(self, a: nn.Tensor, b: nn.Tensor):  # pylint: disable=invalid-name\n        return self.extern_matmul.test_sym(a, b)\n\nmodel = TestModule()\nir_module, _ = model.export_tvm(\n    spec={\n        \"scalar_add\": {\n            \"a\": spec.Tensor((), dtype),\n            \"b\": spec.Tensor((), dtype),\n        },\n        \"test_sym\": {\n            \"a\": spec.Tensor(shape_a, dtype),\n            \"b\": spec.Tensor(shape_b, dtype),\n        },\n    }\n)\n```",
     "author": "junrushao",
@@ -1609,82 +1690,72 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16006/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16006/5/display/redirect"
       },
       {
         "name": "arm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16006/5/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16006/5/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16006/5/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16006/5/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16006/5/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16006/5/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16006/5/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16006/5/display/redirect"
       },
       {
         "name": "lint/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16006/5/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16006/5/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16006/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16006/5/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16006/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/6698003977/job/18199102580"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/6698009286/job/18199123426"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16006/5/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6698012553/job/18199133558"
+        "url": "https://github.com/apache/tvm/actions/runs/6699972536/job/18205072004"
       }
     ],
     "pr": 16006,
@@ -2178,6 +2249,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15999/4/display/redirect"
       },
       {
+        "name": "gpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15999/5/display/redirect"
+      },
+      {
         "name": "i386/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15999/4/display/redirect"
@@ -2188,19 +2264,14 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15999/4/display/redirect"
       },
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15999/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15999/5/display/redirect"
-      },
-      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15999/3/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15999/5/display/redirect"
       },
       {
         "name": "lint/pr-head",
@@ -4303,7 +4374,7 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15981/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-15981/4/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -4384,7 +4455,7 @@
       {
         "name": "gpu/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16001/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16001/3/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -6385,11 +6456,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16017/2/display/redirect"
       },
       {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16017/3/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16017/1/display/redirect"
@@ -6413,6 +6479,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16017/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16017/3/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -6658,11 +6729,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16019/2/display/redirect"
       },
       {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16019/3/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16019/1/display/redirect"
@@ -6686,6 +6752,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16019/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16019/3/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -7407,107 +7478,6 @@
     "jobs": [],
     "pr": 15967,
     "pr_title": "[MetaScheduler][ROCm] Add MultiLevelTilingMatrixCore rule for auto-tensorization on ROCm"
-  },
-  {
-    "sha": "d782fe073778e7303467dea5d704e35eea2866c1",
-    "headline": "[CI][BUGFIX] Better to pass the build folder",
-    "body": "build_dir is not passed to allow custom build folders",
-    "author": "srkreddy1238",
-    "date": "2023-10-22T09:14:11Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-15965/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6602907856/job/17935470615"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6602907877/job/17935470619"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6602907877/job/17935470712"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6602907877/job/17935470800"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6602907877/job/17935470896"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/6609736072/job/17950359094"
-      }
-    ],
-    "pr": 15965,
-    "pr_title": "[CI][BUGFIX] Better to pass the build folder"
   },
   {
     "sha": "9521cd63b28b185aaa5b7aa356b99ce93e4013fc",
