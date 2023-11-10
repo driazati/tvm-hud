@@ -1,5 +1,87 @@
 [
   {
+    "sha": "6bc265ba9a12b09af4beb036c7fd79152afeb9f2",
+    "headline": "fix ci",
+    "body": "",
+    "author": "jinhongyii",
+    "date": "2023-11-10T18:06:52Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16098/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16098/4/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6828194710/job/18571859954"
+      }
+    ],
+    "pr": 16098,
+    "pr_title": "[Unity][DistIR] Legalize redistribute",
+    "updated_at": 1699642895.073086
+  },
+  {
     "sha": "5e32bf0adf4b8f242bf32a3d3da598cf3083b1ac",
     "headline": "[TOPI][Relay] Add conv2d NHWC fp32 hybrid schedule for `arm_cpu`",
     "body": "Implemented an `arm_cpu` conv2d NHWC schedule for fp32 using a hybrid GeMM approach, effectively breaking down the matrix multiplication into a macro-kernel (partitioning into fixed-sized, tile-level subproblems) and a micro-kernel (independently dealing with each subproblem). After the im2col transformation, the input matrix is handled natively (not interleaved), while the weights matrix is tiled and interleaved at compile time.\nThe micro-kernel uses 16 registers to accumulate the results of each 4x16 output tile, cycling through the operands needed to compute them (from the input and weight matrices) in the remaining registers.\n\nThere are now two ways to transform the weights matrix for conv2d, which are detailed in `convolution.cc`:\n\n* for fp32: tile, interleave\n* for int8: tile, interleave, transpose\n\nTo maintain naming consistency across both of these implementations (transposed vs not transposed), all mentions of `tile_rows_B` or `tile_cols_B` have been changed to `tile_N` and `tile_K` respectively to denote the tiling size along each axis of the flattened B matrix. As usual, `N = out_channels` and `K = kernel_width * kernel_height * in_channels`.\n\nI have also added a new conv2d NHWC fp32 test for both the `conv2d_nhwc_spatial_pack` and `conv2d_NHWC_fp32_hybrid` schedules.",
@@ -8,7 +90,7 @@
     "jobs": [
       {
         "name": "arm/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16106/1/display/redirect"
       },
       {
@@ -37,24 +119,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16106/2/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16106/1/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16106/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16106/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16106/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -62,9 +129,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16106/1/display/redirect"
       },
       {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16106/1/display/redirect"
+      },
+      {
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16106/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16106/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16106/2/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -93,8 +175,7 @@
       }
     ],
     "pr": 16106,
-    "pr_title": "[TOPI][Relay] Add conv2d NHWC fp32 hybrid schedule for `arm_cpu`",
-    "updated_at": 1699639607.907627
+    "pr_title": "[TOPI][Relay] Add conv2d NHWC fp32 hybrid schedule for `arm_cpu`"
   },
   {
     "sha": "0b7f7329a60b9a013096437af17d29a81b1895e7",
