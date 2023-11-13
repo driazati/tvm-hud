@@ -507,7 +507,7 @@
         "url": "https://github.com/octoml/relax/actions/runs/4743631277/job/12864208314"
       }
     ],
-    "updated_at": 1699842406.171603
+    "updated_at": 1699845411.995695
   },
   {
     "sha": "6814804c8cc086dfab333d658b25823194c09560",
@@ -10073,6 +10073,38 @@
     "body": "This PR introduces the cumulative sum high-level operator.\r\n\r\nAlso replace some `T.var(\"int64\")` with `T.int64()` in `test_ast_printer`.",
     "author": "SiriusNEO",
     "date": "2023-03-14T17:55:19Z",
+    "jobs": []
+  },
+  {
+    "sha": "c7f40bd1d9c307cf4c0f29f77053d7e9bcd66208",
+    "headline": "[Unity] Fix StructInfo Infer for `vm.alloc_tensor` (#14283)",
+    "body": "A hot fix for the struct info deduction for `vm.alloc_tensor`",
+    "author": "Hzfengsy",
+    "date": "2023-03-13T15:38:00Z",
+    "jobs": []
+  },
+  {
+    "sha": "8c34de2d7f249892391de46a4bd0f5f9c285dc94",
+    "headline": "[Unity] Mark tests that need python3.8 compact.",
+    "body": "",
+    "author": "tqchen",
+    "date": "2023-03-13T13:45:31Z",
+    "jobs": []
+  },
+  {
+    "sha": "581889aa6c1fa8a8cc367965a186c4f3c13903dc",
+    "headline": "[TVMScript][Unity] Improve PyLint Compatibility (#14276)",
+    "body": "The current cross-function calls in TVMScript will cause PyLint warnings,\r\nsince the GlobalVar will be marked as undefined vars, e.g.:\r\n\r\n```python\r\n@I.ir_module\r\nclass TestModule:\r\n    @T.prim_func\r\n    def tir_func(\r\n        x: T.Buffer((T.int64(128),), \"float32\"), y: T.Buffer((T.int64(128),), \"float32\")\r\n    ):\r\n        T.evaluate(0)\r\n\r\n    @R.function\r\n    def foo(x: R.Tensor((128,), \"float32\")) -> R.Tensor((128,), \"float32\"):\r\n        gv0 = R.call_tir(tir_func, x, R.Tensor((128,), dtype=\"float32\"))  # <= `tir_func` is not defined in Python syntax.\r\n        return gv0\r\n```\r\n\r\nThis PR changes the behavior into `TestModule.tir_func` instead of direct `tir_func`\r\n```python\r\n@I.ir_module\r\nclass TestModule:\r\n    @T.prim_func\r\n    def tir_func(\r\n        x: T.Buffer((T.int64(128),), \"float32\"), y: T.Buffer((T.int64(128),), \"float32\")\r\n    ):\r\n        T.evaluate(0)\r\n\r\n    @R.function\r\n    def foo(x: R.Tensor((128,), \"float32\")) -> R.Tensor((128,), \"float32\"):\r\n        cls = TestModule  # Use `cls` to refer the current Module\r\n        gv0 = R.call_tir(cls.tir_func, x, R.Tensor((128,), dtype=\"float32\"))\r\n        return gv0\r\n```\r\n\r\nNOTE: It's a breaking change, the old style is deprecated.\r\n\r\nAdditionally, this PR contains the following minor fixes:\r\n- mark `R.function` as staticmethod as what we do for `T.prim_func`\r\n- make `I`, `R`, `T`, `cls` be the builtin keywords for the printer\r\n- define names for functions, modules to prevent naming conflict\r\n- checking the var names is valid via regex expression\r\n- fix typos",
+    "author": "Hzfengsy",
+    "date": "2023-03-12T14:00:03Z",
+    "jobs": []
+  },
+  {
+    "sha": "e6f3db185a857fcd418d4a8b46fc59aa3c0b1b79",
+    "headline": "[Unity][ci] Use CPU-SMALL instances (#14256)",
+    "body": "[ci] Use CPU-SMALL instances\r\n\r\nWe prefer these instances in CI unless there is a lot of heavy building\r\ngoing on (the normal tvm build is cached with sccache so this is usually\r\njust for docker builds).\r\n\r\nCo-authored-by: driazati <driazati@users.noreply.github.com>",
+    "author": "driazati",
+    "date": "2023-03-11T16:41:38Z",
     "jobs": []
   },
   {
