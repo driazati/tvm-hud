@@ -1,5 +1,87 @@
 [
   {
+    "sha": "65c5b1e2e55a0c7c25530aa0aec12ce4f75e13d7",
+    "headline": "[Runtime] Introduce Type-Checked `TVMArgs::At<T>(i)`",
+    "body": "This PR adds the following member method of `TVMArgs`:\n\n```C++\nclass TVMArgs {\n public:\n  ...\n  template <typename T>\n  inline T At(int i) const;\n};\n```\n\nThis method extracts the i-th argument from `TVMArgs`, do proper type\nchecking, and generates proper message if it fails, including the\nindex `i`, expected type and the actual type in the error message.\n\nPreviously this type checking is more like a more fine-grained approach,\nwhich, first in `TVMArgs::operator[](int i)`, checks array boundary and\nreturns `TVMArgValue`, a generic union type of all. Then, `TVMArgValue`\nhas a series overloads of `operator T()` which implicitly prunes it to\nthe desired type.\n\nThis approach has been proven working consistently well in the past few\nyears, but due to its fine-grained nature, it is impossible for such\napproach to generate error messages that includes the index `i`. Due to\nhistoric constraints, it doesn't generate expected type either.\n\nThis PR patches this issue, and makes it possible to show full details\nin the error message.",
+    "author": "junrushao",
+    "date": "2023-11-18T21:39:20Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16147/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16147/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6916451326/job/18816538181"
+      }
+    ],
+    "pr": 16147,
+    "pr_title": "[Runtime] Introduce Type-Checked `TVMArgs::At<T>(i)`",
+    "updated_at": 1700344902.339419
+  },
+  {
     "sha": "2b6b68cf2b09dfc584afca66ab423e0ee8cdd558",
     "headline": "finished",
     "body": "",
@@ -88,8 +170,7 @@
       }
     ],
     "pr": 16090,
-    "pr_title": "[Unity][BlockBuilder] Depracate `BlockBuilder.get()` and change it to `BlockBuilder.finalize()`",
-    "updated_at": 1700341277.949314
+    "pr_title": "[Unity][BlockBuilder] Depracate `BlockBuilder.get()` and change it to `BlockBuilder.finalize()`"
   },
   {
     "sha": "b27a33e6552c55b1381dc3cac7eed3dcd8b3adb3",
@@ -8067,112 +8148,6 @@
     ],
     "pr": 16090,
     "pr_title": "[Unity][BlockBuilder] Depracate `BlockBuilder.get()` and change it to `BlockBuilder.finalize()`"
-  },
-  {
-    "sha": "75cbed244525fc999d353d07716dd87b6cfe62cb",
-    "headline": "add `--rev` argument",
-    "body": "",
-    "author": "mshr-h",
-    "date": "2023-11-08T06:56:05Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16089/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6794822535/job/18471859706"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6794822805/job/18473039135"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6794822805/job/18473039350"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6794822805/job/18473039551"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6794822805/job/18473039729"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6794843876/job/18471915391"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/6795263741/job/18473045985"
-      }
-    ],
-    "pr": 16089,
-    "pr_title": "[DOCs] Fix error on linting by adding `--rev` argument"
   },
   {
     "sha": "415abdedced35139f2890b57d62d1ca9baeb7413",
