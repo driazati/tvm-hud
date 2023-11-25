@@ -1,5 +1,110 @@
 [
   {
+    "sha": "26aeaee04699ec3c67721abe1378aa15815e780b",
+    "headline": "[Community] Shuai Yuan -> Committers (#16162)",
+    "body": "[Community] Shuai Yuan -> committers\r\n\r\nPlease join me in welcoming Shuai Yuan(@ysh329) as a new committer in TVM.\r\nHis persistent assistance in the release process is noteworthy.\r\nSpecifically, his involvement in drafting release notes and coordinating\r\nthe release schedules for the recent three releases (v0.12, v0.13, and\r\nv0.14) is commendable. Although Shuai does not currently hold the\r\nposition of a reviewer, his contributions significantly surpass the\r\nrequirements for a committer role. It is crucial to recognize and\r\nappreciate contributions that extend beyond mere code production.\r\n\r\n- [Github Issues](https://github.com/apache/tvm/issues?page=1&q=is%3Aissue+author%3Aysh329)\r\n- [Commits History](https://github.com/apache/tvm/pulls?q=is%3Apr+author%3Aysh329)\r\n- [Code Review](https://github.com/apache/tvm/pulls?utf8=%E2%9C%93&q=reviewed-by:ysh329)\r\n- [Community Forum Summary](https://discuss.tvm.apache.org/u/ysh329/summary)",
+    "author": "Hzfengsy",
+    "date": "2023-11-25T05:24:59Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1461/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1210/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1183/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/989/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1312/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1189/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1168/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1150/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1153/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1155/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1150/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1160/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6987263978/job/19013622273"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6987263978/job/19013622353"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6987263978/job/19013622420"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/6987263978/job/19013622489"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6987290223/job/19013669579"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6987344878/job/19013779332"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6987396575/job/19013889872"
+      }
+    ],
+    "updated_at": 1700892641.276827
+  },
+  {
     "sha": "f38dc146e489cb06db726950542807817d97b490",
     "headline": "[TOPI][Relay] Add conv2d NHWC hybrid schedule for `arm_cpu` (#16106)",
     "body": "Implemented an `arm_cpu` conv2d NHWC schedule for fp32 using a hybrid GeMM approach, effectively breaking down the matrix multiplication into a macro-kernel (partitioning into fixed-sized, tile-level subproblems) and a micro-kernel (independently dealing with each subproblem). After the im2col transformation, the input matrix is handled natively (not interleaved), while the weights matrix is tiled and interleaved at compile time.\r\nThe micro-kernel uses 16 registers to accumulate the results of each 4x16 output tile, cycling through the operands needed to compute them (from the input and weight matrices) in the remaining registers.\r\n\r\nThere are now two ways to transform the weights matrix for conv2d, which are detailed in `convolution.cc`:\r\n\r\n* for fp32: tile, interleave\r\n* for int8: tile, interleave, transpose\r\n\r\nTo maintain naming consistency across both of these implementations (transposed vs not transposed), all mentions of `tile_rows_B` or `tile_cols_B` have been changed to `tile_N` and `tile_K` respectively to denote the tiling size along each axis of the flattened B matrix. As usual, `N = out_channels` and `K = kernel_width * kernel_height * in_channels`.\r\n\r\nI have also added a new conv2d NHWC fp32 test for both the `conv2d_nhwc_spatial_pack` and `conv2d_NHWC_fp32_hybrid` schedules.",
@@ -480,9 +585,13 @@
         "name": "Update nightly branch / update-nightly-branch",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/6987143622/job/19013392924"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/6987230805/job/19013566150"
       }
-    ],
-    "updated_at": 1700888892.461874
+    ]
   },
   {
     "sha": "1a2cc180912b5a292d5d3bc03ba3d1c17ccf9e6b",
@@ -31477,200 +31586,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/6337396268/job/17212404599"
-      }
-    ]
-  },
-  {
-    "sha": "73e7909a71f03dbdc0c8e8ad250a77597c994508",
-    "headline": "[TVMScript] Preserve traceback across TVMScript parsing (#15824)",
-    "body": "Prior to this commit, exceptions raised during the parsing of\r\nTVMScript would be caught and replaced with a new exception.  While\r\nthis does allow the TVMScript location of the error to be included in\r\nthe exception, it also removes the stack trace of the original error.\r\nThis commit updates the `Parser.report_error` function to provide the\r\noriginal stack trace alongside the updated exception object.",
-    "author": "Lunderberg",
-    "date": "2023-09-27T19:57:01Z",
-    "jobs": [
-      {
-        "name": "hexagon/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1065/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1363/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1079/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1073/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/890/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1062/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1130/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1062/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1053/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1053/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1052/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1048/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6330791313/job/17193986910"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6330791313/job/17193987127"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6330791313/job/17193987323"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6330791313/job/17193987495"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6330829032/job/17194112466"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6331006035/job/17194655141"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6331117256/job/17195004587"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6331252912/job/17195420168"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6331384878/job/17195842777"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6331543794/job/17196310382"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6331656331/job/17196661961"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6331777835/job/17197039149"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6331891300/job/17197388163"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332045464/job/17197811773"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332145098/job/17198080671"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332252973/job/17198381648"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332349861/job/17198670234"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332486707/job/17199023536"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332574163/job/17199255865"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332667954/job/17199507839"
-      },
-      {
-        "name": "Nightly Docker Update / open_update_pr",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/6332744083/job/17199728283"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332784768/job/17199844207"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6332939869/job/17200276878"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6333099085/job/17200689915"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6333299431/job/17201207035"
       }
     ]
   }
