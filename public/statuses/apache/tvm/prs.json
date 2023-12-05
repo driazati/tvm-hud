@@ -1,5 +1,87 @@
 [
   {
+    "sha": "15d53985f4b71214fb7338d524ba88dff0f46cc0",
+    "headline": "Implement a pass that extracts dataflow blocks from consecutive pure \u2026",
+    "body": "\u2026operations in binding blocks. Also contains bugfixes for canonicalize bindings",
+    "author": "slyubomirsky",
+    "date": "2023-12-05T04:04:49Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16204/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16204/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7096081775/job/19314022125"
+      }
+    ],
+    "pr": 16204,
+    "pr_title": "[Unity][Transform] Pass for automatically extracting DataflowBlocks",
+    "updated_at": 1701752527.808246
+  },
+  {
     "sha": "401793a98a7e53a9d877a8da4d0bbbfef52a1e5f",
     "headline": "change cuda thread num",
     "body": "",
@@ -83,8 +165,7 @@
       }
     ],
     "pr": 16203,
-    "pr_title": "[Dlight] Change max_threads on CUDA",
-    "updated_at": 1701749213.975845
+    "pr_title": "[Dlight] Change max_threads on CUDA"
   },
   {
     "sha": "b83eda1e980b4648fbd32ce1ddc7dc8f981b2974",
@@ -95,8 +176,8 @@
     "jobs": [
       {
         "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16202/1/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16202/2/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
@@ -8095,92 +8176,6 @@
     ],
     "pr": 16148,
     "pr_title": "[Runtime] Allowing Packed Arguments in TVM Module VTable"
-  },
-  {
-    "sha": "65c5b1e2e55a0c7c25530aa0aec12ce4f75e13d7",
-    "headline": "[Runtime] Introduce Type-Checked `TVMArgs::At<T>(i)`",
-    "body": "This PR adds the following member method of `TVMArgs`:\n\n```C++\nclass TVMArgs {\n public:\n  ...\n  template <typename T>\n  inline T At(int i) const;\n};\n```\n\nThis method extracts the i-th argument from `TVMArgs`, do proper type\nchecking, and generates proper message if it fails, including the\nindex `i`, expected type and the actual type in the error message.\n\nPreviously this type checking is more like a more fine-grained approach,\nwhich, first in `TVMArgs::operator[](int i)`, checks array boundary and\nreturns `TVMArgValue`, a generic union type of all. Then, `TVMArgValue`\nhas a series overloads of `operator T()` which implicitly prunes it to\nthe desired type.\n\nThis approach has been proven working consistently well in the past few\nyears, but due to its fine-grained nature, it is impossible for such\napproach to generate error messages that includes the index `i`. Due to\nhistoric constraints, it doesn't generate expected type either.\n\nThis PR patches this issue, and makes it possible to show full details\nin the error message.",
-    "author": "junrushao",
-    "date": "2023-11-18T21:39:20Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16147/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/6916451326/job/18816538181"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/6920926737/job/18825949839"
-      }
-    ],
-    "pr": 16147,
-    "pr_title": "[Runtime] Introduce Type-Checked `TVMArgs::At<T>(i)`"
   },
   {
     "sha": "42b0de27d07d25e5c6a702746e91be9b8c57bcac",
