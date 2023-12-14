@@ -1,8 +1,8 @@
 [
   {
-    "sha": "4fec0b9fca8e17253c1441fda6149b57eb4350d7",
+    "sha": "f6c8a45e93d767cdc8b7692c9d51f5d0999ab370",
     "headline": "[Unity] Add runtime debugging method to RelaxVM",
-    "body": "This PR introduces `tvm.relax.frontend.nn.op.debug_func` which allows\none to call debugging methods registered in runtime.",
+    "body": "This PR enhances `tvm.relax.frontend.nn.op.print_` that allows\none to call debugging methods registered in runtime.\n\nExample:\n\n```python\nclass Layer(nn.Module):\n  def forward(self, x: nn.Tensor):\n    op.print_(x)\n    return x\n```\n\nDuring runtime, whenever this line is executed, it prints:\n\n```\n/workspace/main.py:36: shape = (10, 5), dtype = float32, data =\n[[9.1025043e-01 5.6659997e-01 8.7828696e-01 5.5273587e-01 1.8565023e-01]\n [8.0204010e-04 5.5512893e-01 9.7184986e-01 3.2060379e-01 7.5654179e-01]\n [9.5829505e-01 7.7954692e-01 1.3110173e-01 3.7674886e-01 3.3243084e-01]\n [6.4045572e-01 7.4083984e-02 7.2492689e-01 4.4675517e-01 2.1010166e-01]\n [2.7612233e-01 5.7471478e-01 8.5393274e-01 9.1640389e-01 1.5394652e-01]\n [7.7940112e-01 2.3211378e-01 6.0200381e-01 5.9336245e-01 9.2999905e-01]\n [5.0383198e-01 3.3493429e-01 7.8850657e-01 8.7862432e-02 7.7355146e-01]\n [3.2209766e-01 5.7237232e-01 6.4327312e-01 6.4632124e-01 1.5809405e-01]\n [6.7456228e-01 9.3647403e-01 1.0043311e-01 3.3887738e-01 3.0455321e-01]\n [5.2549899e-02 5.5112422e-01 1.0987210e-01 9.8951626e-01 6.2626714e-01]]\n```\n\nA new method `op.debug_func(name=\"func_name_in_reigstry\", *args)`\nfurther extends this approach to supporting *arbitrary* debug functions\nduring runtime. Besides giving runtime values corresponding to its compile-time\narguments passed in by users, it further gives an additional argument `lineno`\nwhich reflects the filename and line number of the compile-time call site.\n\nAs an example, the code below\n\n```python\n@tvm.register_func(\"my_test\")\ndef _debug(lineno: str, tensor, int_var) -> None:\n  ...\n\nclass Layer(nn.Module):\n  def forward(self, x: nn.Tensor, v: tir.Var):  # pylint: disable=invalid-name\n    op.debug_func(\"my_test\", x, v)\n    return x\n```\n\nfinds the Python function registered as `my_test` during runtime, and\nwill invoke it with the runtime value of a tensor and a TIR scalar variable.\nSee `tests/python/relax/test_frontend_nn_debug.py` for more details.",
     "author": "junrushao",
     "date": "2023-12-14T05:33:23Z",
     "jobs": [
@@ -14,72 +14,72 @@
       {
         "name": "arm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16238/5/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16238/5/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16238/5/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16238/5/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16238/5/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16238/5/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16238/5/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16238/5/display/redirect"
       },
       {
         "name": "lint/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16238/5/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16238/5/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16238/5/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16238/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16238/5/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7205063449/job/19627467403"
+        "url": "https://github.com/apache/tvm/actions/runs/7205525724/job/19628682339"
       }
     ],
     "pr": 16238,
     "pr_title": "[Unity] Add runtime debugging method to RelaxVM",
-    "updated_at": 1702534060.327755
+    "updated_at": 1702537294.766204
   },
   {
     "sha": "68b197cd4bf01eccc443061c4bece5b96295dfa4",
@@ -170,21 +170,6 @@
     "date": "2023-12-14T03:50:18Z",
     "jobs": [
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16236/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16236/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16236/2/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16236/2/display/redirect"
@@ -192,12 +177,27 @@
       {
         "name": "hexagon/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16236/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16236/3/display/redirect"
       },
       {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16236/2/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16236/2/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16236/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16236/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -271,6 +271,16 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16236/1/display/redirect"
       },
       {
+        "name": "cpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16236/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16236/1/display/redirect"
+      },
+      {
         "name": "i386/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16236/1/display/redirect"
@@ -286,19 +296,19 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16236/1/display/redirect"
       },
       {
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16236/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16236/1/display/redirect"
+      },
+      {
         "name": "cortexm/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16236/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16236/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16236/1/display/redirect"
       },
       {
         "name": "gpu/pr-head",
@@ -309,16 +319,6 @@
         "name": "hexagon/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16236/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16236/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16236/1/display/redirect"
       },
       {
         "name": "docker/pr-head",
