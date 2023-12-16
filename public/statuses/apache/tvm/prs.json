@@ -8,8 +8,8 @@
     "jobs": [
       {
         "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16252/display/redirect"
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16252/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -84,7 +84,7 @@
     ],
     "pr": 16252,
     "pr_title": "[Unity] Fix Cutlass Codegen for Dense",
-    "updated_at": 1702717280.579102
+    "updated_at": 1702720929.422111
   },
   {
     "sha": "91b02b2f809288f1b2003f30fdf1a880646a729e",
@@ -94,29 +94,9 @@
     "date": "2023-12-16T06:25:04Z",
     "jobs": [
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16248/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16248/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16248/3/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16248/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16248/3/display/redirect"
       },
       {
         "name": "lint/pr-head",
@@ -129,9 +109,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16248/3/display/redirect"
       },
       {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16248/3/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16248/3/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16248/3/display/redirect"
+      },
+      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16248/3/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16248/3/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -765,7 +765,7 @@
     "pr_title": "[Unity] Bump fpA_intB_gemm"
   },
   {
-    "sha": "6bbeda5dcb4c78dbec95ce99f781d1473e91dcdf",
+    "sha": "126d82a583dcaf1363586372b5ed77840142e1cf",
     "headline": "[Unity][nn.Module] Refactor `ExternModule`",
     "body": "`nn.ExternModule` allows incorporation of handcrafted kernels into the\ncompilation stack and being invoked by Relax just like TIR or any other\nordinary operator. This PR simplifies its workflow.\n\nThe system consists of the abstract base class `ExternModule` and its\ntwo derivatives:\n- `.o` (object files) can be linked using `ObjectModule`.\n- `.cpp` (C++ files) and `.cu` (CUDA files) can be compiled and linked\n  into the system usung `SourceModule`.\n\n**Symbols, and shape/dtype inference.**\nTo provide the system with sufficient information about the kernels, it\nis required to provide all symbols of an external module, as well as a\nmethod for each symbol that tells the system about the output dtype/shape\nof this symbol.\n\nConsider a case where function `my_func` accepts two tensors, `a` of\nshape `(x, y, 1)`, `b` of shape `(y, z, 5)`, and then produces a tensor\n`c` of shape `(x, y, z, 9)`, the shape/dtype inference function should\nlook like:\n\n```python\ndef shape_dtype_inference(a, b):\n  x, y, _ = a.shape\n  _, z, _ = b.shape\n  return nn.Tensor.placeholder((x, y, z, 9), dtype=\"float32\")\n```\n\nRegarding the interface, the symbols and their corresponding shape/dtype\ninference function should be provided as a Python dictionary that maps\neach symbol to the function as below:\n\n```python\nsymbols={\n  \"my_func\": shape_dtype_inference,\n}\n```\n\n**Calling convention.**\nAll external modules now follows \"destination-passing-style\" (DPS)\ncalling convention, which means the returned tensors are pre-allocated\nby the system already and passed in as an argument of the external\nfunction.\n\nReuse the example above, the implementation of `my_func` should include\nthree parameters in its signature, where tensors are represented using\nDLTensor from DLPack, the de facto standard of in-memory representation\nof tensors. More info on DLPack:\nhttps://github.com/dmlc/dlpack/blob/v0.8/include/dlpack/dlpack.h#L163-L206.\n\nTo expose the symbol, `TVM_DLL_EXPORT_TYPED_FUNC(symbol, function)` is\nguaranteed available:\n\n```C++\n// those headers are guaranteed to be available\n\\#include <dlpack/dlpack.h>\n\\#include <tvm/runtime/data_type.h>\n\\#include <tvm/runtime/packed_func.h>\nnamespace {\n// anonymous namespace hides the symbol `_my_func_impl` from other TUs\nint _my_func_impl(DLTensor* a, DLTensor* b, DLTensor* c) {\n// `a` and `b` are inputs, and `c` is the output\n}\n}\n// expose symbol `my_func` instead of `_my_func_impl`\nTVM_DLL_EXPORT_TYPED_FUNC(my_func, _my_func_impl);\n```\n\n**A compiler pass `AttachExternModules`.**\nIt is introduced to attach a list of `nn.ExternModule`s into an IRModule\nat any stage of the compilation pipeline, and attach the compiled external\nmodules as `runtime.Module`s into IRModule's `external_mods` attribute.\nIt is required by linking in `relax.build`, but with the existence of\nthis pass, source compilation can be deferred to arbitrary stage of TVM\ncompilation.\n\n**Caveats.**\nIt is required to call `nn.add_extern` to register external modules exactly\nonce during `export_tvm`. Each symbol should be registered exactly once to\navoid potential conflicts, and otherwise an error will be raised. This\nprogramming model might be a bit of constraint, and we will consider loose\nit slightly in the future.\n\nAlso, for backward compatibility, `ExternModule`s are exported from\n`export_tvm` only when `allow_extern` flag is turned on. Otherwise, any\nexternal module will cause an exception asking to turn on the flag.",
     "author": "junrushao",
@@ -774,72 +774,72 @@
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16247/display/redirect"
       },
       {
         "name": "arm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16247/18/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16247/18/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16247/18/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16247/18/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16247/18/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16247/18/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16247/18/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16247/18/display/redirect"
       },
       {
         "name": "lint/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16247/18/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16247/18/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16247/18/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16247/16/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16247/18/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7228600471/job/19698301046"
+        "url": "https://github.com/apache/tvm/actions/runs/7231137384/job/19703994370"
       }
     ],
     "pr": 16247,
