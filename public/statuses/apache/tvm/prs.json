@@ -7,11 +7,6 @@
     "date": "2023-12-23T09:30:14Z",
     "jobs": [
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16217/2/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16217/2/display/redirect"
@@ -35,6 +30,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16217/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16217/2/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
@@ -79,7 +79,7 @@
     ],
     "pr": 16217,
     "pr_title": "[Relay][Frontend][QNN] fix getting full node attribute name in quantized fx-graph",
-    "updated_at": 1703343687.434043
+    "updated_at": 1703347402.525163
   },
   {
     "sha": "a855e0c66599db84a3a49a05b4be147570f77775",
@@ -6947,110 +6947,90 @@
     "pr_title": "[Pylint] fix pylint issues for onnx&onnx_model&popen_pool"
   },
   {
-    "sha": "3170c6edf3d0568ebd64ed8b649f175bba63b46a",
-    "headline": "fix allocs not correctly updated.",
-    "body": "",
-    "author": "nox-410",
-    "date": "2023-12-10T07:40:58Z",
+    "sha": "c46fb4b67407d2fb84fdf99142c44f423822b206",
+    "headline": "[Unity] Unified KV cache interface and PagedKVCache refactor",
+    "body": "This PR refactors the previous PagedAttentionKVCache, and provides\na common attention KV cache interface `src/runtime/relax_vm/kv_cache.h`\nfor efficient K/V data management and attention computation.\n\nThe refactored PagedKVCache supports common prefix caching: if two\nsequences have a shared prefix (e.g., a system prompt, or a context\ndocument), we can first add the prefix into KV cache, and then\nfork the two child sequences from the prefix, and add their\nrespective exclusive parts to KV cache. In such case, the KV data\nof the shared prefix is computed only once, and can be reused for\nmultiple times.\n\nThis PR adds tests for the refactored PagedKVCache\n`tests/python/relax/test_runtime_builtin_paged_attention_kv_cache.py`.\nThe tests at this moment depends on FlashInfer\n(https://github.com/flashinfer-ai/flashinfer)\nfor efficient attention computation. Given the CI does not build\nTVM with FlashInfer enabled, the tests are marked as skipped right now.\nTests are passed in my local development environment.\n\nThere are remaining works on the PagedKVCache implementation.\nRight now FlashInfer does not support on-the-fly RoPE application\nwhen computing attention in common prefix scenario. Therefore,\nwe fallback to adopt a dedicated RoPE kernel to apply RoPE prior\nto appending K/V data into the cache. This blocks some applications\nsuch as sliding window attention. We will work on this with followup\nimprovements to PagedKVCache in the future.\n\nCo-authored-by: Zihao Ye <expye@outlook.com>\nCo-authored-by: Ruihang Lai <ruihangl@cs.cmu.edu>",
+    "author": "yzh119",
+    "date": "2023-12-09T17:10:24Z",
     "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16273/display/redirect"
+      },
       {
         "name": "arm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16273/1/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16273/1/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16273/1/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16273/1/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16273/1/display/redirect"
       },
       {
         "name": "gpu/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16216/7/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16273/1/display/redirect"
       },
       {
         "name": "hexagon/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16273/1/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16273/1/display/redirect"
       },
       {
         "name": "lint/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16273/1/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16216/5/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16273/1/display/redirect"
       },
       {
         "name": "riscv/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16273/1/display/redirect"
       },
       {
         "name": "wasm/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16216/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16273/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/7309109703/job/19916385473"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7156438154/job/19486121401"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7156438181/job/19542551873"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7156438181/job/19542552040"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7156438181/job/19542552158"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7156438181/job/19542552280"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7158520299/job/19490701905"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/7200452664/job/19614434841"
+        "url": "https://github.com/apache/tvm/actions/runs/7309110146/job/19916387259"
       }
     ],
-    "pr": 16216,
-    "pr_title": "[BugFix][TIR] Fix dynamic smem merge leaf alloc"
+    "pr": 16273,
+    "pr_title": "[Unity] Unified KV cache interface and PagedKVCache refactor"
   },
   {
     "sha": "a538c11c67f38f3f2a2495be9321baaee5eeb499",
@@ -7243,239 +7223,6 @@
     ],
     "pr": 16217,
     "pr_title": "[Relay][Frontend][QNN] fix getting full node attribute name in quantized fx-graph"
-  },
-  {
-    "sha": "ae06f22b95df9a583abbc47f3947b78f85ec2001",
-    "headline": "lint",
-    "body": "",
-    "author": "nox-410",
-    "date": "2023-12-08T09:09:51Z",
-    "jobs": [
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16216/4/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16216/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7139460417/job/19442850187"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7150879729/job/19474617542"
-      }
-    ],
-    "pr": 16216,
-    "pr_title": "[BugFix][TIR] Fix dynamic smem merge leaf alloc"
-  },
-  {
-    "sha": "a80abf8a48497e7b0b1beb1e1cd1900a724a2e94",
-    "headline": "lint",
-    "body": "",
-    "author": "nox-410",
-    "date": "2023-12-08T09:04:35Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16216/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7139406934/job/19442700312"
-      }
-    ],
-    "pr": 16216,
-    "pr_title": "[BugFix][TIR] Fix dynamic smem merge leaf alloc"
-  },
-  {
-    "sha": "22706a643c7ab0a802d1e06f0a68130ed500b3ca",
-    "headline": "[BugFix][TIR] Fix dynamic smem merge leaf alloc",
-    "body": "",
-    "author": "nox-410",
-    "date": "2023-12-08T06:45:26Z",
-    "jobs": [
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16216/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7138584384/job/19440376596"
-      }
-    ],
-    "pr": 16216,
-    "pr_title": "[BugFix][TIR] Fix dynamic smem merge leaf alloc"
   },
   {
     "sha": "4f069f630cb7ef8358a4b7685f4651afa3e9cd90",
