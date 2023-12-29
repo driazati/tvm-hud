@@ -1,5 +1,92 @@
 [
   {
+    "sha": "f5888dafd00c1243d08f2aab38189c6b24eff096",
+    "headline": "add test",
+    "body": "",
+    "author": "jinhongyii",
+    "date": "2023-12-29T22:16:33Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16251/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16251/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7360180944/job/20035993578"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7360189144/job/20036008252"
+      }
+    ],
+    "pr": 16251,
+    "pr_title": "[Unity][Dlight] Support dlight gemv rule on nested inner block",
+    "updated_at": 1703890941.57516
+  },
+  {
     "sha": "ca60c637ee137237d111c0b5555f96bafc109565",
     "headline": "[Unity][Analysis] Add utility for collecting compile-time bindings",
     "body": "Whether an optimizations should be performed may depend on when the\nvariables in an expression are known.\n\nFor example, consider a LoRA-adjusted model, with base weights `W` of\nshape `[m,n]`, LoRA components `A` and `B` with shapes `[r,n]` and\n`[m,r]` respectively, and activations `x` with shape `[n,1]`.  The\nLoRA-adjusted matmul could be computed either as `(W + B*A)*x` or as\n`(W*x + B*(A*x))`.\n\nIf `A` and `B` are provided at run-time, then computing `(W +\nB*(A*x))` requires significantly fewer computations.\n\n* `(W + B*A)*x`: `m*n*(2*r + 3)` operations\n  1. `B*A`: `2*m*n*r` operations using a naive matmul\n  2. Adding `W` to (1): `m*n` operations\n  3. Multiplying `x` by (2): `2*m*n` operations\n\n* `(W*x + B*(A*x))`: (2*m*n + r*(2*n + 2*m + 1))\n  1. `W*x`: `2*m*n` operations\n  2. `A*x`: `2*r*n` operations\n  3. Multiplying `B` by (2): `2*m*r` operations\n  4. Adding (1) and (3)`: `m` operations\n\nHowever, if `A` and `B` are known at compile-time, then computing `(W\n+ B*A)*x` groups all compile-time values together, allowing them to be\ncomputed earlier (i.e. using `LiftTransformParams`)\n\n* `(W + B*A)*x`: `2*m*n` operations\n  1. `B*A`: 0 operations, computed at compile-time\n  2. Adding `W` to (1): 0 operations, computed at compile-time\n  3. Multiplying `x` by (2): `2*m*n` operations\n\nSince the choice of optimized expression depends on which parameters\ncan be computed at compile-time, it is useful to have a utility that\nidentifies values that can be computed at compile-time.",
@@ -78,8 +165,7 @@
       }
     ],
     "pr": 16314,
-    "pr_title": "[Unity][Transform] Implement relax.transform.AdjustMatmulOrder",
-    "updated_at": 1703887334.472454
+    "pr_title": "[Unity][Transform] Implement relax.transform.AdjustMatmulOrder"
   },
   {
     "sha": "ca60c637ee137237d111c0b5555f96bafc109565",
@@ -778,6 +864,26 @@
     ],
     "pr": 16293,
     "pr_title": "[TIR] Extend DP4A tensor intrin"
+  },
+  {
+    "sha": "17e05973fc01d4cc5e0c8558ed8174cd84264014",
+    "headline": "hack",
+    "body": "",
+    "author": "jinhongyii",
+    "date": "2023-12-28T23:16:07Z",
+    "jobs": [],
+    "pr": 16251,
+    "pr_title": "[Unity][Dlight] Support dlight gemv rule on nested inner block"
+  },
+  {
+    "sha": "a179732a9213601d9d6f47f57678696900cd4dd8",
+    "headline": "fix dlight",
+    "body": "",
+    "author": "jinhongyii",
+    "date": "2023-12-28T23:10:16Z",
+    "jobs": [],
+    "pr": 16251,
+    "pr_title": "[Unity][Dlight] Support dlight gemv rule on nested inner block"
   },
   {
     "sha": "95c5b67c018d99c323ea0878a9b2cfeac9f12a08",
@@ -2355,6 +2461,16 @@
     ],
     "pr": 16274,
     "pr_title": "[Unity][nn.Module] Support Runtime-Calling Any PackedFunc via `op.extern`"
+  },
+  {
+    "sha": "4cbb59b334d502a58deb4f70c5a3b6a5595801b8",
+    "headline": "fix",
+    "body": "",
+    "author": "jinhongyii",
+    "date": "2023-12-22T23:12:39Z",
+    "jobs": [],
+    "pr": 16251,
+    "pr_title": "[Unity][Dlight] Support dlight gemv rule on nested inner block"
   },
   {
     "sha": "a855e0c66599db84a3a49a05b4be147570f77775",
@@ -4707,88 +4823,17 @@
     "pr_title": "[Unity] Fix Cutlass Codegen for Dense"
   },
   {
-    "sha": "072389705951934415dae0e9447d430db3cfba17",
+    "sha": "4012c177a06f56a41ad475e62dd6045bf6add47d",
     "headline": "add test",
     "body": "",
     "author": "jinhongyii",
     "date": "2023-12-15T22:23:08Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16251/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7227690024/job/19695790406"
-      }
-    ],
+    "jobs": [],
     "pr": 16251,
     "pr_title": "[Unity][Dlight] Support dlight gemv rule on nested inner block"
   },
   {
-    "sha": "dec325814d7d8f2dc9989aa5ecc90ccccdbda6d8",
+    "sha": "01edd0e49f3ae48b77478801d53aa8ffd8be8eb6",
     "headline": "fix",
     "body": "",
     "author": "jinhongyii",
