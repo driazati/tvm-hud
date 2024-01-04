@@ -1,5 +1,87 @@
 [
   {
+    "sha": "6fee77aac6f3121bb24bfd61070b76bdc86ed7db",
+    "headline": "[Unity][MSC] Avoid depending on trivial bindings in Relax intermediate",
+    "body": "The conversion from tensorflow to MSC is done by first converting from\ntensorflow to relay, then converting from relay to executable python\ncode, executing that python code to generate relax, and finally\nconverting from relax to MSC.  During the relax phase of this\nconversion, some relax `IRModule` are applied, including\n`FuseOpsByPattern`.\n\nThe test cases in `test_msc/test_translate_tensorflow.py` rely on\n`FuseOpsByPattern` preserving trivial bindings (e.g. `var_1 = var_2`)\nin the relax IRModule.  If these trivial bindings are removed by\n`CanonicalizeBindings`, then the test cases in this file fail.  The\npresence or absence of trivial bindings `FuseOpsByPattern` should be\nconsidered an implementation detail, and relax passes should not be\nrequired to preserve trivial bindings.\n\nThis PR updates the relay to executable python step of the tensorflow\nto MSC conversion, to remove trivial bindings and output a variable\nname that matches the expected value in the test case.  While not an\nideal resolution, as other variable name changes could still\nreintroduce the same test failures, it ensures that `FuseOpsByPattern`\nmay canonicalize bindings as an internal pre- or post-processing step\nwithout breaking these unit tests.",
+    "author": "Lunderberg",
+    "date": "2024-01-04T21:56:17Z",
+    "jobs": [
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16349/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7415444264/job/20178583065"
+      }
+    ],
+    "pr": 16349,
+    "pr_title": "[Unity][MSC] Avoid depending on trivial bindings in Relax intermediate",
+    "updated_at": 1704409329.604607
+  },
+  {
     "sha": "489b08f42103c84e7bc54f002c7a759967daf094",
     "headline": "[Docker] Upgrade pip in i386 container",
     "body": "",
@@ -9,12 +91,12 @@
       {
         "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16348/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16348/2/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16348/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16348/2/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
@@ -29,17 +111,7 @@
       {
         "name": "hexagon/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16348/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16348/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16348/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16348/2/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -67,6 +139,16 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16348/1/display/redirect"
       },
       {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16348/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16348/1/display/redirect"
+      },
+      {
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7414091309/job/20174424936"
@@ -90,11 +172,15 @@
         "name": "CI / Windows",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7414091410/job/20174425827"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/7415674959/job/20179247731"
       }
     ],
     "pr": 16348,
-    "pr_title": "[Docker] Upgrade pip in i386 container",
-    "updated_at": 1704405689.65524
+    "pr_title": "[Docker] Upgrade pip in i386 container"
   },
   {
     "sha": "53dc9892b5ed839b94f1012714f6e20a6d5e2ae6",
@@ -1824,87 +1910,6 @@
     ],
     "pr": 16347,
     "pr_title": "[SVE] Implement scalable vectors in TVM"
-  },
-  {
-    "sha": "a746aeafd0211155c8409bc0fbe3d5f431f24e9b",
-    "headline": "lint",
-    "body": "",
-    "author": "Lufang CHEN \u9648\u6a79\u65b9",
-    "date": "2024-01-03T02:29:35Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16293/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7392824069/job/20111838157"
-      }
-    ],
-    "pr": 16293,
-    "pr_title": "[TIR] Extend DP4A tensor intrin"
   },
   {
     "sha": "747f82f0bdbde75604f8e6624d5b64ebcf9d036d",
@@ -6397,92 +6402,6 @@
     "pr_title": "[Unity][Web][Fix] Fix fetchNDArray for f32-to-bf16"
   },
   {
-    "sha": "f0eba403855941d76bba4ba91a80a90514fd3e1f",
-    "headline": "update dp4a tensor intrin",
-    "body": "",
-    "author": "Lufang CHEN \u9648\u6a79\u65b9",
-    "date": "2023-12-29T05:32:32Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16293/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7354096430/job/20020866672"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/7389457563/job/20102344698"
-      }
-    ],
-    "pr": 16293,
-    "pr_title": "[TIR] Extend DP4A tensor intrin"
-  },
-  {
     "sha": "25eb26e4182cdc43855a5b4abd35bf100ddc0069",
     "headline": "fix nn tensorir",
     "body": "",
@@ -6562,16 +6481,6 @@
     ],
     "pr": 16333,
     "pr_title": "[Unity] Fix nn.op.tensor_ir_op signature"
-  },
-  {
-    "sha": "3dad0136c25fcb7ea9a1a79bea44e200aa966bb5",
-    "headline": "update dp4a tensor intrin",
-    "body": "",
-    "author": "Lufang CHEN \u9648\u6a79\u65b9",
-    "date": "2023-12-21T04:44:31Z",
-    "jobs": [],
-    "pr": 16293,
-    "pr_title": "[TIR] Extend DP4A tensor intrin"
   },
   {
     "sha": "6edefbd3ce7ff73cce4bcdf93e61d191a896807b",
