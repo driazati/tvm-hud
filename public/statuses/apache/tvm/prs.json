@@ -1,5 +1,117 @@
 [
   {
+    "sha": "4b6add0a568c4e4eb9d3b6dca3b523668012fc23",
+    "headline": "Also encourage users to use ConvertToDataflow",
+    "body": "",
+    "author": "slyubomirsky",
+    "date": "2024-02-02T21:26:13Z",
+    "jobs": [
+      {
+        "name": "lint/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16514/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7761746654/job/21170809300"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7761746795/job/21170809806"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7761746795/job/21170810048"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7761746795/job/21170810273"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7761746795/job/21170810468"
+      }
+    ],
+    "pr": 16514,
+    "pr_title": "[Unity][Doc] Document passes that depend on `DataflowBlock`s and encourage using `ConvertToDataflow`",
+    "updated_at": 1706911323.791462
+  },
+  {
+    "sha": "f8903dd35b8af073b7fea50e8a29bd7364e50d74",
+    "headline": "Indicate in doc comments which passes need dataflow blocks",
+    "body": "",
+    "author": "slyubomirsky",
+    "date": "2024-02-02T21:20:18Z",
+    "jobs": [],
+    "pr": 16514,
+    "pr_title": "[Unity][Doc] Document passes that depend on `DataflowBlock`s and encourage using `ConvertToDataflow`"
+  },
+  {
     "sha": "b062d529ffc9b3794c52cd2c2b8f404ce0676fe5",
     "headline": "[Target] Automatically detect system triple when not specified by the\u2026",
     "body": "\u2026 user\n\nCurrently, when a default compile target such as llvm is specified,\nit implies llvm -keys=cpu which tends to imply x86 related components\nbeing used during compilation e.g. the schedules registered in TOPI.\nThis can be confusing for a user when compiling on other architectures,\nespecially when other tools such as llc infer the default target\nbased on the host.\n\nWhen the target kind is llvm, this commit uses the\n\"target.llvm_get_system_triple\" functionality to automatically detect\nmtriple when one has not been provided in the target string. The\ntarget will be updated to one that uses the mtriple of the host:\nllvm -> llvm -mtriple=<system-triple>. When compiling on Arm(R)-based\ntargets, this has the added benfit of automatially introducing\n-keys=arm_cpu to the target improving the schedule selection.\n\nLots of tests are currently using targets such as llvm or similar\nwhich has resulted in a lack of coverage of other targets such as\narm_cpu. As part of this commit, failing test cases which have simple\n/ obvious issues have been fixed. Others that likely need more thought\nhave been skipped. In doing so, it reduces the number of modifications\nand simplifies the review for this change.\n\nNote: This PR is marked as draft while checking and fixing other\nfailures in CI. Tests marked as skipped containing \"<Issue link>\" in the\nreason will be have issues added and the related reason will be updated\nwhen CI is green.\n\nThis commit is a follow up of the changes made in: #14981\n\nChange-Id: Icee7f5c00d58fc77367c823273fccae128260471\nCo-authored-by: Jack Frankland <jack.frankland@arm.com>",
@@ -15,11 +127,6 @@
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16513/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16513/2/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
@@ -40,6 +147,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16513/2/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16513/2/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -108,8 +220,7 @@
       }
     ],
     "pr": 16513,
-    "pr_title": "[Target] Automatically detect system triple when not specified by the user",
-    "updated_at": 1706907689.741838
+    "pr_title": "[Target] Automatically detect system triple when not specified by the user"
   },
   {
     "sha": "81ef1d8fa78cbc4c4e12973e1e05a965056eae2f",
@@ -6992,107 +7103,6 @@
     ],
     "pr": 16454,
     "pr_title": "[BugTIR] fix thread_sync occurs in letstmt"
-  },
-  {
-    "sha": "a9a6a6cff375d45b6c1026739043b208c68b2162",
-    "headline": "Bump pillow from 10.0.1 to 10.2.0 in /apps/microtvm/cmsisnn",
-    "body": "Bumps [pillow](https://github.com/python-pillow/Pillow) from 10.0.1 to 10.2.0.\n- [Release notes](https://github.com/python-pillow/Pillow/releases)\n- [Changelog](https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst)\n- [Commits](https://github.com/python-pillow/Pillow/compare/10.0.1...10.2.0)\n\n---\nupdated-dependencies:\n- dependency-name: pillow\n  dependency-type: direct:production\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>",
-    "author": "dependabot[bot]",
-    "date": "2024-01-22T22:05:15Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16452/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16452/1/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617931234/job/20748050423"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617931234/job/20748050688"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617931234/job/20748050911"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617931234/job/20748051121"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617931282/job/20748050647"
-      }
-    ],
-    "pr": 16452,
-    "pr_title": "Bump pillow from 10.0.1 to 10.2.0 in /apps/microtvm/cmsisnn"
   },
   {
     "sha": "b98d3ec514ce83334bfc0c031a030e8fd9260e3e",
