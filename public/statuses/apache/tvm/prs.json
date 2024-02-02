@@ -99,7 +99,7 @@
     ],
     "pr": 16511,
     "pr_title": "[Minor] Fix Clang compilation warning in fuse_tir.cc and codegen_c_host.cc",
-    "updated_at": 1706878908.627276
+    "updated_at": 1706882528.759788
   },
   {
     "sha": "29dfa4930916066a22350df67ccc3a00974e43d2",
@@ -620,6 +620,112 @@
     ],
     "pr": 16500,
     "pr_title": "[Unity] Support storage reuse for dynamic shapes"
+  },
+  {
+    "sha": "3ad3a1beb7b585c60e665cc823280b996ffe59cc",
+    "headline": "Cut pytest-lazy-fixture",
+    "body": "Pytest-lazy-fixture doesn't work with version pytest==8.0.0\n\nThe following error occurs:\n\n   AttributeError: 'CallSpec2' object has no attribute 'funcargs'\n\nThis has been raised as an issue on the pytest-lazy-fixture project,\nbut the repository is not in active development. See\n\nhttps://github.com/TvoroG/pytest-lazy-fixture/issues/65\n\nThis patch removes the use of the library to resolve the problem.\n\nChange-Id: Ic899e6b7dac12dc786f79ac7052f75475e8546c9",
+    "author": "Liam-Sturge",
+    "date": "2024-02-01T13:49:36Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16512/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7756395530/job/21153608523"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7756395596/job/21153652834"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7756395596/job/21153653114"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7756395596/job/21153653346"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7756395596/job/21153653559"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/7756653852/job/21155047660"
+      }
+    ],
+    "pr": 16512,
+    "pr_title": "Cut pytest-lazy-fixture"
   },
   {
     "sha": "657302a455360c9b366aade955a9625852ecbd4c",
@@ -6969,117 +7075,6 @@
     "pr_title": "Bump pillow from 10.0.1 to 10.2.0 in /apps/microtvm/ethosu"
   },
   {
-    "sha": "b0143326c4d1e4a90376f06611411e045e3defcf",
-    "headline": "[Unity][Transform] Check for infer-able expressions in FuseOps",
-    "body": "Prior to this commit, `FuseOps` and `FuseOpsByPattern` exposed\na symbolic variable to the fused function if it was used within the\nfused function, but wasn't inferable from other parameter shapes.\nWhile this prevents undefined symbolic variables, it can cause issues\nfor downstream use of `CodegenJSON`, which requires all arguments to\nbe tensors, or tuple of tensors.\n\nFrequently, all uses of a non-inferable symbolic shape occur within a\nsymbolic expression that can be inferred.  For example, a function\nthat takes `arg: R.Tensor([N+1])` and returns `R.add(arg, R.const(1))`\ncannot infer `N`.  However, all occurrences of `N` occur as part\nof the expression `N+1`, and the value of `N+1` can be inferred.\nTherefore, if we replace `N+1` with `M`, the additional `ShapeTuple`\nargument isn't required.",
-    "author": "Lunderberg",
-    "date": "2024-01-22T17:04:10Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16450/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16450/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16450/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16450/5/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16450/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617258113/job/20745881537"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617258240/job/20745881841"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617258240/job/20745882046"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617258240/job/20745882259"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7617258240/job/20745882422"
-      }
-    ],
-    "pr": 16450,
-    "pr_title": "[Transform] Improve symbolic variable handling in FuseOps"
-  },
-  {
-    "sha": "c18da9dc31b8795424f7b89906337882fa105ebf",
-    "headline": "[Unity][Transform] Preserve symbolic variables in FuseOps",
-    "body": "Prior to this commit, the `CompositeFunctionAnnotator` visited the\nbody of functions without the parameters being considered in-scope.\nAs a result, `EraseToWellDefined` would remove known shapes from the\nfunction body's `StructInfo`.",
-    "author": "Lunderberg",
-    "date": "2024-01-22T15:10:25Z",
-    "jobs": [],
-    "pr": 16450,
-    "pr_title": "[Transform] Improve symbolic variable handling in FuseOps"
-  },
-  {
     "sha": "b98d3ec514ce83334bfc0c031a030e8fd9260e3e",
     "headline": "[ci] Add sccache-region for sccache start-server",
     "body": "",
@@ -7511,21 +7506,6 @@
     "date": "2024-01-10T11:37:08Z",
     "jobs": [
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16470/6/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16470/7/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16470/7/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16470/5/display/redirect"
@@ -7536,14 +7516,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16470/7/display/redirect"
       },
       {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16470/4/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16470/5/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16470/6/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16470/7/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16470/7/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -7569,6 +7559,11 @@
         "name": "riscv/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16470/4/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16470/4/display/redirect"
       },
       {
         "name": "wasm/pr-head",
