@@ -1,5 +1,105 @@
 [
   {
+    "sha": "b04b1acf409131a3880a3a4c7824d70e83b13456",
+    "headline": "[Web] Compatibility with PagedKVCache in WebGPU (#16554)",
+    "body": "This PR introduces various WebGPU changes to accommodate the new `PagedKVCache` interface. All changes below are essential for making models that use PagedKVCache runnable under WebGPU:\r\n\r\n- Require exactly same-dtype matching for WebGPU smem reuse in `storage_rewrite.cc`\r\n- Rename `AttentionKVCache` to `AttentionKVCacheLegacy` for the old KVcache interface in `lm_support.cc`; include `paged_kv_cache.cc` when making `wasm_runtime` subsequently\r\n- In WebGPU codegen:\r\n  - Declare local variables within the function scope rather than the module scope\r\n  - Generate `while (true)` rather than `while (1)`\r\n- Require 10 `maxStorageBuffersPerShaderStage` rather than the default 8 from the WebGPU device when initializing runtime; this is required for new kernels introduced in PagedKVCache\r\n- In `deviceCopyToCPU()`, when raw bytes to write are not multiples of 4, we pad them, as required by WebGPU's `writeBuffer()`.\r\n\r\n---------\r\n\r\nCo-authored-by: Rick Zhou <rickzhoucmu@gmail.com>",
+    "author": "CharlieFRuan",
+    "date": "2024-02-12T18:52:07Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1605/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1413/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1343/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1133/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1533/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1367/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1318/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1291/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1297/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1300/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/66/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1298/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1302/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7876516099/job/21490701118"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7876516099/job/21490701321"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7876516099/job/21490701542"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7876516099/job/21490701753"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7876611304/job/21491004821"
+      }
+    ],
+    "updated_at": 1707764936.933358
+  },
+  {
     "sha": "bf4394762ab7e577a4fb675f9796f58cf783dadf",
     "headline": "[Unity][TVMScript] Optionally hide StructInfo that can be inferred (#\u2026",
     "body": "\u202616356)\n\n* [Unity][TVMScript] Optionally hide StructInfo that can be inferred\r\n\r\nBy default, TVMScript prints the struct info of every variable being\r\nbound, which can become quite verbose.  This commit adds the\r\nconfiguration option `show_inferable_type_annotations`, which\r\ndetermines whether struct info annotations are shown in cases where\r\nthey can be inferred.\r\n\r\nThe `show_inferable_type_annotations` option defaults to `True`,\r\npreserving the current default behavior.\r\n\r\n* Rename show_inferable_type_annotations to show_all_struct_info\r\n\r\n* Add unit test for round-trip of opaque function",
@@ -57,6 +157,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1299/display/redirect"
       },
       {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/65/display/redirect"
+      },
+      {
         "name": "wasm/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1297/display/redirect"
@@ -68,7 +173,7 @@
       },
       {
         "name": "CI / Linux-Static-Runtime",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7876005882/job/21489131440"
       },
       {
@@ -85,9 +190,28 @@
         "name": "CI / Windows",
         "status": "pending",
         "url": "https://github.com/apache/tvm/actions/runs/7876005882/job/21489132108"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7876177656/job/21489644053"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7876180543/job/21489652534"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7876299009/job/21490016696"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7876455055/job/21490507925"
       }
-    ],
-    "updated_at": 1707761407.316046
+    ]
   },
   {
     "sha": "32f83d581c71e85ddc3aca06da3c9c1fa02deae0",
@@ -132,11 +256,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1316/display/redirect"
       },
       {
-        "name": "lint/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1289/display/redirect"
-      },
-      {
         "name": "minimal/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1295/display/redirect"
@@ -162,18 +281,23 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1300/display/redirect"
       },
       {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1289/display/redirect"
+      },
+      {
         "name": "CI / Linux-Static-Runtime",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7875678438/job/21488070300"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7875678438/job/21488070516"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7875678438/job/21488070764"
       },
       {
@@ -22466,80 +22590,6 @@
         "name": "wasm/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/unity/873/display/redirect"
-      }
-    ]
-  },
-  {
-    "sha": "07d8e0236791e5d9069f2b4f9227bc33f77b328b",
-    "headline": "[Unity][nnModule] Dynamic shape support in nn Module (#16284)",
-    "body": "* [Unity][nnModule] Dynamic shape support in nn Module",
-    "author": "CharlieFRuan",
-    "date": "2024-01-12T19:44:01Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/unity/885/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/unity/884/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/unity/882/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/unity/877/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/unity/883/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/unity/882/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/unity/882/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/unity/881/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/unity/877/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/unity/875/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/unity/872/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/unity/878/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/unity/872/display/redirect"
       }
     ]
   }
