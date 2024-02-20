@@ -1,16 +1,141 @@
 [
   {
+    "sha": "a6157a6369c184b6fa5f66654feb685e58726737",
+    "headline": "[SVE] Change the dtype of Ramp and Broadcast lanes to PrimExpr (#16523)",
+    "body": "This change will allow us to express scalable vectors through Ramp and Broadcast nodes, e.g.\r\n```\r\nvec = tvm.tir.expr.Ramp(0, 1, 4 * tvm.tir.vscale())\r\n```\r\nWe will use negative values for `runtime::DataType` the encode the scalable lane values, e.g.\r\nthe above example would result in `lanes` = -4. That's because the lanes in `runtime::DataType`\r\nare tied to DLPack standard which uses `uint16_t` for the lanes. The conversion happens in the\r\nnode definitions and `runtime::DataType`, so the `int` and `uint16_t` values should never be\r\nexposed to the API user, especially after the string support has been added.\r\n\r\nAlso include the TVMScript support for scalable Ramp and Broadcasts.\r\n\r\nNote that this patch doesn't include lowering to the appropriate LLVM vectors, support for\r\ndata type string representation or `LoopVectorizer` support. All of these will be part of\r\nfuture patches.\r\n\r\nCo-authored-by: Luke Hutton <luke.hutton@arm.com>\r\nCo-authored-by: Neil Hickey <neil.hickey@arm.com>",
+    "author": "ekalda",
+    "date": "2024-02-20T09:13:30Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1632/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1442/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1374/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1159/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1563/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1396/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1346/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1323/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1325/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/92/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1324/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1328/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1316/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7971030958/job/21759857756"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7971030958/job/21759858057"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/7971030958/job/21759858307"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7971030958/job/21759858589"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7971034209/job/21759867096"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7971049692/job/21759911482"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7971097040/job/21760055634"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7971167103/job/21760272469"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7971253410/job/21760549695"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7971439066/job/21761131755"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/7971631032/job/21761734288"
+      }
+    ],
+    "updated_at": 1708423736.921557
+  },
+  {
     "sha": "2066ce9612871d1b6ce4f9fb0db85e547449fe6f",
     "headline": "[Unity][MSC][M4.2][Step2] Enable plugin with manager, test plugins in\u2026",
     "body": "\u2026 compile pipeline (#16581)\n\nenable plugin with manager",
     "author": "Archermmt",
     "date": "2024-02-20T07:49:56Z",
     "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1631/display/redirect"
-      },
       {
         "name": "cortexm/branch",
         "status": "pending",
@@ -47,19 +172,14 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1322/display/redirect"
       },
       {
-        "name": "riscv/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1324/display/redirect"
-      },
-      {
         "name": "unity/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/91/display/redirect"
       },
       {
-        "name": "wasm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1323/display/redirect"
+        "name": "arm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1631/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -72,13 +192,23 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1315/display/redirect"
       },
       {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1324/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1323/display/redirect"
+      },
+      {
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7970079865/job/21756990289"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7970079865/job/21756990487"
       },
       {
@@ -121,8 +251,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7970873484/job/21759387461"
       }
-    ],
-    "updated_at": 1708420147.222218
+    ]
   },
   {
     "sha": "460000202e7741e98cabe89c1d6a3ea2810f6049",
@@ -154,7 +283,7 @@
       {
         "name": "cross-isa-minimal/branch",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1157/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/nightly/346/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -164,7 +293,7 @@
       {
         "name": "hexagon/branch",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1394/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/nightly/393/display/redirect"
       },
       {
         "name": "i386/branch",
@@ -23061,80 +23190,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7601882731/job/20701772049"
-      }
-    ]
-  },
-  {
-    "sha": "8f2e82043492423de96bb2a73193424dfa7418f1",
-    "headline": "[Unity] Improve buffer allocation for handling duplicated buffer name\u2026",
-    "body": "\u2026s. (#16437)\n\nRefer to this issue \r\nhttps://github.com/apache/tvm/issues/16433 , the relax Pass FuseTIR creates intermediate name by \r\n\r\n```c++\r\nn->name = param->name_hint + \"_intermediate\";\r\n```\r\n\r\nwhich may lead to some bugs when we encounter two fused blocks with the same param name, for example what I encountered in resnet-18, the conv+add+multiply+add, the fused two add operators' block may point to the same block.\r\n\r\nSo we should provide a method to get an unique name for each in duplicate buffers.\r\n\r\n```cpp\r\nauto unify_name_hints = [this, &buffer, &param]() {\r\n        String base_name = buffer->name;\r\n        String unique_name = base_name + \"_intermediate\";\r\n        size_t unique_id = 0;\r\n        std::unordered_set<std::string> names;\r\n\r\n        for (auto& _buffer : func_info_.alloc_buffers) {\r\n          names.insert(_buffer->name);\r\n        }\r\n\r\n        while (names.find(unique_name) != names.end()) {\r\n          unique_name = unique_name + \"_\" + std::to_string(++unique_id);\r\n        }\r\n return unique_name;\r\n };\r\n```",
-    "author": "LeiWang1999",
-    "date": "2024-01-21T07:44:06Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/unity/899/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/unity/898/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/unity/896/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/unity/891/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/unity/897/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/unity/896/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/unity/896/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/unity/895/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/unity/891/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/unity/889/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/unity/886/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/unity/892/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/unity/886/display/redirect"
       }
     ]
   }
