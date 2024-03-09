@@ -99,7 +99,7 @@
     ],
     "pr": 16691,
     "pr_title": "[Relax] CUDA graph rewrite treating StringImm as static",
-    "updated_at": 1709996474.12636
+    "updated_at": 1710000149.163785
   },
   {
     "sha": "8a3d15fac2b1aa53bb27c989253f58cba637f1d7",
@@ -383,6 +383,107 @@
     ],
     "pr": 16678,
     "pr_title": " [Dlight] LowBatchGemv rule only apply to function with spatial symbolic var"
+  },
+  {
+    "sha": "e76323a45ef74ca627f0038c6633da07872c45b5",
+    "headline": "[Runtime] PagedKVCache execute data copy on a separate stream",
+    "body": "This PR enhances PagedKVCache with the copy stream separation.\nIn detail, for CUDA and ROCm backend, we create a standalone copy\nstream for the copy of auxiliary data structure from CPU to GPU.\nFurthermore, we move the copy from BeginForward to Attention,\nwhich means it's no longer eagerly executed, instead, becoming\nlazily executed when Attention computation is needed.\n\nBy making these changes, we are able to overlap the auxiliary\ndata copy time (on the copy stream) with the model forward\ncomputation that happens before the first Attention. As a result,\nwe can hide some of the copy latency.\n\nThis PR also bumps the version of FlashInfer for the copy stream\nsupport.",
+    "author": "MasterJH5574",
+    "date": "2024-03-08T05:36:00Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16692/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8215357734/job/22468746010"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8215357812/job/22468746151"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8215357812/job/22468746265"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8215357812/job/22468746353"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8215357812/job/22468746434"
+      }
+    ],
+    "pr": 16692,
+    "pr_title": "[Runtime] PagedKVCache execute data copy on a separate stream"
   },
   {
     "sha": "565ea509c14b5df9b3cb36890bf52fe5bb05f855",
@@ -7317,11 +7418,6 @@
     "date": "2024-02-27T10:08:31Z",
     "jobs": [
       {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16647/7/display/redirect"
-      },
-      {
         "name": "cortexm/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16647/7/display/redirect"
@@ -7367,9 +7463,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16647/7/display/redirect"
       },
       {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16647/8/display/redirect"
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16647/7/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -7382,23 +7478,28 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16647/7/display/redirect"
       },
       {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16647/8/display/redirect"
+      },
+      {
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8215012014/job/22468045068"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8215012021/job/22468045112"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8215012021/job/22468045158"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8215012021/job/22468045187"
       },
       {
@@ -8257,112 +8358,6 @@
     ],
     "pr": 16638,
     "pr_title": "[CMAKE][CUTLASS] Improve dependency management "
-  },
-  {
-    "sha": "271b2169ef9bccc3370be438bb498a367beeb8ad",
-    "headline": "[RUNTIME][RPC] Enable RPCObjectRef over multi-hop RPC",
-    "body": "This PR enables RPCObjectRef over multi-hop RPC.\nIt is necessary to rewrap the argument as RPCObjectRef\nso that the intermediate validation and re-encoding logic can\nfollow through.",
-    "author": "tqchen",
-    "date": "2024-02-23T15:02:54Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16635/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8021109944/job/21912428013"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8021109946/job/21912427987"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8021109946/job/21912428248"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8021109946/job/21912428548"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8021109946/job/21912428814"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/8028310828/job/21933354190"
-      }
-    ],
-    "pr": 16635,
-    "pr_title": "[RUNTIME][RPC] Enable RPCObjectRef over multi-hop RPC"
   },
   {
     "sha": "2aeb41a4c8413b433caeefb7cd20ea1254db1d0e",
