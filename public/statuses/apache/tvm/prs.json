@@ -1,16 +1,118 @@
 [
   {
+    "sha": "31d9d8c2aa1ac996fbc5e206daa91eb4b434728e",
+    "headline": "[Fix][Relax] Fix top-p/top-k sampling kernel",
+    "body": "This PR fixes a typo in the samping kernel of top-p/top-k sampling op.\nPrior to this PR, the kernel has out-of-bound global memory access\ndue to a miss when introducing `sample_indices` in #16675.\n\nThe correctness pass did not reveal this issue by directly running\nthe test or running through pytest. But actually, if we use\ncompute-sanitizer from NVIDIA, it will report the illegal memory\naccess:\n```\n> compute-sanitizer --tool memcheck --print-limit=5 --launch-timeout 3600 python tests/python/relax/test_frontend_nn_op.py\n========= COMPUTE-SANITIZER\n========= Invalid __global__ read of size 8 bytes\n=========     at 0x4e90 in get_index_from_sorted_kernel\n=========     by thread (7,0,0) in block (0,0,0)\n=========     Address 0x7fe35ac00238 is out of bounds\n=========     and is 9 bytes after the nearest allocation at 0x7fe35ac00200 of size 48 bytes\n=========     Saved host backtrace up to driver entry point at kernel launch time\n...\n```",
+    "author": "MasterJH5574",
+    "date": "2024-03-12T03:31:31Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16703/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8243212704/job/22543412213"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8243212726/job/22543412247"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8243212726/job/22543412340"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8243212726/job/22543412440"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8243212726/job/22543412506"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/8243251919/job/22543518532"
+      }
+    ],
+    "pr": 16703,
+    "pr_title": "[Fix][Relax] Fix top-p/top-k sampling kernel",
+    "updated_at": 1710216425.995517
+  },
+  {
     "sha": "7e1825d0bbfc2f585b1fc420de5a7ba3bbd469b6",
     "headline": "Lint",
     "body": "",
     "author": "CharlieFRuan",
     "date": "2024-03-12T01:46:49Z",
     "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16650/10/display/redirect"
-      },
       {
         "name": "cortexm/pr-head",
         "status": "pending",
@@ -47,11 +149,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16650/10/display/redirect"
       },
       {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16650/10/display/redirect"
-      },
-      {
         "name": "unity/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16650/10/display/redirect"
@@ -62,6 +159,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16650/10/display/redirect"
       },
       {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16650/10/display/redirect"
+      },
+      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16650/10/display/redirect"
@@ -70,6 +172,11 @@
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16650/10/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16650/10/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -83,8 +190,7 @@
       }
     ],
     "pr": 16650,
-    "pr_title": "[Web] Seperate parallel shard download and iterative shard loading",
-    "updated_at": 1710212809.124937
+    "pr_title": "[Web] Seperate parallel shard download and iterative shard loading"
   },
   {
     "sha": "adfd5ee69241d13fd62fe1e190801b52fed7a865",
@@ -94,9 +200,19 @@
     "date": "2024-03-12T00:12:47Z",
     "jobs": [
       {
+        "name": "arm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16650/9/display/redirect"
+      },
+      {
         "name": "lint/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16650/9/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16650/9/display/redirect"
       },
       {
         "name": "unity/pr-head",
@@ -104,9 +220,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16650/9/display/redirect"
       },
       {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16650/9/display/redirect"
+        "name": "wasm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16650/9/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
@@ -144,16 +260,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16650/9/display/redirect"
       },
       {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16650/9/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16650/9/display/redirect"
-      },
-      {
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16650/9/display/redirect"
@@ -180,11 +286,6 @@
     "date": "2024-03-11T22:32:19Z",
     "jobs": [
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16702/2/display/redirect"
-      },
-      {
         "name": "gpu/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16702/1/display/redirect"
@@ -193,6 +294,11 @@
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16702/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16702/2/display/redirect"
       },
       {
         "name": "cpu/pr-head",
@@ -6706,6 +6812,11 @@
         "name": "CI / Linux-Static-Runtime",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8206832884/job/22446801931"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/8243332759/job/22543735032"
       }
     ],
     "pr": 16655,
@@ -7625,112 +7736,6 @@
     "jobs": [],
     "pr": 16650,
     "pr_title": "[Web] Seperate parallel shard download and iterative shard loading"
-  },
-  {
-    "sha": "69a2b603a122fc01a8e354a205b8e6383d60dc2c",
-    "headline": "[BugFix][FFI] Add a missing default for datatype lanes",
-    "body": "A default value for lanes was unintentionally removed in #16612, this\nPR fixes this which in turn fixes the test failure seen in\n`test_tensor_dtype_lanes` in CI.\n\nChange-Id: If1b06cb836d62e85620971fd1ad0498c9fdc66b9",
-    "author": "lhutton1",
-    "date": "2024-02-27T13:25:37Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16649/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16649/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8065655052/job/22031919079"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8065655115/job/22031919421"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8065655115/job/22031919684"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8065655115/job/22031919959"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8065655115/job/22031920286"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/8081319178/job/22079600296"
-      }
-    ],
-    "pr": 16649,
-    "pr_title": "[BugFix][FFI] Add a missing default for datatype lanes"
   },
   {
     "sha": "69c200b98864d09490cd747d32e38c687b36fc7b",
