@@ -1,16 +1,151 @@
 [
   {
+    "sha": "ef8c42813c8edec0b1aae50b02500054b461571c",
+    "headline": "[Fix][Relax] Fix top-p/top-k sampling kernel (#16703)",
+    "body": "This PR fixes a typo in the samping kernel of top-p/top-k sampling op.\r\nPrior to this PR, the kernel has out-of-bound global memory access\r\ndue to a miss when introducing `sample_indices` in #16675.\r\n\r\nThe correctness pass did not reveal this issue by directly running\r\nthe test or running through pytest. But actually, if we use\r\ncompute-sanitizer from NVIDIA, it will report the illegal memory\r\naccess:\r\n```\r\n> compute-sanitizer --tool memcheck --print-limit=5 --launch-timeout 3600 python tests/python/relax/test_frontend_nn_op.py\r\n========= COMPUTE-SANITIZER\r\n========= Invalid __global__ read of size 8 bytes\r\n=========     at 0x4e90 in get_index_from_sorted_kernel\r\n=========     by thread (7,0,0) in block (0,0,0)\r\n=========     Address 0x7fe35ac00238 is out of bounds\r\n=========     and is 9 bytes after the nearest allocation at 0x7fe35ac00200 of size 48 bytes\r\n=========     Saved host backtrace up to driver entry point at kernel launch time\r\n...\r\n```",
+    "author": "MasterJH5574",
+    "date": "2024-03-12T13:10:19Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1710/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1542/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1459/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1237/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1882/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1483/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1427/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1401/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1402/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/169/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1400/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1405/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1392/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8249404696/job/22561715094"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8249404696/job/22561715339"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8249404696/job/22561715554"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8249404696/job/22561715776"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8249544297/job/22562144052"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/8249561949/job/22562198267"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8249654651/job/22562501170"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8249710976/job/22562693602"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "neutral",
+        "url": "https://github.com/apache/tvm/actions/runs/8249838496/job/22563108654"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8249917578/job/22563391238"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8249958417/job/22563532879"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8250011169/job/22563712074"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8250141196/job/22564154545"
+      }
+    ],
+    "updated_at": 1710252488.572021
+  },
+  {
     "sha": "1278c3544d15d6b743073ba1058e5efbfc2894f4",
     "headline": "[Disco] Propagate structlog configuration to disco workers (#16618)",
     "body": "Prior to this commit, while `structlog.configure(...)` would only\r\nimpact log statements generated in the main process.  Any workers\r\nstarted with `disco.session.ProcessSession` do not inherit the\r\n`structlog` configuration.  While `disco.session.ThreadedSession` would\r\ninherit the `structlog` configuration, it would also inherit\r\nprocess-specific CUDA variables.\r\n\r\nThis commit updates `disco.session.ProcessSession` to explicitly\r\npropagate any `structlog` configuration to child processes.  This\r\nimplementation intentionally avoids introducing a new dependency for\r\nTVM.  If the `structlog` package is not available, the config\r\npropagation is skipped.",
     "author": "Lunderberg",
     "date": "2024-03-12T10:09:20Z",
     "jobs": [
-      {
-        "name": "cpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1458/display/redirect"
-      },
       {
         "name": "cross-isa-minimal/branch",
         "status": "pending",
@@ -35,6 +170,11 @@
         "name": "cortexm/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1541/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1458/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -191,8 +331,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8249363402/job/22561584835"
       }
-    ],
-    "updated_at": 1710248980.401258
+    ]
   },
   {
     "sha": "ca12cb6d47c72f5d878f7215c905c17c2b8375e8",
@@ -21398,100 +21537,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/7903389856/job/21571176462"
-      }
-    ]
-  },
-  {
-    "sha": "059f629ec24a6b36e93794cd41a97b9bed3bdcf5",
-    "headline": "[BYOC] Skip processed functions in FuseOpsByPattern and RunCodegen (#\u2026",
-    "body": "\u202616567)",
-    "author": "vinx13",
-    "date": "2024-02-14T13:39:45Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1611/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1419/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1349/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1139/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1308/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1543/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1374/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1325/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1297/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1303/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1306/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/72/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7902095425/job/21566967634"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7902095425/job/21566967845"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7902095425/job/21566968102"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7902095425/job/21566968419"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/7902095635/job/21566968435"
       }
     ]
   }
