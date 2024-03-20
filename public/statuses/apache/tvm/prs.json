@@ -1,5 +1,208 @@
 [
   {
+    "sha": "78e206c5e6b2fa2ebc462b554933be8096450fde",
+    "headline": "[SLM] Allow modules to define pre-processing of weights",
+    "body": "Prior to this commit, the weights used by `nn.Module` instances were\nrequired to be `nn.Parameter` instances.  This commit allows the\nweights to instead be `nn.Tensor` instances, defined in terms of other\n`nn.Parameter` weights.  This allows a model to define both the\noriginal weights that would be present in an external\ncheckpoint (e.g. a Pytorch or Safetensors file), and the\npre-processing that should be performed on those weights.",
+    "author": "Lunderberg",
+    "date": "2024-03-20T14:14:54Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16757/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8360657054/job/22886800546"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8360657060/job/22886800534"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8360657060/job/22886801087"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8360657060/job/22886801551"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8360657060/job/22886801992"
+      }
+    ],
+    "pr": 16757,
+    "pr_title": "[SLM] Allow modules to define pre-processing of weights",
+    "updated_at": 1710946934.595721
+  },
+  {
+    "sha": "c381f605f56c9275cf022ba0474330d5c1198e46",
+    "headline": "[IR][Relax] Improve highlighting in assert_structural_equal",
+    "body": "Prior to this commit, `tvm.ir.assert_structural_equal` would highlight\nan entire `relax::BindingBlock` if the number of elements in the\nbinding block differs.  This can result in the entire Relax function\nbeing highlighted, making it difficult to identify the location of the\nmismatch.\n\nThis commit makes the following changes, to improve the error messages\nthat occur when `tvm.ir.assert_structural_equal` raises an exception.\n\n- In `\"node.StructuralEqual\"`, set `defer_fails = true` when\n  `assert_mode` is true.  This highlights the first mismatch of an\n  `Array<relax::Binding>`, rather than the entire array, in cases\n  where the LHS and RHS have different sizes.\n\n- In the `SHashReduce` for `VarBinding` and `MatchCast`, visit the\n  value first, and then the variable to which it is bound.  This\n  highlights the mismatched expression, rather than mismatches in the\n  resulting struct info.\n\n- In `SEqualHandlerDefault::Impl::SEqualReduce`, defer the failure if\n  enabled.  This highlights the first mismatch, which may also have been\n  deferred, rather than an early return a later mismatch occurs\n  involving `NullOpt`.",
+    "author": "Lunderberg",
+    "date": "2024-03-20T12:21:54Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16756/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8360558573/job/22886480004"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8360582592/job/22886554697"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8360582592/job/22886554973"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8360582592/job/22886555244"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8360582592/job/22886555529"
+      }
+    ],
+    "pr": 16756,
+    "pr_title": "[IR][Relax] Improve highlighting in assert_structural_equal"
+  },
+  {
     "sha": "02c6cad99e0a84cb9a5d44bdbd2139037f80d25e",
     "headline": "[SME][Docker] Add Fixed Virtual Platform (FVP) and toolchain install",
     "body": "This commit adds the installation of the AArch64 Architecture Envelope\nModel (AEM) Fixed Virtual Platform (FVP) which can be used to test SME\ncode generation functional correctness.\n\nIt also adds the installation of a baremetal toolchain which can be used\nto for compiling functions to run on the FVP.\n\nChange-Id: If13d0cb07855ecf8c9e1c8cd0496c54678335d30",
@@ -10,16 +213,6 @@
         "name": "cortexm/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/p0-install-testing-infra/2/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/p0-install-testing-infra/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16755/1/display/redirect"
       },
       {
         "name": "cross-isa-minimal/branch",
@@ -65,6 +258,16 @@
         "name": "cortexm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16755/1/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/p0-install-testing-infra/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16755/1/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -163,8 +366,7 @@
       }
     ],
     "pr": 16755,
-    "pr_title": "[SME][Docker] Add Fixed Virtual Platform (FVP) and toolchain install",
-    "updated_at": 1710943281.759883
+    "pr_title": "[SME][Docker] Add Fixed Virtual Platform (FVP) and toolchain install"
   },
   {
     "sha": "570aae9e81c69bb2a6f1a4f92c326a0ab1e5e8aa",
@@ -490,6 +692,16 @@
     "pr_title": "[Cutlass] Add group gemm kernels"
   },
   {
+    "sha": "b77ac489bbb36b83afe155eafbb14c2dc3d2b760",
+    "headline": "[SLM] Use `CopyWithNewVars` to de-duplicate symbolic variables",
+    "body": "Prior to this commit, a `nn.spec.Tensor`'s shape had special handling\nto ensure that symbolic variable were not reused across multiple\nfunctions.  This commit updates this to instead be performed using the\n`CopyWithNewVars` function.",
+    "author": "Lunderberg",
+    "date": "2024-03-19T16:48:44Z",
+    "jobs": [],
+    "pr": 16757,
+    "pr_title": "[SLM] Allow modules to define pre-processing of weights"
+  },
+  {
     "sha": "b303e0030d8458d643a825ad243df016c7c729ba",
     "headline": "Preserve purity annotations in TVMScript",
     "body": "",
@@ -789,8 +1001,109 @@
         "url": "https://github.com/apache/tvm/actions/runs/8347072113/job/22845871863"
       }
     ],
-    "pr": 16737,
-    "pr_title": "[SLM] Allow TensorStructInfo to specify parameter in export"
+    "pr": 16757,
+    "pr_title": "[SLM] Allow modules to define pre-processing of weights"
+  },
+  {
+    "sha": "260c8f1fc8509bad5edae9667beb7d16343dc4c2",
+    "headline": "Resolve breakage in unit tests",
+    "body": "",
+    "author": "Lunderberg",
+    "date": "2024-03-19T13:52:02Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16737/4/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16737/4/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16737/4/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16737/5/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8347071986/job/22845870450"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8347072113/job/22845871016"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8347072113/job/22845871297"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8347072113/job/22845871577"
+      },
+      {
+        "name": "CI / Android",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8347072113/job/22845871863"
+      }
+    ],
+    "pr": 16757,
+    "pr_title": "[SLM] Allow modules to define pre-processing of weights"
   },
   {
     "sha": "2bee171734cc5a53cc049a16ed235fbbd7c7b519",
@@ -1773,101 +2086,101 @@
     "pr_title": "[BugFix][Ansor] Fixing Ansor Gradient Bug"
   },
   {
-    "sha": "855ca6819cc4f6bfe8380b1ee6aae571ca0a99b6",
+    "sha": "a98c388ad994d84d30ae54fbb943cbd168ed0e89",
     "headline": "[Runtime] CUDA IPC Memory support and custom allreduce kernels",
     "body": "This PR introduces the CUDA IPC memory support in TVM runtime.\nIPC memory allows multiple distribtued workers accessing the GPU\nmemory of each other directly. This functionality is helpful for\nimplementing customzied communication primitives across distributed\nworkers.\n\nIn this PR, we bring the customized all-reduce implementation\nfrom TensorRT-LLM into 3rdparty. This all-reduce implementation\nmakes use of the CUDA IPC memory. We expose the all-reduce function\nin global function under namespace `tvm::runtime::disco::cuda_ipc`.\n\nOne unit test for the customized all-reduce kernel over two workers\nis added.\n\n---\n\nCo-authored-by: Hongyi Jin <hongyij@andrew.cmu.edu>",
     "author": "MasterJH5574",
     "date": "2024-03-19T00:42:41Z",
     "jobs": [
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16750/7/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16750/5/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16750/6/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16750/5/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16750/6/display/redirect"
       },
       {
         "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16750/5/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16750/6/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16750/6/display/redirect"
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16750/7/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16750/8/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16750/6/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16750/6/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16750/6/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16750/6/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16750/7/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16750/6/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16750/6/display/redirect"
       },
       {
         "name": "docker/pr-head",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16750/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16750/5/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16750/5/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16750/5/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16750/5/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16750/6/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16750/5/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16750/5/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16750/6/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
         "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8354324202/job/22867445711"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8354324355/job/22867453167"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8354324355/job/22867453313"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8354324355/job/22867453413"
+        "url": "https://github.com/apache/tvm/actions/runs/8361034209/job/22888116511"
       },
       {
         "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8354324355/job/22867453540"
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8361035047/job/22888119294"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8361035047/job/22888119648"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8361035047/job/22888120009"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8361035047/job/22888120334"
       }
     ],
     "pr": 16750,
@@ -2339,8 +2652,18 @@
     "author": "Lunderberg",
     "date": "2024-03-18T21:28:32Z",
     "jobs": [],
-    "pr": 16737,
-    "pr_title": "[SLM] Allow TensorStructInfo to specify parameter in export"
+    "pr": 16757,
+    "pr_title": "[SLM] Allow modules to define pre-processing of weights"
+  },
+  {
+    "sha": "e99f9e3d8ce525f235d6852469504ecac916074e",
+    "headline": "[SLM] Allow TensorStructInfo to specify parameter in export",
+    "body": "Prior to this commit, the parameter specification for SLM tensor\nneeded to be passed as a `nn.spec.Tensor`.  As this object is only\nused to construct a `relax.TensorStructInfo`, and has the same fields\nas a `relax.TensorStructInfo`, this commit allows the parameter\nspecification to be passed as a `relax.TensorStructInfo`.",
+    "author": "Lunderberg",
+    "date": "2024-03-18T21:28:32Z",
+    "jobs": [],
+    "pr": 16757,
+    "pr_title": "[SLM] Allow modules to define pre-processing of weights"
   },
   {
     "sha": "739c29292ddfe8aef901f7bc2023e1de01b32144",
@@ -6716,112 +7039,6 @@
     "pr_title": "[Dlight] Add fallback for low batch gemv with outer reduction"
   },
   {
-    "sha": "bdd33e3969949393f155fe2d7f740b0dc186cbb1",
-    "headline": "[COMMUNITY] Add new key for release signing",
-    "body": "This PR adds Ruihang's GPG key for release signing.",
-    "author": "MasterJH5574",
-    "date": "2024-03-10T16:51:05Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16695/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8223444887/job/22486150018"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8223444888/job/22486150034"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8223444888/job/22486150116"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8223444888/job/22486150182"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8223444888/job/22486150254"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/8224470289/job/22488342327"
-      }
-    ],
-    "pr": 16695,
-    "pr_title": "[COMMUNITY] Add new key for release signing"
-  },
-  {
     "sha": "ca21a0b3ee140262938e382c6dffde82ab1c907e",
     "headline": "[Cutlass] Support device alpha_ptr for fp8 group gemm",
     "body": "",
@@ -6830,112 +7047,6 @@
     "jobs": [],
     "pr": 16751,
     "pr_title": "[Cutlass] Add group gemm kernels"
-  },
-  {
-    "sha": "7556cd09db08a4daa602a787e84539386e04bd47",
-    "headline": "[SVE] Add codegen support for scalable buffer accesses",
-    "body": "This commit adds support for generating code for scalable loads and\nstores. It also adds support for the creation of scalable broadcast\noperations.\n\nCo-authored-by: Elen Kalda <elen.kalda@arm.com>\nCo-authored-by: Neil Hickey <neil.hickey@arm.com>\nChange-Id: Id4600a2d4537f5260f4a7dc7ed430df6b8e53eb3",
-    "author": "lhutton1",
-    "date": "2024-03-08T18:33:19Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16696/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8231184104/job/22505983832"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8231184135/job/22505983602"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8231184135/job/22505983856"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8231184135/job/22505984165"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8231184135/job/22505984429"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/8268751585/job/22622393081"
-      }
-    ],
-    "pr": 16696,
-    "pr_title": "[SVE] Add codegen support for scalable buffer accesses"
   },
   {
     "sha": "785ad8cee68e17efd851a9f300c539fbc9969fd9",
