@@ -1,5 +1,107 @@
 [
   {
+    "sha": "570aae9e81c69bb2a6f1a4f92c326a0ab1e5e8aa",
+    "headline": "[Fix] Lazy import of \"psutil\" in disco process pool",
+    "body": "Prior to this PR, module \"psutil\" is imported at the top level\nof the disco process pool. The pool will try to kill all the processes\nat the time of destruction (when `__del__` is implicitly invoked).\nThe `__del__` function eventually calls into a function that\nuses `pstuil`. But it is possible that the top-level `psutil`\nhas already been released by Python, which leads to a KeyError\nas follows:\n\n```\nException ignored in: <function DiscoPopenWorker.__del__ at 0x7f2c922bfe20>\nTraceback (most recent call last):\n  File \"/home/ruihangl/Workspace/tvm/python/tvm/runtime/disco/process_pool.py\", line 67, in __del__\n  File \"/home/ruihangl/Workspace/tvm/python/tvm/runtime/disco/process_pool.py\", line 81, in kill\n  File \"/home/ruihangl/Workspace/tvm/python/tvm/runtime/disco/process_pool.py\", line 162, in _kill_child_processes\n  File \"/home/ruihangl/Workspace/miniconda3/envs/python311/lib/python3.11/site-packages/psutil/__init__.py\", line 323, in __init__\n  File \"/home/ruihangl/Workspace/miniconda3/envs/python311/lib/python3.11/site-packages/psutil/__init__.py\", line 353, in _init\n  File \"/home/ruihangl/Workspace/miniconda3/envs/python311/lib/python3.11/site-packages/psutil/_pslinux.py\", line 1738, in __init__\n  File \"/home/ruihangl/Workspace/miniconda3/envs/python311/lib/python3.11/site-packages/psutil/_common.py\", line 864, in get_procfs_path\nKeyError: 'psutil'\n```\n\nThis PR fixes the issue by lazily importing `psutil` when needed.",
+    "author": "MasterJH5574",
+    "date": "2024-03-20T03:38:15Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16752/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8353525498/job/22865381877"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8353525557/job/22865381952"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8353525557/job/22865382092"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8353525557/job/22865382209"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8353525557/job/22865382313"
+      }
+    ],
+    "pr": 16752,
+    "pr_title": "[Fix] Lazy import of \"psutil\" in disco process pool",
+    "updated_at": 1710907632.341331
+  },
+  {
     "sha": "8c6c6ea095a1e567cb096cf5cd10f262b9d5d15a",
     "headline": "fix cmake",
     "body": "",
@@ -47,19 +149,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16751/2/display/redirect"
       },
       {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16751/2/display/redirect"
-      },
-      {
         "name": "unity/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16751/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16751/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -72,13 +164,23 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16751/2/display/redirect"
       },
       {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16751/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16751/2/display/redirect"
+      },
+      {
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8352786253/job/22863413395"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8352786329/job/22863420080"
       },
       {
@@ -88,18 +190,17 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8352786329/job/22863420322"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8352786329/job/22863420417"
       }
     ],
     "pr": 16751,
-    "pr_title": "[Cutlass] Add group gemm kernels",
-    "updated_at": 1710903920.796458
+    "pr_title": "[Cutlass] Add group gemm kernels"
   },
   {
     "sha": "1c22b49b1a3f6c860bfa98e94ebbab4aae35dde9",
@@ -124,9 +225,19 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16751/1/display/redirect"
       },
       {
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16751/1/display/redirect"
+      },
+      {
         "name": "unity/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16751/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16751/1/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
@@ -152,16 +263,6 @@
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16751/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16751/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16751/1/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -427,11 +528,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16737/4/display/redirect"
       },
       {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16737/5/display/redirect"
-      },
-      {
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16737/3/display/redirect"
@@ -455,6 +551,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16737/3/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16737/5/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -1230,11 +1331,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16742/4/display/redirect"
       },
       {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16742/4/display/redirect"
-      },
-      {
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16742/4/display/redirect"
@@ -1258,6 +1354,11 @@
         "name": "docker/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16742/4/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16742/4/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -1513,11 +1614,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16750/3/display/redirect"
       },
       {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16750/3/display/redirect"
-      },
-      {
         "name": "cross-isa-minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16750/4/display/redirect"
@@ -1536,6 +1632,11 @@
         "name": "cortexm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16750/3/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16750/3/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -6644,112 +6745,6 @@
     ],
     "pr": 16694,
     "pr_title": "[WEB] Initial support for asyncify"
-  },
-  {
-    "sha": "16a83c8bc7d47efcea2c8876d427b54265d7a8ac",
-    "headline": "[Contrib] Support NDArray cache taking generator",
-    "body": "This PR enhances the `dump_ndarray_cache` function to take\ngenerator as input. Previously it can only take a dictionary.\n\nSometimes, it is possible that the total ndarray size cannot\nfit the main CPU memory, in which case we may turn to using\ngenerators so we can free some NDArray memory on the fly.\nAnd this PR supports the NDArray cache dumping with generators.",
-    "author": "MasterJH5574",
-    "date": "2024-03-09T15:51:29Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16693/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8217377022/job/22473012898"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8217377045/job/22473015704"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8217377045/job/22473015775"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8217377045/job/22473015837"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8217377045/job/22473015931"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/8217852153/job/22474004957"
-      }
-    ],
-    "pr": 16693,
-    "pr_title": "[Contrib] Support NDArray cache taking generator"
   },
   {
     "sha": "ca21a0b3ee140262938e382c6dffde82ab1c907e",
