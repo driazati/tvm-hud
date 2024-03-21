@@ -1,5 +1,110 @@
 [
   {
+    "sha": "858486fe8ef8b20f0b02e08ac0e2d1a3afb9fddc",
+    "headline": "[Relax][Pass] Lowering passes for GPU IPC memory and allreduce (#16759)",
+    "body": "This PR introduces the lowering passes for GPU IPC memory and\nall-reduce. It contains the following changes:\n\n1. a pass `IPCAllreduceRewrite` which rewrites `\"runtime.disco.allreduce\"`\nto `\"runtime.disco.cuda_ipc.custom_allreduce\"`, and rewrites\nthe storage scopes of the all-reduce inputs's from \"global\" to\n\"ipc_memory\" accordingly.\n\n2. memory planning enhancement, making the planning be aware of\nstorage scopes. So each storage scope will be planned independently.\n\n3. a pass `LowerGPUIPCAllocStorage` that rewrites the storage allocation\nof IPC memory from builtin ops to calls to function `\"runtime.disco.cuda_ipc.alloc_storage\"`.\n\n4. supports the op `relax.builtin.alloc_tensor` with storage scope.\nThe default storage scope is `\"global\"`.\n\nWe write the new passes in Python for experiment and fast development.\nThese are good demos showing we can have efficient development\nwith the architecture enabled by TVM.",
+    "author": "MasterJH5574",
+    "date": "2024-03-21T11:41:29Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1752/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1598/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1509/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1281/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1941/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1534/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1473/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1447/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1445/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/210/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1442/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1446/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1432/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8374328576/job/22929309326"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8374328576/job/22929309515"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8374328576/job/22929309703"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8374328576/job/22929309889"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8374365932/job/22929448681"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8374553623/job/22930065483"
+      }
+    ],
+    "updated_at": 1711023295.287395
+  },
+  {
     "sha": "62beb0251e1ccd9915a7138156dc684ccbdcbf8e",
     "headline": "[microNPU][ETHOSU] Add fixed point for tanh (#16266)",
     "body": "Add support for calculation tanh with 16 bits fixed point (legalization of non-quantized tanh operation with quantization by fixed point multiplication).",
@@ -47,19 +152,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1446/display/redirect"
       },
       {
-        "name": "riscv/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1444/display/redirect"
-      },
-      {
         "name": "unity/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/209/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1441/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -72,13 +167,23 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1431/display/redirect"
       },
       {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1444/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1441/display/redirect"
+      },
+      {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8373120255/job/22925541140"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8373120255/job/22925541461"
       },
       {
@@ -88,7 +193,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8373120255/job/22925542296"
       },
       {
@@ -120,9 +225,18 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8373838008/job/22927774361"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8374046643/job/22928413648"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8374207962/job/22928931489"
       }
-    ],
-    "updated_at": 1711019279.815245
+    ]
   },
   {
     "sha": "e257fb8a41159a2558dc1fccb5e3dd3c45001820",
@@ -133,7 +247,7 @@
     "jobs": [
       {
         "name": "arm/branch",
-        "status": "pending",
+        "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/nightly/418/display/redirect"
       },
       {
@@ -21553,35 +21667,6 @@
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8020368904/job/21910080783"
-      }
-    ]
-  },
-  {
-    "sha": "bde28ae95adbdeb0006a498a527ca349be8a272a",
-    "headline": "[TIR] Expand debug symbol output for CodeGenLLVM (#16544)",
-    "body": "* [TIR] Expand debug symbol output for CodeGenLLVM\r\n\r\nPrior to this commit, the `CodeGenLLVM` would include DWARF symbols\r\nspecifying the function signature of each TIR function.  This commit\r\nexpands the information exposed in the debug symbols.\r\n\r\n* Name functions based on the name of the corresponding TIR function.\r\n  This is taken either from the `attr::kGlobalSymbol` if present,\r\n  or the PrimFunc's `GlobalVar` otherwise.\r\n\r\n* Name function parameter based on their TIR variable name.\r\n\r\n* Annotate the name, the type signature, and parameter names for the\r\n  private function produced by the `tir::attr::compute_scope`\r\n  attribute.\r\n\r\n* Name local variables based on the name and type of the corresponding\r\n  TIR variable.\r\n\r\n* lint fixes\r\n\r\n* lint fixes\r\n\r\n* Remove reference to llvm::dwarf::DWARF_VERSION\r\n\r\nNot available on CI version of llvm\r\n\r\n* Update number of debug locations\r\n\r\n* Fix segfault for pointers to custom data types",
-    "author": "Lunderberg",
-    "date": "2024-02-23T14:05:41Z",
-    "jobs": [
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8020366676/job/21910073415"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8020366676/job/21910073714"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8020366676/job/21910073959"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8020366676/job/21910074202"
       }
     ]
   }
