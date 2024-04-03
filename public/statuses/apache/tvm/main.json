@@ -1,5 +1,115 @@
 [
   {
+    "sha": "61249b41ce0f40ba50c582901c5932907708da89",
+    "headline": "[Relax][Transform] Provide callback versions of LazyTransformParams (\u2026",
+    "body": "\u2026#16798)\n\n* [TIR][Analysis] Implemented tir.analysis.is_pure_function\r\n\r\nThis commit introduces two related utilities,\r\n`tir.analysis.is_pure_function` and `tir.analysis.assert_pure_function`.\r\nIn contrast to the existing `tvm::tir::SideEffect`, which checks for\r\nside effects on a for a `PrimExpr`, `is_pure_function` checks for side\r\neffects for the function as a whole.\r\n\r\n* [Transform] Implement relax.transform.ComputePrimValue\r\n\r\nPrior to this commit, while expressions of type `DataType::Int(64)`\r\ncould be computed in the `relax.transform.VMShapeLower`, expressions\r\nof any other type could not.  This commit introduces\r\n`relax.transform.ComputePrimValue`, which produces `PrimFunc`\r\nsubroutines to compute `PrimExpr` values of any dtype.\r\n\r\nThis functionality will allow boolean values to be computed based on\r\nthe symbolic values known at runtime.\r\n\r\n* [Relax] Allow R.Prim('bool') in relax::If and assert_op\r\n\r\nPrior to this commit, the condition used for `relax::If` node and the\r\n`\"relax.assert_op\"` operator was required to be a scalar tensor.  This\r\nmade it difficult to alter behavior based on a runtime shape\r\nparameter.  For example, delegating to a vectorized implementation\r\nbased on a whether a tensor shape is divisible by the vector size.\r\n\r\nThis commit adds support for expressions of type `R.Prim('bool')` as\r\nthe conditional for `relax::If` and `\"relax.assert_op\"`, to allow\r\nthese use cases.\r\n\r\n* [Relax][Transform] Provide callback versions of LazyTransformParams\r\n\r\nPrior to this commit, the `LazyTransformParams` function could be used\r\nto load model parameters on demand.  However, the function used to\r\nload or set parameters needed to be registered within the global\r\nregistry of `PackedFunc`s.  This PR provides `LazyGetInput` and\r\n`LazySetOutput` transforms, which perform the lazy-loading through a\r\n`R.Callable` callback argument, rather than through a\r\nglobally-registered `PackedFunc`.\r\n\r\n* Reverse the order of parameters in fget_param\r\n\r\nIf `fget_param` accepts the parameter index first, and the parameter\r\nname second, then an implementation with signauture and default values\r\nof `def fget_param(index: int, name: Optional[str]=None)` could be\r\nused as either the callback of `LazyGetInput`, or as the\r\nglobally-registered `\"get_item\"` for the existing\r\n`LazyTransformParams`, which should make it easier to transition\r\nbetween the two.\r\n\r\n* lint fix\r\n\r\n* Updates based on review comments",
+    "author": "Lunderberg",
+    "date": "2024-04-03T16:25:59Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1834/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1697/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1597/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1358/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2035/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1624/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1552/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1522/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1522/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/288/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1517/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1518/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1503/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8542181299/job/23403258451"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8542181299/job/23403258698"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8542181299/job/23403258987"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8542181299/job/23403259196"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8542277488/job/23403562409"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8542446305/job/23404087328"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8542632512/job/23404696964"
+      }
+    ],
+    "updated_at": 1712164060.629488
+  },
+  {
     "sha": "545e0977e327aad3f60a110961bdef733d08dbb1",
     "headline": "[Relax] Allow DeadCodeElimination within ApplyPassToFunction (#16801)",
     "body": "The `tvm.ir.transform.ApplyPassToFunction` allows a transform to be\r\napplied selectively to some portions of a `IRModule`, without applying\r\nto the entire `IRModule`.  For example, to apply an optimization\r\npass (e.g. `relax.transform.ExpandMatmulOfSum`) or an\r\ninterface-altering pass (e.g. `relax.transform.BundleModelParams`) to\r\nspecific functions.  It does so by generating an intermediate\r\n`IRModule` containing only the functions specified, applying the\r\ntransform to that intermediate, then merging the results.\r\n\r\nWhen using `ApplyPassToFunction` to apply `DeadCodeElimination`, or a\r\npipeline containing `DeadCodeElimination`, this intermediate\r\n`IRModule` may contain calls to `GlobalVar` instances that are not\r\nwithin the intermediate `IRModule`.  Prior to this commit, this\r\nresulted in an error being thrown when collecting the call graph.\r\nThis commit updates `DeadCodeElimination` to instead handle incomplete\r\ncall-graph collection.",
@@ -73,12 +183,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8541400170/job/23400626099"
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8541400170/job/23400626418"
       },
       {
@@ -88,7 +198,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8541400170/job/23400626982"
       },
       {
@@ -115,9 +225,23 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8541844036/job/23402141579"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8542122222/job/23403054691"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8542157081/job/23403169634"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8542180810/job/23403256293"
       }
-    ],
-    "updated_at": 1712160647.481261
+    ]
   },
   {
     "sha": "35c614303a5914924b41a0fe26d3b6ce1c19bb79",
@@ -177,11 +301,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/286/display/redirect"
       },
       {
-        "name": "wasm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1515/display/redirect"
-      },
-      {
         "name": "docker/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1516/display/redirect"
@@ -190,6 +309,11 @@
         "name": "lint/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1501/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1515/display/redirect"
       },
       {
         "name": "CI / Linux-Static-Runtime",
@@ -203,12 +327,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8541167217/job/23399874603"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8541167217/job/23399874936"
       },
       {
@@ -226,19 +350,9 @@
     "date": "2024-04-03T13:36:40Z",
     "jobs": [
       {
-        "name": "arm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1831/display/redirect"
-      },
-      {
         "name": "cortexm/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1693/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1594/display/redirect"
       },
       {
         "name": "cross-isa-minimal/branch",
@@ -256,19 +370,14 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1621/display/redirect"
       },
       {
-        "name": "i386/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1549/display/redirect"
+        "name": "arm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1831/display/redirect"
       },
       {
-        "name": "minimal/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1519/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/285/display/redirect"
+        "name": "cpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1594/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -276,14 +385,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1515/display/redirect"
       },
       {
+        "name": "i386/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1549/display/redirect"
+      },
+      {
         "name": "lint/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1500/display/redirect"
       },
       {
+        "name": "minimal/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1519/display/redirect"
+      },
+      {
         "name": "riscv/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1519/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/285/display/redirect"
       },
       {
         "name": "wasm/branch",
@@ -375,29 +499,9 @@
     "date": "2024-04-03T13:31:46Z",
     "jobs": [
       {
-        "name": "arm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1830/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1692/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1593/display/redirect"
-      },
-      {
         "name": "cross-isa-minimal/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1354/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2031/display/redirect"
       },
       {
         "name": "hexagon/branch",
@@ -405,19 +509,19 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1620/display/redirect"
       },
       {
-        "name": "i386/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1548/display/redirect"
+        "name": "arm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1830/display/redirect"
       },
       {
-        "name": "minimal/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1518/display/redirect"
+        "name": "cortexm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1692/display/redirect"
       },
       {
-        "name": "unity/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/284/display/redirect"
+        "name": "cpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1593/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -425,14 +529,34 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1514/display/redirect"
       },
       {
+        "name": "gpu/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2031/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1548/display/redirect"
+      },
+      {
         "name": "lint/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1499/display/redirect"
       },
       {
+        "name": "minimal/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1518/display/redirect"
+      },
+      {
         "name": "riscv/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1518/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/284/display/redirect"
       },
       {
         "name": "wasm/branch",
@@ -20168,120 +20292,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8281182140/job/22659124250"
-      }
-    ]
-  },
-  {
-    "sha": "695f958bc9ef40e625a84ad9355df2e75e6498a0",
-    "headline": "[TIR] Improve well-formed check's handling of match buffer (#16655)",
-    "body": "* [TIR] Improve well-formed check's handling of match buffer\r\n\r\n- The `T.match_buffer` at the start of a function may contain repeated\r\n  use of the same data var.  For example, a function that must accept\r\n  two `DLTensor` objects with the same backing allocation.\r\n\r\n- The `\"buffer_bind_scope\"` is an older style of match buffer, and may\r\n  be the point of definition for variables.\r\n\r\n* Improved comment, added context.pop_back()",
-    "author": "Lunderberg",
-    "date": "2024-03-14T10:51:39Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1722/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1561/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1473/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1250/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1418/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1902/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1499/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1441/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1404/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1415/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1414/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/181/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1413/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8279461065/job/22653909570"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8279461065/job/22653909825"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8279461065/job/22653910056"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8279461065/job/22653910348"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8279578795/job/22654288338"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8279795763/job/22654944252"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8279955691/job/22655440030"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8280125261/job/22655969291"
       }
     ]
   }
