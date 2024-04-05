@@ -1,5 +1,130 @@
 [
   {
+    "sha": "cd08356e66951ec6eceb9dbd7ea21289a350eae8",
+    "headline": "[TIR] Fix segfaults from ordering of Let/Assert in MakePackedAPI (#16\u2026",
+    "body": "\u2026543)\n\n* [TIR] Fix segfaults from ordering of Let/Assert in MakePackedAPI\r\n\r\nPrior to this commit, the `MakePackedAPI` pass would output steps in\r\nthe following order:\r\n\r\n1. Check the number of arguments.\r\n2. All `LetStmt` produced by the `ArgBinder`\r\n3. `AssertStmt` for the Type code checks for each argument.\r\n4. Additional `AssertStmt` produced by the `ArgBinder`.\r\n\r\nThis order can cause segfaults if a function was provided incorrect\r\narguments.  For example, an integer argument passed to a function\r\nexpecting a `DLTensor*` would be dereferenced to find the tensor's\r\ndata pointer (step (2)) before checking if it is valid to perform that\r\ndereference (step (3)).  The same would occur when reading the size of\r\na tensor's axes (step (2)) before checking whether the tensor is the\r\ncorrect dimensionality (step (4)).\r\n\r\nThis commit updates the steps to the following order.\r\n\r\n1. Check the number of arguments.\r\n2. Check the type code of each argument.\r\n3. All `LetStmt` and `AssertStmt` produced by the `ArgBinder`, in the\r\n   order in which they are generated.\r\n\r\n* Remove unrelated change\r\n\r\n* skip flaky test",
+    "author": "Lunderberg",
+    "date": "2024-04-04T23:29:45Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1840/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1702/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1603/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1363/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2046/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1631/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1558/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1527/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1528/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/293/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1522/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1523/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1508/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8562632256/job/23466227217"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8562632256/job/23466227338"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8562632256/job/23466227449"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8562632256/job/23466227553"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8562642835/job/23466257495"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8562752560/job/23466572484"
+      },
+      {
+        "name": "Nightly Docker Update / open_update_pr",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/8562843902/job/23466853594"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8562895489/job/23467009123"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8563080753/job/23467527855"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8563101168/job/23467586113"
+      }
+    ],
+    "updated_at": 1712277658.826333
+  },
+  {
     "sha": "53f05d8dedb7ec32f4a820a3f42dd9747df1671f",
     "headline": "[Debug][Disco] Check if a PackedFunc exists before calling it (#16845)",
     "body": "Prior to this commit, attempting to execute the result of\r\n`sess.get_global_func` for a non-existing function name would result\r\nin a segfault.  While the equivalent `tvm.get_global_func` can throw\r\nan exception when looking up the function, Disco returns a `DFunction`\r\nimmediately.  This `DFunction` may resolve to a null pointer, and\r\nshould be checked in the worker process before calling it.",
@@ -345,9 +470,13 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8562384576/job/23465538624"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8562549720/job/23465990850"
       }
-    ],
-    "updated_at": 1712272192.509788
+    ]
   },
   {
     "sha": "dd384906e3c76cef6dd3dd4aa36ddea3e9b56be5",
@@ -20443,95 +20572,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8297397942/job/22708447001"
-      }
-    ]
-  },
-  {
-    "sha": "9ec72494cf71a6a6c6a94d29e33c986cbfaaf5fc",
-    "headline": "[TIR] Implement max/min_value for fp8 data types (#16723)",
-    "body": "",
-    "author": "vinx13",
-    "date": "2024-03-15T08:05:53Z",
-    "jobs": [
-      {
-        "name": "cpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1478/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1505/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1728/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1566/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1256/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1423/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1910/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1446/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1409/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1421/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1418/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/186/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8293090265/job/22695545500"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8293090265/job/22695545710"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8293090265/job/22695545971"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8293090265/job/22695546180"
       }
     ]
   }
