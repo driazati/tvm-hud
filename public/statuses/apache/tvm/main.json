@@ -1,5 +1,150 @@
 [
   {
+    "sha": "c67a05538642d24c75555b02103800d7f6a1ceaf",
+    "headline": "[BugFix][Target] Added null check to fix segfault at ->defined() in c\u2026",
+    "body": "\u2026pu.cc DetectSystemTriple() (#16766)\n\nI ran into a problem running a very simple ONNX compile, i would get a segfault at a FoldConstantExpr() call from TVMC. **This only happens if the compile flag `set(USE_LLVM OFF)` is OFF.**\r\n\r\n```\r\nThread 1 \"python3\" received signal SIGSEGV, Segmentation fault.\r\n0x00007fffc94ac78c in tvm::runtime::ObjectPtr<tvm::runtime::Object>::operator!=(decltype(nullptr)) const (this=0x0, null=<error reading variable: Attempt to dereference a generic pointer.>) at /home/otto/tvm/include/tvm/runtime/object.h:470\r\n470       bool operator!=(std::nullptr_t null) const { return data_ != null; }\r\n```\r\n\r\nI had compiled TVM Using GCC:\r\n```\r\nCOLLECT_GCC=gcc\r\nCOLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper\r\nOFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa\r\nOFFLOAD_TARGET_DEFAULT=1\r\nTarget: x86_64-linux-gnu\r\nConfigured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-11-XeT9lY/gcc-11-11.4.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-11-XeT9lY/gcc-11-11.4.0/debian/tmp-gcn/usr --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2\r\nThread model: posix\r\nSupported LTO compression algorithms: zlib zstd\r\ngcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) \r\n```\r\n\r\nThis was caused by a call to defined() from DetectSystemTriple() in cpu.cc that was added in #16513. When the previous call\r\n```\r\nauto pf = tvm::runtime::Registry::Get(\"target.llvm_get_system_triple\");\r\n```\r\nwould fail, and return null. The consecutive call to defined() would segfault after trying to dereference the null value. This commit adds a check to see if the function pointer is null. This might not be the best solution, but it worked for me, so it might also help someone else struggling with this. Please suggest a better solution, if you know one.\r\n\r\nCo-authored-by: Luke Hutton <luke.hutton@arm.com>",
+    "author": "OttoWRas",
+    "date": "2024-04-11T08:12:20Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1865/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1727/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1626/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1384/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2071/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1653/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1579/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1547/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1548/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/314/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1543/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1544/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1528/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8643570855/job/23696878177"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8643570855/job/23696878498"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8643570855/job/23696878712"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8643570855/job/23696878927"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8643573517/job/23696885638"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8643673473/job/23697196297"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8643832136/job/23697658287"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8643993718/job/23698188678"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/8644130019/job/23698625683"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8644130125/job/23698626473"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8644178829/job/23698781471"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/8644258956/job/23699020898"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/8644259325/job/23699023122"
+      },
+      {
+        "name": "Teams / tag-teams",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8644260855/job/23699030646"
+      }
+    ],
+    "updated_at": 1712826595.678621
+  },
+  {
     "sha": "f9e36fcbf8cd161f41251710b735958b61e51c6d",
     "headline": "[3rdparty] Bump FlashInfer (#16866)",
     "body": "This PR bumps FlashInfer to add position independent code compilation\r\noption, fatbin compression option, and the missing fp8 header include.",
@@ -7,24 +152,24 @@
     "date": "2024-04-11T03:49:10Z",
     "jobs": [
       {
-        "name": "cross-isa-minimal/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/nightly/394/display/redirect"
-      },
-      {
         "name": "arm/branch",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1864/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/nightly/442/display/redirect"
       },
       {
         "name": "cortexm/branch",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1726/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/nightly/449/display/redirect"
       },
       {
         "name": "cpu/branch",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1625/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/nightly/434/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1383/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -64,7 +209,7 @@
       {
         "name": "unity/branch",
         "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/313/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/nightly/78/display/redirect"
       },
       {
         "name": "wasm/branch",
@@ -186,8 +331,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8643430204/job/23696448705"
       }
-    ],
-    "updated_at": 1712823120.18714
+    ]
   },
   {
     "sha": "4617efac7b815f367974244870ec3ec08cda2a72",
@@ -20128,140 +20272,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8375211023/job/22932084231"
-      }
-    ]
-  },
-  {
-    "sha": "62beb0251e1ccd9915a7138156dc684ccbdcbf8e",
-    "headline": "[microNPU][ETHOSU] Add fixed point for tanh (#16266)",
-    "body": "Add support for calculation tanh with 16 bits fixed point (legalization of non-quantized tanh operation with quantization by fixed point multiplication).",
-    "author": "Aleksei-grovety",
-    "date": "2024-03-21T10:06:17Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1751/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1597/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1508/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1280/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1445/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1940/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1533/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1472/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1431/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1446/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1444/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/209/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1441/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373120255/job/22925541140"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373120255/job/22925541461"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373120255/job/22925541854"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373120255/job/22925542296"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373122601/job/22925548026"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373272873/job/22925996006"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373307421/job/22926092359"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373468644/job/22926581448"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373652605/job/22927172998"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8373838008/job/22927774361"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8374046643/job/22928413648"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8374207962/job/22928931489"
       }
     ]
   }
