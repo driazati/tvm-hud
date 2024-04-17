@@ -1,5 +1,107 @@
 [
   {
+    "sha": "a94d539ae88cac7586614f77903a3334c3fac011",
+    "headline": "Remove unnecessary import and fix linting",
+    "body": "",
+    "author": "Anndrey24",
+    "date": "2024-04-17T14:14:04Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16899/3/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16899/3/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16899/3/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16899/3/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16899/2/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8723558263/job/23932053338"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8723558589/job/23933129236"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8723558589/job/23933129648"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8723558589/job/23933130002"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8723558589/job/23933130358"
+      }
+    ],
+    "pr": 16899,
+    "pr_title": "[SVE][TOPI] Add conv2d NHWC hybrid SVE schedule for `arm_cpu`",
+    "updated_at": 1713366125.989734
+  },
+  {
     "sha": "59b5b305a3ee396baf78e26f9cfb345cab76bc45",
     "headline": "[SVE][TOPI] Add conv2d NHWC hybrid SVE schedule for `arm_cpu`",
     "body": "This commit adds an `arm_cpu` conv2d NHWC schedule which generates SVE instructions by extending the hybrid GeMM approach implemented in #16106 to use scalable expressions as splitting factors.\n\nVarious vscale-related fixes needed to implement the schedule are also included, such as:\n\n - adding vscale bounds in the `ConstIntBoundAnalyzer` and `IntervalSetEvaluator`\n - simplifying `MinNode` and `MaxNode` that have scalable expression operands in `RewriteSimplifier`, which would appear when defining the shape of a buffer padded to be a multiple of vscale and in its respective buffer access indices (e.g. `C_1 = T.Buffer((1024 * (T.vscale() * 16 + 256 - 16 % T.vscale() * 16),), data=C)` instead of `C_1 = T.Buffer((1024 * (T.max(255, T.vscale() * 16 + 255 - 16 % T.vscale() * 16) + 1),), data=C)`)\n\nThe correctness of the new schedule is checked using a TOPI test, while the presence of generated SVE instructions is verified by a codegen test. The new `rewrite_simplify` rules are also covered by additional test cases.",
@@ -12,6 +114,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16899/1/display/redirect"
       },
       {
+        "name": "unity/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16899/1/display/redirect"
+      },
+      {
         "name": "arm/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16899/1/display/redirect"
@@ -19,7 +126,7 @@
       {
         "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16899/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16899/2/display/redirect"
       },
       {
         "name": "cpu/pr-head",
@@ -29,7 +136,7 @@
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16899/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16899/2/display/redirect"
       },
       {
         "name": "gpu/pr-head",
@@ -39,12 +146,12 @@
       {
         "name": "hexagon/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16899/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16899/2/display/redirect"
       },
       {
         "name": "i386/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16899/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16899/2/display/redirect"
       },
       {
         "name": "minimal/pr-head",
@@ -55,11 +162,6 @@
         "name": "riscv/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16899/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16899/1/display/redirect"
       },
       {
         "name": "wasm/pr-head",
@@ -83,23 +185,22 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "cancelled",
         "url": "https://github.com/apache/tvm/actions/runs/8723085845/job/23930672213"
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "cancelled",
         "url": "https://github.com/apache/tvm/actions/runs/8723085845/job/23930672482"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "cancelled",
         "url": "https://github.com/apache/tvm/actions/runs/8723085845/job/23930672796"
       }
     ],
     "pr": 16899,
-    "pr_title": "[SVE][TOPI] Add conv2d NHWC hybrid SVE schedule for `arm_cpu`",
-    "updated_at": 1713362530.828066
+    "pr_title": "[SVE][TOPI] Add conv2d NHWC hybrid SVE schedule for `arm_cpu`"
   },
   {
     "sha": "59a1ac39bd58a13a5078161c52d1f97e47407fe0",
@@ -195,7 +296,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8722871111/job/23929720030"
       }
     ],
