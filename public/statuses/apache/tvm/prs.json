@@ -1,5 +1,87 @@
 [
   {
+    "sha": "6a958650c51d96e3addf9400366eb5333c714af7",
+    "headline": "fixed lld search",
+    "body": "",
+    "author": "shreygupta2809",
+    "date": "2024-04-18T21:59:41Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16907/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8745249043/job/23999871517"
+      }
+    ],
+    "pr": 16907,
+    "pr_title": "[Upd] Fixed lld search in rocm",
+    "updated_at": 1713481341.961391
+  },
+  {
     "sha": "c5f9e25be11d0fead4e6bbb8b187da6db49cff93",
     "headline": "[Bugfix][Relax] Raise exception for OOM allocation",
     "body": "If the Relax VM attempts to allocate more memory than is available on\nthe GPU, it should raise an exception.  Prior to this commit, an\nout-of-memory exception instead triggered a segfault within\n`\"vm.builtin.alloc_storage\"`.\n\nWhen an allocation succeeds, the sequence of events is:\n\n1. A `StorageObj` instance is constructed.\n2. A call is made to `alloc->Alloc`, which returns the allocated buffer.\n3. The allocated buffer is assigned to `StorageObj::buffer`.\n4. The allocator is assigned to `StorageObj::allocator`.\n\nHowever, when the GPU has insufficient memory, the sequence instead is:\n\n1. A `StorageObj` instance is constructed.\n2. A call is made to `alloc->Alloc`, which raises an out-of-memory exception.\n3. In unwinding the stack, the `StorageObj` destructor is called.\n4. The `StorageObj` destructor calls `allocator->Free(buffer)`.  Since\n   neither `allocator` nor `buffer` have been defined, this causes a segfault.\n\nThis commit implements two independent fixes for this bug.\n\nFirst, the `\"vm.builtin.alloc_storage\"` function is reordered to call\n`alloc->Alloc(...)` before constructing the `StorageObj` instance.  If\nan exception is raised during the allocation, there is no `StorageObj`\ninstance whose destructor must be called.\n\nSecond, the `StorageObj::allocator` field is initialized to `nullptr`\nby default, and the destructor only calls `allocator->Free` if the\n`allocator` is non-null.  This prevents a similar error from occurring\nat any other callsites that directly construct a `StorageObj`.",
@@ -103,8 +185,7 @@
       }
     ],
     "pr": 16905,
-    "pr_title": "[Bugfix][Relax] Raise exception for OOM allocation",
-    "updated_at": 1713477704.211721
+    "pr_title": "[Bugfix][Relax] Raise exception for OOM allocation"
   },
   {
     "sha": "a19f0d2490f4c7bff4b0c01290c4aa28ead9ca03",
@@ -113,16 +194,6 @@
     "author": "MasterJH5574",
     "date": "2024-04-18T14:05:07Z",
     "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16906/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16906/1/display/redirect"
-      },
       {
         "name": "cpu/pr-head",
         "status": "pending",
@@ -144,19 +215,14 @@
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16906/1/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16906/1/display/redirect"
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16906/1/display/redirect"
       },
       {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16906/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16906/1/display/redirect"
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16906/1/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -164,14 +230,29 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16906/1/display/redirect"
       },
       {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16906/1/display/redirect"
+      },
+      {
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16906/1/display/redirect"
       },
       {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16906/1/display/redirect"
+      },
+      {
         "name": "riscv/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16906/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16906/1/display/redirect"
       },
       {
         "name": "wasm/pr-head",
@@ -7006,112 +7087,6 @@
     ],
     "pr": 16850,
     "pr_title": "Fixing probability comment"
-  },
-  {
-    "sha": "20d9cacf8440ca149dcd55c97ea860d8718076da",
-    "headline": "[KVCache] Initialize one extra page than specified",
-    "body": "This PR udpates PagedKVCache to initialize one more page than\nspecified via constructor. The reason is that applications usually\ndepends the number of free pages (returned from `GetNumAvailablePages`)\nto decide the KV cache operation policy. If there is no this extra\npage, the KV cache will tell \"no available\" pages even when the\nlast allocated pages are not full, which may give the applications\nan illusion that the KV cache is already completely full, and cause\nfurther issues.",
-    "author": "MasterJH5574",
-    "date": "2024-04-05T17:44:08Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-16849/5/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-16849/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8573801914/job/23499270339"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8573802082/job/23499270899"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8573802082/job/23499271067"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8573802082/job/23499271257"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8573802082/job/23499271432"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "neutral",
-        "url": "https://github.com/apache/tvm/actions/runs/8588823366/job/23534169949"
-      }
-    ],
-    "pr": 16849,
-    "pr_title": "[KVCache] Initialize one extra page than specified"
   },
   {
     "sha": "3bd49854a806f0c5987564489d58485b2ff36048",
