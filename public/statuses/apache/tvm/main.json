@@ -1,5 +1,105 @@
 [
   {
+    "sha": "6b77cbabe847c4653f9354e587127519cb43e3b1",
+    "headline": "[Misc] Enhance Release Note Script and Remove Useless File (#16913)",
+    "body": "",
+    "author": "ysh329",
+    "date": "2024-04-21T20:46:48Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1899/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1773/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1666/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1419/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2111/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1697/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1617/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1561/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1581/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1582/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/348/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1578/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1578/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8775407247/job/24077705142"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8775407247/job/24077705199"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8775407247/job/24077705251"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8775407247/job/24077705294"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8775471615/job/24077853780"
+      }
+    ],
+    "updated_at": 1713733710.357398
+  },
+  {
     "sha": "a2511cc5160fa73131517515c79144bef7f4b076",
     "headline": "[QoL][Relax] Use SeqExpr in IR types when SeqExpr is required (#16859)",
     "body": "* [QoL][Relax] Use SeqExpr in IR types when SeqExpr is required\r\n\r\nThe Relax IR requires the `FunctionNode::body`, `IfNode::true_branch`,\r\nand `IfNode::false_branch` to be instances of `relax::SeqExpr`.\r\nIf these Relax requirements are violated, correctly-implemented\r\ntransformations may raise exceptsion\r\n(e.g. from `Downcast` in `Downcast<SeqExpr>(func->body)->blocks`), or\r\neven segfault (e.g. when `.as` returns a nullptr in\r\n`func->body.as<SeqExprNode>()->blocks`).  Debugging these failure\r\nmodes is also difficult, as even the TVMScript printer relies on the\r\nbody of the function being a `SeqExprNode`.\r\n\r\nThis commit updates the C++ type of `FunctionNode::body`,\r\n`IfNode::true_branch`, and `IfNode::false_branch` to be\r\n`relax::SeqExpr` instead of `relax::Expr`.  This does not impact any\r\nwell-formed Relax IR, and allows this type of ill-formed Relax IR type\r\nto be checked at compile-time.  A large number of checks applied\r\nduring TVM runtime can now be removed, as they duplicate the new\r\ncompile-time check.\r\n\r\nTo maintain backwards compatibility, this commit adds a new\r\nconstructor to `relax::SeqExpr`, which accepts a single `Expr body`\r\nargument.  This constructor provides either an additional reference to\r\nthe same underlying `relax::SeqExprNode`, if `body` already contains a\r\n`relax::SeqExprNode`, and otherwise wraps the body in a\r\n`relax::SeqExpr`.  For implementations that previously produced\r\nwell-formed Relax IR, this change has no effect.  For implementations\r\nthat previously produced ill-formed Relax IR, this change results in\r\nthe equivalent well-formed Relax IR.\r\n\r\nAlternate implementations considered:\r\n\r\n* Perform the backwards-compatibility wrapping within the\r\n  `relax::Function` and `relax::If` constructors.  While this would\r\n  provide the intended conversion when these constructors are used,\r\n  Relax transforms make frequent use of copy-on-write\r\n  (e.g. `func.CopyOnWrite()->body = new_body`), which does not use the\r\n  constructor.  Maintaining backwards compatibility for this usage\r\n  requires the implicit conversion constructor that was chosen for\r\n  this PR.\r\n\r\n* Remove the Relax IR requirement for these expressions to be\r\n  `SeqExpr`.  While this would make Relax more internally consistent,\r\n  such a change would break backwards compatibility that relies on\r\n  `SeqExpr` being present.  While the callsites within TVM could be\r\n  updated to resolve this breakage, callsites outside of TVM\r\n  (e.g. MLC-LLM) could not.  Exposing the special case within the C++\r\n  type, as done in this PR, maintains backwards compatibility.\r\n\r\n* Resolve breakages in unit tests\r\n\r\nAll breakage was the result of callers relying on ill-formed Relax\r\nmaintaining that specific type form of ill-formed-ness.",
@@ -571,8 +671,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8771298594/job/24068876166"
       }
-    ],
-    "updated_at": 1713730191.269944
+    ]
   },
   {
     "sha": "2978427c2a804888a0911a2dc78865871a0afcd1",
@@ -21072,135 +21171,6 @@
         "name": "tvm-bot / run-tvm-bot",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8456306371/job/23165787590"
-      }
-    ]
-  },
-  {
-    "sha": "1891b4db4933388fd67e8fbececc263930a148d1",
-    "headline": "[Disco] Propagate structlog/logging config to workers (#16715)",
-    "body": "This is a follow-up to #16618, which propagates the `structlog`\r\nconfiguration to disco worker processes.  For configurations that\r\nuse `structlog.stdlib` to integrate `structlog` with the stdlib\r\n`logging` module, this integration must also be forwarded.",
-    "author": "Lunderberg",
-    "date": "2024-03-27T14:11:08Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1794/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1648/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1555/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1315/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1480/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/1986/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1581/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1509/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1465/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1481/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1480/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/244/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1476/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8453188107/job/23155318879"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8453188107/job/23155319312"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8453188107/job/23155319674"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8453188107/job/23155320001"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8453310091/job/23155700930"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8453500992/job/23156310904"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8453725294/job/23157078398"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8453952254/job/23157853514"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8454237897/job/23158794705"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8454420901/job/23159396518"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8454634092/job/23160136628"
       }
     ]
   }
