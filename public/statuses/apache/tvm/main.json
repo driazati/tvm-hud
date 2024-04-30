@@ -1,5 +1,125 @@
 [
   {
+    "sha": "c8deb7fa36d3e05fc59bcd04c7415937778b278e",
+    "headline": "Overriding the StructuralEqual() for easy usage (#16908)",
+    "body": "* Overriding the Structural Equal() for easy usage\r\n\r\n* lint error fixed\r\n\r\n* fixing white space lint error\r\n\r\n* whitespace lint error",
+    "author": "sdalvi-quic",
+    "date": "2024-04-30T04:12:56Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/nightly/461/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/nightly/474/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/nightly/453/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/nightly/413/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/nightly/487/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/nightly/470/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/nightly/453/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/nightly/446/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/nightly/448/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/nightly/451/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/nightly/97/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/nightly/448/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/nightly/446/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8889161001/job/24407106960"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8889161001/job/24407107087"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8889161001/job/24407107216"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/8889161001/job/24407107349"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8889220101/job/24407256926"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8889305152/job/24407473065"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8889407783/job/24407748246"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8889513997/job/24408035643"
+      },
+      {
+        "name": "Update nightly branch / update-nightly-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/8889522511/job/24408056143"
+      }
+    ],
+    "updated_at": 1714453743.959061
+  },
+  {
     "sha": "114ad70a22f29ec62ad3e883bae90cffc5fba254",
     "headline": "[TOPI] Revert unification of conv2d NHWC hybrid scheduling for `arm_c\u2026",
     "body": "\u2026pu` targets (#16951)\n\nThis patch partly reverts the unification of scalable and non-scalable scheduling of conv2d NHWC for `arm_cpu` targets introduced in #16899.\r\n\r\nThe non-scalable schedule for float32 splits the N axis (corresponding to number of output channels) by 16 in both the unified and the nonunified schedule versions, and then additionally splits the inner partitions by 4 in only the nonunified version to which this patch is reverting (first added in #16106). The two versions' behaviour would be equivalent if none of the padding on the N axis was removed during lowering, however we allow for that to happen as it proved to increase performance for very small convolutions.\r\n\r\nAs it stands, there seems to be a regression in cases where the datatype is float32 and the number of output channels is greater than 16, a multiple of 4, and not a multiple of 16, because even with the removed padding the nonunified schedule is able to vectorise over 4 elements, while the unified version cannot vectorise over 16 elements anymore.\r\n\r\nSince all of the conv2d NHWC hybrid topi test cases used numbers of output channels either less than 16 or divisible by 16, this patch also adds a new case which falls in the aforementioned regression area.",
@@ -276,8 +396,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8889067777/job/24406861434"
       }
-    ],
-    "updated_at": 1714450331.813064
+    ]
   },
   {
     "sha": "b4a69de47b95f42b7fa41ebf9efafd984111ec9b",
@@ -22748,65 +22867,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8517223229/job/23327450796"
-      }
-    ]
-  },
-  {
-    "sha": "00395ae43d3d6024c900a32f512f136cf818a3af",
-    "headline": "[Relax][Bugfix] Provide the full Expr to pattern-match rewriter (#16828)",
-    "body": "* [Relax][Bugfix] Provide the full Expr to pattern-match rewriter\r\n\r\nThis resolves a bug that was introduced in\r\nhttps://github.com/apache/tvm/pull/16732.  If a rewriter function\r\nreturned a no-op, and the pattern-match continued, then the `matches`\r\nprovided to the rewriter function in subsequent calls would contain\r\na variable to which the matched expression was bound, not the matched\r\nexpression itself.  (e.g. For a match of `C = R.add(A,B)`, passing `C`\r\nto the rewriter instead of `R.add(A,B)`.)\r\n\r\nThis bug was caused by incorrect re-wrapping of `OrPattern` in\r\n`ExprPatternRewriter`.  Prior to\r\nhttps://github.com/apache/tvm/pull/16732, all pattern-match results\r\nwere populated by `ExtractMatchExpr`, and contained the result after\r\napplying `TryGetValOfVar`.  When re-wrapping the result of an\r\n`OrPattern`, https://github.com/apache/tvm/pull/16732 populated the\r\nadditional matches with the result before applying `TryGetValOfVar`.\r\nThis commit fixes the bug by applying `TryGetValOfVar`.\r\n\r\n* Update with PR link of bugfix",
-    "author": "Lunderberg",
-    "date": "2024-04-01T22:23:35Z",
-    "jobs": [
-      {
-        "name": "gpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2020/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1823/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1684/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1585/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1507/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1612/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8514499500/job/23320320010"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8514499500/job/23320320147"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8514499500/job/23320320355"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8514499500/job/23320320527"
       }
     ]
   }
