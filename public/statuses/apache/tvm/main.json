@@ -1,5 +1,120 @@
 [
   {
+    "sha": "5b5f8d0f774f70194fb643ff6164d29a150d234e",
+    "headline": "[QoL][IR] Provide std::hash and std::equal_to for IR Variable types (\u2026",
+    "body": "\u2026#16909)\n\n* [QoL][IR] Provide std::hash and std::equal_to for IR Variable types\r\n\r\nFor most IR types, neither `std::hash` nor `std::equal_to` are\r\nprovided, as it would be ambiguous whether comparisons should be\r\nperformed with reference equality or structural equality.  While this\r\navoids ambiguity in the general case of nested structures, IR\r\nvariables follow reference equality and are frequently used as lookup\r\nkeys.\r\n\r\nThis commit implements a specialization of `std::hash` and\r\n`std::equal_to` for `tvm::GlobalVar`, `tvm::tir::Var`, and\r\n`tvm::relax::Var`.  This allows them to be used as lookup keys for\r\n`std::unordered_set` and `std::unordered_map` without explicitly\r\nspecifying explicit `ObjectPtrHash` and `ObjectPtrEqual`.\r\n\r\n* lint fix",
+    "author": "Lunderberg",
+    "date": "2024-05-13T20:09:48Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1953/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1850/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1726/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1473/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2168/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1761/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1675/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1633/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1633/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/400/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1629/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1630/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1613/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9069141988/job/24918031049"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9069141988/job/24918031330"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9069141988/job/24918031603"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9069141988/job/24918031844"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9069264026/job/24918423948"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9069399641/job/24918854021"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9069567510/job/24919406170"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9069734737/job/24919967964"
+      }
+    ],
+    "updated_at": 1715634625.397448
+  },
+  {
     "sha": "0dfc5f955e2dd883527638e3d5b1f6844971af3a",
     "headline": "[Unity] Check for transpose and dynamic shape in AdjustMatmulOrder (#\u2026",
     "body": "\u202616589)\n\nWhen determining whether to evaluate matrix multiplications as\r\n`(A*B)*C` or as `A*(B*C)`, dynamic shapes may occur (e.g. a dynamic\r\nLoRA rank).  This commit tests for these cases, and improves the\r\narithmetic bounds used to prove which order of evaluation is\r\npreferred.\r\n\r\nAs part of the implementation, this commit also adds a utility\r\n`CollectNonNegativeExpressions`, exposed to the python API as\r\n`relax.analysis.collect_non_negative_expresisons`.  This utility\r\ncollects expressions within a `StructInfo` which must be non-negative,\r\nbased on the location where they appear.  For example, the size of a\r\ntensor along each dimension must be non-negative.  Unlike the existing\r\n`defineable_tir_vars_in_struct_info`, this will include the `N-2`\r\nexpression in `R.Tensor([N-2])`.",
@@ -83,12 +198,12 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068872130/job/24917162958"
       },
       {
         "name": "CI / Android",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068872130/job/24917163154"
       },
       {
@@ -106,8 +221,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9069053584/job/24917753882"
       }
-    ],
-    "updated_at": 1715630966.993446
+    ]
   },
   {
     "sha": "eb242ec77bf1f6588c07bb530ee8a241dc2f814d",
@@ -188,7 +302,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068853782/job/24917099176"
       },
       {
@@ -198,7 +312,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068853782/job/24917099632"
       },
       {
@@ -287,7 +401,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068841448/job/24917055216"
       },
       {
@@ -376,7 +490,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068667691/job/24916485224"
       },
       {
@@ -386,7 +500,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068667691/job/24916485660"
       },
       {
@@ -435,7 +549,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068664645/job/24916474952"
       },
       {
@@ -445,7 +559,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "queued",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9068664645/job/24916475398"
       }
     ]
@@ -25333,110 +25447,6 @@
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8589020306/job/23534598850"
-      }
-    ]
-  },
-  {
-    "sha": "a7be540457d38aebf65cd36c3f0df3330921a376",
-    "headline": "[KVCache] Initialize one extra page than specified (#16849)",
-    "body": "This PR udpates PagedKVCache to initialize one more page than\r\nspecified via constructor. The reason is that applications usually\r\ndepends the number of free pages (returned from `GetNumAvailablePages`)\r\nto decide the KV cache operation policy. If there is no this extra\r\npage, the KV cache will tell \"no available\" pages even when the\r\nlast allocated pages are not full, which may give the applications\r\nan illusion that the KV cache is already completely full, and cause\r\nfurther issues.",
-    "author": "MasterJH5574",
-    "date": "2024-04-07T12:41:18Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1849/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1712/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1613/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1371/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1532/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2057/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1640/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1567/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1516/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1535/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1536/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/301/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1531/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8588823801/job/23534170812"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8588823801/job/23534170883"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8588823801/job/23534170940"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8588823801/job/23534170994"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8588868704/job/23534264194"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8588964957/job/23534469455"
       }
     ]
   }
