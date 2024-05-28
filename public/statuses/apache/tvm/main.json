@@ -1,5 +1,120 @@
 [
   {
+    "sha": "20d8c537316758ba13017f2c7dc9e5de77ecf069",
+    "headline": "[SVE] Add support for representing and creating buffer-level predicat\u2026",
+    "body": "\u2026es (#16966)\n\n* [SVE] Add support for representing and creating buffer-level predicates\r\n\r\nRepresentation\r\n--------------\r\nThis commit extends `BufferLoad` and `BufferStore` to accept a predicate\r\nmask argument indicating which lanes in a vectorized buffer load/store\r\nshould be read/written.\r\n\r\nAs a simple example, we can load all lanes:\r\n```\r\ntir.BufferLoad(buf, [tir.Ramp(0, 1, 8)], predicate=tir.Broadcast(1, 8))\r\n```\r\n\r\nOr disable loading all lanes:\r\n```\r\ntir.BufferLoad(buf, [tir.Ramp(0, 1, 8)], predicate=tir.Broadcast(0, 8))\r\n```\r\n\r\nIn TVMScript, buffer loads and stores are currently displayed using a\r\n\"short-hand\" notation e.g. `A[0:4]`, but there was no clear path for\r\nextending this notation to support predicates. Therefore, a \"long-hand\"\r\nnotation is introduced e.g. `A.load([T.Ramp(0, 1, 4)], predicate=...)`.\r\nThe TVMScript printer falls back to the long-hand notation whenever\r\npredicates are specified.\r\n\r\nCreation\r\n--------\r\nBuffer-level predication becomes more motivating when combined with the\r\n`tir.get_active_lane_mask` intrinsic. It can be used to mask off lanes\r\nwhen the vectorized axis is not divisible by the vector length. A\r\ndetailed example and rationale can be found in the\r\n[RFC](https://github.com/apache/tvm-rfcs/blob/main/rfcs/0104-scalable-vectors-in-tir.md#predication).\r\n\r\nPredicated buffer load/stores are created in the `VectorizeLoop` pass\r\nvia `TryPredicateBufferAccesses`. This pass aims to convert block-level\r\npredicates e.g.\r\n```\r\nfor i_0 in T.serial(4):\r\n    for i_1 in T.vectorized(4):\r\n        if i_0 * 4 + i_1 < 14:\r\n            B[i_0 * 4 + i_1] = A[i_0 * 4 + i_1] + 1.0\r\n```\r\nto buffer-level predicates, e.g.\r\n```\r\nfor i_0 in T.serial(4):\r\n    predicate = T.get_active_lane_mask(\"int1x4\", i_0 * 4, 14)\r\n    A_load = T.meta_var(A.load([T.Ramp(i_0 * 4, 1, 4)], predicate=predicate))\r\n    B.store(A_load, [T.Ramp(i_0 * 4, 1, 4)], predicate=predicate)\r\n```\r\nIt takes a conservative approach for now, focussing only on expressions\r\nproduced by the split scheduling primitive, but more complex expressions\r\ncould be supported in the future.\r\n\r\n`TryPredicateBufferAccesses` can be explicitly enabled/disabled with the\r\n`tir.enable_buffer_level_predication` pass context option. By default it\r\nwill be disabled, unless the target supports SVE, in which case it will\r\nbe enabled by default.\r\n\r\nCo-authored-by: Elen Kalda <elen.kalda@arm.com>\r\nCo-authored-by: Neil Hickey <neil.hickey@arm.com>\r\n\r\nChange-Id: Idde259a7d7e4536f00ed3a1dafedd0a5d24a1593\r\n\r\n* Fix lint and correct test config option name\r\n\r\nChange-Id: I864475c3d03e9b426ce5ef987989216d57f3e019\r\n\r\n* Address review comments\r\n\r\nThis includes:\r\n* Taking into account possibility of target being overridden in\r\n  the vectorize pass.\r\n* Predicate PrimExpr -> Optional<PrimExpr>\r\n* Checking that predicate is not used for any target that doesn't\r\n  support it.\r\n* Use vload/vstore API as opposed to load/store\r\n* int1 mask -> uint1 mask for boolean representation. This is converted\r\n  to int1 in the LLVM backend.\r\n\r\nChange-Id: I4da0705352e321f6be6333a5bb777caa6a6ca9ef\r\n\r\n* Fix lint\r\n\r\nChange-Id: Idd3f3593fe524f3444487c520d947dfd53386db0\r\n\r\n* Fix some failing tests\r\n\r\n* vload/vstore updates that were missed previously\r\n* int1 -> bool updates\r\n* fix gpu target tests\r\n\r\nFixes a test and updates comments referencing old load/store api\r\n\r\nChange-Id: I26a0c480d2dedee442ca0116909a7751d1dfa9ac\r\n\r\n* Address comments\r\n\r\n- Correct doc strings\r\n- Correct typo in error message\r\n- Add some additional checks for BufferLoad\r\n\r\nChange-Id: Ie25563d569c0ed729ac915a6ba3a724a9e191014\r\n\r\n* Account for buffer lanes in predicate lane check\r\n\r\nChange-Id: I821210665e36c26bfa37fc9ed380b5d03c9e816e",
+    "author": "lhutton1",
+    "date": "2024-05-28T10:15:29Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1978/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1890/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1755/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1499/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2198/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1789/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1705/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1658/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1657/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/431/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1653/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1654/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1638/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9267545278/job/25494241497"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9267545278/job/25494241857"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9267545278/job/25494242198"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9267545278/job/25494242549"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9267608497/job/25494440293"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9267779346/job/25494954946"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9267942856/job/25495485529"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9268120287/job/25496077673"
+      }
+    ],
+    "updated_at": 1716894475.445666
+  },
+  {
     "sha": "b598f28a1cecabf95a1986dcc55a864c8c9ab743",
     "headline": "[Contrib] Implement NDArray cache update (#17029)",
     "body": "",
@@ -511,8 +626,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9267342561/job/25493597149"
       }
-    ],
-    "updated_at": 1716891023.871991
+    ]
   },
   {
     "sha": "7359313b40dd1927cd27e2c60539575ae08a4dc5",
@@ -27288,135 +27402,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/8711761609/job/23896585855"
-      }
-    ]
-  },
-  {
-    "sha": "d1ac73ca2d3c14dc69e47818871478e8b0f295aa",
-    "headline": "[CUBLAS][FP8] Support e4m3 gemm in cuBLAS BYOC (#16888)",
-    "body": "[CUBLAS][FP8] Support e4m3 gemm in cuBLAS BYOC (#63)\r\n\r\nCo-authored-by: Andrey Malyshev <elvin.nnov@gmail.com>",
-    "author": "ibsidorenko",
-    "date": "2024-04-16T18:55:11Z",
-    "jobs": [
-      {
-        "name": "cortexm/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1743/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1880/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1643/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1398/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1559/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2086/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1668/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1594/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1542/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1561/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1562/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/328/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1557/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8710995262/job/23894131573"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8710995262/job/23894131870"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8710995262/job/23894132184"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8710995262/job/23894132545"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8711065967/job/23894354140"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8711259520/job/23894957003"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8711355944/job/23895271295"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8711358002/job/23895279629"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8711396315/job/23895393177"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8711427292/job/23895494214"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/8711588461/job/23896016623"
       }
     ]
   }
