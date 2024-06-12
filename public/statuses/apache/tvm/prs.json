@@ -1,5 +1,208 @@
 [
   {
+    "sha": "1d7bf3250bc62d259f8cea6d71fdf6455a97e386",
+    "headline": "[Relax] Ignore dynamic parameters in RewriteDataflowReshape",
+    "body": "The Relax transform `RewriteDataflowReshape` identifies TIR functions\nthat are equivalent to `relax.op.reshape`, and replaces them with\ncalls to `relax.op.reshape`.  This is used as a precursor for\nsimplifications that rely on the high-level knowledge that an operator\nis a reshape, but also require the low-level knowledge of the adjacent\nTIR PrimFuncs.\n\nPrior to this commit, the `RewriteDataflowReshape` pass would only\nrecognize static shapes, or dynamic shapes that could be inferred from\nthe shapes of tensor arguments.  This commit updates\n`RewriteDataflowReshape` to recognize cases where an extra symbolic\nvariable has been provided.",
+    "author": "Lunderberg",
+    "date": "2024-06-12T19:15:46Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17086/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17086/2/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17086/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17086/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17086/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9488621615/job/26147972221"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9488621632/job/26147972288"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9488621632/job/26147972601"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9488621632/job/26147972880"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9488621632/job/26147973195"
+      }
+    ],
+    "pr": 17086,
+    "pr_title": "[Relax] Ignore dynamic parameters in RewriteDataflowReshape",
+    "updated_at": 1718222727.755363
+  },
+  {
+    "sha": "9a8d239b36306b1dcb1cf186e5e43253f4415f00",
+    "headline": "[Relax][BlockBuilder] Use PrimValue to provide tir_vars",
+    "body": "Prior to this commit, if a TIR variable was required to compute the\noutput of `BlockBuilder.call_te`, but that TIR variable could not be\ninferred from the shape of any tensor arguments, it would be provided\nin an optional `tir_vars` argument to `R.call_tir`.  In C++, this\nwould be then be accessed as an optional\n`call->args[2].as<ShapeExprNode>()`.\n\nThis extra argument can cause unexpected bugs.  For example,\n`RewriteDataflowReshape` identifies the output buffer using\n`prim_func->buffer_map.Get(prim_func->params.back())`, which is only\ncorrect if `tir_vars` is empty.  Rather than fixing these issues as\nthey come up, it would be better to make the general Relax guarantees\nstronger by removing the `tir_vars` argument altogether.\n\nUse of extra `R.shape` parameter to specify additional `tir_vars`\npredates the existence of `relax::PrimValue`, and is no longer\nrequired.  This commit updates `BlockBuilder.call_te` to use\nadditional `relax.PrimValue` arguments to handle symbolic values that\ncannot be inferred from tensor shapes, rather than `tir_vars`.",
+    "author": "Lunderberg",
+    "date": "2024-06-12T18:16:10Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17087/2/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17087/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17087/1/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9488638844/job/26148028753"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9488638844/job/26148029039"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9488638844/job/26148029337"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9488638844/job/26148029564"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9488638913/job/26148028853"
+      }
+    ],
+    "pr": 17087,
+    "pr_title": "[Relax][BlockBuilder] Use PrimValue to provide tir_vars"
+  },
+  {
     "sha": "72acb552109c75f1a911626be9113678533f0150",
     "headline": "lint fix",
     "body": "",
@@ -19,7 +222,7 @@
       {
         "name": "cpu/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17083/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17083/4/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
@@ -34,32 +237,17 @@
       {
         "name": "hexagon/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17083/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17083/4/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17083/4/display/redirect"
       },
       {
         "name": "minimal/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17083/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17083/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17083/4/display/redirect"
       },
       {
         "name": "unity/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17083/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17083/3/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17083/4/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -67,9 +255,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17083/3/display/redirect"
       },
       {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17083/4/display/redirect"
+      },
+      {
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17083/3/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17083/3/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17083/3/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -98,8 +301,7 @@
       }
     ],
     "pr": 17083,
-    "pr_title": "[TVMScript][Relax] Preserve tir.SizeVar through TVMScript round-trip",
-    "updated_at": 1718218907.446812
+    "pr_title": "[TVMScript][Relax] Preserve tir.SizeVar through TVMScript round-trip"
   },
   {
     "sha": "4734d3f54a7ef86aa5f244ba81cac097dd861b20",
@@ -129,9 +331,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17083/2/display/redirect"
       },
       {
+        "name": "minimal/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17083/2/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17083/2/display/redirect"
+      },
+      {
         "name": "unity/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17083/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17083/2/display/redirect"
       },
       {
         "name": "cpu/pr-head",
@@ -152,21 +369,6 @@
         "name": "i386/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17083/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17083/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17083/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17083/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -6043,218 +6245,6 @@
     ],
     "pr": 17027,
     "pr_title": "[picojson] Let objects be ordered when serializing"
-  },
-  {
-    "sha": "e0e85a8fac7580bdb024063d2b0de3632ca66f1d",
-    "headline": "[DLight] Perf improvement for low_batch_gemv on Metal",
-    "body": "This PR improves the performance of low_batch_gemv on Metal by changing\nschedule config. The performance improvement is around 2x when bucket\nlarger than 2.",
-    "author": "Hzfengsy",
-    "date": "2024-05-24T05:53:10Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17026/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17026/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9219336008/job/25364306894"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9219336173/job/25364307223"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9219336173/job/25364307394"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9219336173/job/25364307512"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9219336173/job/25364307622"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9222825053/job/25374777545"
-      }
-    ],
-    "pr": 17026,
-    "pr_title": "[DLight] Perf improvement for low_batch_gemv on Metal"
-  },
-  {
-    "sha": "62579c9c71f796179f970cfeb30e84c72a783086",
-    "headline": "[Metal] Support metal device profiling",
-    "body": "Enable native metal device profiling through API `sampleTimestamps`",
-    "author": "Hzfengsy",
-    "date": "2024-05-24T03:50:47Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17025/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17025/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9218377085/job/25361808803"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9218377123/job/25361808992"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9218377123/job/25361809075"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9218377123/job/25361809169"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9218377123/job/25361809262"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9222780408/job/25374636041"
-      }
-    ],
-    "pr": 17025,
-    "pr_title": "[Metal] Support metal device profiling"
   },
   {
     "sha": "2d3300c2bd3aac4137e3cb44e82bce46c74ab925",
