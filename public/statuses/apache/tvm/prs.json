@@ -1,5 +1,107 @@
 [
   {
+    "sha": "f9a9b84c17c20523e2f97f82b465efd2759e2127",
+    "headline": "[Cleanup] Accept Variant<...> instead of ObjectRef when possible",
+    "body": "Prior to the implementation of `Variant<...>` in\nhttps://github.com/apache/tvm/pull/15672, functions that were\npolymorphic over an argument type would typically accept an\n`ObjectRef` argument, then downcast to an allowed type.  This delays\nthe catching of an error, and can accidentally omit automatic\nconversions applied by the FFI.\n\nThis commit updates several locations using this pattern to instead\naccept a `Variant`, templated over the allowed types.  This enables\nC++ type checking for C++ callers, standardizes the type-checking in\nthe FFI for non-C++ callers, and ensures that FFI type conversions are\nuniformly applied.",
+    "author": "Lunderberg",
+    "date": "2024-06-14T19:52:02Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17095/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9521716655/job/26249763388"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9521716894/job/26249763912"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9521716894/job/26249764194"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9521716894/job/26249764442"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9521716894/job/26249764744"
+      }
+    ],
+    "pr": 17095,
+    "pr_title": "[Cleanup] Accept Variant<...> instead of ObjectRef when possible",
+    "updated_at": 1718395603.830419
+  },
+  {
     "sha": "a0e849d69118e9e09f0e0a7a265d1d520a0ae4d8",
     "headline": "fix unit tests",
     "body": "",
@@ -95,11 +197,15 @@
         "name": "CI / Android",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9509032067/job/26211336888"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "skipped",
+        "url": "https://github.com/apache/tvm/actions/runs/9521670881/job/26249624220"
       }
     ],
     "pr": 17092,
-    "pr_title": "[UnitTests] Use tvm.ir.assert_structural_equal whenever possible",
-    "updated_at": 1718391690.516895
+    "pr_title": "[UnitTests] Use tvm.ir.assert_structural_equal whenever possible"
   },
   {
     "sha": "419ed67b7ab205097c4985c2b659f3fe28b301e8",
@@ -6322,137 +6428,6 @@
     "pr_title": "[Bugfix][Support] Fix copy constructor for support::OrderedSet"
   },
   {
-    "sha": "2d3300c2bd3aac4137e3cb44e82bce46c74ab925",
-    "headline": "[Relax][Bugfix] Annotate ComputePrimValue output as host function",
-    "body": "The `ComputePrimValue` transform is used to compute the value of\nsymbolic expressions that may appear within a Relax function.  For\nexample, to compute a boolean condition used for a `relax::If` node.\nThese functions are used for small host-side computations, prior to\nlaunching a device kernel.\n\nThis commit updates `ComputePrimValue` to annotate the generated\n`PrimFunc` with `tir::attr::kIsHostFunc`.  This annotation is required\nfor correct behavior in `tvm.dlight.ApplyDefaultSchedule`, to avoid\nerroneous scheduling of this function for the GPU, and for\n`tir::transform::BindTarget`, to ensure that the function is compiled\nfor execution on the host.\n\nCo-authored-by: Chris Sullivan <csullivan@octo.ai>",
-    "author": "Lunderberg",
-    "date": "2024-05-23T15:55:06Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17032/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17032/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9211245419/job/25340166511"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9211245491/job/25340166782"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9211245491/job/25340167233"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9211245491/job/25340167571"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9211245491/job/25340167957"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9222829796/job/25374792942"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270250879/job/25502809246"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270251091/job/25502810132"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270251091/job/25502810544"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270251091/job/25502810926"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270251091/job/25502811333"
-      }
-    ],
-    "pr": 17032,
-    "pr_title": "[Relax][Bugfix] Annotate ComputePrimValue output as host function"
-  },
-  {
     "sha": "555f55b771eb95fc2399b05cf48bb095b1c4333f",
     "headline": "[Relax][Bugfix] Bind symbolic variables in R.match_cast",
     "body": "Prior to this commit, variable replacement by `BindSymbolicVars` would\nfail to replace variables that occur within a `relax::MatchCast` node.\nThis pattern is rare, because the `bind_symbolic_vars` method can only\nreplace variables that are exposed as part of the function signature,\nand most uses of `relax::MatchCast` act as a definition for symbolic\nvariables that are not exposed through the function signature.  This\npattern is well-formed, though, since the `relax::MatchCast` node can\nalso act as a user of previously-defined symbolic variables.\n\nThe root cause for this bug was in the `ExprMutator` visitor for\n`relax::MatchCast`, which did not visit the struct info field.  As a\nresult, the virtual `ExprMutator::VisitPrimExpr` function was not\ncalled for expressions that occur within the `StructInfo` of a\n`relax::MatchCast`.  This commit updates `ExprMutator` to resolve this\nbug, and applies an analogous fix for `ExprVisitor`.\n\nCo-authored-by: Chris Sullivan <csullivan@octoml.ai>",
@@ -6582,137 +6557,6 @@
     ],
     "pr": 17034,
     "pr_title": "[Relax][Bugfix] Bind symbolic variables in R.match_cast"
-  },
-  {
-    "sha": "569a00a59a0f6a8a93dbb3be231a01e38567dc54",
-    "headline": "[Relax][Bugfix] Apply FuseOps to nested DataflowBlock",
-    "body": "While it is ill-formed for control-flow to occur within a\n`DataflowBlock`, it is legal for a `DataflowBlock` to be contained\nwithin a control-flow.  Prior to this commit, the `FuseOps` and\n`FuseOpsByPattern` transforms erroneously skipped `DataflowBlock`\ninstances that were contained within a `relax::If` node.\n\nThis commit updates `FuseOps` to apply operator fusion to any dataflow\nblock, regardless of whether it is found at the top level of a a Relax\nfunction.\n\nCo-authored-by: Chris Sullivan <csullivan@octoml.ai>",
-    "author": "Lunderberg",
-    "date": "2024-05-23T15:15:18Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17033/1/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9210756698/job/25338496236"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9210756698/job/25338496663"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9210756698/job/25338497076"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9210756698/job/25338497444"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9210756699/job/25338496138"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9222868074/job/25374920378"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270338506/job/25503100960"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270338506/job/25503101354"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270338506/job/25503101687"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270338506/job/25503102065"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9270338509/job/25503100997"
-      }
-    ],
-    "pr": 17033,
-    "pr_title": "[Relax][Bugfix] Apply FuseOps to nested DataflowBlock"
   },
   {
     "sha": "f9a370b3e92a5d46db5c2abbb3aae87145c9cd07",
@@ -7041,6 +6885,107 @@
     "jobs": [],
     "pr": 17060,
     "pr_title": "Build jetson runner"
+  },
+  {
+    "sha": "3b866d1b3e4c83f3e2891a169286abef3dd455ad",
+    "headline": "[Container] Support non-nullable types in Array::Map",
+    "body": "Prior to this commit, the `Array::Map` member function could only be\napplied to nullable object types.  This was due to the internal use of\n`U()` as the default value for initializing the output `ArrayNode`, where\n`U` is the return type of the mapping function.  This default\nconstructor is only available for nullable types, and would result in\na compile-time failure for non-nullable types.\n\nThis commit replaces `U()` with `ObjectRef()` in `Array::Map`,\nremoving this limitation.  Since all items in the output array are\noverwritten before returning to the calling scope, initializing the\noutput array with `ObjectRef()` does not violate type safety.",
+    "author": "Lunderberg",
+    "date": "2023-11-28T15:37:49Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17094/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9521549609/job/26249210708"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9521549836/job/26249211491"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9521549836/job/26249211728"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9521549836/job/26249211961"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9521549836/job/26249212128"
+      }
+    ],
+    "pr": 17094,
+    "pr_title": "[Utility][Container] Support non-nullable types in Array::Map"
   },
   {
     "sha": "c30fbe8630d41e21549af61c21b038767e04b827",
