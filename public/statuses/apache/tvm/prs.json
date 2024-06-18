@@ -1,5 +1,107 @@
 [
   {
+    "sha": "162f2ed9cfbc577f2ec79fbde4856705621758b8",
+    "headline": "[Relax] Apply DefaultGPUSchedule() in default build pipeline",
+    "body": "This is a follow-up to https://github.com/apache/tvm/pull/15864, which\nadded `LegalizeOps` to the default Relax build pipeline.  Since\nlegalization may produce additional TIR PrimFuncs that require\nscheduling, the output of `LegalizeOps` typically must also be passed\nthrough `tir.transform.DefaultGPUSchedule()`.  This PR adds\n`DefaultGPUSchedule()` to the relax build pipeline to handle these\ncases.\n\nScheduled PrimFunc have the `\"tir.is_scheduled\"` attribute set to\ntrue, and are ignored by `DefaultGPUSchedule()`.  In addition, the\n`DefaultGPUSchedule` transform has no effect on non-GPU targets.\nTherefore, this change should only impact `tvm.relax.build` calls that\npreviously resulted in an error due to unscheduled GPU functions, and\nshould not have any impact on existing calls.",
+    "author": "Lunderberg",
+    "date": "2024-06-18T15:02:30Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17108/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9567638085/job/26375862524"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9567638436/job/26375863819"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9567638436/job/26375864211"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9567638436/job/26375864731"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9567638436/job/26375865173"
+      }
+    ],
+    "pr": 17108,
+    "pr_title": "[Relax] Apply DefaultGPUSchedule() in default build pipeline",
+    "updated_at": 1718726808.005087
+  },
+  {
     "sha": "9eda30909710ebd7b40c0b6b89cfe23915a46e37",
     "headline": "[TOPI] Change tol depending on dtpye for test dense",
     "body": "Change-Id: Iaefc79b7c415d4cdca2917b5c5fa5842eba2f71d",
@@ -47,19 +149,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17091/8/display/redirect"
       },
       {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17091/7/display/redirect"
-      },
-      {
         "name": "unity/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17091/6/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17091/7/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -72,14 +164,23 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17091/6/display/redirect"
       },
       {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17091/7/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17091/7/display/redirect"
+      },
+      {
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9566183456/job/26370825371"
       }
     ],
     "pr": 17091,
-    "pr_title": "[TOPI] Add dense schedule for fp16 and fp32 using gemm",
-    "updated_at": 1718723075.358486
+    "pr_title": "[TOPI] Add dense schedule for fp16 and fp32 using gemm"
   },
   {
     "sha": "85200c46478381355b97a4cbb27899fbf4c268dc",
@@ -89,6 +190,11 @@
     "date": "2024-06-18T12:16:49Z",
     "jobs": [
       {
+        "name": "gpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17103/2/display/redirect"
+      },
+      {
         "name": "lint/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17103/2/display/redirect"
@@ -97,11 +203,6 @@
         "name": "unity/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17103/2/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17103/2/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
@@ -119,29 +220,14 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17103/2/display/redirect"
       },
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17103/2/display/redirect"
-      },
-      {
         "name": "hexagon/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17103/4/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17103/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17103/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17103/3/display/redirect"
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17103/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -149,9 +235,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17103/2/display/redirect"
       },
       {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17103/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17103/2/display/redirect"
+      },
+      {
         "name": "riscv/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17103/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17103/3/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -215,6 +316,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17091/5/display/redirect"
       },
       {
+        "name": "wasm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17091/6/display/redirect"
+      },
+      {
         "name": "cortexm/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17091/10/display/redirect"
@@ -243,11 +349,6 @@
         "name": "riscv/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17091/6/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17091/6/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -4950,117 +5051,6 @@
     "pr_title": "[Relax] Add missing white spaces in error messages"
   },
   {
-    "sha": "a26b99fe7020f3e990a248329e7b1462ce48dc7e",
-    "headline": "Add comments",
-    "body": "",
-    "author": "Anndrey24",
-    "date": "2024-06-05T10:24:09Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17048/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17048/4/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17048/4/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17048/4/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9382478941/job/25833988651"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9382479049/job/25838490336"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9382479049/job/25838490690"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9382479049/job/25838490970"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9382479049/job/25838491319"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9383859786/job/25838418280"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9383866626/job/25838441368"
-      }
-    ],
-    "pr": 17048,
-    "pr_title": "[SME][TOPI] Add conv2d NHWC SME fp16->fp32 schedule"
-  },
-  {
     "sha": "df8bbbc299db5b5c6d044341dd69d9cecf50e425",
     "headline": "Dynamic gradient search",
     "body": "",
@@ -5286,92 +5276,6 @@
     ],
     "pr": 17064,
     "pr_title": "Add docs of v0.15.0 and v0.16.0"
-  },
-  {
-    "sha": "aa5e927631f6a7b0a1e41e20c92a0f0f9c3d770c",
-    "headline": "Add fp16->fp32 conv2d strategy selection tests",
-    "body": "",
-    "author": "Anndrey24",
-    "date": "2024-06-04T15:08:01Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17048/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17048/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9369667897/job/25794736340"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9369825794/job/25795272198"
-      }
-    ],
-    "pr": 17048,
-    "pr_title": "[SME][TOPI] Add conv2d NHWC SME fp16->fp32 schedule"
   },
   {
     "sha": "e5f52a760f11a86819e2794d282d3de371654406",
@@ -6978,112 +6882,6 @@
     "jobs": [],
     "pr": 17054,
     "pr_title": "[SME] Utilize predication in fp32 matmul and conv2d schedules"
-  },
-  {
-    "sha": "fc28a8b59ee07afa31596f410f31873a27a1293f",
-    "headline": "[SME][TOPI] Add conv2d NHWC SME fp16->fp32 schedule",
-    "body": "This commit extends the SME conv2d NHWC schedule to support convolutions with float16 inputs (data and kernel) and a float32 output using the tensor intrinsics added in #16981.",
-    "author": "Anndrey24",
-    "date": "2024-05-30T15:55:55Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17048/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9305615354/job/25612971802"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9305615363/job/25641264026"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9305615363/job/25641264362"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9305615363/job/25641264682"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9305615363/job/25641264956"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9367208765/job/25786378488"
-      }
-    ],
-    "pr": 17048,
-    "pr_title": "[SME][TOPI] Add conv2d NHWC SME fp16->fp32 schedule"
   },
   {
     "sha": "2a02de9e4d56904b8acd69cd99b3fd114b191d5a",
