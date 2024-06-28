@@ -1,16 +1,116 @@
 [
   {
+    "sha": "4a5e22e869e92b9c12b3bda8b88a0ce8c69b8d30",
+    "headline": "[BugFix][MetaSchedule] MultiLevelTilingTensorCore generates inconsist\u2026",
+    "body": "\u2026ent thread-binding sketch for batched matmul (#17012)\n\n* [BugFix][MetaSchedule] MultiLevelTilingTensorCore generates inconsistent thread-binding sketch for batched matmul\r\n\r\n* Update testcase test_meta_schedule_schedule_rule_mlt_tc.py::test_conv_1x1\r\n\r\n---------\r\n\r\nCo-authored-by: tsu-bin <tsubin@gmail.com>",
+    "author": "tsu-bin",
+    "date": "2024-06-28T04:55:06Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/nightly/513/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/nightly/539/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/nightly/507/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/nightly/464/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/nightly/543/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/nightly/526/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/nightly/507/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/nightly/494/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/nightly/498/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/nightly/500/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/nightly/149/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/nightly/497/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/nightly/494/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9707640121/job/26793167447"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/9707640121/job/26793167588"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9707640121/job/26793167707"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9707640121/job/26793167826"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9707682370/job/26793289312"
+      },
+      {
+        "name": "Update nightly branch / update-nightly-branch",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9707693903/job/26793318352"
+      }
+    ],
+    "updated_at": 1719551413.863152
+  },
+  {
     "sha": "a84adaf0ff39a40ab4cd0867972b805c4733ca10",
     "headline": "[CudaGraph] Handle exceptions thrown while capturing cuda graph (#17113)",
     "body": "* [CudaGraph] Handle exceptions thrown while capturing cuda graph\r\n\r\nPrior to this commit, an exception thrown during the capture of a cuda\r\ngraph would result in `std::terminate` being called.  This commit\r\nupdates the implementation of `\"vm.builtin.cuda_graph.run_or_capture\"`\r\nsuch that a thrown exception can be recovered from, and does not cause\r\nany changes to the state of TVM's cuda graph cache.\r\n\r\n- Call to `cudaStreamDestroy` was previously skipped, now moved to a\r\n  RAII-style destructor in a `ScopedCUDAStream` class.\r\n\r\n- Call to `cudaStreamEndCapture` was previously skipped, end of cuda\r\n  graph capture now performed as part of RAII-style destructor for\r\n  `CUDACaptureStream` class.\r\n\r\n- Restoration of `CUDAThreadEntry::ThreadLocal()->stream` was\r\n  previously skipped, now restored as part of RAII-style destructor\r\n  for `CUDACaptureStream` class.\r\n\r\n- Previously, an error raised from `cudaGraphInstantiate` would leave\r\n  the `capture_cache_` in an ill-formed state.  Now, the\r\n  `capture_cache_` is only updated after a valid\r\n  `CUDAGraphCapturedState` has been fully constructed.\r\n\r\n* lint fix\r\n\r\n* Unit test fix",
     "author": "Lunderberg",
     "date": "2024-06-27T21:07:22Z",
     "jobs": [
-      {
-        "name": "hexagon/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1888/display/redirect"
-      },
       {
         "name": "arm/branch",
         "status": "success",
@@ -40,6 +140,11 @@
         "name": "gpu/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2281/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1888/display/redirect"
       },
       {
         "name": "i386/branch",
@@ -220,9 +325,28 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9707224840/job/26792083251"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9707370449/job/26792462275"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9707384770/job/26792497003"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9707476783/job/26792733447"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9707576954/job/26792994965"
       }
-    ],
-    "updated_at": 1719547912.968835
+    ]
   },
   {
     "sha": "3c6ca5d92be2f147608df545073bbfd702d49be5",
@@ -28458,100 +28582,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9043178844/job/24850539073"
-      }
-    ]
-  },
-  {
-    "sha": "2565aa38ef4d1d5a5ce5561ebf36910532993d90",
-    "headline": "[BugFix][Relax] change FuseOpsByPattern strategy to pattern-match max\u2026",
-    "body": "\u2026imal subgraph (#16922)\n\n* [BugFix][Relax] change FuseOpsByPattern strategy to pattern-match maximal subgraph\r\n\r\n* add testcase\r\n\r\n---------\r\n\r\nCo-authored-by: Huibin Wang <wang.huibin@intellif.com>",
-    "author": "wanghuibin0",
-    "date": "2024-05-10T13:07:48Z",
-    "jobs": [
-      {
-        "name": "cpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1716/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1944/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1841/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1464/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1621/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2158/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1748/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1665/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1604/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1624/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1625/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/391/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1621/display/redirect"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9032722766/job/24821465607"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9032722766/job/24821465881"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9032722766/job/24821466140"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9032722766/job/24821466438"
       }
     ]
   }
