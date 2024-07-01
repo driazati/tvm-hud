@@ -1,21 +1,118 @@
 [
   {
+    "sha": "bc6b02dcfe3299db485aa2d2c4efdb4f9234fdd1",
+    "headline": "[Bugfix] Restrict CopyOnWrite to _type_final",
+    "body": "Prior to this commit, the `TVM_DEFINE_OBJECT_REF_COW_METHOD` could be\nused in any `ObjectRef` subclass to provide a `CopyOnWrite` method.\nHowever, the implementation of this method method was invalid if the\nobject's `ContainerType` could itself be subclassed.  In that case,\nusing `obj.CopyOnWrite()` when the object contains a subclass, and\nwhen a copy is required, would silently convert `obj` to instead\ncontain a base class.\n\nThis commit adds a `static_assert`, to the\n`TVM_DEFINE_OBJECT_REF_COW_METHOD` macro, preventing the macro from being\nused in classes that would have incorrect usage.\n\nCompilation with this change found two classes, `relax::Var` and\n`relax::BindingBlock` that were susceptible to this error, and the macro\nhas been removed from these classes.  For backwards-compatibility, the\n`CopyOnWrite` function for these two classes is provided explicitly.",
+    "author": "Lunderberg",
+    "date": "2024-07-01T19:20:50Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17132/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "cancelled",
+        "url": "https://github.com/apache/tvm/actions/runs/9750020767/job/26908476015"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9750020770/job/26908476034"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9750020770/job/26908476296"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9750020770/job/26908476542"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9750020770/job/26908476738"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9750022835/job/26908489158"
+      }
+    ],
+    "pr": 17132,
+    "pr_title": "[Bugfix] Restrict CopyOnWrite to _type_final",
+    "updated_at": 1719864425.519879
+  },
+  {
     "sha": "ed4c76e0e40511c47ec59ce917d65034025f0419",
     "headline": "[TVMScript][Relax] Allow return statement in DataflowBlock",
     "body": "Prior to this commit, TVMScript required the return value of a Relax\nto be specified outside of any `with R.dataflow()` blocks.  This\nresulted in a common pattern, where the return value of a function was\nfirst called with `R.output(ret_value)`, to mark `ret_value` as a\n`tvm::relax::Var` instead of a `tvm::relax::DataflowVar`, followed\nimmediately by a `return ret_value` statement.\n\nThis commit updates the TVMScript parser to allow a `return` statement\ninside a `with R.dataflow()` block.  This is syntactic sugar that\nis equivalent to calling `R.output`, followed by a `return`.\n\nWith this change, the following two TVMScript examples are now\nequivalent.  (Prior to this change, the `return_inside_dataflow`\nexample would raise an error during parsing.)\n\n```python\n@R.function(private=True)\ndef output_then_return(A: R.Tensor):\n    with R.dataflow():\n        B = R.add(A, A)\n        C = R.multiply(B, B)\n        R.output(C)\n\n    return C\n\n@R.function(private=True)\ndef return_inside_dataflow(A: R.Tensor):\n    with R.dataflow():\n        B = R.add(A, A)\n        C = R.multiply(B, B)\n        return C\n```",
     "author": "Lunderberg",
     "date": "2024-07-01T14:09:16Z",
     "jobs": [
-      {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17131/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17131/2/display/redirect"
-      },
       {
         "name": "hexagon/pr-head",
         "status": "pending",
@@ -27,9 +124,19 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17131/1/display/redirect"
       },
       {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17131/2/display/redirect"
+      },
+      {
         "name": "cpu/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17131/2/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17131/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -98,8 +205,7 @@
       }
     ],
     "pr": 17131,
-    "pr_title": "[TVMScript][Relax] Allow return statement in DataflowBlock",
-    "updated_at": 1719860493.246382
+    "pr_title": "[TVMScript][Relax] Allow return statement in DataflowBlock"
   },
   {
     "sha": "0170bce4a164b77241a214dd05c938968f436f8f",
@@ -108,11 +214,6 @@
     "author": "wrongtest",
     "date": "2024-07-01T10:37:25Z",
     "jobs": [
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17128/3/display/redirect"
-      },
       {
         "name": "arm/pr-head",
         "status": "success",
@@ -142,6 +243,11 @@
         "name": "gpu/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17128/2/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17128/5/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -7768,112 +7874,6 @@
     ],
     "pr": 17075,
     "pr_title": "[Transform] Modify FuseTIR pass to propagate buffer attributes"
-  },
-  {
-    "sha": "d0b5eed5b3d4d43b1223a579a8a645ab66e59d3b",
-    "headline": "[KVCache][Test] Fix TIR attn kernels for uncommon group size",
-    "body": "This PR fixes the TIR attention kernels in PagedKVCache tests, which\nhad issues when handling uncommon GQA group size (e.g., 6).",
-    "author": "MasterJH5574",
-    "date": "2024-06-08T19:33:39Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17074/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9431092004/job/25979354248"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9431092049/job/25979354324"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9431092049/job/25979354393"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9431092049/job/25979354442"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9431092049/job/25979354481"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9437734140/job/25993932341"
-      }
-    ],
-    "pr": 17074,
-    "pr_title": "[KVCache][Test] Fix TIR attn kernels for uncommon group size"
   },
   {
     "sha": "25de533b79e1c91ae8af7591ce8586fc507be7cf",
