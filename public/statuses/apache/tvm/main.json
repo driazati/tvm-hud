@@ -1,5 +1,100 @@
 [
   {
+    "sha": "3e08e702fa27b51a948792d467a7734cd6995cf4",
+    "headline": "[WebGPU] Implement `tir.dp4a` with WGSL built-in function `dot4I8Pack\u2026",
+    "body": "\u2026ed` (#16976)\n\n* [WebGPU] Support `__dp4a(int8x4, int8x4)` as a pure extern method\r\n\r\nThis patch adds the support of `__dp4a(int8x4, int8x4)` as a pure\r\nextern method of WebGPU target. In the generated WGSL shader,\r\n`int8x4` will be translated into `u32`, and `__dp4a(int8x4, int8x4)`\r\nwill be translated into the WGSL built-in function\r\n`dot4I8Packed(u32, u32)`.\r\n\r\nHere is an example to use `__dp4a` in WebGPU target:\r\n\r\n```\r\nn = te.var(\"n\")\r\nA = te.placeholder((n,), \"int8x4\", name=\"A\")\r\nB = te.placeholder((n,), \"int8x4\", name=\"B\")\r\nC = te.compute(A.shape, lambda i: tvm.tir.call_pure_extern(\"int32\", \"__dp4a\", A[i], B[i]), name=\"C\")\r\ns = te.create_schedule(C.op)\r\nbx, tx = s[C].split(C.op.axis[0], factor=64)\r\ns[C].bind(bx, te.thread_axis(\"blockIdx.x\"))\r\ns[C].bind(tx, te.thread_axis(\"threadIdx.x\"))\r\nmod = tvm.build(s, [A, B, C], tgt, name=\"dp4aTest\")\r\n```\r\n\r\nIssue: #16627\r\n\r\n* Add validation\r\n\r\n* Add `dot4I8Packed` to WebGPU lower intrinsic\r\n\r\n* Implement builtin `dp4a` with `dot4I8Packed`\r\n\r\n* Small fix\r\n\r\n* Add missing comment",
+    "author": "Jiawei-Shao",
+    "date": "2024-07-04T18:03:56Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2046/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2014/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1843/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1574/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2289/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1900/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1785/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1704/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1728/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1724/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/499/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1721/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1721/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/9798403625/job/27056796132"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9798403625/job/27056796333"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9798403625/job/27056796496"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/9798403625/job/27056796694"
+      }
+    ],
+    "updated_at": 1720116768.104047
+  },
+  {
     "sha": "0df4103675a52cc5b9e6356cb003bb17c66bc1a4",
     "headline": "[Bugfix] Restrict CopyOnWrite to _type_final (#17132)",
     "body": "Prior to this commit, the `TVM_DEFINE_OBJECT_REF_COW_METHOD` could be\r\nused in any `ObjectRef` subclass to provide a `CopyOnWrite` method.\r\nHowever, the implementation of this method method was invalid if the\r\nobject's `ContainerType` could itself be subclassed.  In that case,\r\nusing `obj.CopyOnWrite()` when the object contains a subclass, and\r\nwhen a copy is required, would silently convert `obj` to instead\r\ncontain a base class.\r\n\r\nThis commit adds a `static_assert`, to the\r\n`TVM_DEFINE_OBJECT_REF_COW_METHOD` macro, preventing the macro from being\r\nused in classes that would have incorrect usage.\r\n\r\nCompilation with this change found two classes, `relax::Var` and\r\n`relax::BindingBlock` that were susceptible to this error, and the macro\r\nhas been removed from these classes.  For backwards-compatibility, the\r\n`CopyOnWrite` function for these two classes is provided explicitly.",
@@ -571,8 +666,7 @@
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9779066439/job/26997371777"
       }
-    ],
-    "updated_at": 1720112977.898612
+    ]
   },
   {
     "sha": "35318ab7b4d90933a9f0ffb8c5fbc5af50ab2b2f",
@@ -29148,100 +29242,6 @@
         "name": "Ping Reviewers / ping",
         "status": "queued",
         "url": "https://github.com/apache/tvm/actions/runs/9068868225/job/24917150631"
-      }
-    ]
-  },
-  {
-    "sha": "29337449db5d29bd3b9ad677fac1c5ac98ac5379",
-    "headline": "[Cuda] Skip FreeDataSpace when CUDA driver is in inconsistent state (\u2026",
-    "body": "\u2026#16980)\n\nPrior to this commit, the RAII handler in `NDArray` would always\r\nattempt to free a cuda memory allocation on destruction.  However, the\r\ncall to `cudaFree` may throw an exception.  If this happens during\r\nstack unwinding due to a previously-thrown exception, this causes the\r\nprogram to immediately terminate, making it difficult to identify the\r\nsource of the original error.\r\n\r\nThis can commonly occur if an async compute kernel performs an illegal\r\nmemory access.  An exception is thrown from the next cuda API call\r\nfollowing the asynchronous error, causing the stack to unwind.  If the\r\nstack contains any `NDArray` instances which reference cuda\r\nallocations, the destructor of these `NDArray` instances will attempt\r\nto free memory, triggering the segfault.\r\n\r\nThis commit updates the `CUDADeviceAPI::FreeDataSpace` function to\r\ncheck if the program is currently unwinding the stack due to a thrown\r\nexception, while the cuda driver has been left in an unrecoverable\r\nstate.  If this occurs, no attempt to free memory is made, as all cuda\r\nAPI calls will result in an error, and the original exception is\r\nallowed to propagate.\r\n\r\nIf the cuda driver is in an unrecoverable state, but no exception is\r\ncurrently unwinding the stack, then this may be the first cuda API\r\ncall to occur after the asynchronous error.  In this case, the\r\n`cudaFree` call is still performed, which throws the initial\r\nexception.",
-    "author": "Lunderberg",
-    "date": "2024-05-13T19:43:17Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1950/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1847/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1723/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1470/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1627/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2165/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1758/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1671/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1610/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1630/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1630/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/397/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1626/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "queued",
-        "url": "https://github.com/apache/tvm/actions/runs/9068841448/job/24917055041"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9068841448/job/24917055216"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9068841448/job/24917055411"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9068841448/job/24917055601"
       }
     ]
   }
