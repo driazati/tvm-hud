@@ -1,5 +1,214 @@
 [
   {
+    "sha": "cc8afdb0e3be52a3aa162ff14a81b11a793dca6b",
+    "headline": "Add support for `torch.nn.functional.max_pool2d` (#17189)",
+    "body": "* add a testcase for call_function\r\n\r\n* add maxpool2d to call_function",
+    "author": "mshr-h",
+    "date": "2024-07-24T13:36:19Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2084/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2071/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1894/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1613/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2331/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1959/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1834/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1774/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1766/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/539/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1761/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1759/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1742/display/redirect"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10077735346/job/27860939441"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10077735346/job/27860939798"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10077735346/job/27860940114"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10077735346/job/27860940415"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10077879638/job/27861447506"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10077984203/job/27861806145"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10078121575/job/27862294485"
+      }
+    ],
+    "updated_at": 1721830234.87661
+  },
+  {
+    "sha": "9f0f301c6f6de7548c6b2026bcb51590e0881ac5",
+    "headline": "[TIR][Analyzer] Simplify `x==x` expressions for all dtypes (#17158)",
+    "body": "* [TIR][Analyzer] Simplify `x==x` expressions for all dtypes\r\n\r\nPrior to this commit, there was no rule to simplify `x == x` into\r\n`True`.  In some cases, despite not having an explicit rewrite rule in\r\n`RewriteSimplifier`, the `RewriteSimplifier::CanProve` function would\r\ncheck if `x-x` simplifies to zero, relying on the rewrite rules used\r\nfor `tir::Sub`.  However, the rule to rewrite `x-x` into zero was only\r\nenabled for `int32`, `int64`, and floating-point types, so relying on\r\nthis behavior was inconsistent.\r\n\r\nThis commit updates the rewrite rules for both `tir::EQ` and\r\n`tir::Sub` to check for simplification of `x-x` or `x==x`, regardless\r\nof the datatype.  This change preserves the fast-path for index\r\ndata-types, in which `int32` and `int64` expressions may be simplified\r\nwithout checking for side effects.  For all other dtypes, the\r\ncancellation only applies when evaluating `x` has no side effects.\r\n\r\n* Add comment about simplifications of NaN/Inf",
+    "author": "Lunderberg",
+    "date": "2024-07-24T13:24:15Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2083/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2070/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1893/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1612/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2330/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1958/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1833/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1773/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1765/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/538/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1760/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1758/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1741/display/redirect"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10077530153/job/27860256453"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10077530153/job/27860256881"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10077530153/job/27860257316"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10077530153/job/27860257769"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10077653836/job/27860665852"
+      }
+    ]
+  },
+  {
     "sha": "ae1be53d6dc08ad8a95ddf6af022880e836e8704",
     "headline": "[Disco] Cross-group and p2p send/receive primitives (#17191)",
     "body": "This PR introduces the disco CCL primitives for cross-group\r\nand p2p communication.\r\n\r\nSpecifically, we introduce the send/receive primitives for one group\r\nto send a buffer to its next group, where every worker in the first\r\ngroup sends the buffer to the corresponding worker in the second\r\ngroup. The p2p communication refer to the send/receive operations\r\nto/from a target global worker.",
@@ -47,19 +256,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1772/display/redirect"
       },
       {
-        "name": "riscv/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1764/display/redirect"
-      },
-      {
         "name": "unity/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/537/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1759/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -72,13 +271,23 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1740/display/redirect"
       },
       {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1764/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1759/display/redirect"
+      },
+      {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10076238850/job/27856201666"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10076238850/job/27856201971"
       },
       {
@@ -110,9 +319,13 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10077183044/job/27859123872"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10077471090/job/27860065610"
       }
-    ],
-    "updated_at": 1721826852.92028
+    ]
   },
   {
     "sha": "9a07870b2e6480a533dbebe8d10e945fc173cf59",
@@ -122,14 +335,14 @@
     "date": "2024-07-24T06:11:12Z",
     "jobs": [
       {
+        "name": "cortexm/branch",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2067/display/redirect"
+      },
+      {
         "name": "arm/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2081/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2066/display/redirect"
       },
       {
         "name": "cpu/branch",
@@ -361,14 +574,14 @@
     "date": "2024-07-24T04:13:41Z",
     "jobs": [
       {
-        "name": "cortexm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/nightly/558/display/redirect"
-      },
-      {
         "name": "arm/branch",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/nightly/525/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/nightly/558/display/redirect"
       },
       {
         "name": "cpu/branch",
@@ -28114,364 +28327,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9293053565/job/25575358833"
-      }
-    ]
-  },
-  {
-    "sha": "d9240e4814b33993d8720a488abfd2571131908f",
-    "headline": "[Relax][Bugfix] Apply FuseOps to nested DataflowBlock (#17033)",
-    "body": "While it is ill-formed for control-flow to occur within a\r\n`DataflowBlock`, it is legal for a `DataflowBlock` to be contained\r\nwithin a control-flow.  Prior to this commit, the `FuseOps` and\r\n`FuseOpsByPattern` transforms erroneously skipped `DataflowBlock`\r\ninstances that were contained within a `relax::If` node.\r\n\r\nThis commit updates `FuseOps` to apply operator fusion to any dataflow\r\nblock, regardless of whether it is found at the top level of a a Relax\r\nfunction.\r\n\r\nCo-authored-by: Chris Sullivan <csullivan@octoml.ai>",
-    "author": "Lunderberg",
-    "date": "2024-05-29T11:43:41Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1985/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1764/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1645/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/438/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1898/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1506/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1661/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2214/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1798/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1712/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1665/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1664/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1661/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285460785/job/25550006912"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285460785/job/25550007182"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285460785/job/25550007458"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285460785/job/25550007713"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285489104/job/25550105441"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285614195/job/25550526292"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285684501/job/25550759654"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285715036/job/25550858705"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285977724/job/25551671822"
-      },
-      {
-        "name": "Teams / tag-teams",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285986518/job/25551699559"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285987694/job/25551703306"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9286248474/job/25552527071"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9286421746/job/25553092813"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9286608340/job/25553683600"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9286892705/job/25554613180"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9287061818/job/25555179805"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9287295403/job/25555954379"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9287526516/job/25556781985"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9287822231/job/25557783204"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9287992752/job/25558340258"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9288026647/job/25558447167"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9288256645/job/25559241115"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9288487100/job/25560065104"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9288792991/job/25561098486"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9288957549/job/25561663541"
-      }
-    ]
-  },
-  {
-    "sha": "7afac14ebd0f22a5a53c51d362a5bc853fb1c868",
-    "headline": "[BugFix][MSC] split name_string with index by colon from the right (#\u2026",
-    "body": "\u202617000)\n\nFixes a naming mismatch in MSCGraph where tensor_name could formatted as\r\n'string:index:index',and the corresponding node.name is 'string:index'.\r\nSplitting tensor_name from the right aligns it correctly.\r\n\r\nFor example, the TFLite default input name 'serving_default_input:0'\r\nbecomes 'serving_default_input:0:0' in MSCGraph, while node.name remains\r\n'serving_default_input:0'.",
-    "author": "psunn",
-    "date": "2024-05-29T08:41:33Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1984/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1897/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1763/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1644/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/437/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1505/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1660/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2213/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1797/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1711/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1664/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1663/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1660/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9282976558/job/25542169440"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9282976558/job/25542169706"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9282976558/job/25542169989"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9282976558/job/25542170325"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9282980191/job/25542180396"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9283033523/job/25542356529"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9283242028/job/25543045283"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9283528034/job/25543922638"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9283693854/job/25544431031"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9283899423/job/25545083950"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9284109166/job/25545771417"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9284378408/job/25546634429"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9284556041/job/25547174341"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9284717712/job/25547683653"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9284901281/job/25548278466"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285133976/job/25548979827"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9285306834/job/25549513181"
       }
     ]
   }
