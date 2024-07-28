@@ -1,5 +1,105 @@
 [
   {
+    "sha": "f62445cdd96a415d332585aa9702eaf1df3cf972",
+    "headline": "[Relax] Disable fusion for fetching from the packed params in FuseOps\u2026",
+    "body": "\u2026 (#17198)\n\n* [Relax] Disable fusion for fetching from the packed params in FuseOps\r\n\r\nThe order of bindings in the fusion result is determined by the first\r\nbinding in each partition group. When the packed param tuple is used,\r\nthe function usually begins with a numbers of `TupleGetItem` to unpack\r\nthe param tuple. Previously `TupleGetItem` is treated as `kInjective`,\r\nthis causes any operation that relies purely on these params to be\r\nmoved to the beginning of the function and increases the memory usage\r\nof the intermediate results.\r\n\r\n* lint",
+    "author": "vinx13",
+    "date": "2024-07-28T20:57:09Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2091/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2082/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1901/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1620/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2338/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1967/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1841/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1749/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1781/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1773/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/546/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1768/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1766/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10134703346/job/28021246850"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10134703346/job/28021246938"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10134703346/job/28021247002"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10134703346/job/28021247062"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10134724812/job/28021299768"
+      }
+    ],
+    "updated_at": 1722201036.637759
+  },
+  {
     "sha": "4330c110550242571da017a1b15ae0b765723ae8",
     "headline": "[Hexagon] Fix LWP assembly handler (predicate register) (#17204)",
     "body": "* Fix LWP assembly handler (predicate register) (#2216)\r\n\r\nThis solved the issue with LWP that appears with maxpool.\r\n\r\nThe problem was that the LWP handler was forgetting to save p0 (used by the handler). This predicate register needs to be saved too, just like r0-r5, as it had been decided that it was the responsibility of the handler to save everything (even these theoretically caller-saved registers).\r\nSaid differently, since it had been decided that calling the LWP handler would not follow the normal ABI, and that the LWP handler would save everything it touches (even normally caller-saved registers like r0-r15 and p0-3), then it absolutely needs to save the predicate registers too (in particular p0, which was causing the issue).\r\n\r\nThe issue appeared only with maxpool because it's the only one that had a state saved in p0 before calling the LWP handler. And this call destroyed the content of what it had saved, making it subsequently branch to different portions of the code.\r\n\r\nFix: Allocate 32 bytes (instead of 24 previously), in order to save p3:0, and I save those at the bottom of the stack. Restore it at the end of the LWP handler.\r\n\r\n* Remove training spaces\r\n\r\n---------\r\n\r\nCo-authored-by: Slama, Franck <fslama@qti.qualcomm.com>",
@@ -465,9 +565,23 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10134374680/job/28020539252"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10134501231/job/28020809591"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10134567637/job/28020946766"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10134650046/job/28021122936"
       }
-    ],
-    "updated_at": 1722197396.448271
+    ]
   },
   {
     "sha": "df33d73ceca1d0c4ba280cfbcce504b232111d4c",
@@ -29573,150 +29687,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9319630906/job/25654611647"
-      }
-    ]
-  },
-  {
-    "sha": "820f1b617a4f8ccf196803c5e48a4f155c929c4a",
-    "headline": "[Runtime] Compatibility with dmlc::Stream API changes (#16998)",
-    "body": "* [Runtime] Compatibility with dmlc::Stream API changes\r\n\r\nThis commit updates TVM implementations of `dmlc::Stream`.  With\r\nhttps://github.com/dmlc/dmlc-core/pull/686, this API now requires\r\nthe `Write` method to return the number of bytes written.  This change\r\nallows partial writes to be correctly handled.\r\n\r\n* Update dmlc-core version\r\n\r\n* lint fix",
-    "author": "Lunderberg",
-    "date": "2024-05-30T16:41:03Z",
-    "jobs": [
-      {
-        "name": "cortexm/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/1905/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2222/display/redirect"
-      },
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/1992/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1770/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1512/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1667/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1806/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1718/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1651/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1671/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1670/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/445/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1667/display/redirect"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306139361/job/25614660156"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306139361/job/25614660430"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306139361/job/25614660634"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306139361/job/25614660874"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306195256/job/25614847565"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306373377/job/25615440078"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306596485/job/25616124949"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306745151/job/25616574173"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9306918087/job/25617119562"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9307085828/job/25617655011"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9307335054/job/25618394940"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9307485220/job/25618863726"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9307631837/job/25619306407"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9307796268/job/25619832903"
       }
     ]
   }
