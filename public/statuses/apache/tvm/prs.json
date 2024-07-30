@@ -1,5 +1,117 @@
 [
   {
+    "sha": "6e23bfe86a8a51e5c632e6804aea51c0e931caa8",
+    "headline": "[Relax] Allow `out_sinfo` to be omitted from `R.call_tir`",
+    "body": "Prior to this commit, the Relax type produced by calling a TIR\nPrimFunc needed to be explicitly specified using the `out_sinfo`\nargument.  These output shapes are required in order to allocate\noutput tensors during the `CallTIRRewrite` lowering pass.  However,\nspecifying them explicitly, especially in hand-written functions,\nduplicates information that is already present in the `PrimFunc`\nsignature, and introduces the potential for inconsistencies.\n\nThis commit updates the `MakeCallTIR` function to infer `out_sinfo` if\nnot explicitly specified.  This inference uses the number of relax\narguments to identify output parameters in the signature of the\n`PrimFunc`, which then become the return values from `R.call_tir`.\nCurrently, this inference of `out_sinfo` occurs when constructing the\n`relax::Call` object, after which the `out_sinfo` is always present in\nthe Relax IR.",
+    "author": "Lunderberg",
+    "date": "2024-07-30T14:15:08Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17216/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10164515675/job/28110064167"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10164515849/job/28110064941"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10164515849/job/28110065380"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10164515849/job/28110065859"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10164515849/job/28110066296"
+      }
+    ],
+    "pr": 17216,
+    "pr_title": " [Relax] Allow `out_sinfo` to be omitted from `R.call_tir`",
+    "updated_at": 1722351980.518865
+  },
+  {
+    "sha": "3e765398b34c5078578574289722c31ae3765d9a",
+    "headline": "Add unit tests for R.call_tir, marking current limitations",
+    "body": "",
+    "author": "Lunderberg",
+    "date": "2024-07-30T13:10:50Z",
+    "jobs": [],
+    "pr": 17216,
+    "pr_title": " [Relax] Allow `out_sinfo` to be omitted from `R.call_tir`"
+  },
+  {
     "sha": "43eb1a1816704caf2a75316f4a135bc9f3a7d097",
     "headline": "Created Look Up Table for unary ops such that the values are computed\u2026",
     "body": "\u2026 during compile time and take op is used to access the values at runtime",
@@ -108,8 +220,7 @@
       }
     ],
     "pr": 17214,
-    "pr_title": "Replacing unary ops with LookUpTable and Take op to improve performance",
-    "updated_at": 1722348238.062576
+    "pr_title": "Replacing unary ops with LookUpTable and Take op to improve performance"
   },
   {
     "sha": "0a52ef090e69fa6821a7d07014cbf4b51b98ba83",
@@ -11222,213 +11333,6 @@
     ],
     "pr": 17143,
     "pr_title": "[3rdparty] Bump FlashInfer"
-  },
-  {
-    "sha": "4bacbf6a7d35ad7284084a59646dc9333af7d91a",
-    "headline": "lint fix",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-08T19:23:38Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17142/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17142/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9845691586/job/27181765639"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9845691833/job/27181766746"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9845691833/job/27181767043"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9845691833/job/27181767290"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9845691833/job/27181767609"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9944201624/job/27469725831"
-      }
-    ],
-    "pr": 17142,
-    "pr_title": "[Bugfix] Allow import of TVM when current directory is read-only"
-  },
-  {
-    "sha": "110314bfec28023b68b11f83584509053d33f351",
-    "headline": "[Bugfix] Allow import of TVM when current directory is read-only",
-    "body": "Prior to this commit, TVM could only be imported if the current\ndirectory had write privileges.  This was due to the use of\n`tvm.contrib.pickle_memoize` to cache the winograd transformation\nmatrices.\n\nThis commit makes multiple related fixes, to ensure that (1) TVM can\nbe imported regardless of directory permissions, (2) the working\ndirectory is not left in a cluttered state, and (3) cache files are\ngenerated in an expected location to be reused later.\n\n* The cache directory is only generated when required, just prior to\n  saving a cache.\n\n* The cache directory defaults to `$HOME/.cache/tvm/pkl_memoize`,\n  rather than `.pkl_memorize_py3` in the working directory.\n\n* The cache directory respects `XDG_CACHE_HOME`, using\n  `$XDG_CACHE_HOME/tvm/pkl_memoize` if set.",
-    "author": "Lunderberg",
-    "date": "2024-07-08T12:58:14Z",
-    "jobs": [
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17142/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9841519305/job/27168293851"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9841519749/job/27168310885"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9841519749/job/27168311287"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9841519749/job/27168311614"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9841519749/job/27168311968"
-      }
-    ],
-    "pr": 17142,
-    "pr_title": "[Bugfix] Allow import of TVM when current directory is read-only"
   },
   {
     "sha": "23a5959bb813e5e2e1725704a2904410347331ee",
