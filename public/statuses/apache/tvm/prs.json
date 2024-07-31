@@ -1,5 +1,107 @@
 [
   {
+    "sha": "12d3a05c8faa6760d93c74af5c3f84e850a2c05f",
+    "headline": "[Relax] Fix segfault in rewrite_bindings for MatchCast node",
+    "body": "Prior to this commit, the `tvm.relax.dpl.rewrite_bindings` utility\nwould segfault if its input contained a `DataflowBlock` whose first\nbinding was a `MatchCast`.\n\nThe root cause is use of an unintialized `const VarNode* cur_user_;`\nwhen collecting the variable usage.  This variable is only initialized\nfor `VarBinding` nodes, and may be used uninitialized if a `MatchCast`\nnode is encountered before the first `VarBinding`.  This uninitialized\nvalue is later dereferenced during while pattern-matching, causing a\nsegfault.\n\nThis commit provides a default value of `nullptr` for\n`MatcherUseDefAnalysis::cur_user_`, preventing the segfault.",
+    "author": "Lunderberg",
+    "date": "2024-07-31T17:22:18Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17226/2/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17226/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10184911219/job/28173286697"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10184911519/job/28173287781"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10184911519/job/28173288325"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10184911519/job/28173288809"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10184911519/job/28173289318"
+      }
+    ],
+    "pr": 17226,
+    "pr_title": "[Relax] Fix segfault in rewrite_bindings for MatchCast node",
+    "updated_at": 1722449334.03072
+  },
+  {
     "sha": "2168b180384b1936b9c67fd9592103d9fcac6253",
     "headline": "lint fixes",
     "body": "",
@@ -14,12 +116,12 @@
       {
         "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17224/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17224/3/display/redirect"
       },
       {
         "name": "cpu/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17224/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17224/3/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
@@ -34,7 +136,7 @@
       {
         "name": "hexagon/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17224/2/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17224/3/display/redirect"
       },
       {
         "name": "i386/pr-head",
@@ -47,19 +149,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17224/2/display/redirect"
       },
       {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17224/2/display/redirect"
-      },
-      {
         "name": "unity/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17224/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17224/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -70,6 +162,16 @@
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17224/2/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17224/2/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17224/2/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -83,7 +185,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10183340132/job/28168036643"
       },
       {
@@ -98,8 +200,7 @@
       }
     ],
     "pr": 17224,
-    "pr_title": "[Relax][Analysis] Handle recursive functions in CollectVarUsage",
-    "updated_at": 1722445311.066744
+    "pr_title": "[Relax][Analysis] Handle recursive functions in CollectVarUsage"
   },
   {
     "sha": "49bba907de76af43b58a1d447a9e25fe4afb8428",
@@ -114,9 +215,19 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17224/1/display/redirect"
       },
       {
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17224/1/display/redirect"
+      },
+      {
         "name": "unity/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17224/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17224/1/display/redirect"
       },
       {
         "name": "arm/pr-head",
@@ -157,16 +268,6 @@
         "name": "minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17224/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17224/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17224/1/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -210,44 +311,29 @@
     "date": "2024-07-31T14:15:25Z",
     "jobs": [
       {
-        "name": "arm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17216/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17216/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17216/2/display/redirect"
-      },
-      {
         "name": "cross-isa-minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17216/2/display/redirect"
       },
       {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17216/2/display/redirect"
-      },
-      {
         "name": "hexagon/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17216/6/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17216/7/display/redirect"
       },
       {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17216/2/display/redirect"
+        "name": "arm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17216/2/display/redirect"
       },
       {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17216/2/display/redirect"
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17216/4/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17216/2/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -255,9 +341,24 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17216/2/display/redirect"
       },
       {
+        "name": "gpu/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17216/2/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17216/2/display/redirect"
+      },
+      {
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17216/2/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17216/2/display/redirect"
       },
       {
         "name": "riscv/pr-head",
@@ -316,11 +417,6 @@
     "date": "2024-07-31T13:39:15Z",
     "jobs": [
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17219/9/display/redirect"
-      },
-      {
         "name": "cross-isa-minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17219/4/display/redirect"
@@ -334,6 +430,11 @@
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17219/3/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17219/9/display/redirect"
       },
       {
         "name": "cpu/pr-head",
@@ -8074,329 +8175,6 @@
     "pr_title": "[Relax] Integrate cuDNN attention"
   },
   {
-    "sha": "a7bf78f7708433ebeebfe524dd54976cf0a32ba1",
-    "headline": "lint fix",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-16T18:59:15Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/19/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/16/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/17/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/20/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/16/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/16/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9962566484/job/27526635677"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9962566656/job/27526647398"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9962566656/job/27526647661"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9962566656/job/27526647887"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9962566656/job/27526648172"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/10079759341/job/27867844276"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "68fbeed1233f0f7de2354c7e3609905263d2b544",
-    "headline": "Updated base class name from ExprRewriter to PatternMatchingRewriter",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-16T18:23:30Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/16/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/17/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9962123326/job/27525184001"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/9962123493/job/27525184438"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9962123493/job/27525184776"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9962123493/job/27525185011"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/9962123493/job/27525185322"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9962153293/job/27525276075"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "7f62f70860623e0644d85413a9fd34c5551091b1",
-    "headline": "Fix breakage in unit tests",
-    "body": "One unit test that had been relying on invalid shape propagation.\nAnother unit test that required constructed an ill-formed output to\ntest against.",
-    "author": "Lunderberg",
-    "date": "2024-07-16T14:04:20Z",
-    "jobs": [
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/16/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9958393059/job/27512690648"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9958393596/job/27512692832"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9958393596/job/27512693591"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9958393596/job/27512694211"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9958393596/job/27512694619"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9960088812/job/27518478291"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9960935048/job/27521317763"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
     "sha": "f19d46a54f5d552a498adb16ec8f028c169d5906",
     "headline": "Revert the task_extra_lint.sh removal",
     "body": "",
@@ -9356,117 +9134,6 @@
     "pr_title": "[TIR][Analyzer] Simplify `x==x` expressions for all dtypes"
   },
   {
-    "sha": "234ddde3adc9dfe1854f165c3e0150b064c78de7",
-    "headline": "Add test case for matching against arbitrary dtype",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-15T15:35:33Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/14/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/15/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9945812294/job/27474941416"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9945812386/job/27474950721"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9945812386/job/27474951138"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9945812386/job/27474951452"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9945812386/job/27474951684"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "826d270899bd80603be96854fda5dfd3e8bab48f",
-    "headline": "Update based on review comments",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-15T14:15:50Z",
-    "jobs": [],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
     "sha": "d1eafaf7595b230d783f9d67e45b6ce918731944",
     "headline": "[release] Update version to 0.18.dev0 on main branch",
     "body": "",
@@ -9709,122 +9376,6 @@
     "pr_title": "[Relax] Integrate cuDNN attention"
   },
   {
-    "sha": "46bbdb041827981fd30f548e01f3662e9051dbac",
-    "headline": "lint fix",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-12T18:56:07Z",
-    "jobs": [
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/11/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/13/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/11/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9912769008/job/27388316207"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9912769042/job/27388325381"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9912769042/job/27388325619"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9912769042/job/27388325807"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9912769042/job/27388325992"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9914521279/job/27393749462"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9940701478/job/27458032052"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9940960703/job/27458908284"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
     "sha": "374ad4e6ef2464fbd2346c0a5d489f3675bd9021",
     "headline": "[CI] Remove lint step from `unity/pr-head` step",
     "body": "This step should only be performed as part of the `lint/pr-head` CI\nstep.  It was included as part of the unity-specific CI steps prior to\nmerging of unity into main.  It is no longer necessary as part of\n`unity/pr-head`.",
@@ -10025,107 +9576,6 @@
     ],
     "pr": 17154,
     "pr_title": "[TVMScript] Print small constant arrays as in-line R.const"
-  },
-  {
-    "sha": "d89c22f503c7eb2214d87ba3730ec5ba50d7e954",
-    "headline": "lint fixes",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-12T17:52:18Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/12/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9912045847/job/27386035462"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9912061971/job/27386088542"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/9912061971/job/27386088846"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/9912061971/job/27386089096"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9912061971/job/27386089363"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
   },
   {
     "sha": "f8dfb894faaf2f8eb7d217606a21198bcdadbad2",
@@ -10436,410 +9886,6 @@
     "pr_title": "GraphExecutor: Fix wild pointer assign when input and output are reshape"
   },
   {
-    "sha": "df86a8197925ca0e8e668615b2bbf7f64c391088",
-    "headline": "Lint fix",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-12T01:16:10Z",
-    "jobs": [
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/11/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9900838798/job/27352265543"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9900839071/job/27352266100"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9900839071/job/27352266294"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9900839071/job/27352266466"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9900839071/job/27352266630"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "9e7bd0be4fb520e564860615593687f9d387431f",
-    "headline": "lint fix",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-11T19:59:55Z",
-    "jobs": [
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/10/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9897703937/job/27342832913"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9897704204/job/27342833965"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9897704204/job/27342834240"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9897704204/job/27342834488"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9897704204/job/27342834747"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "c3144ca499f0ae995d14a3ec3d31bb2aec00b556",
-    "headline": "Add docstrings",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-11T17:54:10Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/9/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9896198576/job/27337842539"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9896198751/job/27337856107"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9896198751/job/27337856456"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9896198751/job/27337856783"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9896198751/job/27337857067"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "0c038be6f703f203e704e98d30e3364d0ee66fe4",
-    "headline": "lint fix for import order",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-11T16:54:42Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/6/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/8/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9895463163/job/27335415704"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/9895463334/job/27335416616"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/9895463334/job/27335416942"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9895463334/job/27335417300"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9895463334/job/27335417605"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
     "sha": "c2c487191b2bc048f6880efd2469363297747f9b",
     "headline": "GraphExecutor: Fix wild pointer assign when input and output are reshape",
     "body": "",
@@ -10941,107 +9987,6 @@
     "pr_title": "GraphExecutor: Fix wild pointer assign when input and output are reshape"
   },
   {
-    "sha": "07935d19976a37af17853fb8ed47dc1c0b615677",
-    "headline": "Remove unnecessary change which broke a unit test",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-11T12:33:14Z",
-    "jobs": [
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/7/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/4/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9891488493/job/27322022557"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9891488587/job/27322022956"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9891488587/job/27322023386"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9891488587/job/27322023735"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9891488587/job/27322024108"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
     "sha": "f59089754705c7057fb21dba810ddbacd82c3b0e",
     "headline": "[WebGPU] Fall back to 256MB for maxBufferSize if needed",
     "body": "",
@@ -11133,107 +10078,6 @@
     "pr_title": "[WebGPU] Fall back to 256MB for maxBufferSize if needed"
   },
   {
-    "sha": "28a72e9580236a58451084edb9f4c847aa9c5bc5",
-    "headline": "lint fixes",
-    "body": "",
-    "author": "Lunderberg",
-    "date": "2024-07-10T20:05:38Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/5/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/3/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9881165520/job/27291341696"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9881165582/job/27291351566"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9881165582/job/27291351798"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9881165582/job/27291352018"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9881165582/job/27291352237"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
     "sha": "048c7244d9b76f5bf7f8b53095ca9cdade4123df",
     "headline": "[IR] Implement cross-IR call-map collection",
     "body": "Prior to this commit, the `relax.transform.DeadCodeElimination` only\nconsidered calls from Relax to TIR when identifying unused functions.\nThis would erroneously remove TIR functions that are called\nindirectly.\n\nThis commit adds a new utility `tvm.ir.analysis.collect_call_map`,\nwhich can collect the call map of an `IRModule` across both Relax and\nTIR, using it in Relax's `DeadCodeElimination` transform.",
@@ -11242,137 +10086,6 @@
     "jobs": [],
     "pr": 17202,
     "pr_title": "[Relax] Update GlobalVar name in AttachGlobalSymbol"
-  },
-  {
-    "sha": "23a5959bb813e5e2e1725704a2904410347331ee",
-    "headline": "[Relax] Canonicalize known symbolic shapes in Relax expressions",
-    "body": "Prior to this commit, known constants in Relax functions would be\ninlined by the `CanonicalizeBindings` pass, but only if they appeared as Relax\nexpressions (e.g. `R.const` or `R.prim_value`).  Known constants that\nappeared as TIR variables (e.g. symbolic shapes) would be kept as\ndynamic parameters, even if they were known at compile time.\n\nThis commit updates the `CanonicalizeBindings` pass to identify known\nvalues of symbolic shapes, and to use these known values in shape\nexpressions.",
-    "author": "Lunderberg",
-    "date": "2024-07-05T19:54:34Z",
-    "jobs": [],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "7423474ccb2939cad5ddde8ccc841e9288455149",
-    "headline": "[TVMScript][Bugfix] Normalize relax::If with function's TIR var",
-    "body": "Prior to this commit, the branches of `relax::If` were normalized\nusing `EraseToWellDefinedInScope`, using a fresh variable scope.\nWhile this had the intended behavior of preventing variables defined\nin a single branch from being usable outside of the conditional, it\nalso caused the conditional's branches to treat function-scope\nsymbolic variables as if they were undefined.\n\nThis commit updates the `tvm::relax::Normalizer` so that `relax::If`\nis normalized within an inherited scope.  This preserves the previous\nbehavior for symbolic variables defined within a branch, but allows\nshapes within a branch to use symbolic variables defined outside of\nthe branch.",
-    "author": "Lunderberg",
-    "date": "2024-07-05T18:41:22Z",
-    "jobs": [],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "7488ea146c606e6bc549e8f8d5dfd379ff673d07",
-    "headline": "[Relax][Refactor] Implement Rewriter class for pattern-rewrite",
-    "body": "Prior to this commit, the pattern to be matched and the rewrite to be\nperformed were provided as separate arguments.  This commit introduces\na new class `ExprRewriter`, which contains both parts.\n\nThis abstraction will make it easier to combine multiple different\nrewrite rules, applying them in a single pass.",
-    "author": "Lunderberg",
-    "date": "2024-06-29T12:35:13Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17149/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9880212395/job/27288229151"
-      },
-      {
-        "name": "CI / Android",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/9880212477/job/27288229607"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9880212477/job/27288229961"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9880212477/job/27288230215"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "cancelled",
-        "url": "https://github.com/apache/tvm/actions/runs/9880212477/job/27288230509"
-      }
-    ],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
-  },
-  {
-    "sha": "486bfca9836ec8a452e5c3848eafd443b4c98330",
-    "headline": "[Relax][Refactor] Reorganize pattern-matching",
-    "body": "A follow-up to https://github.com/apache/tvm/pull/16730.  Now that the\nimplementations for `rewrite_call` and `rewrite_bindings` are in\nseparate classes, they can be further split out into separate files.",
-    "author": "Lunderberg",
-    "date": "2024-06-28T19:59:47Z",
-    "jobs": [],
-    "pr": 17149,
-    "pr_title": " [Relax] Implement Rewriter class for pattern-rewrite"
   },
   {
     "sha": "75000ad6c6cf6def9b153481982f9d193ba02cc4",
