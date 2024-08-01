@@ -507,7 +507,7 @@
         "url": "https://github.com/tlc-pack/relax/actions/runs/4956170035/job/13426765310"
       }
     ],
-    "updated_at": 1722518283.621206
+    "updated_at": 1722521778.607088
   },
   {
     "sha": "9b34d043cb54377acc5a50427ae5c54e00e426ba",
@@ -854,70 +854,6 @@
     "jobs": []
   },
   {
-    "sha": "8c6c3e94c8eaf4bf28e364a9c50a0249578765c4",
-    "headline": "[Fix][Pass] TIR op pattern kind analysis with int var in signature (#\u2026",
-    "body": "\u2026399)\n\nThis PR fixes a bug in TIR pattern kind analyzer.\r\n\r\nPreviously the analyzer requires the input TIR function signature\r\nnot to have any symbolic var other than Buffer var. This behavior\r\nwill throw exception whenever the input TIR function signature contains\r\ninteger var or other var, while the expected behavior is to ignore\r\nthese vars instead of throwing error. This PR fixes this issue.",
-    "author": "MasterJH5574",
-    "date": "2023-02-02T18:07:15Z",
-    "jobs": []
-  },
-  {
-    "sha": "fcc25b1a18daa6980b183bae6152da470c2584ca",
-    "headline": "[Pass] Rewrite dataflow reshape (#393)",
-    "body": "This PR introduces the dataflow reshape rewrite pass, which transform all\r\ndataflow TIR reshape bindings inside a Relax function into a call of\r\nruntime packed function `relax.vm.builtin.reshape`. Here \u201cdataflow TIR\r\nreshape bindings\u201d means\r\n1. the binding value is a `call_tir` of any PrimFunc that is essentially\r\ndoing a reshape operation,\r\n2. the binding var is a DataflowVar, or in other words, the binding is\r\ninside a DataflowBlock and the binding var is not a block output var.\r\n\r\nThe `relax.vm.builtin.reshape` packed function creates a view of the input\r\nNDArray with the target shape, instead of doing data copy.\r\n\r\nIn order to fulfill this pass, this PR contains the following parts.\r\n1. An analysis function that detects the reshape pattern of PrimFuncs.\r\n2. The dataflow reshape rewrite pass itself.\r\n3. The implementation of `relax.vm.builtin.reshape` as a PackedFunc.\r\n\r\nThis PR contains unit tests for each part.",
-    "author": "MasterJH5574",
-    "date": "2023-02-02T18:06:48Z",
-    "jobs": []
-  },
-  {
-    "sha": "35d7382508a34704d8f574d551ede43e28b68f83",
-    "headline": "Allow keeping bound constants in OperatorFusor (#397)",
-    "body": "",
-    "author": "masahi",
-    "date": "2023-02-02T07:09:26Z",
-    "jobs": []
-  },
-  {
-    "sha": "4fd316e4d575911c00ea0ab9cd8b37b9815ee365",
-    "headline": "[Debugging] Support PrimValue, StringImm, and DataTypeImm in the AST \u2026",
-    "body": "\u2026printer (#396)",
-    "author": "slyubomirsky",
-    "date": "2023-02-01T06:10:26Z",
-    "jobs": []
-  },
-  {
-    "sha": "faa0ee60319e5e42f3ff52a2e744042dc43840d5",
-    "headline": "[Fix] Type comparison in auto arg converter (#394)",
-    "body": "Previously when running all relax unit tests on my machine using\r\n`pytest test_*`, one auto argument converter tests always fail.\r\n(And when I only run that single test, it passes very well.)\r\n\r\nAfter inspection, I noted that in the failed test, though `anno`\r\nis printed as `typing.Optional[tvm.ir.expr.RelayExpr]`, the comparison\r\nbelow `anno is Optional[Expr]` still results false.\r\nhttps://github.com/tlc-pack/relax/blob/2e5e47962238be7385486241203d1a8146f38a0e/python/tvm/relax/utils.py#L252-L253\r\n\r\nI tweaked the comparison to `in` and all tests seem to pass very\r\nsuccessfully. I guess the issue might relate to some address issue (?)\r\nbut I\u2019m not 100% sure about this.",
-    "author": "MasterJH5574",
-    "date": "2023-02-01T04:11:21Z",
-    "jobs": []
-  },
-  {
-    "sha": "791e1422ac319a774303b9a0965264ebeedbc834",
-    "headline": "[Fix] Printer support for PrimValue, StringImm, DataTypeImm (#395)",
-    "body": "This PR supports printing out PrimValue, StringImm, DataTypeImm\r\nusing PrettyPrint, which will be used on Python side printing\r\nand sometimes C++ side printing.",
-    "author": "MasterJH5574",
-    "date": "2023-01-31T23:51:00Z",
-    "jobs": []
-  },
-  {
-    "sha": "a35ecb982debc9bec9484a900372b43eb3b87c14",
-    "headline": "[BYOC] Refactor and bugfix on `run_codegen` (#382)",
-    "body": "* Simplify the codegen behavior. For simplicity, run_codegen pass will now target any function with codegen annotation.\r\n* Update test script to match with the latest TVMScript.\r\n* Minor bug fix for test failure",
-    "author": "sunggg",
-    "date": "2023-01-31T13:39:17Z",
-    "jobs": []
-  },
-  {
-    "sha": "70b9540c88bff37eec108bf880a0340843f32967",
-    "headline": "[REFACTOR] Simplify Builtin Ops with PrimValue. (#392)",
-    "body": "This PR simplifies CallBuiltin by using PrimValue/StringImm/DataTypeImm\r\nto directly represent the positional argument instead of using customized\r\ntranslation of Attrs.\r\n\r\n- Remove BuiltinFuncAttrs\r\n- Use directly call_packed instead for most cases.\r\n- Introduce call_builtin_with_ctx to cover the remaining usecase of call_builtin\r\n  that requires ctx.\r\n- Update the testcases accordingly.\r\n\r\nThis PR also serves as an example on how can we further simplify other\r\nspecial lowering logics through PrimValue, which can be done in future PRs.",
-    "author": "tqchen",
-    "date": "2023-01-31T01:26:17Z",
-    "jobs": []
-  },
-  {
     "sha": "a287a962712360d36ba44d51b480ab0a033a77a7",
     "headline": "[FIX][Utils] Add CopyWithNewParams and Check repeated parameters (#389)",
     "body": "This PR adds:\r\n1. A check for any variable used as parameters in different functions of the same IRModule\r\n2. A util to copy function while copying parameters in the new function, so the new function satisfies 1.",
@@ -947,38 +883,6 @@
     "body": "This PR is the last part of the `sinfo_args` switch tracked by #377,\r\nwhich adds the StructInfo check in well-formed check, to ensure that\r\nthe StructInfo in `sinfo_args` does not refer to any undefined\r\nsymbolic variables.",
     "author": "MasterJH5574",
     "date": "2023-01-28T16:01:58Z",
-    "jobs": []
-  },
-  {
-    "sha": "7228f487580e24411631dfe9fd8f8244319cea66",
-    "headline": "[Refactor][AST] `sinfo_args` A1: Update API of call_tir, call_packed,\u2026",
-    "body": "\u2026 etc. (#386)\n\n* [Refactor][AST] `sinfo_args` A1: Update API of call_tir, call_packed, etc\r\n\r\nFollowing #377 and #379, this PR followups to update the API of `call_tir`,\r\n`call_packed`, `call_builtin` and `invoke_closure`.\r\n\r\n* The API of `call_tir` is changed to\r\n  ```python\r\n  def call_tir(\r\n      func: Union[str, Expr],\r\n      args: Expr,\r\n      out_sinfo: Union[TensorStructInfo, TupleStructInfo],\r\n      tir_vars: Optional[Union[ShapeExpr, Tuple[PrimExpr], List[PrimExpr]]] = None,\r\n  ) -> Call:\r\n      ...\r\n  ```\r\n  where we combine the `shape` and `dtype` parameters into `out_sinfo`. In\r\n  the concrete CallNode of `call_tir`, the output shape is no longer passed\r\n  as an CallNode argument and passed in the `sinfo_args` instead.\r\n\r\n* For `call_packed`, `call_builtin` and `invoke_closure`, we change the\r\n  `type_args` parameter to `sinfo_args`. For example, the API of `call_packed`\r\n  is updated to\r\n  ```python\r\n  def call_packed(\r\n      func: str,\r\n      *args: Expr,\r\n      sinfo_args: Union[StructInfo, List[StructInfo]],\r\n      **kwargs: Any,\r\n  ) -> Call:\r\n      ...\r\n  ```\r\n\r\n---\r\n\r\nOne thing specific to note is about our existing dataflow pattern language.\r\nPreviously we have a sugar function for `call_tir`:\r\n```python\r\ndef is_call_tir(\r\n    func_name: str,\r\n    args: Union[List, Tuple, TuplePattern] = None,\r\n    shape: Union[Tuple, List[tvm.ir.PrimExpr], DFPattern] = None,\r\n) -> CallPattern:\r\n    ...\r\n```\r\nSince we changed the API of `call_tir` - the CallNode does not contain the\r\nshape as one argument, - together with the fact that the dataflow pattern\r\nlanguage does not yet support matching StructInfo, we have no approach to\r\nmatch the shape anymore. Therefore, the `shape` parameter is removed from\r\n`is_call_tir`. I left some Todo items there for future `sinfo_args` matching\r\nsupport.\r\n\r\n* Update call_tir API and address comments\r\n\r\nNow the expected type of `out_sinfo` is:\r\n```python\r\nout_sinfo: Union[TensorStructInfo, List[TensorStructInfo]]\r\n```",
-    "author": "MasterJH5574",
-    "date": "2023-01-28T09:39:33Z",
-    "jobs": []
-  },
-  {
-    "sha": "68314b9e3ca194042c5a21eb70691ada5fcc309a",
-    "headline": "[Refactor][AST] `sinfo_args` A2: Remove VisitType (#387)",
-    "body": "This PR is part of the `sinfo_args` switch, as tracked by #377.\r\n\r\nThis PR removes VisitType from ExprFunctor in Relax, as Type is no\r\nlonger a standalone construct in any Relax AST, with the switch of\r\n`sinfo_args` introduced by #379.",
-    "author": "MasterJH5574",
-    "date": "2023-01-28T03:51:14Z",
-    "jobs": []
-  },
-  {
-    "sha": "942cf28010837d2bcd17ef1b654a44fad73b2499",
-    "headline": "[Utils] Introduce Auto Arg Converter for Relax Ops and Functions (#381)",
-    "body": "This PR introduce a new decorator to automatically convert the arguments\r\nto the expr according to the Relax Expr, including:\r\n\r\n1. convert `PrimExpr` to `relax.PrimValue`;\r\n2. convert `tvm.String` or `str` to `relax.StringImm`;\r\n3. convert tuple/list of `PrimExpr` to `relax.ShapeExpr`;\r\n4. convert tuple/list of `Expr` to `relax.Tuple`.",
-    "author": "Hzfengsy",
-    "date": "2023-01-27T17:30:34Z",
-    "jobs": []
-  },
-  {
-    "sha": "fc2aa92342eba9262cf5caa15937ab61e79a3761",
-    "headline": "[Refacror][AST] `sinfo_args` A0: Introduce `sinfo_args` (#379)",
-    "body": "This PR is the kickoff action of our switch towards `sinfo_args` in\r\nCallNode, as discussed in #356 and tracked by #377.\r\n\r\n* CallNode field `type_args` is changed to `sinfo_args`, with type\r\n`Array<StructInfo>`.\r\n\r\n* For intrinsic ops like `call_tir`/`call_packed`, this PR keeps the\r\n`sinfo_args` value as **the plain StructInfo generated from the static\r\ntype**, even if those op calls were provided with richer StructInfo at\r\nthe time of creation. The API changes, creations and structure info\r\ndeductions of these intrinsic ops will be left to the next PR, as the\r\ntracking issue #377. Since that PR, our APIs and structure info\r\ndeductions of these ops will no longer rely on types.",
-    "author": "MasterJH5574",
-    "date": "2023-01-27T02:24:57Z",
     "jobs": []
   },
   {
@@ -1078,38 +982,6 @@
     "jobs": []
   },
   {
-    "sha": "005cd1e6e5a7f58f60d64ca509dfa64b0f187613",
-    "headline": "[Fix][TVMScript] Parse and print `tir_vars` of `call_tir` properly (#\u2026",
-    "body": "\u2026361)",
-    "author": "MasterJH5574",
-    "date": "2023-01-18T00:32:57Z",
-    "jobs": []
-  },
-  {
-    "sha": "2d0b90ed98133f8179a9fbdf5a8f0374acf40f13",
-    "headline": "[FIX] fix warning for the latest clang (#362)",
-    "body": "This PR fixes compilation warnings from the latest clang compiler.",
-    "author": "Hzfengsy",
-    "date": "2023-01-17T19:09:04Z",
-    "jobs": []
-  },
-  {
-    "sha": "ec38fe1c29e875e5720d8ccb8dc2cb0e30a6fc73",
-    "headline": "[Op] Change shape-related op attributes to arguments (#360)",
-    "body": "",
-    "author": "MasterJH5574",
-    "date": "2023-01-15T21:13:44Z",
-    "jobs": []
-  },
-  {
-    "sha": "fa5476f8ebb35120f1fd5e77dbb02406bdd83c7e",
-    "headline": "[Op] Use int64 IntImms as static shape-related attributes (#359)",
-    "body": "",
-    "author": "MasterJH5574",
-    "date": "2023-01-14T23:34:01Z",
-    "jobs": []
-  },
-  {
     "sha": "67d2d08198063050ad4902a3308e96127e746d74",
     "headline": "fix after rebase",
     "body": "",
@@ -1139,38 +1011,6 @@
     "body": "",
     "author": "MasterJH5574",
     "date": "2023-01-12T00:30:21Z",
-    "jobs": []
-  },
-  {
-    "sha": "4259ad48cbe909109bd40c7ed862368b407d37f0",
-    "headline": "[Fix][Op] Fix CallTIR about wrapping args with Tuple (#354)",
-    "body": "",
-    "author": "MasterJH5574",
-    "date": "2023-01-11T21:45:58Z",
-    "jobs": []
-  },
-  {
-    "sha": "af50490b5261622bca09b274db1a7c536692c362",
-    "headline": "[BlockBuilder] Fix argument conversion for Shape in CallTE (#352)",
-    "body": "",
-    "author": "MasterJH5574",
-    "date": "2023-01-11T21:44:13Z",
-    "jobs": []
-  },
-  {
-    "sha": "b1e44dad3119951000d6d6a928502390bb41fbdb",
-    "headline": "[Fix][Printer] Fix PrintFinal dispatch for Relax dedicated Expr (#351)",
-    "body": "",
-    "author": "MasterJH5574",
-    "date": "2023-01-11T02:13:39Z",
-    "jobs": []
-  },
-  {
-    "sha": "f5da2a687d02d1ef891b9cd97aeb2d5bd495996b",
-    "headline": "[UX][TVMScript] Enable relax arithmetic operators (#350)",
-    "body": "",
-    "author": "Hzfengsy",
-    "date": "2023-01-11T01:01:30Z",
     "jobs": []
   },
   {
@@ -1235,38 +1075,6 @@
     "body": "",
     "author": "MasterJH5574",
     "date": "2023-01-09T01:21:50Z",
-    "jobs": []
-  },
-  {
-    "sha": "779bfd274df6e65648838482cfbde8c23712568f",
-    "headline": "[Op][O2f] Set and searching operators (#339)",
-    "body": "",
-    "author": "MasterJH5574",
-    "date": "2023-01-08T21:53:10Z",
-    "jobs": []
-  },
-  {
-    "sha": "c7b29363a9a95c8e6f1b67c56b1c9d10fb6f7cf1",
-    "headline": "simple fix jupyter error reporting (#345)",
-    "body": "",
-    "author": "Hzfengsy",
-    "date": "2023-01-08T19:38:20Z",
-    "jobs": []
-  },
-  {
-    "sha": "b7c7b46497e46796e6c6f1da71409c40e9035a95",
-    "headline": "[TVMScript] Symbolic shape computing (#342)",
-    "body": "",
-    "author": "Hzfengsy",
-    "date": "2023-01-08T15:09:22Z",
-    "jobs": []
-  },
-  {
-    "sha": "176d374e952eb977596d6a05534ad06f3ee7eb73",
-    "headline": "[Op][O2c] Creation operators (#336)",
-    "body": "",
-    "author": "MasterJH5574",
-    "date": "2023-01-07T23:31:00Z",
     "jobs": []
   },
   {
