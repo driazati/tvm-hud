@@ -1,5 +1,107 @@
 [
   {
+    "sha": "9cab4bc9c1d3716d20a1fc9aad9631bd0bf410c9",
+    "headline": "[Relax] Remove segfault in R.call_tir_inplace validation",
+    "body": "Prior to this commit, the error message produced when validating\n`R.call_tir_inplace` included the shape of the argument that will be\nmutated in-place.  This correctly caught and raised an error when the argument is a\ntensor with known shape that is incompatible with the output tensor's\nshape.  However, this same error message could be also be reached if\nthe input does not have `TensorStructInfo` at all, which would trigger\na segfault.\n\nThis commit updates the validation to print the argument's\n`StructInfo` directly, rather than a field from the struct info.  This\ncorrectly raises an error for the cases where the argument is not a\ntensor, or is a tensor with unknown dimensionality, while still\nprinting the explicit shape of the mismatched tensor when avalable.",
+    "author": "Lunderberg",
+    "date": "2024-08-05T15:41:31Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17242/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10251957905/job/28361206927"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361207011"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361207297"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361207686"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361208016"
+      }
+    ],
+    "pr": 17242,
+    "pr_title": "[Relax] Remove segfault in R.call_tir_inplace validation",
+    "updated_at": 1722874062.51284
+  },
+  {
     "sha": "a721e3571bd67f60b5699702dfc1e434c906b4ef",
     "headline": "[FFI] Remove backwards-compatibility unwrapping of IntImm",
     "body": "This is a follow-up PR to https://github.com/apache/tvm/pull/16183,\nwhich updated the FFI with explicit integer types.  As part of that\nchange, many internal functions were updated to accept non-IR\ntypes (e.g. `Array<runtime::Int>` instead of `Array<IntImm>`).  For\nbackwards compatibility with callees that provided the IR types, a\nspecialization of `PackedFuncValueConverter` unwrapped the `IntImm`\ninto a `runtime::Int`.\n\nThis commit removes the backwards-compatibility specialization of\n`PackedFuncValueConverter`.  Breakages that are found in CI as a\nresult will then be updated at the caller side, removing the need for\nthe backwards-compatibility handler altogether.",
@@ -78,12 +180,12 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10250699542/job/28357004041"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10250699542/job/28357004353"
       },
       {
@@ -103,8 +205,7 @@
       }
     ],
     "pr": 17241,
-    "pr_title": "[Draft][FFI] Remove backwards-compatibility unwrapping of IntImm",
-    "updated_at": 1722870403.934256
+    "pr_title": "[Draft][FFI] Remove backwards-compatibility unwrapping of IntImm"
   },
   {
     "sha": "133290a28ffcede4980c029937785ddce7c7d8a1",
@@ -115,8 +216,13 @@
     "jobs": [
       {
         "name": "arm/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17240/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17240/1/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
@@ -142,11 +248,6 @@
         "name": "hexagon/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17240/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17240/1/display/redirect"
       },
       {
         "name": "minimal/pr-head",
@@ -185,7 +286,7 @@
       },
       {
         "name": "CI / Windows",
-        "status": "pending",
+        "status": "failure",
         "url": "https://github.com/apache/tvm/actions/runs/10250540094/job/28356493058"
       },
       {
@@ -195,7 +296,7 @@
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10250540094/job/28356493762"
       },
       {
@@ -8774,107 +8875,6 @@
     ],
     "pr": 17166,
     "pr_title": "[MetaSchedule] Replace `xgboost.rabit` with `xgboost.collective` because it's deprecated"
-  },
-  {
-    "sha": "1b89c86b3560b9c3ede9ac3b61e6c896d153efde",
-    "headline": "[Hexagon] Support RPC execution of existing shared lib",
-    "body": "This patch modifies the `get_executor_from_factory` for relax to support\naccepting a string that points to an already exported shared library.\nThis allows us to run models that were already compiled through the RPC\nexecutor.",
-    "author": "quic-sanirudh",
-    "date": "2024-07-12T09:58:51Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17162/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17162/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17162/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17162/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17162/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9955600205/job/27503717228"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9955600408/job/27503718010"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9955600408/job/27503718428"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9955600408/job/27503718794"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9955600408/job/27503719112"
-      }
-    ],
-    "pr": 17162,
-    "pr_title": "[Hexagon] Support RPC execution of existing shared lib"
   },
   {
     "sha": "4351d36fa8b0230ed8b69ed69a7e702447842411",
