@@ -1,5 +1,107 @@
 [
   {
+    "sha": "c85389a474b2fea1c971090ead266dc8c2128a4c",
+    "headline": "[Relax] Avoid wrapping TupleStructInfo into a Tuple for R.call_tir",
+    "body": "Prior to this commit, the different `R.call_tir*` variations would\nwrap the arguments into an in-line `relax.Tuple`, if it is not\nalready a `relax.Tuple`.  While this allows a tensor to be passed into\nthese functions as a single argument (`R.call_tir(func, arg, ...)`\ninstead of `R.call_tir(func, [arg], ...)`), the wrapped Relax variable\nmay already refer to a tuple.\n\nThis use of a variable to refer to an argument tuple rather than an\nin-line argument tuple is not allowed by Relax.  (See discussion on\nhttps://github.com/apache/tvm/pull/15916 for details.)  However, by\nwrapping a variable `args: R.Tuple(R.Tensor, R.Tensor, ...)` into a\ntuple-of-tuples, the error occurs after the expression has already\nbeen generated, and refers to an expression `R.Tuple(R.Tuple(R.Tensor,\nR.Tensor, ...))` that doesn't appear anywhere in the user's input.\nThis can make debugging difficult (see\nhttps://github.com/apache/tvm/issues/17239 for an example).\n\nThis commit updates the argument-handling in `R.call_tir` to only\ngenerate an in-line `relax.Tuple` if the arguments do not already have\n`relax.TupleStructInfo`.  If the argument was provided as a Relax\nvariable bound to a tuple of arguments, it will still produce an\nerror.  However, that error will occur much earlier, and will\nexplicitly state that the argument must be a `relax.Tuple` instead of\na `relax.Var`.",
+    "author": "Lunderberg",
+    "date": "2024-08-05T16:46:44Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17243/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10252896635/job/28364335150"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10252896636/job/28364335200"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10252896636/job/28364335430"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10252896636/job/28364335698"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10252896636/job/28364335934"
+      }
+    ],
+    "pr": 17243,
+    "pr_title": "[Relax] Avoid wrapping TupleStructInfo into a Tuple for R.call_tir",
+    "updated_at": 1722877349.177173
+  },
+  {
     "sha": "9cab4bc9c1d3716d20a1fc9aad9631bd0bf410c9",
     "headline": "[Relax] Remove segfault in R.call_tir_inplace validation",
     "body": "Prior to this commit, the error message produced when validating\n`R.call_tir_inplace` included the shape of the argument that will be\nmutated in-place.  This correctly caught and raised an error when the argument is a\ntensor with known shape that is incompatible with the output tensor's\nshape.  However, this same error message could be also be reached if\nthe input does not have `TensorStructInfo` at all, which would trigger\na segfault.\n\nThis commit updates the validation to print the argument's\n`StructInfo` directly, rather than a field from the struct info.  This\ncorrectly raises an error for the cases where the argument is not a\ntensor, or is a tensor with unknown dimensionality, while still\nprinting the explicit shape of the mismatched tensor when avalable.",
@@ -19,7 +121,7 @@
       {
         "name": "cpu/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17242/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17242/2/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
@@ -40,11 +142,6 @@
         "name": "i386/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17242/1/display/redirect"
       },
       {
         "name": "minimal/pr-head",
@@ -72,6 +169,11 @@
         "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17242/1/display/redirect"
       },
       {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17242/1/display/redirect"
+      },
+      {
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10251957905/job/28361206927"
@@ -83,7 +185,7 @@
       },
       {
         "name": "CI / MacOS",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361207297"
       },
       {
@@ -98,8 +200,7 @@
       }
     ],
     "pr": 17242,
-    "pr_title": "[Relax] Remove segfault in R.call_tir_inplace validation",
-    "updated_at": 1722874062.51284
+    "pr_title": "[Relax] Remove segfault in R.call_tir_inplace validation"
   },
   {
     "sha": "a721e3571bd67f60b5699702dfc1e434c906b4ef",
@@ -110,13 +211,33 @@
     "jobs": [
       {
         "name": "arm/pr-head",
-        "status": "pending",
+        "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17241/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17241/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17241/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17241/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17241/1/display/redirect"
       },
       {
         "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17241/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17241/2/display/redirect"
       },
       {
         "name": "cpu/pr-head",
@@ -137,26 +258,6 @@
         "name": "hexagon/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17241/1/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17241/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17241/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17241/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17241/1/display/redirect"
       },
       {
         "name": "wasm/pr-head",
@@ -220,54 +321,49 @@
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17240/1/display/redirect"
       },
       {
+        "name": "cpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17240/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17240/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17240/1/display/redirect"
+      },
+      {
         "name": "i386/pr-head",
         "status": "error",
         "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17240/1/display/redirect"
       },
       {
-        "name": "cortexm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17240/1/display/redirect"
+        "name": "minimal/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17240/1/display/redirect"
       },
       {
-        "name": "cpu/pr-head",
+        "name": "riscv/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17240/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "error",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17240/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
         "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17240/1/display/redirect"
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17240/2/display/redirect"
       },
       {
         "name": "cross-isa-minimal/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17240/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17240/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17240/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17240/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17240/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17240/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17240/1/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -278,6 +374,11 @@
         "name": "lint/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17240/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17240/1/display/redirect"
       },
       {
         "name": "PR / cc-reviewers",
@@ -8693,188 +8794,6 @@
     ],
     "pr": 17168,
     "pr_title": "[Meta Schedule][XGBoost] enable custom callback func test with xgboost>=1.6.0"
-  },
-  {
-    "sha": "5e849b6c5e1196f3c73fad990ec8f0ceb9d4f316",
-    "headline": "can work with xgb==1.4.2 in CI",
-    "body": "",
-    "author": "mshr-h",
-    "date": "2024-07-17T08:23:46Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17166/5/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17166/3/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17166/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17166/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17166/3/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9970751196/job/27550320648"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9972675358/job/27556411872"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9974308985/job/27561517270"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/9974693466/job/27562711679"
-      }
-    ],
-    "pr": 17166,
-    "pr_title": "[MetaSchedule] Replace `xgboost.rabit` with `xgboost.collective` because it's deprecated"
-  },
-  {
-    "sha": "e192296e0df9ba1857fe517677cfa33ed07dcc99",
-    "headline": "use collective instead of rabit",
-    "body": "",
-    "author": "mshr-h",
-    "date": "2024-07-17T01:16:00Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17166/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17166/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9966587070/job/27538889471"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9966599658/job/27538921285"
-      }
-    ],
-    "pr": 17166,
-    "pr_title": "[MetaSchedule] Replace `xgboost.rabit` with `xgboost.collective` because it's deprecated"
   },
   {
     "sha": "4351d36fa8b0230ed8b69ed69a7e702447842411",
