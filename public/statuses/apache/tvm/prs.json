@@ -1,5 +1,117 @@
 [
   {
+    "sha": "c855809be37997463eaf206b1d6768bfdb346585",
+    "headline": "[FFI] Re-introduce the boxed primitive values",
+    "body": "Initially introduced in https://github.com/apache/tvm/pull/16183,\nthese changes were reverted in\nhttps://github.com/apache/tvm/pull/17252 due to performance\ndegredation in some Relax models.  This could occur when a model\ncontained a large number of calls to `\"vm.builtin.tuple_getitem\"`,\nwhich may occur when model weights are provided as a tuple.\n\nThis PR re-applies the changes from\nhttps://github.com/apache/tvm/pull/16183, but with the performance\ndegredation resolved.  The root cause was unnecessary type-checking\nwhen converting from an untyped `tvm::ArrayNode*` to the typed\n`tvm::Array<T>`, in the case where `T` is `ObjectRef`.",
+    "author": "Lunderberg",
+    "date": "2024-08-08T19:40:18Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17257/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10308521448/job/28536123279"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10308521467/job/28536123352"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10308521467/job/28536123607"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10308521467/job/28536123884"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10308521467/job/28536124136"
+      }
+    ],
+    "pr": 17257,
+    "pr_title": " [FFI] Re-introduce the boxed primitive values",
+    "updated_at": 1723147674.458451
+  },
+  {
+    "sha": "ee9b8f1c55164e074548b631c663c73156d38bd3",
+    "headline": "Revert \"Revert \"[FFI][RUNTIME] Introduce runtime boxed types for int/\u2026",
+    "body": "\u2026float/bool\" (#17252)\"\n\nThis reverts commit 11be83262024fa73a36b744cfd2fc334d5b5e49d.",
+    "author": "Lunderberg",
+    "date": "2024-08-08T19:39:45Z",
+    "jobs": [],
+    "pr": 17257,
+    "pr_title": " [FFI] Re-introduce the boxed primitive values"
+  },
+  {
     "sha": "b5aeb83b15ae8ceb5cd17fce762d4da54262fbe3",
     "headline": "[Relax][Transform] Handle tuple return in RemoveUnusedOutputs",
     "body": "Prior to this commit, the `relax.transform.RemoveUnusedOutputs` pass\nonly marked a tuple element as used if it occurred in a `TupleGetItem`\nnode.  This ignored use cases where a tuple is used as an aggregate\nobject, such as returning a tuple from a function.  This would collect\nincorrect results for a Relax function that calls a subroutine,\nreceives a tuple as the return value of the subroutine, then returns\nthat tuple.\n\nThis commit updates `RemoveUnusedOutputs` to look for usage of a tuple\nobject, not just for usage in `TupleGetItem`.\n\nCloses https://github.com/apache/tvm/issues/17247",
@@ -98,8 +210,7 @@
       }
     ],
     "pr": 17253,
-    "pr_title": "[Relax][Transform] Handle tuple return in RemoveUnusedOutputs",
-    "updated_at": 1723143712.710859
+    "pr_title": "[Relax][Transform] Handle tuple return in RemoveUnusedOutputs"
   },
   {
     "sha": "cc858c3f11d80343bcc5de06de5c28191b9f99b6",
@@ -780,11 +891,6 @@
         "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17256/2/display/redirect"
       },
       {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17256/1/display/redirect"
-      },
-      {
         "name": "hexagon/pr-head",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17256/2/display/redirect"
@@ -793,6 +899,11 @@
         "name": "arm/pr-head",
         "status": "success",
         "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17256/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17256/1/display/redirect"
       },
       {
         "name": "docker/pr-head",
@@ -8521,198 +8632,6 @@
     ],
     "pr": 17180,
     "pr_title": "[Disco] Group-wise operation"
-  },
-  {
-    "sha": "54d81c8c914f5aa7537c1e2ac8d919c8fd51bbe3",
-    "headline": "Keep default axis",
-    "body": "",
-    "author": "arangasa",
-    "date": "2024-07-20T01:32:59Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17177/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17177/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17177/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17177/3/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10016498552/job/27689516003"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10016498680/job/27693553326"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10016498680/job/27693553433"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10016498680/job/27693553527"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10016498680/job/27693553614"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10018022460/job/27692896726"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/10018326745/job/27693561467"
-      }
-    ],
-    "pr": 17177,
-    "pr_title": "[Relay][FQ2I]: Use appropriate dtype while quantizing relay.op.nn.pad\u2026"
-  },
-  {
-    "sha": "ee654afa093bffe18f6bdcedf0e27d061278d996",
-    "headline": "[Relay][FQ2I]: Use appropriate dtype while quantizing relay.op.nn.pad\u2026",
-    "body": "\u2026's constant pad value",
-    "author": "arangasa",
-    "date": "2024-07-19T10:51:28Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17177/3/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17177/2/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17177/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10006993107/job/27660791596"
-      }
-    ],
-    "pr": 17177,
-    "pr_title": "[Relay][FQ2I]: Use appropriate dtype while quantizing relay.op.nn.pad\u2026"
   },
   {
     "sha": "4351d36fa8b0230ed8b69ed69a7e702447842411",
