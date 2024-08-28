@@ -1,5 +1,107 @@
 [
   {
+    "sha": "5345b05ff32ff64e24a71fbe5d4fb6f1af99e423",
+    "headline": "[Fix][TIR] LowerThreadAllreduce warp reduction mask",
+    "body": "The warp reduction implemented by \"shuffle down\" primitive takes a\nmask denoting the active threads within the warp that participate\nin this shuffle.\n\nPreviously we compute the mask, while in practice we find that it\nresults in \"CUDA illegal instruction\" error on NVIDIA H100 GPU when\nthe mask is set, and the issue is gone if we do not update the mask.\nTherefore, this PR updates the allreduce lowering to remove the mask\nupdate.\n\nConfirmed the correctness on the following devices:\n* NVIDIA H100,\n* NVIDIA RTX 4090,\n* AMD Radeon 7900 XTX,\n* Apple M2 Ultra.",
+    "author": "MasterJH5574",
+    "date": "2024-08-28T03:05:44Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17307/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10589631059/job/29344069368"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10589631206/job/29344069692"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10589631206/job/29344069848"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/10589631206/job/29344069996"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10589631206/job/29344070121"
+      }
+    ],
+    "pr": 17307,
+    "pr_title": "[Fix][TIR] LowerThreadAllreduce warp reduction mask",
+    "updated_at": 1724818159.299857
+  },
+  {
     "sha": "eeee23cedef4746db682933047f5780ddd6ed89d",
     "headline": "Debugging, ensure that the f32-to-f32 test case runs first",
     "body": "",
@@ -98,8 +200,7 @@
       }
     ],
     "pr": 17283,
-    "pr_title": "[CI][Windows] Workaround for error in Findzstd.cmake",
-    "updated_at": 1724814452.867957
+    "pr_title": "[CI][Windows] Workaround for error in Findzstd.cmake"
   },
   {
     "sha": "23369c1fecf413029c9a01ab2e538d3b0c6f59a6",
@@ -8789,112 +8890,6 @@
     ],
     "pr": 17243,
     "pr_title": "[Relax] Avoid wrapping TupleStructInfo into a Tuple for R.call_tir"
-  },
-  {
-    "sha": "9cab4bc9c1d3716d20a1fc9aad9631bd0bf410c9",
-    "headline": "[Relax] Remove segfault in R.call_tir_inplace validation",
-    "body": "Prior to this commit, the error message produced when validating\n`R.call_tir_inplace` included the shape of the argument that will be\nmutated in-place.  This correctly caught and raised an error when the argument is a\ntensor with known shape that is incompatible with the output tensor's\nshape.  However, this same error message could be also be reached if\nthe input does not have `TensorStructInfo` at all, which would trigger\na segfault.\n\nThis commit updates the validation to print the argument's\n`StructInfo` directly, rather than a field from the struct info.  This\ncorrectly raises an error for the cases where the argument is not a\ntensor, or is a tensor with unknown dimensionality, while still\nprinting the explicit shape of the mismatched tensor when avalable.",
-    "author": "Lunderberg",
-    "date": "2024-08-05T15:41:31Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17242/4/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17242/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17242/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17242/1/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10251957905/job/28361206927"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361207011"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361207297"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361207686"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10251957911/job/28361208016"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/10266121638/job/28403785149"
-      }
-    ],
-    "pr": 17242,
-    "pr_title": "[Relax] Remove segfault in R.call_tir_inplace validation"
   },
   {
     "sha": "a10be60d1ebd98f411c12f5b7a2b964a7b26fb46",
