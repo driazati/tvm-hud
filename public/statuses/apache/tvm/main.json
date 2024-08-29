@@ -1,5 +1,219 @@
 [
   {
+    "sha": "6ca0bea2d89bf11a315332983486437b6a4a90f2",
+    "headline": "[Fix][TIR] LowerThreadAllreduce warp reduction mask (#17307)",
+    "body": "The warp reduction implemented by \"shuffle down\" primitive takes a\r\nmask denoting the active threads within the warp that participate\r\nin this shuffle.\r\n\r\nPreviously we compute the mask, while in practice we find that it\r\nresults in \"CUDA illegal instruction\" error on NVIDIA H100 GPU when\r\nthe mask is set, and the issue is gone if we do not update the mask.\r\nTherefore, this PR updates the allreduce lowering to remove the mask\r\nupdate.\r\n\r\nConfirmed the correctness on the following devices:\r\n* NVIDIA H100,\r\n* NVIDIA RTX 4090,\r\n* AMD Radeon 7900 XTX,\r\n* Apple M2 Ultra.",
+    "author": "MasterJH5574",
+    "date": "2024-08-28T23:31:02Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2150/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2230/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1991/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1681/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2409/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/2093/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1914/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1844/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1834/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/613/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1826/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1825/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1807/display/redirect"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10605954829/job/29395763499"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10605954829/job/29395763681"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10605954829/job/29395763869"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/10605954829/job/29395764024"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10605955106/job/29395764100"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10606085193/job/29396136731"
+      },
+      {
+        "name": "Nightly Docker Update / open_update_pr",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/10606194845/job/29396466312"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10606258805/job/29396662097"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10606503028/job/29397368337"
+      }
+    ],
+    "updated_at": 1724892649.07858
+  },
+  {
+    "sha": "108a4e15b3c68fea2f803dc13b1b45291b00f15b",
+    "headline": "[Relax] Identify tuple unpack/repack in CanonicalizeBindings (#17313)",
+    "body": "Prior to this commit, the `CanonicalizeBindings` pass could identify\r\nand simplify a value that had been packed into a tuple, then\r\nextracted from it.  (e.g. Simplifying `tup = (x,y); z = tup[0]` into\r\n`z = x`.)  However, it could not identify a value that had been\r\nexpanded from a tuple, and then re-bundled.  (e.g. Simplifying\r\n`new_tuple = (tup[0], tup[1])` into `new_tuple = tup`.)\r\n\r\nThis commit updates `CanonicalizeBindings` to identify and remove\r\nunnecessary tuple unpacking/repacking.",
+    "author": "Lunderberg",
+    "date": "2024-08-28T23:29:18Z",
+    "jobs": [
+      {
+        "name": "arm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2149/display/redirect"
+      },
+      {
+        "name": "cortexm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2229/display/redirect"
+      },
+      {
+        "name": "cpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1990/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1680/display/redirect"
+      },
+      {
+        "name": "gpu/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2408/display/redirect"
+      },
+      {
+        "name": "hexagon/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/2092/display/redirect"
+      },
+      {
+        "name": "i386/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1912/display/redirect"
+      },
+      {
+        "name": "minimal/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1843/display/redirect"
+      },
+      {
+        "name": "riscv/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1833/display/redirect"
+      },
+      {
+        "name": "unity/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/612/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1825/display/redirect"
+      },
+      {
+        "name": "docker/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1824/display/redirect"
+      },
+      {
+        "name": "lint/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1806/display/redirect"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10605940718/job/29395718004"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/10605940718/job/29395718137"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10605940718/job/29395718304"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10605940718/job/29395718470"
+      }
+    ]
+  },
+  {
     "sha": "be8607d47fa418f6bf77671b81093e0ffd7fdc4d",
     "headline": "[Relax][Bugfix] Infer TIR values from shapes inside a tuple (#17312)",
     "body": "If a Relax function contains an `R.match_cast` that defines a symbolic\r\nshape, and the value provided to the `R.match_cast` has a known static\r\nshape, the `relax.transform.CanoncalizeBindings()` pass can in-line\r\nthe known static shape.  However, while these known TIR values were\r\nonly collected if the expression used in `R.match_cast` was a\r\n`R.Tensor`, `R.Shape`, and `R.Prim` (Relax types which may contain\r\nsymbolic TIR values), they were not collected if the `R.match_cast`\r\nexpression was a `R.Tuple`.\r\n\r\nFor example, while using `R.match_cast` to convert from\r\n`R.Tensor([16])` to `R.Tensor([batch_size])` would identify that\r\n`batch_size` must be `16`, using `R.match_cast` to convert from\r\n`R.Tuple(R.Tensor([16]))` to `R.Tuple(R.Tensor([batch_size]))` would\r\nnot.\r\n\r\nThis commit updates the `InferSymbolicVarMap` to collect all symbolic\r\nshapes, even if they occur within a `R.Tuple`.",
@@ -47,19 +261,9 @@
         "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1842/display/redirect"
       },
       {
-        "name": "riscv/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1832/display/redirect"
-      },
-      {
         "name": "unity/branch",
         "status": "pending",
         "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/611/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "pending",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1824/display/redirect"
       },
       {
         "name": "docker/branch",
@@ -72,13 +276,23 @@
         "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1805/display/redirect"
       },
       {
+        "name": "riscv/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1832/display/redirect"
+      },
+      {
+        "name": "wasm/branch",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1824/display/redirect"
+      },
+      {
         "name": "CI / MacOS",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10605515466/job/29394451621"
       },
       {
         "name": "CI / Android",
-        "status": "pending",
+        "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10605515466/job/29394451929"
       },
       {
@@ -100,9 +314,13 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10605665440/job/29394920893"
+      },
+      {
+        "name": "Ping Reviewers / ping",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10605854020/job/29395474977"
       }
-    ],
-    "updated_at": 1724886683.674868
+    ]
   },
   {
     "sha": "99defd25c40c75b00395df1d2d58c84d2e0bd9ca",
@@ -28734,139 +28952,6 @@
         "name": "Ping Reviewers / ping",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/9882634488/job/27295896552"
-      }
-    ]
-  },
-  {
-    "sha": "fc814e704138bbb0d24cee7c77919e9bf3e01d7d",
-    "headline": "[DOC] Fix typo for the \"We utilize the intermediate representation of\u2026",
-    "body": "\u2026 nn.Graph to convert the OneFlow model to Reley.\" (#17146)\n\nUpdate oneflow.py",
-    "author": "Redmept1on",
-    "date": "2024-07-10T16:23:52Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2051/display/redirect"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877898137/job/27280599670"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877898137/job/27280599897"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877898137/job/27280600165"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877898137/job/27280600426"
-      }
-    ]
-  },
-  {
-    "sha": "e41d554308f165bf4730d7c33e4dd8914b6d7e6b",
-    "headline": "[Backend][ROCm] Fix error when building TVM with LLVM 19 (#17141)",
-    "body": "* fix error when building with llvm>=19\n\n* always need to include llvm/IR/Module.h",
-    "author": "mshr-h",
-    "date": "2024-07-10T16:18:43Z",
-    "jobs": [
-      {
-        "name": "arm/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/main/2050/display/redirect"
-      },
-      {
-        "name": "cpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/main/1847/display/redirect"
-      },
-      {
-        "name": "gpu/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/main/2293/display/redirect"
-      },
-      {
-        "name": "hexagon/branch",
-        "status": "error",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/main/1904/display/redirect"
-      },
-      {
-        "name": "cortexm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/main/2019/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/main/1578/display/redirect"
-      },
-      {
-        "name": "docker/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/main/1725/display/redirect"
-      },
-      {
-        "name": "i386/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/main/1790/display/redirect"
-      },
-      {
-        "name": "lint/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/main/1708/display/redirect"
-      },
-      {
-        "name": "minimal/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/main/1732/display/redirect"
-      },
-      {
-        "name": "riscv/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/main/1728/display/redirect"
-      },
-      {
-        "name": "unity/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/main/503/display/redirect"
-      },
-      {
-        "name": "wasm/branch",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/main/1725/display/redirect"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877824998/job/27280362952"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877824998/job/27280363326"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877824998/job/27280363714"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877824998/job/27280364071"
-      },
-      {
-        "name": "Ping Reviewers / ping",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/9877856131/job/27280463901"
       }
     ]
   }
