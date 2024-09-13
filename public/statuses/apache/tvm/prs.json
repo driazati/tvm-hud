@@ -1,5 +1,107 @@
 [
   {
+    "sha": "412aec4e2df8f01ee15f3165d9f740af5190866d",
+    "headline": "[WEBGPU] Update runtime to remove deprecated API",
+    "body": "This PR updates webgpu runtime code to remove\ndeprecated API. unblocks the CI.",
+    "author": "tqchen",
+    "date": "2024-09-13T12:35:26Z",
+    "jobs": [
+      {
+        "name": "arm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "cortexm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "cpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "cross-isa-minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "gpu/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "hexagon/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "i386/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "minimal/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "riscv/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "unity/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "wasm/pr-head",
+        "status": "pending",
+        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "docker/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "lint/pr-head",
+        "status": "success",
+        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17371/1/display/redirect"
+      },
+      {
+        "name": "PR / cc-reviewers",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10849223366/job/30107966484"
+      },
+      {
+        "name": "CI / MacOS",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10849223368/job/30107966459"
+      },
+      {
+        "name": "CI / Linux-Static-Runtime",
+        "status": "success",
+        "url": "https://github.com/apache/tvm/actions/runs/10849223368/job/30107966940"
+      },
+      {
+        "name": "CI / Windows",
+        "status": "failure",
+        "url": "https://github.com/apache/tvm/actions/runs/10849223368/job/30107967302"
+      },
+      {
+        "name": "CI / Android",
+        "status": "pending",
+        "url": "https://github.com/apache/tvm/actions/runs/10849223368/job/30107967655"
+      }
+    ],
+    "pr": 17371,
+    "pr_title": "[WEBGPU] Update runtime to remove deprecated API",
+    "updated_at": 1726233229.611507
+  },
+  {
     "sha": "35c0d1c3b0da4c5cc55dd804fd5ca5c6fedbcb17",
     "headline": "ci bump",
     "body": "",
@@ -98,8 +200,7 @@
       }
     ],
     "pr": 17323,
-    "pr_title": "[Relax] Easier use of Function.bind_params with relax.op.create.*",
-    "updated_at": 1726229538.789498
+    "pr_title": "[Relax] Easier use of Function.bind_params with relax.op.create.*"
   },
   {
     "sha": "84e2036882b1fa7df1c5a027bdb8882fb581f01f",
@@ -278,6 +379,11 @@
         "name": "PR / cc-reviewers",
         "status": "success",
         "url": "https://github.com/apache/tvm/actions/runs/10832379234/job/30056583085"
+      },
+      {
+        "name": "tvm-bot / run-tvm-bot",
+        "status": "skipped",
+        "url": "https://github.com/apache/tvm/actions/runs/10849125271/job/30107655236"
       }
     ],
     "pr": 17369,
@@ -7249,112 +7355,6 @@
     ],
     "pr": 17308,
     "pr_title": "[TVM4J][BugFix] Fix unhandled return type in JNI"
-  },
-  {
-    "sha": "b04fcf14fc915edebca080c8bbc7b883a009a1f6",
-    "headline": "[Fix][TIR] LowerThreadAllreduce warp reduction mask",
-    "body": "The warp reduction implemented by \"shuffle down\" primitive takes a\nmask denoting the active threads within the warp that participate\nin this shuffle.\n\nPreviously we compute the mask, while in practice we find that it\nresults in \"CUDA illegal instruction\" error on NVIDIA H100 GPU when\nthe mask is set, and the issue is gone if we do not update the mask.\nTherefore, this PR updates the allreduce lowering to remove the mask\nupdate.\n\nConfirmed the correctness on the following devices:\n* NVIDIA H100,\n* NVIDIA RTX 4090,\n* AMD Radeon 7900 XTX,\n* Apple M2 Ultra.",
-    "author": "MasterJH5574",
-    "date": "2024-08-28T03:05:44Z",
-    "jobs": [
-      {
-        "name": "arm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-arm/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "cortexm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cortexm/job/PR-17307/4/display/redirect"
-      },
-      {
-        "name": "cpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-cpu/job/PR-17307/3/display/redirect"
-      },
-      {
-        "name": "cross-isa-minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal-cross-isa/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "docker/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-docker/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "gpu/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-gpu/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "hexagon/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-hexagon/job/PR-17307/3/display/redirect"
-      },
-      {
-        "name": "i386/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-i386/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "lint/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-lint/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "minimal/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-minimal/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "riscv/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-riscv/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "unity/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-unity/job/PR-17307/3/display/redirect"
-      },
-      {
-        "name": "wasm/pr-head",
-        "status": "success",
-        "url": "https://ci.tlcpack.ai/job/tvm-wasm/job/PR-17307/2/display/redirect"
-      },
-      {
-        "name": "PR / cc-reviewers",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10599217729/job/29373702099"
-      },
-      {
-        "name": "CI / MacOS",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10599217921/job/29373704332"
-      },
-      {
-        "name": "CI / Android",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10599217921/job/29373705028"
-      },
-      {
-        "name": "CI / Windows",
-        "status": "failure",
-        "url": "https://github.com/apache/tvm/actions/runs/10599217921/job/29373705539"
-      },
-      {
-        "name": "CI / Linux-Static-Runtime",
-        "status": "success",
-        "url": "https://github.com/apache/tvm/actions/runs/10599217921/job/29373706236"
-      },
-      {
-        "name": "tvm-bot / run-tvm-bot",
-        "status": "skipped",
-        "url": "https://github.com/apache/tvm/actions/runs/10605953768/job/29395760551"
-      }
-    ],
-    "pr": 17307,
-    "pr_title": "[Fix][TIR] LowerThreadAllreduce warp reduction mask"
   },
   {
     "sha": "fe49099635ef89fae71ec48d413464d9c5880fb4",
